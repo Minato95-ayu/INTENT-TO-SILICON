@@ -93,9 +93,30 @@ id,input,category,source,expected_result
 92,impatient users ke liye fast scalable app,mixed,synthetic,success
 93,log scam se bachen aur backend AWS pe ho,mixed,synthetic,success
 94,fun app jisme lakhon traffic aaye,mixed,synthetic,success
+id,input,category,source,expected_result
 95,confusion na ho isliye guided onboarding do,mixed,synthetic,success
 96,urgency ke liye guest login ho aur system fast ho,mixed,synthetic,success
 97,trust build ho aur microservices use karein,mixed,synthetic,success
 98,privacy toggle do aur backend scalable ho,mixed,synthetic,success
 99,log uljhan mein na padein aur payment secure ho,mixed,synthetic,success
 100,ekdum private network jisme traffic sambhalne ki takat ho,mixed,synthetic,success
+101,Mujhe chat nahi chahiye,negation,synthetic,success
+102,Mujhe database nahi chahiye,negation,synthetic,success
+103,Fast app chahiye lekin chat nahi chahiye,negation,synthetic,success
+104,I want a website without history,negation,synthetic,success
+105,Traffic sambhalna hai but live mat lagana,negation,synthetic,success
+106,database remove kar do,negation,synthetic,success
+107,chat exclude karna hai,negation,synthetic,success
+108,mujhe viral app chahiye without data save,negation,synthetic,success
+109,aisa app banao jisme live na ho,negation,synthetic,success
+110,fast chahiye lekin data record nahi chahiye,negation,synthetic,success
+111,viral app banao without chat,negation,synthetic,success
+112,mujhe chat mat dena,negation,synthetic,success
+113,app without offline support,negation,synthetic,success
+114,don't include database,negation,synthetic,success
+115,do not add chat,negation,synthetic,success
+116,mujhe fast chahiye lekin offline nahi chahiye,negation,synthetic,success
+117,no chat needed but want high speed,negation,synthetic,success
+118,exclude history from the requirements,negation,synthetic,success
+119,mujhe fast system bana do chat mat rakhna,negation,synthetic,success
+120,remove database entirely,negation,synthetic,success

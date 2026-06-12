@@ -59,10 +59,13 @@ def dict_to_yaml(data, indent=0):
             yaml_str += f"{prefix}- \"{item}\"\n"
     return yaml_str
 
-def generate_blueprint_yaml(func_specs, hard_dependencies, emotion_candidates):
+def generate_blueprint_yaml(func_specs, hard_dependencies, emotion_candidates, excluded_specs=None):
     base_dir = os.path.dirname(os.path.dirname(__file__))
     output_dir = os.path.join(base_dir, 'output')
     os.makedirs(output_dir, exist_ok=True)
+    
+    if excluded_specs is None:
+        excluded_specs = []
     
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S-%f")
     blueprint_filename = f"intent_blueprint_{timestamp}.yaml"
@@ -82,7 +85,9 @@ def generate_blueprint_yaml(func_specs, hard_dependencies, emotion_candidates):
             "detected_emotions": emotion_candidates
         }
     }
-    
+    if excluded_specs:
+        blueprint_data["functional_architecture"]["excluded_requirements"] = excluded_specs
+        
     yaml_content = dict_to_yaml(blueprint_data)
     
     with open(blueprint_path, 'w', encoding='utf-8') as f:
@@ -92,34 +97,79 @@ def generate_blueprint_yaml(func_specs, hard_dependencies, emotion_candidates):
 
 def process_single_input(user_input, func_library, emotion_library, headless_reply=None):
     """Processes a single input and returns metrics and blueprint path."""
-    words = user_input.lower().split()
+    BACKWARD_NEGATORS = ['nahi', 'nahin', 'mat', 'na']
+    FORWARD_NEGATORS = ['without', 'exclude', 'remove', 'no', "don't", 'do not']
+    CLAUSE_DELIMITERS = [',', '.', 'lekin', 'par', 'but', 'and', 'aur']
+
+    normalized_input = user_input.lower()
+    for delim in CLAUSE_DELIMITERS:
+        if len(delim) > 1:
+            normalized_input = normalized_input.replace(f" {delim} ", "|")
+        else:
+            normalized_input = normalized_input.replace(delim, "|")
+            
+    clauses = [c.strip() for c in normalized_input.split("|") if c.strip()]
+
     matched_func_categories = []
     matched_emotions = []
+    negated_func_categories = []
     
     final_func_specs = []
+    final_excluded_specs = []
     hard_dependencies = set()
     emotion_candidates = []
     
-    # 1. Intent Extraction
-    for word in words:
-        for category, data in func_library.items():
-            if is_word_matching_root(word, data['root_lemmas']) and category not in matched_func_categories:
-                matched_func_categories.append(category)
+    # 1. Intent Extraction with Clause Boundaries & Directional Heuristics
+    for clause in clauses:
+        words = clause.split()
+        clause_funcs = []
+        clause_emotions = []
         
-        for category, data in emotion_library.items():
-            if is_word_matching_root(word, data['root_lemmas']) and category not in matched_emotions:
-                matched_emotions.append(category)
+        for i, word in enumerate(words):
+            for category, data in func_library.items():
+                if is_word_matching_root(word, data['root_lemmas']):
+                    clause_funcs.append((category, i))
+            
+            for category, data in emotion_library.items():
+                if is_word_matching_root(word, data['root_lemmas']):
+                    clause_emotions.append((category, i))
+                    
+        backward_indices = [i for i, w in enumerate(words) if w in BACKWARD_NEGATORS]
+        forward_indices = [i for i, w in enumerate(words) if w in FORWARD_NEGATORS]
+        
+        for cat, idx in clause_funcs:
+            is_negated = False
+            for b_idx in backward_indices:
+                if 0 < b_idx - idx <= 3:
+                    is_negated = True
+                    break
+            for f_idx in forward_indices:
+                if 0 < idx - f_idx <= 3:
+                    is_negated = True
+                    break
+                    
+            if is_negated:
+                if cat not in negated_func_categories:
+                    negated_func_categories.append(cat)
+            else:
+                if cat not in matched_func_categories:
+                    matched_func_categories.append(cat)
+                    
+        for cat, idx in clause_emotions:
+            if cat not in matched_emotions:
+                matched_emotions.append(cat)
                 
     metrics = {
         "initial_ambiguity_count": len(matched_func_categories),
         "emotions_detected": len(matched_emotions),
+        "negated_intents_detected": len(negated_func_categories),
         "status": "success",
         "blueprint_path": None,
         "questions_asked": len(matched_func_categories)
     }
 
     # OOV Detection
-    if not matched_func_categories and not matched_emotions:
+    if not matched_func_categories and not matched_emotions and not negated_func_categories:
         metrics["status"] = "fail_hard"
         return metrics
         
@@ -164,9 +214,19 @@ def process_single_input(user_input, func_library, emotion_library, headless_rep
                 "ux_patterns": data['candidate_ux_patterns']
             })
 
+    # Process Negated Categories
+    for category in negated_func_categories:
+        data = func_library[category]
+        final_excluded_specs.append({
+            "category": category,
+            "value": data['exact_value'],
+            "confidence": 1.0,
+            "source": "explicitly negated"
+        })
+
     # 4. Generate YAML if valid intent locked
-    if final_func_specs or emotion_candidates:
-        blueprint_path = generate_blueprint_yaml(final_func_specs, hard_dependencies, emotion_candidates)
+    if final_func_specs or emotion_candidates or final_excluded_specs:
+        blueprint_path = generate_blueprint_yaml(final_func_specs, hard_dependencies, emotion_candidates, final_excluded_specs)
         metrics["blueprint_path"] = blueprint_path
         
     return metrics

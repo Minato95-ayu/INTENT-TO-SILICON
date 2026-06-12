@@ -24,6 +24,9 @@ def run_benchmarks():
     yaml_generated = 0
     total_questions_asked = 0
     
+    total_negation_cases = 0
+    correct_negation_parses = 0
+    
     print("==================================================")
     print(" INTENT-TO-SILICON : Benchmarking Suite v1.1")
     print("==================================================")
@@ -34,6 +37,7 @@ def run_benchmarks():
             total_inputs += 1
             input_text = row['input']
             expected = row['expected_result']
+            category = row['category']
             
             # For "ambiguous" tests, simulate a user who gives a vague reply ("no" or anything not matching the exact confirmation)
             # For "functional/emotional/mixed" simulate a "yes" reply
@@ -55,6 +59,11 @@ def run_benchmarks():
             if metrics["blueprint_path"]:
                 yaml_generated += 1
                 
+            if category == "negation":
+                total_negation_cases += 1
+                if metrics["negated_intents_detected"] > 0:
+                    correct_negation_parses += 1
+                
             total_questions_asked += metrics["questions_asked"]
             
     print("\n==================================================")
@@ -66,7 +75,14 @@ def run_benchmarks():
     print(f"Hard Fail (OOV) %         : {(hard_fail/total_inputs)*100:.1f}%")
     print(f"YAML Generated %          : {(yaml_generated/total_inputs)*100:.1f}%")
     
+    if total_negation_cases > 0:
+        print("--------------------------------------------------")
+        print(f"Negation Accuracy %       : {(correct_negation_parses/total_negation_cases)*100:.1f}%")
+        print(f"  (Total Negation Cases: {total_negation_cases})")
+        print(f"  (Correctly Parsed: {correct_negation_parses})")
+    
     if total_inputs > 0:
+        print("--------------------------------------------------")
         print(f"Average Questions Asked   : {total_questions_asked / total_inputs:.2f}")
     print("==================================================")
     

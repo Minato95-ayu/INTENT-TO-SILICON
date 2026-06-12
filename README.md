@@ -9,7 +9,9 @@
 
 ## 🎥 Demo Video
 
-<video src="https://github.com/Minato95-ayu/INTENT-TO-SILICON/raw/main/media/demo.mp4" width="100%" controls></video>
+<video src="https://raw.githubusercontent.com/Minato95-ayu/INTENT-TO-SILICON/main/media/demo.mp4" controls="controls" style="max-width: 100%;"></video>
+
+> **Note:** Agar video auto-play na ho raha ho, toh [yahan click karke direct video dekhein](https://github.com/Minato95-ayu/INTENT-TO-SILICON/raw/main/media/demo.mp4).
 
 ---
 

@@ -7,6 +7,11 @@
 
 ---
 
+## 🎥 Demo Video
+
+<video src="media/demo.mp4" width="100%" controls></video>
+
+---
 
 ## About This Research
 

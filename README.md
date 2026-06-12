@@ -1,17 +1,38 @@
 # INTENT-TO-SILICON: Compiler-Less Computing via Multi-Layer Human Language Translation
 
 ![Status: Concept & Research Stage](https://img.shields.io/badge/Status-Research%20Draft%20v1.0-blue)
-![License: Copyrighted](https://img.shields.io/badge/License-Copyrighted%20Work-red)
+![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-green)
 
-## ⚖️ Legal & Intellectual Property Notice
-**Copyright © 2026 Ayush Kumar Mishra (Pen Name: Ayush Kaushik)**  
-**Date of Birth:** 01/01/2007  
+**Author:** Ayush Kumar Mishra  
+**Affiliation:** B.Sc. Mathematics Honours, Baba Saheb Ambedkar University, Muzaffarpur, Bihar  
+**Contact:** ayushkaushik1441@gmail.com  
+**GitHub:** [github.com/Minato95-ayu](https://github.com/Minato95-ayu)  
+**Twitter:** [x.com/o_Ayush_kaushik](https://x.com/o_Ayush_kaushik)  
+**LinkedIn:** [linkedin.com/in/ayushh-kaushiq-1a950825a](https://linkedin.com/in/ayushh-kaushiq-1a950825a)  
+**Date:** June 2026  
 
-This repository contains original research, architectural design, and conceptual frameworks developed by **Ayush Kumar Mishra**. The core concepts, including the **"Active Disambiguation Engine"**, **"Hinglish-to-Technical Semantic Dictionary"**, and the **"7-Layer Intent-to-Silicon Pipeline"** are the exclusive intellectual property of the author.
+---
 
-* **Open for Reading & Learning:** This repository is made public for academic review, community feedback, and open collaboration.
-* **Commercial Use Prohibited:** No part of this architectural framework, theoretical models, or the underlying dictionary concept may be used, reproduced, or implemented for commercial purposes without explicit, written permission from the author.
-* **Attribution Required:** Any academic or non-commercial reference to this work must provide full attribution to the original author (Ayush Kumar Mishra).
+## Copyright Notice
+
+© 2026 Ayush Kumar Mishra. All rights reserved.
+
+This research was conceptualized and developed by Ayush Kumar Mishra. Original ideas include:
+- Active Disambiguation Engine concept
+- Hinglish-to-Technical Semantic Dictionary
+- Bidirectional translation pipeline
+- "Thoda namak" analogy for ambiguity
+- Principal letter format analogy
+
+First documented: June 2026  
+Proof: Voice transcripts and conversation history available on request.
+
+---
+
+## License
+
+**Creative Commons Attribution 4.0 (CC BY 4.0)**  
+Credit must be given to Ayush Kumar Mishra if this work is used or referenced.
 
 ---
 
@@ -70,8 +91,3 @@ We are currently building the first prototype of the Dictionary and the Disambig
 pip install indic-nlp-library inltk sentence-transformers --break-system-packages
 pip install rasa fastapi uvicorn psycopg2-binary --break-system-packages
 ```
-
----
-**Author:** Ayush Kumar Mishra (Ayush Kaushik)  
-**Email:** ayushkaushik1441@gmail.com  
-**GitHub:** [Minato95-ayu](https://github.com/Minato95-ayu)

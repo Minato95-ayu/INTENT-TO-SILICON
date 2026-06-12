@@ -64,33 +64,33 @@ The benchmarking script evaluates the NLP engine's output against three primary 
 
 ## 4. Preliminary Results
 
-The benchmark was executed headlessly across all 121 synthetic test cases. The preliminary results demonstrate the efficacy of the active disambiguation and semantic mapping layers.
+The prototype was evaluated on a synthetic benchmark dataset consisting of 121 structured test cases spanning functional, ambiguous, emotional, mixed, and negation-focused inputs.
 
-### 4.1 Overall Performance
-- **Total Inputs Evaluated:** 121
-- **Direct YAML Specification Success:** 66.1%
-- **Clarification Required:** 1.7%
-- **Hard Fail (Safe Halting):** 32.2%
+Three primary outcomes were measured:
 
-Crucially, the 32.2% hard fail rate represents a 0% architectural hallucination rate. When faced with inputs lacking recognized functional or emotional lemmas, the system successfully defaulted to a non-destructive state, validating the hypothesis that rigid semantic mapping prevents unsupported code generation.
+1. Direct Blueprint Generation
+2. Safe Halting
+3. Clarification Required
 
-### 4.2 Negation Parsing Accuracy
-A critical metric for the v0.4 architecture was its ability to accurately parse explicit feature exclusion. Out of 20 complex negation test cases, the system correctly parsed and isolated the negated features in 17 cases.
-- **Negation Accuracy:** 85.0%
+The current evaluation produced the following preliminary results:
 
-This demonstrates that the implementation of clause boundary splitting and directional proximity heuristics significantly improves the robustness of natural language interpretation in software engineering contexts.
+* Direct Blueprint Generation: 66.1%
+* Safe Halting: 32.2%
+* Clarification Required: 1.7%
+
+These results suggest that the system frequently preferred deterministic specification generation when sufficient information was available, while unsupported or underspecified inputs were handled through safe halting rather than unsupported inference.
+
+Negation-focused evaluation produced an accuracy of 85.0% on the current synthetic benchmark. This indicates that the prototype can correctly interpret a substantial proportion of negated requirements, although further validation on real-world user inputs remains necessary.
 
 ---
 
-## 5. Discussion and Limitations
+## 5. Discussion and Future Work
 
-While the Intent-to-Silicon framework demonstrates significant promise in reducing ambiguity before code generation, several limitations must be addressed in future iterations.
+The current evaluation is limited by the use of synthetic benchmark data. While synthetic datasets provide controlled experimental conditions, they may not fully capture the diversity and ambiguity of real-world human communication.
 
-### 5.1 Dataset Limitations
-The current preliminary results are derived from a synthetic dataset. While carefully constructed to isolate specific linguistic patterns, synthetic data cannot fully capture the chaotic, unstructured nature of real-world human communication. To address this, an ongoing data collection phase is actively gathering raw, unprompted software requirements from real human users. Future benchmark reports will incorporate this empirical field data.
+To address this limitation, an ongoing data-collection effort has been initiated through public survey forms. Future evaluations will incorporate real-user requests and compare prototype behavior against baseline natural-language-to-code workflows.
 
-### 5.2 Scalability of the Semantic Dictionary
-The deterministic nature of the semantic dictionary guarantees zero hallucination, but it inherently limits the system's vocabulary. As the complexity of requested architectures grows, the manual maintenance of root lemmas and hard dependencies may become a bottleneck. Future work will investigate hybrid approaches that utilize localized, heavily constrained LLM inference to expand the dictionary dynamically without sacrificing deterministic safety.
+Additional future work includes expansion of the semantic dictionary, multilingual evaluation, larger-scale benchmarking, and comparative analysis against contemporary AI-assisted software generation systems.
 
 ---
 

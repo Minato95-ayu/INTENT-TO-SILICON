@@ -10,21 +10,15 @@ The transition from human thought to machine-executable code is hindered not pri
 
 ## 1. Introduction
 
-### 1.1 The Problem of Ambiguity in Code Generation
-The fundamental interface between humans and computers has historically relied on intermediate programming languages (e.g., C++, Java, Python). These languages were engineered specifically to enforce mathematical precision and eliminate the ambiguity inherent in human communication. Recent advancements in artificial intelligence have attempted to bypass this intermediate layer, enabling Natural Language to Code (NL2Code) generation. However, natural language is inherently subjective, context-dependent, and frequently underspecified. When a user requests a "good, fast system," the requirement lacks the technical boundaries necessary for deterministic software construction.
+Natural language serves as the primary medium through which humans express goals, requirements, and intentions. However, natural language is inherently ambiguous, context-dependent, and often underspecified.
 
-### 1.2 The Research Gap
-Existing code-generation agents (such as GitHub Copilot or Devin) often treat ambiguous prompts as complete instructions. When faced with missing technical specifications, these systems tend to employ predictive modeling to "guess" the user's intent. This behavior frequently results in architectural hallucination—the generation of complex software structures (e.g., specific database paradigms or authentication protocols) that the user neither requested nor required. The gap in current research lies not in generating better code, but in generating better *specifications* prior to the coding phase.
+Modern software development addresses this ambiguity through formal programming languages, which provide deterministic instructions for machine execution. Recent advances in large language models have enabled natural-language-driven software generation; however, these systems frequently operate on incomplete or ambiguous user intent.
 
-### 1.3 Hypothesis
-This research hypothesizes that introducing an active ambiguity-reduction framework—one that maps raw, multilingual human intent to rigid functional parameters and explicitly asks for clarification on ambiguous nodes—will significantly improve the deterministic quality of software specifications and eliminate architectural hallucination. 
+This work investigates the hypothesis that ambiguity reduction prior to code generation can improve the quality of machine-readable software specifications.
 
-### 1.4 Contributions
-The primary contributions of the Intent-to-Silicon framework are:
-1. **The Semantic Dictionary:** A domain-specific mapping of Hindi/Hinglish root lemmas to exact technical requirements and hard dependencies.
-2. **Active Disambiguation Engine:** A conversational mechanism that halts execution and queries the user when intent is detected but underspecified.
-3. **YAML Blueprint Generation:** The serialization of verified intent into a machine-readable format to act as a flawless scaffold for downstream LLM code generators.
-4. **Reproducible Benchmarking Framework:** An empirical evaluation suite measuring specification success, negation accuracy, and safe-halting behavior.
+To explore this hypothesis, we present Intent-to-Silicon, a prototype framework that transforms natural-language requests into structured YAML blueprints through a multi-stage intent clarification pipeline.
+
+The framework introduces active disambiguation, semantic requirement extraction, safe-halting behavior for unsupported inputs, and benchmark-driven evaluation.
 
 ---
 

@@ -9,7 +9,7 @@
 
 ## 🎥 Demo Video
 
-<video src="media/demo.mp4" width="100%" controls></video>
+<video src="https://github.com/Minato95-ayu/INTENT-TO-SILICON/raw/main/media/demo.mp4" width="100%" controls></video>
 
 ---
 

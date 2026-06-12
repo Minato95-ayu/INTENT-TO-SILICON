@@ -60,7 +60,7 @@ These ideas were developed independently by Ayush Kumar Mishra and first documen
 
 - **The Principal Letter Analogy** — Just as a formal letter has a fixed format (Subject, Date, Body, Signature) that removes ambiguity, software specifications need a controlled format that converts vague human intent into precise machine instructions.
 
-- **Dictionary + Cross-Question = Zero Error Framework** — If ambiguity is removed *before* code generation through smart cross-questioning and a semantic dictionary, there is no room left for errors.
+- **Dictionary + Cross-Question = Ambiguity Reduction Framework** — By systematically removing ambiguity *before* code generation through smart cross-questioning and a semantic dictionary, the system significantly improves requirement precision.
 
 - **Bidirectional Translation Pipeline** — The same translation process that converts human language to binary must work in reverse — converting machine output back into the user's natural language.
 

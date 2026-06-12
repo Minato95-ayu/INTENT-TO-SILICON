@@ -1,0 +1,11 @@
+id,input_text,expected_outcome
+1,"mujhe ek payment app chahiye jisme log fraud se darte hain",Success
+2,"app aisi ho jo lakhon logon ka load utha sake",Success
+3,"ekdum fast system banana hai jisme time na lage",Success
+4,"mujhe log in system banana hai lekin sab confuse ho jate hain",Success
+5,"kuch bhi badhiya sa app bana ke de do",Fail_Ambiguous
+6,"mujhe ek private community banani hai sirf mere doston ke liye",Success
+7,"koi normal sa game app kaisa rahega",Fail_Ambiguous
+8,"security bohot tight honi chahiye koi hack na kar paye",Success
+9,"jaldi se ek simple dashboard chahiye mujhe",Success
+10,"hello bhai kaise ho",Fail_OOV

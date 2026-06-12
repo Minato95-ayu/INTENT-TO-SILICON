@@ -25,7 +25,7 @@ Similarly, when AI systems (like GitHub Copilot or Devin) make errors or "halluc
 The ultimate goal of this research is not to rely on Python or Java. It is to elevate **Hindi, English, and Sanskrit** so that they act as direct coding languages. By building a rigorous semantic library, human words will carry the exact execution value that commands in C++ or Java carry today. The prototypes in this repository are merely simulations to prove the logic; the final goal is direct **Human-to-Binary** translation.
 
 **Defendable Claim:** 
-This research does not claim to eliminate *all* AI errors. Rather, it posits that the **Active Disambiguation Engine** and **Semantic Dictionary** framework can **significantly reduce ambiguity-driven AI errors.**
+This research does not claim to eliminate AI errors completely. Rather, it posits that the **Active Disambiguation Engine** and **Semantic Dictionary** framework can **significantly reduce ambiguity-driven failures, improve requirement precision, and produce machine-readable specifications.**
 
 *Programming languages were designed to remove ambiguity for computers. This system is designed to remove ambiguity from human language before it reaches the computer.*
 

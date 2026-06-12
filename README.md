@@ -9,9 +9,7 @@
 
 ## 🎥 Demo Video
 
-https://github.com/Minato95-ayu/INTENT-TO-SILICON/blob/main/media/demo.mp4
-
-> **Note:** Agar upar player nahi aaya hai, toh [yahan click karke video GitHub player me dekhein](https://github.com/Minato95-ayu/INTENT-TO-SILICON/blob/main/media/demo.mp4).
+<video src="https://raw.githubusercontent.com/Minato95-ayu/INTENT-TO-SILICON/main/media/demo.mp4" controls="controls" style="max-width: 100%;"></video>
 
 ---
 

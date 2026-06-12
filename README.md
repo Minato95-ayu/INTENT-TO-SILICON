@@ -15,9 +15,14 @@ This repository contains the original research, concept notes, voice transcripts
 
 ## The Core Idea
 
-Traditional programming languages like Python, Java, and C++ are **intermediate translators** — legacy interfaces designed to bridge the gap between human thought and machine execution. They are not fundamental. They are a workaround.
+Traditional programming languages like Python, Java, and C++ are **intermediate translators** — legacy interfaces designed to bridge the gap between human thought and machine execution. They exist because computers need exact, mathematically precise commands.
 
-This research proposes replacing that workaround with a **7-layer AI translation pipeline** that:
+**The Ultimate Vision: Human Language AS the Coding Language**
+This research does not aim to build another Python library or chatbot. The goal is to elevate **Human Languages (Hindi, English, Sanskrit, etc.)** to the semantic exactness of programming languages. We are building a massive semantic dictionary/library where every human word maps to an exact binary/technical execution. 
+
+The end goal is a **Direct Human-to-Binary Translator** (and Binary-to-Human). Any Python code written in this repository (like the Chatbot PoC) is strictly a **simulation/mockup** to demonstrate how the final compiler will behave. The true core of the research is the creation of the Semantic Library.
+
+This research proposes replacing the programming language workaround with a **7-layer AI translation pipeline** that:
 
 1. Understands what the user wants — in any language
 2. Asks smart clarifying questions — one at a time, never frustrating

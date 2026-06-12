@@ -1,37 +1,67 @@
 {
   "performance": {
-    "keywords": ["fast", "jaldi", "tez", "speed", "ekdum fast", "jaldi khule"],
+    "keywords": ["fast", "jaldi", "tez", "speed", "ekdum fast", "jaldi khule", "tvarit", "sheeghra"],
     "cross_question": "Kitna fast chahiye? (1) Normal speed ya (2) Ultra-low latency (< 200ms)?",
     "exact_value": "REQUIREMENT: P99 Latency < 200ms; ENABLE: CDN Cache"
   },
   "security": {
-    "keywords": ["secure", "safe", "hack na ho", "privacy", "koi chura na le"],
+    "keywords": ["secure", "safe", "hack na ho", "privacy", "koi chura na le", "surakshit", "gupt"],
     "cross_question": "Security ka level? (1) Normal login ya (2) AES-256 bank-level encryption?",
     "exact_value": "REQUIREMENT: HTTPS + JWT Auth + AES-256 Encryption"
   },
   "scale": {
-    "keywords": ["bahut log", "public", "traffic", "hazaaron", "lakhon", "viral"],
+    "keywords": ["bahut log", "public", "traffic", "hazaaron", "lakhon", "viral", "bheed"],
     "cross_question": "Kitni public aayegi? (1) 100-200 log ya (2) 10,000+ concurrent users?",
     "exact_value": "REQUIREMENT: Auto-scaling active + Load Balancer"
   },
   "accessibility": {
-    "keywords": ["simple", "aasan", "easy", "koi bhi chala le", "baccha bhi chala le"],
+    "keywords": ["simple", "aasan", "easy", "koi bhi chala le", "baccha bhi chala le", "saral"],
     "cross_question": "UI kitna simple rakhna hai? (1) Standard ya (2) Max 3 clicks for any action?",
     "exact_value": "REQUIREMENT: Minimal UI Flow; SET MAX_CLICKS=3"
   },
   "monetization": {
-    "keywords": ["payment", "paisa", "khareed", "sell", "kharidna", "store"],
+    "keywords": ["payment", "paisa", "khareed", "sell", "kharidna", "store", "dukaan", "bazaar"],
     "cross_question": "Payment kaise leni hai? (1) Sirf UPI ya (2) Credit Card/International bhi?",
     "exact_value": "REQUIREMENT: Payment Gateway Integration (Stripe/Razorpay) + PCI-DSS"
   },
   "platform": {
-    "keywords": ["mobile", "phone", "app", "android", "ios"],
+    "keywords": ["mobile", "phone", "app", "android", "ios", "dono mein"],
     "cross_question": "Kahan chalana hai? (1) Sirf Android ya (2) Android + iPhone dono?",
     "exact_value": "REQUIREMENT: Cross-Platform (React Native / Flutter)"
   },
   "availability": {
-    "keywords": ["offline", "bina net ke", "no internet"],
+    "keywords": ["offline", "bina net ke", "no internet", "network nahi"],
     "cross_question": "Agar internet na ho tab bhi chalna chahiye? (1) Nahi (2) Haan, offline support",
     "exact_value": "REQUIREMENT: Offline-first Architecture + Local SQLite/IndexedDB"
+  },
+  "database": {
+    "keywords": ["save karna", "record rakhna", "data", "history", "purana dikhe", "sanchit"],
+    "cross_question": "Data kaisa hoga? (1) Simple tables ya (2) Complex relationships aur search?",
+    "exact_value": "REQUIREMENT: Relational Database (PostgreSQL) + Structured Schema"
+  },
+  "realtime": {
+    "keywords": ["live", "turant dikhe", "chat", "real-time", "saath saath", "abhi ke abhi"],
+    "cross_question": "Kya cheezein bina page refresh kiye update honi chahiye? (1) Nahi (2) Haan, live sync",
+    "exact_value": "REQUIREMENT: WebSockets Integration + Redis Pub/Sub"
+  },
+  "analytics": {
+    "keywords": ["track karna", "pata chale", "analytics", "dashboard", "report", "hisaab"],
+    "cross_question": "User tracking kitni deep chahiye? (1) Sirf views ya (2) Har button click track ho?",
+    "exact_value": "REQUIREMENT: Custom Analytics Dashboard + Event Tracking Engine"
+  },
+  "admin_control": {
+    "keywords": ["control karna", "delete kar saku", "admin", "mere haath mein", "prabandhan"],
+    "cross_question": "Admin panel kaisa hoga? (1) Basic controls ya (2) Full Role-Based Access Control (RBAC)?",
+    "exact_value": "REQUIREMENT: Admin Dashboard + RBAC (Role-Based Access Control)"
+  },
+  "media_storage": {
+    "keywords": ["photo", "video", "upload", "file daalna", "image", "chitra"],
+    "cross_question": "Kitni photos/videos aayengi? (1) Thodi bahut ya (2) Bohot saari heavy files?",
+    "exact_value": "REQUIREMENT: Cloud Object Storage (AWS S3) + Media CDN"
+  },
+  "internationalization": {
+    "keywords": ["hindi mein bhi", "doosri bhasha", "multi-language", "english bhi", "anuvad"],
+    "cross_question": "Kya software alag-alag languages mein chalega? (1) Ek hi bhasha ya (2) Multi-language support?",
+    "exact_value": "REQUIREMENT: i18n Localization Framework (L10n)"
   }
 }

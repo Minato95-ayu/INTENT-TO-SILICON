@@ -7,13 +7,6 @@
 
 ---
 
-## 🎥 Demo Video
-
-> [!NOTE]
-
-<video src="https://github.com/user-attachments/assets/xxxx-xxxx-xxxx" width="100%" controls></video>
-
-
 
 ## About This Research
 

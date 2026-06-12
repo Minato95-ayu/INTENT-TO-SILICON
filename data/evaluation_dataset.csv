@@ -1,11 +1,101 @@
-id,input_text,expected_outcome
-1,"mujhe ek payment app chahiye jisme log fraud se darte hain",Success
-2,"app aisi ho jo lakhon logon ka load utha sake",Success
-3,"ekdum fast system banana hai jisme time na lage",Success
-4,"mujhe log in system banana hai lekin sab confuse ho jate hain",Success
-5,"kuch bhi badhiya sa app bana ke de do",Fail_Ambiguous
-6,"mujhe ek private community banani hai sirf mere doston ke liye",Success
-7,"koi normal sa game app kaisa rahega",Fail_Ambiguous
-8,"security bohot tight honi chahiye koi hack na kar paye",Success
-9,"jaldi se ek simple dashboard chahiye mujhe",Success
-10,"hello bhai kaise ho",Fail_OOV
+id,input,category,source,expected_result
+1,mujhe ek scalable app chahiye,functional,synthetic,success
+2,mera backend postgresql pe hona chahiye,functional,synthetic,success
+3,ek fast system bana do jisme load balancer ho,functional,synthetic,success
+4,mujhe microservices architecture chahiye,functional,synthetic,success
+5,payment gateway add karna hai,functional,synthetic,success
+6,database bahut tagda hona chahiye,functional,synthetic,success
+7,lakhon log aayenge toh scale ho jaye,functional,synthetic,success
+8,otp login system lagana hai,functional,synthetic,success
+9,cloud pe deploy karna hai fast,functional,synthetic,success
+10,api architecture banana hai,functional,synthetic,success
+11,mujhe serverless framework use karna hai,functional,synthetic,success
+12,high speed data processing chahiye,functional,synthetic,success
+13,bheed aane par crash na ho aisi app,functional,synthetic,success
+14,docker container mein chalaunga,functional,synthetic,success
+15,ekdm solid database architecture chahiye,functional,synthetic,success
+16,realtime chat banana hai,functional,synthetic,success
+17,graphql use karna hai mujhe,functional,synthetic,success
+18,mujhe ek ai chatbot banana hai,functional,synthetic,success
+19,mujhe redis cache use karna hai,functional,synthetic,success
+20,log in security system banao,functional,synthetic,success
+21,payment gateway integrate kar do,functional,synthetic,success
+22,mujhe video streaming banana hai,functional,synthetic,success
+23,data backup automatically hona chahiye,functional,synthetic,success
+24,fastest database use karna hai,functional,synthetic,success
+25,mujhe scalable backend chahiye next js ke sath,functional,synthetic,success
+26,accha app bana do,ambiguous,synthetic,clarification_required
+27,ek professional website chahiye,ambiguous,synthetic,clarification_required
+28,modern design ho meri site ka,ambiguous,synthetic,clarification_required
+29,kuch badhiya sa bana ke dikhao,ambiguous,synthetic,clarification_required
+30,aisa system jo sabse alag ho,ambiguous,synthetic,clarification_required
+31,ek naya startup idea hai,ambiguous,synthetic,clarification_required
+32,beautiful UI chahiye,ambiguous,synthetic,clarification_required
+33,mera system sabko pasand aaye,ambiguous,synthetic,clarification_required
+34,ekdam mast application bana do,ambiguous,synthetic,clarification_required
+35,world class software chahiye,ambiguous,synthetic,clarification_required
+36,simple par badhiya ho,ambiguous,synthetic,clarification_required
+37,design ekdum premium lagna chahiye,ambiguous,synthetic,clarification_required
+38,aisa app jo sab download karein,ambiguous,synthetic,clarification_required
+39,future ready app banao,ambiguous,synthetic,clarification_required
+40,best tech stack use karo,ambiguous,synthetic,clarification_required
+41,ekdum next level system,ambiguous,synthetic,clarification_required
+42,mujhe ek app banani hai bas,ambiguous,synthetic,clarification_required
+43,aisa website ho jo viral ho jaye,ambiguous,synthetic,clarification_required
+44,sabse sundar app chahiye,ambiguous,synthetic,clarification_required
+45,kuch naya try karna hai,ambiguous,synthetic,clarification_required
+46,ek idea hai app banane ka,ambiguous,synthetic,clarification_required
+47,startup ke liye app chahiye,ambiguous,synthetic,clarification_required
+48,kisi ko pata na chale aisa app,ambiguous,synthetic,clarification_required
+49,ekdam unique concept hai,ambiguous,synthetic,clarification_required
+50,mujhe internet par business karna hai,ambiguous,synthetic,clarification_required
+51,users ko trust feel hona chahiye,emotional,synthetic,success
+52,log payment se darte hain,emotional,synthetic,success
+53,customer ko confusion nahi honi chahiye,emotional,synthetic,success
+54,bohot urgency hoti hai logo ko,emotional,synthetic,success
+55,log bore ho jate hain mazza aana chahiye,emotional,synthetic,success
+56,mujhe dar hai data chori na ho,emotional,synthetic,success
+57,aisa app jo logo ko uljhan mein na daale,emotional,synthetic,success
+58,logon ka time bache aur jaldi kaam ho,emotional,synthetic,success
+59,ekdum private aur safe feel ho,emotional,synthetic,success
+60,log pareshan na ho use karte waqt,emotional,synthetic,success
+61,privacy bohot zaruri hai meri community ke liye,emotional,synthetic,success
+62,users bahut impatient hote hain,emotional,synthetic,success
+63,khushi milni chahiye app use karke,emotional,synthetic,success
+64,logon ka data chori hone ka dar hai,emotional,synthetic,success
+65,mujhe fraud se bachna hai,emotional,synthetic,success
+66,users confuse ho ke app na chhod dein,emotional,synthetic,success
+67,ekdum fun app banana hai,emotional,synthetic,success
+68,mera idea kisi ko pata na chale,emotional,synthetic,success
+69,users ko safe environment chahiye,emotional,synthetic,success
+70,log scam se darte hain,emotional,synthetic,success
+71,mera data leak nahi hona chahiye,emotional,synthetic,success
+72,fast fast sab kaam ho jana chahiye,emotional,synthetic,success
+73,app open karte hi maza aa jaye,emotional,synthetic,success
+74,logon ko dhokha na mile,emotional,synthetic,success
+75,bohot hi nizi aur akele ke liye app chahiye,emotional,synthetic,success
+76,mujhe secure aur fast payment app chahiye lekin login simple hona chahiye,mixed,synthetic,success
+77,app scalable ho par logon ko uljhan na ho use karne me,mixed,synthetic,success
+78,database solid ho aur log bore na ho app mein,mixed,synthetic,success
+79,urgency wali app chahiye jisme payment secure ho,mixed,synthetic,success
+80,logon ko trust aaye aur app 10 lakh traffic sambhal le,mixed,synthetic,success
+81,scalable architecture ho jisme data chori hone ka dar na ho,mixed,synthetic,success
+82,fast app ho par privacy ekdum premium honi chahiye,mixed,synthetic,success
+83,payment portal banana hai par log dhoke se darte hain,mixed,synthetic,success
+84,app jaldi open ho aur mazza aaye chalane me,mixed,synthetic,success
+85,"ekdum simple UI ho taaki confuse na ho, par backend heavy ho",mixed,synthetic,success
+86,database scalable chahiye aur app ekdum fun honi chahiye,mixed,synthetic,success
+87,mera data private rahe aur scaling apne aap ho,mixed,synthetic,success
+88,log pareshan na ho par security 2FA wali ho,mixed,synthetic,success
+89,kuch bhi ho app secure honi chahiye fraud ke against,mixed,synthetic,success
+90,aisa backend banao jo fraud roke aur jaldi chale,mixed,synthetic,success
+91,khush hokar log use karein aur load balancer handle kare,mixed,synthetic,success
+92,impatient users ke liye fast scalable app,mixed,synthetic,success
+93,log scam se bachen aur backend AWS pe ho,mixed,synthetic,success
+94,fun app jisme lakhon traffic aaye,mixed,synthetic,success
+95,confusion na ho isliye guided onboarding do,mixed,synthetic,success
+96,urgency ke liye guest login ho aur system fast ho,mixed,synthetic,success
+97,trust build ho aur microservices use karein,mixed,synthetic,success
+98,privacy toggle do aur backend scalable ho,mixed,synthetic,success
+99,log uljhan mein na padein aur payment secure ho,mixed,synthetic,success
+100,ekdum private network jisme traffic sambhalne ki takat ho,mixed,synthetic,success

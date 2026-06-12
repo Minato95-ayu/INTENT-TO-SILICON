@@ -5,6 +5,7 @@ from datetime import datetime
 # =====================================================================
 # INTENT-TO-SILICON: NLP Engine v0.4 (Evaluation Ready)
 # Decoupled processing logic for benchmarking and headless evaluation.
+# Track Clarification Required instead of Fail_Ambiguous.
 # =====================================================================
 
 def load_json(filename):
@@ -112,13 +113,14 @@ def process_single_input(user_input, func_library, emotion_library, headless_rep
     metrics = {
         "initial_ambiguity_count": len(matched_func_categories),
         "emotions_detected": len(matched_emotions),
-        "status": "Success",
-        "blueprint_path": None
+        "status": "success",
+        "blueprint_path": None,
+        "questions_asked": len(matched_func_categories)
     }
 
     # OOV Detection
     if not matched_func_categories and not matched_emotions:
-        metrics["status"] = "Fail_OOV"
+        metrics["status"] = "fail_hard"
         return metrics
         
     # 2. Active Disambiguation (Functional)
@@ -142,11 +144,14 @@ def process_single_input(user_input, func_library, emotion_library, headless_rep
                 for dep in data['hard_dependencies']:
                     hard_dependencies.add(dep)
             else:
-                # If they say no/cancel, we don't lock the spec. Ambiguity remains or drops.
+                # User declined or didn't answer properly
                 pass
                 
+    # If it matched functional categories but NO final specs were locked, we consider it Clarification Required 
+    # (since the user didn't clarify successfully or it was vague).
+    # Wait, if `headless_reply="no"`, no specs lock. So it asks for clarification.
     if not final_func_specs and matched_func_categories:
-        metrics["status"] = "Fail_Ambiguous"
+        metrics["status"] = "clarification_required"
         
     # 3. Emotion Mapping
     if matched_emotions:
@@ -185,8 +190,10 @@ def start_nlp_engine():
             
         metrics = process_single_input(user_input, func_library, emotion_library)
         
-        if metrics["status"] == "Fail_OOV":
-            print("System (OOV Error): Bhai, is sentence mein koi technical ya emotional intent nahi mila.")
+        if metrics["status"] == "fail_hard":
+            print("System (Hard Fail): Bhai, is sentence mein koi technical ya emotional intent nahi mila.")
+        elif metrics["status"] == "clarification_required":
+            print("System (Clarification Required): Bhai, aur clear batao exactly kya chahiye.")
         elif metrics["blueprint_path"]:
             print(f"✅ SUCCESS: Machine-Readable YAML Blueprint Generated!")
             print(f"📁 Path: {metrics['blueprint_path']}")

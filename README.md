@@ -1,4 +1,6 @@
 # INTENT-TO-SILICON
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20668914.svg)](https://doi.org/10.5281/zenodo.20668914)
+
 ## Compiler-Less Computing via Multi-Layer Human Language Translation
 
 > *"Programming languages are not the final interface between humans and computers. Human thought — in any language — should be enough."*

@@ -3,8 +3,9 @@ import os
 from datetime import datetime
 
 # =====================================================================
-# INTENT-TO-SILICON: NLP Engine v3.0 (Blueprint Compiler)
-# Final step: Closes the loop from Human Intent to deployable JSON Blueprint.
+# INTENT-TO-SILICON: NLP Engine v0.3 (YAML Blueprint Compiler)
+# Final step: Closes the loop from Human Intent to deployable YAML Blueprint.
+# Includes Confidence Scores & Requirement Sources.
 # =====================================================================
 
 def load_json(filename):
@@ -22,41 +23,78 @@ def is_word_matching_root(input_word, root_lemmas):
             return True
     return False
 
-def generate_blueprint(func_specs, hard_dependencies, emotion_candidates):
-    """
-    Generates a machine-readable JSON blueprint from the parsed intents.
-    """
+def dict_to_yaml(data, indent=0):
+    """Simple YAML serializer to avoid pyyaml dependency"""
+    yaml_str = ""
+    prefix = "  " * indent
+    if isinstance(data, dict):
+        for k, v in data.items():
+            if isinstance(v, dict):
+                if not v:
+                    yaml_str += f"{prefix}{k}: {{}}\n"
+                else:
+                    yaml_str += f"{prefix}{k}:\n{dict_to_yaml(v, indent + 1)}"
+            elif isinstance(v, list):
+                if not v:
+                    yaml_str += f"{prefix}{k}: []\n"
+                else:
+                    yaml_str += f"{prefix}{k}:\n"
+                    for item in v:
+                        if isinstance(item, dict):
+                            first = True
+                            for sub_k, sub_v in item.items():
+                                if first:
+                                    yaml_str += f"{prefix}  - {sub_k}: {sub_v}\n"
+                                    first = False
+                                else:
+                                    if isinstance(sub_v, list):
+                                        yaml_str += f"{prefix}    {sub_k}:\n{dict_to_yaml(sub_v, indent + 3)}"
+                                    else:
+                                        yaml_str += f"{prefix}    {sub_k}: {sub_v}\n"
+                        else:
+                            yaml_str += f"{prefix}  - \"{item}\"\n"
+            else:
+                yaml_str += f"{prefix}{k}: \"{v}\"\n"
+    elif isinstance(data, list):
+        for item in data:
+            yaml_str += f"{prefix}- \"{item}\"\n"
+    return yaml_str
+
+def generate_blueprint_yaml(func_specs, hard_dependencies, emotion_candidates):
     base_dir = os.path.dirname(os.path.dirname(__file__))
     output_dir = os.path.join(base_dir, 'output')
     os.makedirs(output_dir, exist_ok=True)
     
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    blueprint_filename = f"intent_blueprint_{timestamp}.json"
+    blueprint_filename = f"intent_blueprint_{timestamp}.yaml"
     blueprint_path = os.path.join(output_dir, blueprint_filename)
     
+    # Structure the YAML data with clean separation
     blueprint_data = {
         "project": {
             "name": "Intent-to-Silicon Generated Project",
-            "generated_at": timestamp,
-            "version": "1.0.0"
+            "version": "0.3.0",
+            "generated_at": timestamp
         },
-        "architecture": {
-            "functional_requirements": func_specs,
+        "functional_architecture": {
+            "requirements": func_specs,
             "hard_dependencies": list(hard_dependencies)
         },
-        "ux_psychology": {
-            "emotion_modifiers": emotion_candidates
+        "emotional_ux_architecture": {
+            "detected_emotions": emotion_candidates
         }
     }
     
+    yaml_content = dict_to_yaml(blueprint_data)
+    
     with open(blueprint_path, 'w', encoding='utf-8') as f:
-        json.dump(blueprint_data, f, indent=4)
+        f.write(yaml_content)
         
     return blueprint_path
 
 def start_nlp_engine():
     print("==================================================")
-    print(" INTENT-TO-SILICON : Translator v3.0 (Blueprint Compiler)")
+    print(" INTENT-TO-SILICON : Translator v0.3 (YAML Blueprint)")
     print("==================================================")
     print("System: Batao bhai, kaisa software banana hai?")
     
@@ -111,7 +149,12 @@ def start_nlp_engine():
                 reply = input("Tu (Reply): ").lower()
                 
                 if '2' in reply or 'ekdum' in reply or 'proper' in reply or 'haan' in reply:
-                    final_func_specs.append(data['exact_value'])
+                    final_func_specs.append({
+                        "category": category,
+                        "value": data['exact_value'],
+                        "confidence": 1.0,
+                        "source": "user clarified"
+                    })
                     for dep in data['hard_dependencies']:
                         hard_dependencies.add(dep)
         
@@ -124,21 +167,22 @@ def start_nlp_engine():
                 emotion_candidates.append({
                     "emotion": data['emotion_type'],
                     "confidence": data['base_confidence'],
+                    "source": "inferred from text",
                     "ux_patterns": data['candidate_ux_patterns']
                 })
         
         # ---------------------------------------------------------
-        # Blueprint Compiler Output
+        # YAML Blueprint Generation Output
         # ---------------------------------------------------------
         print("\n==================================================")
-        print(" TRANSLATION RESULT (Human Intent -> Silicon) ")
+        print(" TRANSLATION RESULT (Human Intent -> YAML Blueprint) ")
         print("==================================================")
         
         if final_func_specs or emotion_candidates:
-            blueprint_path = generate_blueprint(final_func_specs, hard_dependencies, emotion_candidates)
-            print(f"✅ SUCCESS: Machine-Readable Blueprint Generated!")
+            blueprint_path = generate_blueprint_yaml(final_func_specs, hard_dependencies, emotion_candidates)
+            print(f"✅ SUCCESS: Machine-Readable YAML Blueprint Generated!")
             print(f"📁 Path: {blueprint_path}")
-            print("\nIs Blueprint JSON ko seedha kisi auto-deployment pipeline mein feed kiya ja sakta hai.")
+            print("\nIs Blueprint YAML ko sidha kisi auto-deployment pipeline (K8s/Docker) mein feed kiya ja sakta hai.")
         else:
             print("System: Standard defaults applied. No explicit specs triggered.")
             

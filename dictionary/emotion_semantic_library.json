@@ -1,0 +1,74 @@
+{
+  "trust_fear": {
+    "root_lemmas": ["dar", "shanka", "fraud", "dhoka", "trust", "vishwas", "chori", "scam", "bharam", "gaban"],
+    "emotion_type": "Fear / Distrust",
+    "base_confidence": 0.88,
+    "candidate_ux_patterns": [
+      "Two-Factor Authentication (2FA)",
+      "Visible SSL / Security Badges",
+      "Transparent Refund Policy",
+      "Transaction Audit Logs",
+      "Escrow Payment System"
+    ]
+  },
+  "confusion": {
+    "root_lemmas": ["uljhan", "pareshan", "mushkil", "samajh nahi", "hard", "bhaari", "bhatak", "bhool"],
+    "emotion_type": "Confusion / Overwhelm",
+    "base_confidence": 0.90,
+    "candidate_ux_patterns": [
+      "Guided Step-by-Step Onboarding",
+      "Contextual Tooltips",
+      "Empty States with Clear Calls-to-Action",
+      "Live Chat Support Widget",
+      "Simplified 'Lite' Mode Toggle"
+    ]
+  },
+  "urgency": {
+    "root_lemmas": ["jaldi", "aapaat", "turant", "emergency", "time nahi", "wait nahi", "fatafat"],
+    "emotion_type": "Urgency / Impatience",
+    "base_confidence": 0.95,
+    "candidate_ux_patterns": [
+      "One-Click Checkout / Action",
+      "Guest Login / No-Auth Flow",
+      "Keyboard Shortcuts",
+      "Prominent Floating Action Button (FAB)",
+      "Autofill Forms"
+    ]
+  },
+  "joy_excitement": {
+    "root_lemmas": ["khush", "mazza", "fun", "bore", "achha lage", "enjoy", "khel", "rochak"],
+    "emotion_type": "Joy / Need for Engagement",
+    "base_confidence": 0.85,
+    "candidate_ux_patterns": [
+      "Gamification (Points/Badges/Leaderboards)",
+      "Micro-animations on interaction",
+      "Social Share APIs",
+      "Confetti on Success Actions",
+      "Personalized Greetings"
+    ]
+  },
+  "frustration": {
+    "root_lemmas": ["gussa", "irritate", "thak", "fas", "atak", "hang", "krodh"],
+    "emotion_type": "Frustration / Friction",
+    "base_confidence": 0.92,
+    "candidate_ux_patterns": [
+      "Auto-Save Data / Drafts",
+      "Clear, Non-Technical Error Messages",
+      "Easy 'Undo' / 'Back' Navigation",
+      "Fast-Track Escalation to Human Agent",
+      "Performance Optimization (Skeleton Loaders)"
+    ]
+  },
+  "belonging_privacy": {
+    "root_lemmas": ["mera", "akela", "hide", "chupa", "nizi", "personal", "sirf main"],
+    "emotion_type": "Privacy / Need for Belonging",
+    "base_confidence": 0.80,
+    "candidate_ux_patterns": [
+      "Incognito / Private Mode",
+      "Customizable User Profiles",
+      "Granular Privacy Toggles",
+      "Dark Mode Support",
+      "Community Forums / Peer Groups"
+    ]
+  }
+}

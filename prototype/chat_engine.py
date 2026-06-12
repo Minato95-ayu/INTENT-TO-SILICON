@@ -1,99 +1,77 @@
-import csv
+import json
 import os
 
-# Yeh function hamari dictionary CSV load karega
-def load_dictionary(filepath):
-    dictionary_map = {}
+# =====================================================================
+# INTENT-TO-SILICON: Semantic Engine
+# Yeh script demonstrate karti hai ki Human Language ko directly 
+# EXACT Binary/Technical requirements mein kaise badla jayega.
+# =====================================================================
+
+def load_semantic_library():
+    """ JSON Dictionary load karta hai jisme Human Word = Exact Value mapped hai """
+    base_dir = os.path.dirname(os.path.dirname(__file__))
+    json_path = os.path.join(base_dir, 'dictionary', 'semantic_library.json')
+    
     try:
-        with open(filepath, mode='r', encoding='utf-8') as file:
-            reader = csv.DictReader(file)
-            for row in reader:
-                # remove spaces and make lowercase for easy matching
-                word = row['hindi_word'].lower().strip()
-                dictionary_map[word] = {
-                    'english': row['english_meaning'],
-                    'tech_spec': row['technical_spec']
-                }
+        with open(json_path, 'r', encoding='utf-8') as f:
+            return json.load(f)
     except FileNotFoundError:
-        print("Error: Dictionary file nahi mili!")
-    return dictionary_map
+        print("Error: semantic_library.json nahi mili!")
+        return {}
 
-# Layer 3: Cross Questioning Engine
-# Agar user ambiguous word use karta hai, toh hum pehle use cross-question karenge
-cross_questions = {
-    "fast": "Kitna fast chahiye bhai? (1) Normal speed ya (2) Ekdum ultra-low latency (< 200ms)?",
-    "secure": "Security kis level ki? (1) Sirf login password ya (2) Proper AES-256 encryption?",
-    "log": "Kitne log use karenge lagbhag? (1) Sirf main aur mere dost ya (2) Bahut saari public?",
-    "payment": "Payment kaise loge? (1) Sirf UPI ya (2) Credit Card/International bhi?",
-    "private": "Kaun dekh sakta hai? (1) Sab log ya (2) Sirf main dekhun?"
-}
-
-def start_chatbot():
+def start_translation_engine():
     print("==================================================")
-    print(" INTENT-TO-SILICON : Prototype Engine v0.1")
+    print(" INTENT-TO-SILICON : Direct Translator v0.2")
     print("==================================================")
     print("System: Batao bhai, kaisa software banana hai?")
     print("(Type 'exit' to stop)\n")
     
-    # Locate dictionary path automatically
-    base_dir = os.path.dirname(os.path.dirname(__file__))
-    dict_path = os.path.join(base_dir, 'dictionary', 'hinglish_technical_map.csv')
-    tech_dictionary = load_dictionary(dict_path)
-    
-    # Store finalized specs
-    final_specs = []
+    # Load Library
+    semantic_library = load_semantic_library()
     
     while True:
-        user_input = input("\nTu (User): ").lower()
-        
-        if user_input in ['exit', 'quit', 'bas', 'band karo']:
-            print("System: Bye! Tera architecture ready hai.")
+        try:
+            user_input = input("\nTu (Human Intent): ").lower()
+        except EOFError:
             break
             
-        # ---------------------------------------------------------
-        # Step 1: Detect ambiguity and ask cross questions (Layer 3)
-        # ---------------------------------------------------------
-        clarified_intent = user_input
+        if user_input in ['exit', 'quit', 'bas', 'band karo']:
+            print("System: Translation complete. Bye!")
+            break
+            
+        final_binary_specs = []
         
-        for vague_word, question in cross_questions.items():
-            if vague_word in user_input:
-                print(f"\nSystem (Layer 3 - Disambiguation): {question}")
-                reply = input("Tu (User): ").lower()
+        # ---------------------------------------------------------
+        # Layer 1 to 4: Detect Ambiguity -> Cross Question -> Exact Value
+        # ---------------------------------------------------------
+        for category, data in semantic_library.items():
+            # Check agar is category ka koi keyword user input mein hai
+            keyword_found = any(kw in user_input for kw in data['keywords'])
+            
+            if keyword_found:
+                # Ambiguity mil gayi! Ab cross-question poocho
+                print(f"\nSystem (Disambiguation - {category.upper()}): {data['cross_question']}")
+                try:
+                    reply = input("Tu (Reply): ").lower()
+                except EOFError:
+                    reply = "2"
                 
-                # Simple human-like logic: agar option 2 ya strong words select kiye
-                if '2' in reply or 'ekdum' in reply or 'bahut' in reply or 'proper' in reply or 'sirf' in reply:
-                    # Update intent behind the scenes
-                    if vague_word == "fast": clarified_intent += " ekdum fast chahiye"
-                    elif vague_word == "secure": clarified_intent += " secure chahiye"
-                    elif vague_word == "log": clarified_intent += " bahut log aayenge"
-                    elif vague_word == "payment": clarified_intent += " payment chahiye"
-                    elif vague_word == "private": clarified_intent += " sirf main dekhun"
-                else:
-                    print("System: Theek hai, standard/normal rakhenge.")
-        
+                # Agar user ne proper requirement maangi (Option 2 ya strong words)
+                if '2' in reply or 'ekdum' in reply or 'proper' in reply or 'haan' in reply:
+                    final_binary_specs.append(data['exact_value'])
+                    
         # ---------------------------------------------------------
-        # Step 2: Dictionary Match (Layer 4)
+        # Layer 5: Output Exact Values
         # ---------------------------------------------------------
-        print("\n--- Layer 4: Dictionary Mapping ---")
-        matched_something = False
-        
-        for hindi_phrase, mapping in tech_dictionary.items():
-            if hindi_phrase in clarified_intent:
-                print(f"Matched Intent: '{hindi_phrase}' -> {mapping['tech_spec']}")
-                if mapping['tech_spec'] not in final_specs:
-                    final_specs.append(mapping['tech_spec'])
-                matched_something = True
-                
-        if not matched_something:
-            print("System: Samajh nahi aaya, thoda clear words mein batao.")
+        if not final_binary_specs:
+            print("System: Koi exact requirement nahi mili. Thoda aur clear batao.")
         else:
-            # ---------------------------------------------------------
-            # Step 3: Structure Generate (Layer 5)
-            # ---------------------------------------------------------
-            print("\nSystem (Layer 5 - Structured Architecture):")
-            print("Abhi tak ka finalized technical format:")
-            for spec in final_specs:
-                print(f" ✅ {spec}")
+            print("\n==================================================")
+            print(" TRANSLATION RESULT (Human -> Binary Specs) ")
+            print("==================================================")
+            for spec in final_binary_specs:
+                print(f" [EXECUTING] -> {spec}")
+            print("==================================================")
 
 if __name__ == "__main__":
-    start_chatbot()
+    start_translation_engine()

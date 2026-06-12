@@ -63,6 +63,15 @@ These ideas were developed independently by Ayush Kumar Mishra and first documen
 
 ---
 
+## Timeline of Discovery
+
+- **June 2026:** Initial Idea conceptualized
+- **June 10, 2026:** Original Hindi Voice Notes recorded
+- **June 11, 2026:** 7-Layer Architecture Draft formulated
+- **June 12, 2026:** Research Paper v1 documented, GitHub Repository initialized
+
+---
+
 ## Why This Matters
 
 **550 million people** speak Hindi in India. Only a fraction know how to code.

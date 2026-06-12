@@ -3,7 +3,7 @@
 
 > *"Programming languages are not the final interface between humans and computers. Human thought — in any language — should be enough."*
 > 
-> — Ayush Kumar Mishra, June 2026
+> — Ayush Kumar Mishra (Ayush Kaushik), June 2026
 
 ---
 
@@ -26,6 +26,24 @@ This research proposes replacing that workaround with a **7-layer AI translation
 5. Automatically generates software architecture
 6. Translates to executable code
 7. Returns results back in the user's own language
+
+---
+
+## Research Methodology & Metrics
+
+This project does not aim to build a new LLM. It focuses entirely on solving the **"Human → Intent"** bottleneck.
+
+> **"Garbage Intent In → Garbage Output Out"**
+
+**Core Defendable Claim:** This framework significantly reduces ambiguity-driven AI errors by translating vague human language into precise technical specifications *before* code generation begins. 
+
+*Programming languages remove ambiguity for computers. This system removes ambiguity from human language.*
+
+Success is measured strictly by empirical data:
+- **Baseline:** Percentage of correct specs generated from raw prompts.
+- **Target:** 90%+ correct specs using the 7-Layer Pipeline.
+
+📖 **Read the full philosophy and metrics here:** [Research Methodology & Core Arguments](paper/Research_Methodology.md)
 
 ---
 
@@ -119,14 +137,14 @@ INTENT-TO-SILICON/
 ├── README.md                          ← You are here
 │
 ├── paper/
-│   └── Intent_to_Silicon_v1.docx      ← Full research paper
+│   ├── Intent_to_Silicon_v1.docx      ← Full research paper
+│   └── Research_Methodology.md        ← Core arguments & evidence metrics
 │
 ├── transcripts/
 │   └── original_voice_hindi.txt       ← Original Hindi voice transcript
-│                                         (proof of first ideation, June 2026)
 │
 ├── dictionary/
-│   └── hinglish_technical_map.csv     ← Semantic dictionary (work in progress)
+│   └── hinglish_technical_map.csv     ← Semantic dictionary
 │
 └── data/
     └── survey_responses/              ← User research data (collecting)
@@ -138,6 +156,7 @@ INTENT-TO-SILICON/
 
 ```
 Research Paper         ✅ Complete (v1.0 draft)
+Methodology Document   ✅ Documented
 Voice Transcript       ✅ Documented (original proof)
 Dictionary — 15 entries ✅ Done
 Dictionary — 100 entries 🔄 In progress
@@ -161,7 +180,7 @@ Conference Submission   ⏳ Planned — ICON 2026
 
 ## Author
 
-**Ayush Kumar Mishra**
+**Ayush Kumar Mishra** (also known by pen name **Ayush Kaushik**)
 
 B.Sc. Mathematics Honours — Delhi, India
 
@@ -190,7 +209,7 @@ In the spirit of academic honesty:
 
 Core ideas, original insights, analogies, and research direction were developed by Ayush Kumar Mishra through independent thinking and verbal explanation in Hindi.
 
-Claude AI (Anthropic) was used for formatting assistance, technical terminology lookup, and paper structuring — similar to how a researcher uses a writing assistant or LaTeX template.
+Claude AI (Anthropic) and Gemini (Google DeepMind) were used for formatting assistance, technical terminology lookup, and paper structuring — similar to how a researcher uses a writing assistant or LaTeX template.
 
 **The thinking is human. The original voice is human. The research is human.**
 

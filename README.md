@@ -7,6 +7,15 @@
 
 ---
 
+## 🎥 Demo Video
+
+> [!NOTE]
+> **Drag and drop your 15 MB video file here** when editing this file on GitHub web, or replace the source URL inside the `<video>` tag below:
+> 
+> <video src="https://github.com/user-attachments/assets/PLACEHOLDER_VIDEO_URL" width="100%" controls></video>
+
+---
+
 ## About This Research
 
 This repository contains the original research, concept notes, voice transcripts, and implementation plans for **Intent-to-Silicon** — a novel framework that enables any person to build software by simply describing their idea in their native language (Hindi, Hinglish, Urdu, English, or any other language), without writing a single line of code.

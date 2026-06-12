@@ -10,7 +10,9 @@
 ## 🎥 Demo Video
 
 > [!NOTE]
-> **Drag and drop your 15 MB video file here** when editing this file on GitHub web, or replace the source URL inside the `<video>` tag below:
+> **Drag and drop your 15
+
+ MB video file here** when editing this file on GitHub web, or replace the source URL inside the `<video>` tag below:
 > 
 > <video src="https://github.com/user-attachments/assets/PLACEHOLDER_VIDEO_URL" width="100%" controls></video>
 

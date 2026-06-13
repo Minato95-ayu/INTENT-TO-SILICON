@@ -1,4 +1,53 @@
 {
+  "student": {
+    "weight": 0.8,
+    "frontend_modules": ["student_dashboard", "student_profile", "academic_calendar"],
+    "backend_modules": ["student_service", "academic_records_service"],
+    "data_entities": ["student", "enrollment", "academic_record"],
+    "external_integrations": ["edu_email_verifier"]
+  },
+  "ecosystem": {
+    "weight": 0.9,
+    "frontend_modules": ["unified_app_shell", "global_search", "mini_app_container"],
+    "backend_modules": ["service_registry", "unified_notification_service"],
+    "data_entities": ["app_registry", "global_session"],
+    "external_integrations": []
+  },
+  "library": {
+    "weight": 0.8,
+    "frontend_modules": ["library_card", "library_list", "booking_form"],
+    "backend_modules": ["library_service", "booking_api"],
+    "data_entities": ["library_booking"],
+    "external_integrations": []
+  },
+  "hostel": {
+    "weight": 0.8,
+    "frontend_modules": ["hostel_card", "hostel_list", "room_allocation_ui"],
+    "backend_modules": ["hostel_service", "allocation_api"],
+    "data_entities": ["hostel_room"],
+    "external_integrations": []
+  },
+  "jobs": {
+    "weight": 0.9,
+    "frontend_modules": ["job_board", "application_tracker"],
+    "backend_modules": ["job_service", "application_api"],
+    "data_entities": ["job_application"],
+    "external_integrations": ["linkedin_api"]
+  },
+  "tutors": {
+    "weight": 0.8,
+    "frontend_modules": ["tutor_list", "session_scheduler"],
+    "backend_modules": ["tutor_service", "scheduling_api"],
+    "data_entities": ["tutor_session"],
+    "external_integrations": ["video_call_sdk"]
+  },
+  "upi": {
+    "weight": 1.0,
+    "frontend_modules": ["payment_gateway_ui", "transaction_history"],
+    "backend_modules": ["payment_service", "transaction_api"],
+    "data_entities": ["payment_transaction"],
+    "external_integrations": ["upi_gateway"]
+  },
   "education": {
     "weight": 0.8,
     "frontend_modules": ["student_dashboard", "course_catalog", "academic_calendar", "video_player_ui"],

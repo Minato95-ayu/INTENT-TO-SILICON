@@ -1,0 +1,112 @@
+{
+  "trust_deficit": {
+    "examples": ["dar", "shanka", "fraud", "dhoka", "trust", "vishwas", "chori", "scam", "bharam", "gaban", "safe nahi", "secure nahi", "risk hai"],
+    "root_intent": "Trust Deficit",
+    "clarification_prompt": "Mujhe trust/security related anxiety detect hui. Sabse bada dar kya hai?",
+    "options": {
+      "1": {
+        "question": "Payment ya paise chori hone ka dar",
+        "candidate_solutions": ["escrow_payment", "transaction_audit_logs", "pci_dss_compliance"]
+      },
+      "2": {
+        "question": "Personal data leak hone ka dar",
+        "candidate_solutions": ["2fa", "aes_256_encryption", "jwt_auth", "visible_ssl_badge"]
+      },
+      "3": {
+        "question": "Fake users ya bots ka dar",
+        "candidate_solutions": ["identity_verification", "kyc_integration", "rbac"]
+      }
+    }
+  },
+  "navigation_confusion": {
+    "examples": ["uljhan", "pareshan", "mushkil", "samajh nahi", "hard", "bhaari", "bhatak", "bhool", "kya karu", "pata nahi", "confuse", "complicated", "sir ke upar", "bawasir", "kaha click"],
+    "root_intent": "Navigation / UI Confusion",
+    "clarification_prompt": "Mujhe UI/UX confusion detect hui. Uljhan kis wajah se ho sakti hai?",
+    "options": {
+      "1": {
+        "question": "Bohot saare options hain (Cluttered UI)",
+        "candidate_solutions": ["simplified_lite_mode", "progressive_disclosure", "dynamic_ui_rendering"]
+      },
+      "2": {
+        "question": "Technical terms samajh nahi aa rahe",
+        "candidate_solutions": ["contextual_tooltips", "plain_language_helpers", "localization_engine"]
+      },
+      "3": {
+        "question": "Pata nahi aage kya karna hai",
+        "candidate_solutions": ["guided_onboarding", "breadcrumbs", "floating_action_button"]
+      }
+    }
+  },
+  "urgency": {
+    "examples": ["jaldi", "aapaat", "turant", "emergency", "time nahi", "wait nahi", "fatafat", "abhi", "der mat karo", "bhago", "fast kar"],
+    "root_intent": "Urgency",
+    "clarification_prompt": "Mujhe urgency/impatience detect hui. Jaldi ka kya context hai?",
+    "options": {
+      "1": {
+        "question": "Fast checkout chahiye",
+        "candidate_solutions": ["one_click_checkout", "guest_login", "session_based_carts"]
+      },
+      "2": {
+        "question": "Emergency action lena hai",
+        "candidate_solutions": ["prominent_sos_button", "direct_call_to_action", "webrtc_integration"]
+      },
+      "3": {
+        "question": "Tezi se data entry karni hai",
+        "candidate_solutions": ["autofill_forms", "keyboard_shortcuts", "predictive_text"]
+      }
+    }
+  },
+  "performance_frustration": {
+    "examples": ["gussa", "irritate", "thak", "fas", "atak", "hang", "krodh", "bekar", "bakwas", "slow hai", "kaam nahi karta", "tang aa gaya", "ghoom", "subah", "safed screen", "blank", "time lag", "load nahi"],
+    "root_intent": "Performance Frustration",
+    "clarification_prompt": "Mujhe performance-related frustration detect hui. App mein exact problem kya hai?",
+    "options": {
+      "1": {
+        "question": "App loading mein atak raha hai (Blank screen)",
+        "candidate_solutions": ["skeleton_loaders", "lazy_loading", "cdn_edge_caching"]
+      },
+      "2": {
+        "question": "Data upload/download fail ho raha hai",
+        "candidate_solutions": ["optimistic_ui_updates", "background_sync", "service_workers"]
+      },
+      "3": {
+        "question": "Kaam karte waqt achanak crash ho gaya",
+        "candidate_solutions": ["error_boundaries", "auto_save_drafts", "localforage_sync"]
+      }
+    }
+  },
+  "payment_anxiety": {
+    "examples": ["kat gaye", "refund", "scam", "loot", "paisa doob", "paisa nahi", "mehenga", "afford", "budget", "sasta", "free chahiye", "karcha", "gareeb"],
+    "root_intent": "Payment Anxiety",
+    "clarification_prompt": "Mujhe financial/payment anxiety detect hui. Sabse bada issue kya hai?",
+    "options": {
+      "1": {
+        "question": "Paise kat gaye, refund ka wait hai",
+        "candidate_solutions": ["refund_tracker", "automated_refund_webhooks", "refund_timeline_ui"]
+      },
+      "2": {
+        "question": "Paise ek saath nahi de sakte (Budget issue)",
+        "candidate_solutions": ["emi_options", "bnpl_integration", "freemium_model"]
+      },
+      "3": {
+        "question": "Hidden charges ka dar hai",
+        "candidate_solutions": ["price_transparency_calculator", "no_hidden_fees_badge", "real_time_pricing_engine"]
+      }
+    }
+  },
+  "support_frustration": {
+    "examples": ["koi sunta nahi", "bot bakwas hai", "insaan se baat", "customer care", "help nahi mil rahi", "pareshan hu"],
+    "root_intent": "Support Frustration",
+    "clarification_prompt": "Mujhe customer support se frustration detect hui. Kya chahiye?",
+    "options": {
+      "1": {
+        "question": "Insaan se direct baat karni hai",
+        "candidate_solutions": ["human_agent_bypass", "live_support_fab", "priority_queue_routing"]
+      },
+      "2": {
+        "question": "Ticket ka status pata karna hai",
+        "candidate_solutions": ["ticket_status_tracker", "whatsapp_notifications"]
+      }
+    }
+  }
+}

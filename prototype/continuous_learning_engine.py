@@ -27,8 +27,10 @@ def continuous_learning_loop(user_input, user_id):
         if category in func_lib:
             func_lib[category]['root_lemmas'].append(slang)
         elif category in emotion_lib:
-            emotion_lib[category]['root_lemmas'].append(slang)
-            
+            if 'examples' in emotion_lib[category]:
+                emotion_lib[category]['examples'].append(slang)
+            else:
+                emotion_lib[category].setdefault('root_lemmas', []).append(slang)
     print(f"\nUser [{user_id}]: {user_input}")
     
     # Run the standard engine

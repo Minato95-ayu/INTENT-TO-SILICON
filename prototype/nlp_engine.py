@@ -15,7 +15,7 @@ def load_json(filename, folder='dictionary'):
         return json.load(f)
 
 def load_libraries():
-    return load_json('nlp_semantic_library.json'), load_json('emotion_semantic_library.json')
+    return load_json('nlp_semantic_library.json'), load_json('pain_point_taxonomy.json')
 
 def load_user_profile(user_id):
     try:
@@ -139,7 +139,7 @@ def process_single_input(user_input, func_library, emotion_library, headless_rep
                     clause_funcs.append((category, i))
             
             for category, data in emotion_library.items():
-                if is_word_matching_root(word, data['root_lemmas']):
+                if is_word_matching_root(word, data.get('examples', data.get('root_lemmas', []))):
                     clause_emotions.append((category, i))
                     
         backward_indices = [i for i, w in enumerate(words) if w in BACKWARD_NEGATORS]
@@ -232,49 +232,42 @@ def process_single_input(user_input, func_library, emotion_library, headless_rep
     if matched_func_categories and len(final_func_specs) < len(matched_func_categories):
         metrics["status"] = "clarification_required"
         
-    # 3. Emotion Mapping - v0.5 Upgrade (Active Disambiguation for Psychology)
+    # 3. Pain Point Mapping - v0.8 Upgrade (Active Disambiguation to Candidate Solutions)
     if matched_emotions:
         for category in matched_emotions:
             data = emotion_library[category]
             
-            prompt_text = data['cross_question']
+            prompt_text = data.get('clarification_prompt', data.get('cross_question', ''))
+            
+            options = data.get('options', {})
+            options_text = ""
+            for opt_key, opt_data in options.items():
+                q_text = opt_data.get('question', str(opt_data.get('ux_patterns', [''])[0]))
+                options_text += f"\n  {opt_key}. {q_text}"
+                
+            full_prompt = prompt_text + options_text
             
             # Apply User Context (Behavior)
             if user_profile:
-                if category == "trust_fear" and user_profile.get("risk_tolerance") == "conservative":
-                    prompt_text += f"\n[Context: As a conservative {user_profile.get('business_domain', '')} user, you might want to prioritize Data/Payment security.]"
+                if category == "trust_deficit" and user_profile.get("risk_tolerance") == "conservative":
+                    full_prompt += f"\n[Context: As a conservative {user_profile.get('business_domain', '')} user, you might want to prioritize Data/Payment security.]"
                 
             if headless_reply is not None:
-                print(f"\nSystem (Emotional Ambiguity Detected!): {prompt_text}")
+                print(f"\nSystem (Pain Point Detected!): {full_prompt}")
                 reply = headless_reply
             else:
-                print(f"\nSystem (Emotional Ambiguity Detected!): {prompt_text}")
+                print(f"\nSystem (Pain Point Detected!): {full_prompt}")
                 reply = input("Tu (Reply: Enter option number): ").strip()
             
-            options = data.get('options', {})
-            
-            # Legacy fallback if no options defined
-            if 'candidate_ux_patterns' in data and not options:
+            if reply in options:
+                selected_option = options[reply]
                 emotion_candidates.append({
-                    "emotion": data['emotion_type'],
-                    "confidence": data['base_confidence'],
-                    "source": "inferred from text (legacy)",
-                    "ux_patterns": data['candidate_ux_patterns']
+                    "pain_point": data.get('root_intent', data.get('emotion_type', 'Unknown')),
+                    "source": f"user clarified (selected option {reply})",
+                    "candidate_solutions": selected_option.get('candidate_solutions', [selected_option.get('technical_spec')])
                 })
             else:
-                # Strict v0.5 Disambiguation for Emotions
-                if reply in options:
-                    selected_option = options[reply]
-                    emotion_candidates.append({
-                        "emotion": data['emotion_type'],
-                        "confidence": 1.0,
-                        "source": f"user emotionally disambiguated (selected option {reply})",
-                        "ux_patterns": selected_option['ux_patterns'],
-                        "technical_spec": selected_option['technical_spec']
-                    })
-                else:
-                    # User provided invalid input. Emotion remains unresolved.
-                    pass
+                pass
                     
     # If emotions matched but ambiguity was not resolved for all of them
     if matched_emotions and len(emotion_candidates) < len(matched_emotions):

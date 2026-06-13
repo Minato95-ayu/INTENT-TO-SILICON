@@ -61,8 +61,18 @@ A significant challenge in intent parsing is handling explicit feature exclusion
 
 Features matching these heuristics are stripped from the active requirements pool and explicitly serialized into an \texttt{excluded_requirements} section of the YAML blueprint, proving successful exclusion to the downstream generator.
 
-\subsection{3.3 Dual-Library Architecture and Emotion-to-UX Mapping (v2.0)}
-A novel contribution of this framework is the two-pass intent detection system that separates functional mapping from emotional mapping. The \texttt{emotion_semantic_library} assigns a base confidence score (e.g., \texttt{0.88} for fear/distrust) to detected psychological signals. Rather than directly injecting UX patterns, the system actively cross-questions the user based on the detected emotion (e.g., "What kind of fear? Payment fraud or Data theft?"). Upon resolution, the system deterministically maps the psychological state to tangible UX patterns (e.g., 2FA, Escrow, SSL Badges) and technical specifications (e.g., PCI-DSS compliance).
+\subsection{4.3 Layer 3: Pain Point Taxonomy & Active Disambiguation (v0.8)}
+
+Rather than performing generic sentiment analysis (e.g., classifying text simply as "anger" or "joy"), the framework maps unstructured, colloquial expressions to specific UX Engineering heuristics using a \textbf{Pain Point Taxonomy}. 
+
+For example, when a user states \texttt{"paise kat gaye par order nahi hua"} (money deducted but order failed), the system does not arbitrarily infer a technical solution like Razorpay Escrow. Instead, it recognizes the root intent (\texttt{Payment Anxiety}) and triggers an intermediate clarification stage:
+
+> *System: "Mujhe payment-related anxiety detect hui. Sabse bada issue kya hai?"*
+> 1. *Refund ka wait hai*
+> 2. *Payment status clear nahi hai*
+> 3. *Scam ka dar hai*
+
+If the user selects option 1, the engine outputs \textbf{Candidate Solutions} (e.g., \texttt{refund_tracker}, \texttt{automated_refund_webhooks}) rather than rigidly locking a single technical mandate. This methodology ensures that the generated specifications accurately reflect software engineering best practices without succumbing to architectural hallucination.
 
 \subsection{3.4 Safe Halting (Hallucination Avoidance)}
 If an input is entirely out-of-vocabulary (OOV) and matches no functional or emotional root lemmas, the system is hardcoded to halt execution and return a \texttt{fail_hard} status. This deliberate limitation ensures that the framework prefers to ask for clarification rather than utilizing unsupported inference to generate hallucinated specifications.

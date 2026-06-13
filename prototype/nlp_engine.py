@@ -218,16 +218,45 @@ def process_single_input(user_input, func_library, emotion_library, headless_rep
     if matched_func_categories and len(final_func_specs) < len(matched_func_categories):
         metrics["status"] = "clarification_required"
         
-    # 3. Emotion Mapping
+    # 3. Emotion Mapping - v0.5 Upgrade (Active Disambiguation for Psychology)
     if matched_emotions:
         for category in matched_emotions:
             data = emotion_library[category]
-            emotion_candidates.append({
-                "emotion": data['emotion_type'],
-                "confidence": data['base_confidence'],
-                "source": "inferred from text",
-                "ux_patterns": data['candidate_ux_patterns']
-            })
+            
+            if headless_reply is not None:
+                reply = headless_reply
+            else:
+                print(f"\nSystem (Emotional Ambiguity Detected!): {data['cross_question']}")
+                reply = input("Tu (Reply: Enter option number): ").strip()
+            
+            options = data.get('options', {})
+            
+            # Legacy fallback if no options defined
+            if 'candidate_ux_patterns' in data and not options:
+                emotion_candidates.append({
+                    "emotion": data['emotion_type'],
+                    "confidence": data['base_confidence'],
+                    "source": "inferred from text (legacy)",
+                    "ux_patterns": data['candidate_ux_patterns']
+                })
+            else:
+                # Strict v0.5 Disambiguation for Emotions
+                if reply in options:
+                    selected_option = options[reply]
+                    emotion_candidates.append({
+                        "emotion": data['emotion_type'],
+                        "confidence": 1.0,
+                        "source": f"user emotionally disambiguated (selected option {reply})",
+                        "ux_patterns": selected_option['ux_patterns'],
+                        "technical_spec": selected_option['technical_spec']
+                    })
+                else:
+                    # User provided invalid input. Emotion remains unresolved.
+                    pass
+                    
+    # If emotions matched but ambiguity was not resolved for all of them
+    if matched_emotions and len(emotion_candidates) < len(matched_emotions):
+        metrics["status"] = "clarification_required"
 
     # Process Negated Categories
     for category in negated_func_categories:

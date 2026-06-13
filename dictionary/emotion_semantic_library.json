@@ -3,72 +3,184 @@
     "root_lemmas": ["dar", "shanka", "fraud", "dhoka", "trust", "vishwas", "chori", "scam", "bharam", "gaban"],
     "emotion_type": "Fear / Distrust",
     "base_confidence": 0.88,
-    "candidate_ux_patterns": [
-      "Two-Factor Authentication (2FA)",
-      "Visible SSL / Security Badges",
-      "Transparent Refund Policy",
-      "Transaction Audit Logs",
-      "Escrow Payment System"
-    ]
+    "cross_question": "Kaunsa darr zyada hai? (1) Payment fraud (2) Data chori (3) Fake users",
+    "options": {
+      "1": {
+        "ux_patterns": ["Escrow Payment", "Transaction Audit Logs"],
+        "technical_spec": "PCI-DSS compliance + payment tokenization"
+      },
+      "2": {
+        "ux_patterns": ["Visible SSL Badge", "2FA"],
+        "technical_spec": "AES-256 encryption + JWT + HTTPS"
+      },
+      "3": {
+        "ux_patterns": ["Identity Verification", "Report Button"],
+        "technical_spec": "KYC integration + RBAC + abuse detection"
+      }
+    }
   },
   "confusion": {
     "root_lemmas": ["uljhan", "pareshan", "mushkil", "samajh nahi", "hard", "bhaari", "bhatak", "bhool"],
     "emotion_type": "Confusion / Overwhelm",
     "base_confidence": 0.90,
-    "candidate_ux_patterns": [
-      "Guided Step-by-Step Onboarding",
-      "Contextual Tooltips",
-      "Empty States with Clear Calls-to-Action",
-      "Live Chat Support Widget",
-      "Simplified 'Lite' Mode Toggle"
-    ]
+    "cross_question": "Uljhan kis wajah se ho sakti hai? (1) Bohot saare options (2) Technical terms (3) Navigation",
+    "options": {
+      "1": {
+        "ux_patterns": ["Simplified 'Lite' Mode", "Progressive Disclosure"],
+        "technical_spec": "Dynamic UI rendering based on user expertise"
+      },
+      "2": {
+        "ux_patterns": ["Contextual Tooltips", "Plain-language Helpers"],
+        "technical_spec": "Localization & Glossary Engine"
+      },
+      "3": {
+        "ux_patterns": ["Guided Onboarding", "Breadcrumbs"],
+        "technical_spec": "State-driven interactive walkthroughs"
+      }
+    }
   },
   "urgency": {
     "root_lemmas": ["jaldi", "aapaat", "turant", "emergency", "time nahi", "wait nahi", "fatafat"],
     "emotion_type": "Urgency / Impatience",
     "base_confidence": 0.95,
-    "candidate_ux_patterns": [
-      "One-Click Checkout / Action",
-      "Guest Login / No-Auth Flow",
-      "Keyboard Shortcuts",
-      "Prominent Floating Action Button (FAB)",
-      "Autofill Forms"
-    ]
+    "cross_question": "Jaldi ka kya context hai? (1) Fast checkout (2) Emergency contact (3) Fast data entry",
+    "options": {
+      "1": {
+        "ux_patterns": ["One-Click Checkout", "Guest Login"],
+        "technical_spec": "Session-based anonymous carts + OAuth"
+      },
+      "2": {
+        "ux_patterns": ["Prominent SOS Button", "Direct Call-to-Action"],
+        "technical_spec": "WebRTC / Twilio integration for instant routing"
+      },
+      "3": {
+        "ux_patterns": ["Autofill Forms", "Keyboard Shortcuts"],
+        "technical_spec": "Browser caching + Predictive text APIs"
+      }
+    }
   },
   "joy_excitement": {
     "root_lemmas": ["khush", "mazza", "fun", "bore", "achha lage", "enjoy", "khel", "rochak"],
     "emotion_type": "Joy / Need for Engagement",
     "base_confidence": 0.85,
-    "candidate_ux_patterns": [
-      "Gamification (Points/Badges/Leaderboards)",
-      "Micro-animations on interaction",
-      "Social Share APIs",
-      "Confetti on Success Actions",
-      "Personalized Greetings"
-    ]
+    "cross_question": "Maza kaise aana chahiye? (1) Points aur ranks se (2) Social sharing se (3) Visual effects se",
+    "options": {
+      "1": {
+        "ux_patterns": ["Gamification Badges", "Leaderboards"],
+        "technical_spec": "Event-driven point calculation engine"
+      },
+      "2": {
+        "ux_patterns": ["Invite Friends", "Share Milestones"],
+        "technical_spec": "Deep-linking + OpenGraph integrations"
+      },
+      "3": {
+        "ux_patterns": ["Confetti Animations", "Micro-interactions"],
+        "technical_spec": "Client-side Lottie animations"
+      }
+    }
   },
   "frustration": {
     "root_lemmas": ["gussa", "irritate", "thak", "fas", "atak", "hang", "krodh"],
     "emotion_type": "Frustration / Friction",
     "base_confidence": 0.92,
-    "candidate_ux_patterns": [
-      "Auto-Save Data / Drafts",
-      "Clear, Non-Technical Error Messages",
-      "Easy 'Undo' / 'Back' Navigation",
-      "Fast-Track Escalation to Human Agent",
-      "Performance Optimization (Skeleton Loaders)"
-    ]
+    "cross_question": "Gussa kis baat pe aata hai? (1) App hang hona (2) Data udd jana (3) Support na milna",
+    "options": {
+      "1": {
+        "ux_patterns": ["Skeleton Loaders", "Optimistic UI Updates"],
+        "technical_spec": "Service Workers + Background sync"
+      },
+      "2": {
+        "ux_patterns": ["Auto-Save Drafts", "Easy Undo"],
+        "technical_spec": "LocalForage / IndexedDB continuous sync"
+      },
+      "3": {
+        "ux_patterns": ["Fast-Track Escalation", "Human Agent Bypass"],
+        "technical_spec": "Priority queue routing in helpdesk API"
+      }
+    }
   },
   "belonging_privacy": {
-    "root_lemmas": ["mera", "akela", "hide", "chupa", "nizi", "personal", "sirf main"],
-    "emotion_type": "Privacy / Need for Belonging",
+    "root_lemmas": ["mera", "hide", "chupa", "nizi", "personal", "sirf main"],
+    "emotion_type": "Privacy / Boundary Control",
     "base_confidence": 0.80,
-    "candidate_ux_patterns": [
-      "Incognito / Private Mode",
-      "Customizable User Profiles",
-      "Granular Privacy Toggles",
-      "Dark Mode Support",
-      "Community Forums / Peer Groups"
-    ]
+    "cross_question": "Privacy kis tarah ki chahiye? (1) Koi track na kare (2) Profile hide karni hai",
+    "options": {
+      "1": {
+        "ux_patterns": ["Incognito Mode", "No-Track Toggle"],
+        "technical_spec": "Cookie-less sessions + zero telemetry"
+      },
+      "2": {
+        "ux_patterns": ["Granular Visibility Controls", "Alias Names"],
+        "technical_spec": "Row-level security (RLS) + data masking"
+      }
+    }
+  },
+  "shame_embarrassment": {
+    "root_lemmas": ["log hasenge", "sharmindagi", "judging", "izzat", "body", "galti", "sharam"],
+    "emotion_type": "Shame / Embarrassment",
+    "base_confidence": 0.90,
+    "cross_question": "User kya chupaana chahta hai? (1) Apni identity (2) Apni mistakes/queries",
+    "options": {
+      "1": {
+        "ux_patterns": ["Anonymous Posting", "No Public Profiles", "Avatar Generation"],
+        "technical_spec": "Decoupled user-ID mappings + UUIDs"
+      },
+      "2": {
+        "ux_patterns": ["Disappearing Messages", "Private Vaults"],
+        "technical_spec": "Ephemeral storage + End-to-end encryption"
+      }
+    }
+  },
+  "loneliness": {
+    "root_lemmas": ["akela", "koi nahi", "dost nahi", "baat karna", "milna", "connect", "tanhai"],
+    "emotion_type": "Loneliness / Isolation",
+    "base_confidence": 0.88,
+    "cross_question": "User ko kaisa connection chahiye? (1) 1-on-1 chatting (2) Community feeling",
+    "options": {
+      "1": {
+        "ux_patterns": ["Match-making", "Direct Messaging", "Active Status Indicator"],
+        "technical_spec": "Recommendation algorithm + WebSockets"
+      },
+      "2": {
+        "ux_patterns": ["'Others like you' Social Proof", "Interest-based Forums"],
+        "technical_spec": "Graph database (Neo4j) for interest clustering"
+      }
+    }
+  },
+  "ambition_pride": {
+    "root_lemmas": ["best banna", "top", "number 1", "jeetna", "sabse aage", "prove", "garv", "mehnat"],
+    "emotion_type": "Ambition / Pride",
+    "base_confidence": 0.85,
+    "cross_question": "Success kaise dikhani hai? (1) Public ranking se (2) Personal milestones se",
+    "options": {
+      "1": {
+        "ux_patterns": ["Public Leaderboards", "Verified Checkmarks", "Rankings"],
+        "technical_spec": "Redis Sorted Sets for real-time ranking"
+      },
+      "2": {
+        "ux_patterns": ["Achievement Badges", "Progress Analytics Dashboard"],
+        "technical_spec": "Time-series database for performance metrics"
+      }
+    }
+  },
+  "financial_anxiety": {
+    "root_lemmas": ["paisa nahi", "mehenga", "afford", "budget", "sasta", "free chahiye", "karcha", "gareeb"],
+    "emotion_type": "Financial Anxiety",
+    "base_confidence": 0.92,
+    "cross_question": "Paise ko lekar kya tension hai? (1) Ek saath nahi de sakte (2) Free mein try karna hai (3) Hidden fees ka darr",
+    "options": {
+      "1": {
+        "ux_patterns": ["EMI Options", "Buy Now Pay Later (BNPL)"],
+        "technical_spec": "Financing API Integration (Klarna/Affirm)"
+      },
+      "2": {
+        "ux_patterns": ["Freemium Model", "Free Trial Toggle"],
+        "technical_spec": "Stripe/Braintree subscription tiering system"
+      },
+      "3": {
+        "ux_patterns": ["Price Transparency Calculator", "No Hidden Fees Badge"],
+        "technical_spec": "Real-time pricing engine with breakdown"
+      }
+    }
   }
 }

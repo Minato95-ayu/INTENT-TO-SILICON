@@ -130,7 +130,14 @@ User speaks in any language (Hindi / Urdu / English / Hinglish)
         Generate, compile, run
                         ↓
         Result returned in user's own language
-```
+
+---
+
+## 🧠 Cognitive Expansion (v0.6 & v0.7)
+
+Beyond static parsing, the framework implements a **Cognitive Architecture**:
+- **v0.6 Context Awareness:** Profiles users based on past behavior (e.g., risk tolerance) to dynamically adapt and personalize cross-questions.
+- **v0.7 Continuous Active Learning:** Automatically detects OOV (Out-of-Vocabulary) slang, prompts the user for clarification, and permanently injects it into the user's localized dictionary for future use, making the AI continuously smarter over time.
 
 ---
 
@@ -159,17 +166,23 @@ INTENT-TO-SILICON/
 ├── README.md                          ← You are here
 │
 ├── paper/
-│   ├── Intent_to_Silicon_v1.docx      ← Full research paper
-│   └── Research_Methodology.md        ← Core arguments & evidence metrics
+│   ├── Intent_to_Silicon_v2.md        ← Full research paper v2
+│   └── main.tex                       ← LaTeX source for arXiv
 │
-├── transcripts/
-│   └── original_voice_hindi.txt       ← Original Hindi voice transcript
+├── prototype/
+│   ├── nlp_engine.py                  ← Core 7-Layer & Context Aware logic
+│   ├── continuous_learning_engine.py  ← v0.7 Continuous Active Learning Loop
+│   └── chat_engine.py                 ← Terminal simulation
 │
 ├── dictionary/
-│   └── hinglish_technical_map.csv     ← Semantic dictionary
+│   ├── nlp_semantic_library.json      ← Functional constraints map
+│   └── emotion_semantic_library.json  ← Emotional UX heuristics map
+│
+├── experiments/
+│   └── run_benchmarks.py              ← Headless empirical evaluation script
 │
 └── data/
-    └── survey_responses/              ← User research data (collecting)
+    └── user_profiles.json             ← Context profiling data
 ```
 
 ---
@@ -177,14 +190,13 @@ INTENT-TO-SILICON/
 ## Current Status
 
 ```
-Research Paper         ✅ Complete (v1.0 draft)
-Methodology Document   ✅ Documented
-Voice Transcript       ✅ Documented (original proof)
-Dictionary — 15 entries ✅ Done
-Dictionary — 100 entries 🔄 In progress
-User Survey (50 people) 🔄 In progress
-arXiv Submission        ⏳ Planned — Month 2
-Conference Submission   ⏳ Planned — ICON 2026
+Research Paper (v2)      ✅ Complete (Includes Architecture & Metrics)
+Semantic Libraries       ✅ Implemented (Functional & Emotional)
+Engine v0.5              ✅ Dual-Library Architecture running
+Engine v0.6              ✅ Context Awareness & User Profiling running
+Engine v0.7              ✅ Continuous Learning Loop prototype running
+Empirical Benchmarks     ✅ Generated (66.1% Success Rate on pure intent)
+arXiv Submission         ⏳ Planned
 ```
 
 ---

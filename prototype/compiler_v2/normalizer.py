@@ -2,7 +2,8 @@ import re
 
 class Normalizer:
     def __init__(self):
-        self.negators = ['nahi', 'nahin', 'mat', 'na', 'bina', 'without', 'no', 'not']
+        # We will canonicalize all these to 'nahi' or mark them as [NEG]
+        self.negators = ['nahi', 'nahin', 'nhi', 'nai', 'nah', 'mat', 'na', 'bina', 'without', 'no', 'not']
         
     def normalize(self, text):
         text = text.lower().strip()
@@ -19,3 +20,9 @@ class Normalizer:
                 tokens.append({"word": word, "tag": "[WORD]", "index": i})
                 
         return {"raw": text, "tokens": tokens}
+
+if __name__ == "__main__":
+    n = Normalizer()
+    result = n.normalize("OTP nhi aaya")
+    import json
+    print(json.dumps(result, indent=2))

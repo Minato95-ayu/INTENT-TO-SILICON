@@ -1,0 +1,14 @@
+{
+  "frontend": {
+    "directories": ["pages", "components", "services", "assets", "styles", "hooks", "utils"]
+  },
+  "backend": {
+    "directories": ["api", "services", "models", "config", "middlewares", "utils", "tests"]
+  },
+  "database": {
+    "directories": ["migrations", "seeds", "schemas"]
+  },
+  "docs": {
+    "directories": ["api_specs", "architecture", "user_guides"]
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "education": {
+    "required_concepts": ["authentication", "payments", "notifications", "content_delivery"],
+    "questions": {
+      "authentication": "Login OTP se hoga, Email se, ya University SSO chahiye?",
+      "payments": "Platform free hoga, subscription-based, ya pay-per-course?",
+      "notifications": "Student alerts SMS, Email, ya Push notifications se jayenge?",
+      "content_delivery": "Classes live stream hongi ya pre-recorded video delivery hogi?"
+    }
+  },
+  "healthcare": {
+    "required_concepts": ["authentication", "compliance", "telemedicine", "payments"],
+    "questions": {
+      "authentication": "MFA (Multi-Factor Auth) required hai for doctors/patients?",
+      "compliance": "HIPAA ya GDPR compliance by default on rakhna hai?",
+      "telemedicine": "Video consultation third-party SDK se hoga ya internal WebRTC?",
+      "payments": "Insurance claim integration chahiye ya direct patient payment?"
+    }
+  },
+  "agriculture": {
+    "required_concepts": ["localization", "offline_support", "notifications"],
+    "questions": {
+      "localization": "App multi-lingual (regional languages) support karegi?",
+      "offline_support": "Gaon mein network issue ke liye offline mode chahiye?",
+      "notifications": "Weather & Crop alerts SMS par chahiye ya Push Notification?"
+    }
+  },
+  "finance": {
+    "required_concepts": ["authentication", "compliance", "fraud_detection", "notifications"],
+    "questions": {
+      "authentication": "Biometric login aur strict MFA mandatory karna hai?",
+      "compliance": "KYC/AML verification API integrate karni hai?",
+      "fraud_detection": "Real-time anomaly & fraud detection engine chahiye?",
+      "notifications": "Transaction alerts real-time SMS ya in-app Push honge?"
+    }
+  },
+  "logistics": {
+    "required_concepts": ["tracking", "offline_support", "routing"],
+    "questions": {
+      "tracking": "Live GPS tracking chahiye ya milestone-based status updates?",
+      "offline_support": "Drivers ke liye offline mode required hai?",
+      "routing": "Route optimization algorithm integrate karna hai?"
+    }
+  },
+  "government": {
+    "required_concepts": ["authentication", "compliance", "accessibility"],
+    "questions": {
+      "authentication": "Citizen login Aadhar/SSN-based SSO se hoga?",
+      "compliance": "Government data residency aur strict audit logs enable karein?",
+      "accessibility": "WCAG compliance for specially-abled citizens chahiye?"
+    }
+  },
+  "ecommerce": {
+    "required_concepts": ["payments", "shipping", "inventory"],
+    "questions": {
+      "payments": "Payment Gateway (Stripe/Razorpay) use hoga ya Cash on Delivery bhi?",
+      "shipping": "Shipping integration third-party (Delhivery/FedEx) hogi?",
+      "inventory": "Inventory real-time ERP se sync karni hai ya manual?"
+    }
+  },
+  "social": {
+    "required_concepts": ["moderation", "media_storage", "notifications"],
+    "questions": {
+      "moderation": "AI content moderation (NSFW filter) enable karna hai?",
+      "media_storage": "Video/Image upload ke liye CDN/S3 bucket setup karein?",
+      "notifications": "Real-time chat aur push notifications ke liye WebSocket use karein?"
+    }
+  },
+  "ai": {
+    "required_concepts": ["model_hosting", "cost_control", "data_privacy"],
+    "questions": {
+      "model_hosting": "OpenAI/Claude API use karna hai ya custom open-source model host karna hai?",
+      "cost_control": "Token usage limit aur rate limiter enforce karna hai?",
+      "data_privacy": "User prompts ko training ke liye save karna hai ya zero-retention policy?"
+    }
+  },
+  "cybersecurity": {
+    "required_concepts": ["authentication", "compliance", "audit_logging"],
+    "questions": {
+      "authentication": "Strict Zero-Trust MFA aur device fingerprinting chahiye?",
+      "compliance": "SOC2/ISO27001 compliance reporting features chahiye?",
+      "audit_logging": "Tamper-proof audit trails database mein store karein?"
+    }
+  },
+  "marketplace": {
+    "required_concepts": ["payments", "escrow", "reviews", "search"],
+    "questions": {
+      "payments": "Vendor payouts manual honge ya Stripe Connect jaisa automated split payment?",
+      "escrow": "Funds escrow mein hold karne hain jab tak service complete na ho?",
+      "reviews": "Review system moderation-based hoga ya open for all?",
+      "search": "ElasticSearch ya Algolia jaisa advanced search & filter chahiye?"
+    }
+  },
+  
+  "_concept_keywords": {
+    "authentication": ["login", "auth", "sso", "otp", "password", "mfa", "biometric"],
+    "payments": ["payment", "pay", "free", "subscription", "gateway", "stripe", "razorpay"],
+    "notifications": ["notification", "alert", "sms", "email", "push"],
+    "content_delivery": ["video", "stream", "live", "course", "recorded"],
+    "compliance": ["hipaa", "gdpr", "kyc", "aml", "audit", "soc2"],
+    "telemedicine": ["video", "webrtc", "telemedicine", "call"],
+    "localization": ["hindi", "regional", "language", "multi-lingual"],
+    "offline_support": ["offline", "no internet", "sync"],
+    "fraud_detection": ["fraud", "anomaly", "risk"],
+    "tracking": ["track", "gps", "live location"],
+    "routing": ["route", "map", "optimize"],
+    "accessibility": ["wcag", "blind", "accessible"],
+    "shipping": ["ship", "delivery", "fedex", "courier"],
+    "inventory": ["inventory", "stock", "erp"],
+    "moderation": ["nsfw", "moderate", "ban", "report"],
+    "media_storage": ["upload", "cdn", "s3", "video", "image"],
+    "model_hosting": ["openai", "claude", "llama", "huggingface", "api", "host"],
+    "cost_control": ["limit", "token", "budget"],
+    "data_privacy": ["privacy", "retention", "save"],
+    "audit_logging": ["audit", "log", "trail", "tamper"],
+    "escrow": ["escrow", "hold", "release"],
+    "reviews": ["review", "rating", "star"],
+    "search": ["search", "filter", "elastic", "algolia"]
+  }
+}

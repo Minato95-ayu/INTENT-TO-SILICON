@@ -1,0 +1,32 @@
+{
+  "refund_flow": {
+    "frontend_modules": ["payment_status_screen", "refund_tracker_ui", "support_chat_widget"],
+    "backend_modules": ["refund_service", "payment_gateway_webhook_handler", "notification_service"],
+    "data_entities": ["transactions", "refund_logs", "user_wallet"],
+    "external_integrations": ["razorpay_api", "sms_gateway"]
+  },
+  "voice_otp": {
+    "frontend_modules": ["otp_input_screen", "call_status_indicator"],
+    "backend_modules": ["otp_service", "voice_call_dispatcher"],
+    "data_entities": ["otp_sessions", "audit_logs"],
+    "external_integrations": ["twilio_voice_api"]
+  },
+  "create_callback_ticket": {
+    "frontend_modules": ["ticket_creation_form", "callback_scheduler_ui"],
+    "backend_modules": ["ticketing_service", "support_routing_engine"],
+    "data_entities": ["support_tickets", "agent_availability"],
+    "external_integrations": ["zendesk_api", "internal_crm"]
+  },
+  "library_booking": {
+    "frontend_modules": ["library_search_view", "seat_booking_map", "student_dashboard", "payment_screen"],
+    "backend_modules": ["booking_service", "inventory_manager", "payment_service", "notification_service"],
+    "data_entities": ["student", "library_seat", "booking_record", "payment_transaction"],
+    "external_integrations": ["sms_gateway", "upi_gateway"]
+  },
+  "hostel_booking": {
+    "frontend_modules": ["room_browser", "hostel_booking_form", "student_profile"],
+    "backend_modules": ["accommodation_service", "payment_service", "document_verification_service"],
+    "data_entities": ["student", "room", "booking", "kyc_document"],
+    "external_integrations": ["aws_s3_storage", "payment_gateway"]
+  }
+}

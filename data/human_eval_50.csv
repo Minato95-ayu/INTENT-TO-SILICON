@@ -1,0 +1,51 @@
+phrase,category,expected_intent
+"mera upi se payment fail ho gaya par paise nikal gaye",Payment,orphaned_transaction
+"bhai do baar paise cut gaye ek hi order ke",Payment,duplicate_transaction
+"refund ab tak bank me nahi aaya hai 5 din ho gaye",Payment,delayed_refund
+"payment page stuck ho gaya hai",Payment,delayed_transaction
+"promo code invalid bata raha hai bar bar",Payment,promo_code_failure
+"emi ka option kyu nahi dikh raha",Payment,missing_payment_method
+"upi chal hi nahi raha",Payment,friction_in_payment
+"bank server issue dikha raha hai",Payment,gateway_timeout
+"paise kate hi nahi fir bhi order ho gaya",Payment,unauthorized_transaction_suspicion
+"amount cut gaya but success msg nahi aaya",Payment,false_failure_message
+"otp aane me bahut der lag rahi hai",Auth/OTP,otp_delivery_failure
+"password reset ka link email pe nahi mila",Auth/OTP,email_delivery_failure
+"bina otp ke kaise login karu",Auth/OTP,friction_in_auth
+"captcha hamesha galat kyu bolta hai",Auth/OTP,captcha_validation_error
+"mera account block ho gaya hai automatically",Auth/OTP,account_locked
+"baar baar session expire ho jata hai",Auth/OTP,frequent_session_expiry
+"fingerprint scan kaam nahi kar raha",Auth/OTP,biometric_failure
+"purane number se login karna hai",Auth/OTP,friction_in_auth
+"verification code nahi aa raha",Auth/OTP,otp_delivery_failure
+"email pe password change ka mail nahi aaya",Auth/OTP,email_delivery_failure
+"dark mode kaise on karu samajh nahi aa raha",Navigation,feature_discoverability
+"past orders dekhne ka option kidhar hai",Navigation,hidden_feature
+"search bar kaam nahi kar raha kuch bhi type karo",Navigation,feature_failure
+"wapas home page pe kaise jau",Navigation,navigation_trap
+"menu aadha kata hua dikh raha hai",Navigation,ui_rendering_issue
+"back dabane pe app exit kyu ho raha hai",Navigation,navigation_flow_break
+"address change karna hai par setting gayab hai",Navigation,feature_failure
+"language badalne ka feature kidhar hai",Navigation,feature_discoverability
+"profile photo update nahi ho rahi",Navigation,feature_failure
+"refund ka status kaha check karu",Navigation,hidden_feature
+"app bahut ruk ruk ke chal rahi hai",Performance,performance_degradation
+"screen loading pe hi atak gayi hai",Performance,ui_freeze
+"app khulte hi crash ho jati hai",Performance,application_crash
+"video play karne me buffering bahut ho rahi hai",Performance,high_latency
+"jab se app daali hai phone garam ho raha hai",Performance,high_resource_usage
+"images load hone me time lag raha hai",Performance,resource_loading_failure
+"scroll karte waqt screen lag ho rahi hai",Performance,ui_lag
+"app open hone me 10 second le rahi hai",Performance,performance_degradation
+"atak atak ke chal raha hai phone app me",Performance,ui_freeze
+"offline video download nahi ho raha time out",Performance,high_latency
+"customer care ka koi number hi nahi hai",Trust/Support,support_unreachable
+"ticket raise ki thi par koi reply nahi aaya",Trust/Support,support_unresponsive
+"kya mera card data yaha safe hai?",Trust/Support,security_anxiety
+"mujhe customer care insan se baat karni hai bot se nahi",Trust/Support,bot_frustration
+"tumhari privacy policy samajh me nahi aati",Trust/Support,policy_confusion
+"mujhe lagta hai ye app fraud kar rahi hai",Trust/Support,trust_deficit
+"mera data chori toh nahi ho jayega?",Trust/Support,privacy_anxiety
+"bahut saare spam messages aa rahe hai app dalne ke baad",Trust/Support,data_leak_suspicion
+"live chat ka option kyu nahi hai app me",Trust/Support,support_channel_missing
+"mujhe apni card details delete karni hai",Trust/Support,privacy_control_anxiety

@@ -199,15 +199,15 @@
     "input": "login kaam nahi kar raha",
     "intent_ir": {
       "module": "auth",
-      "primary_problem": null,
+      "primary_problem": "friction_in_auth",
       "secondary_problem": null,
       "evidence": [
         "login",
-        "kaam nahi kar raha"
+        "kaam nahi"
       ],
       "requires_diagnosis": true,
       "requires_clarification": true,
-      "confidence_score": 0.5
+      "confidence_score": 0.90
     }
   },
   {

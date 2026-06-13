@@ -1,0 +1,79 @@
+{
+  "education": {
+    "weight": 0.8,
+    "frontend_modules": ["student_dashboard", "course_catalog", "academic_calendar", "video_player_ui"],
+    "backend_modules": ["student_service", "academic_records_service", "course_delivery_engine"],
+    "data_entities": ["student", "enrollment", "academic_record", "course_content"],
+    "external_integrations": ["edu_email_verifier", "video_streaming_cdn"]
+  },
+  "healthcare": {
+    "weight": 1.0,
+    "frontend_modules": ["patient_dashboard", "doctor_portal", "appointment_scheduler", "telemedicine_room"],
+    "backend_modules": ["patient_records_service", "scheduling_engine", "billing_service"],
+    "data_entities": ["patient", "doctor", "appointment", "medical_record", "bill"],
+    "external_integrations": ["health_insurance_api", "video_call_sdk"]
+  },
+  "agriculture": {
+    "weight": 0.8,
+    "frontend_modules": ["farmer_dashboard", "crop_advisory_panel", "weather_widget", "market_price_tracker"],
+    "backend_modules": ["crop_yield_predictor", "weather_alert_service", "market_price_aggregator"],
+    "data_entities": ["farmer", "farm_plot", "crop_log", "weather_data", "market_price"],
+    "external_integrations": ["weather_api", "agri_commodity_exchange_api"]
+  },
+  "finance": {
+    "weight": 1.0,
+    "frontend_modules": ["banking_dashboard", "transaction_history_ui", "fund_transfer_widget", "portfolio_viewer"],
+    "backend_modules": ["core_banking_engine", "transaction_ledger", "fraud_detection_service"],
+    "data_entities": ["bank_account", "transaction", "portfolio", "kyc_record"],
+    "external_integrations": ["kyc_aml_api", "credit_bureau_api"]
+  },
+  "logistics": {
+    "weight": 0.9,
+    "frontend_modules": ["fleet_tracker_ui", "driver_app_shell", "shipment_dashboard", "route_map"],
+    "backend_modules": ["routing_engine", "fleet_management_service", "shipment_tracker"],
+    "data_entities": ["vehicle", "driver", "shipment", "route", "waypoint"],
+    "external_integrations": ["maps_api", "gps_telematics"]
+  },
+  "government": {
+    "weight": 1.0,
+    "frontend_modules": ["citizen_portal", "service_request_form", "document_vault_ui"],
+    "backend_modules": ["citizen_registry", "civic_service_engine", "document_verification_service"],
+    "data_entities": ["citizen", "civic_request", "verified_document", "tax_record"],
+    "external_integrations": ["national_id_sso", "digital_locker_api"]
+  },
+  "ecommerce": {
+    "weight": 0.9,
+    "frontend_modules": ["product_catalog_ui", "shopping_cart", "checkout_flow", "order_tracker"],
+    "backend_modules": ["inventory_manager", "order_fulfillment_service", "pricing_engine"],
+    "data_entities": ["product", "cart", "order", "invoice"],
+    "external_integrations": ["shipping_api", "payment_gateway"]
+  },
+  "social": {
+    "weight": 0.8,
+    "frontend_modules": ["news_feed", "user_profile", "chat_window", "media_gallery"],
+    "backend_modules": ["social_graph_service", "realtime_chat_engine", "content_moderation_service"],
+    "data_entities": ["user_profile", "post", "comment", "chat_message", "connection"],
+    "external_integrations": ["media_cdn", "push_notification_gateway"]
+  },
+  "ai": {
+    "weight": 1.0,
+    "frontend_modules": ["ai_chat_interface", "smart_recommendation_widget", "prompt_editor"],
+    "backend_modules": ["inference_service", "ml_pipeline_orchestrator", "prompt_manager"],
+    "data_entities": ["training_logs", "predictions", "user_prompts"],
+    "external_integrations": ["openai_api", "vector_database"]
+  },
+  "cybersecurity": {
+    "weight": 1.0,
+    "frontend_modules": ["security_dashboard", "threat_map", "incident_response_ui"],
+    "backend_modules": ["siem_engine", "threat_intelligence_service", "vulnerability_scanner"],
+    "data_entities": ["security_event", "threat_intel", "vulnerability_report", "incident"],
+    "external_integrations": ["threat_feed_api", "identity_provider"]
+  },
+  "marketplace": {
+    "weight": 0.9,
+    "frontend_modules": ["listing_browser", "vendor_dashboard", "shopping_cart", "review_widget"],
+    "backend_modules": ["matching_engine", "order_fulfillment", "rating_engine"],
+    "data_entities": ["listing", "vendor", "buyer", "review"],
+    "external_integrations": ["shipping_api", "stripe_connect"]
+  }
+}

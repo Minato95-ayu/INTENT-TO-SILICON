@@ -1,4 +1,17 @@
+import json
+import os
+
 class PainPointExtractor:
+    def __init__(self):
+        # Load intent rules (Semantic Proximity Library)
+        self.intent_rules = {}
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        try:
+            with open(os.path.join(base_dir, 'dictionary', 'intent_rules.json'), 'r') as f:
+                self.intent_rules = json.load(f)
+        except Exception:
+            pass
+
     def extract(self, normalized_data):
         tokens = normalized_data['tokens']
         raw = normalized_data['raw']
@@ -55,173 +68,158 @@ class PainPointExtractor:
                 ir["confidence_score"] = 0.94
             return ir
 
-        # Fallback to simulated mapping logic
-        text = raw
-        
-        if any(w in text for w in ["kat gaye", "debited", "double payment", "payment failed", "transaction pending", "paise nahi kate", "paise ud gaye"]):
-            ir["module"] = "payment"
-            if "double" in text:
-                ir["primary_problem"] = "duplicate_transaction"
-            elif "pending" in text:
-                ir["primary_problem"] = "delayed_transaction"
-            elif "paise nahi kate" in text:
-                ir["primary_problem"] = "unauthorized_transaction_suspicion"
-                ir["requires_diagnosis"] = True
-            else:
-                ir["primary_problem"] = "orphaned_transaction"
-                if "msg aaya par paise ud gaye" in text or "paise ud gaye" in text:
-                    ir["secondary_problem"] = "false_failure_message"
-        elif "refund" in text and "status" not in text:
-            ir["module"] = "payment"
-            ir["primary_problem"] = "delayed_refund"
-        elif "emi" in text:
-            ir["module"] = "payment"
-            ir["primary_problem"] = "missing_payment_method"
-        elif "bank server" in text:
-            ir["module"] = "payment"
-            ir["primary_problem"] = "gateway_timeout"
-            ir["requires_diagnosis"] = True
-        elif "bina upi" in text:
-            ir["module"] = "payment"
-            ir["primary_problem"] = "friction_in_payment"
-            ir["requires_clarification"] = True
-        elif "promo code" in text:
-            ir["module"] = "payment"
-            ir["primary_problem"] = "promo_code_failure"
-            
-        elif any(w in text for w in ["otp", "code", "sms"]) and any(w in text for w in ["nahi aaya", "receive nahi", "nahi mila", "delay"]):
-            ir["module"] = "auth"
-            if "delay ka koi issue nahi" in text:
-                ir["primary_problem"] = "friction_in_auth"
-                ir["requires_clarification"] = True
-            else:
-                ir["primary_problem"] = "otp_delivery_failure"
-        elif "call aa sakta hai kya" in text or "dusre number pe" in text:
-            ir["module"] = "auth"
-            ir["primary_problem"] = "friction_in_auth"
-            ir["requires_clarification"] = True
-        elif "password reset" in text or "email verification" in text:
-            ir["module"] = "auth"
-            ir["primary_problem"] = "email_delivery_failure"
-        elif "fingerprint" in text:
-            ir["module"] = "auth"
-            ir["primary_problem"] = "biometric_failure"
-        elif "session expired" in text:
-            ir["module"] = "auth"
-            ir["primary_problem"] = "frequent_session_expiry"
-        elif "captcha" in text:
-            ir["module"] = "auth"
-            ir["primary_problem"] = "captcha_validation_error"
-        elif "locked" in text:
-            ir["module"] = "auth"
-            ir["primary_problem"] = "account_locked"
-        elif "login" in text and "kaam nahi" in text:
-            ir["module"] = "auth"
-            ir["requires_clarification"] = True
-            ir["requires_diagnosis"] = True
-        elif "bina otp" in text:
-            ir["module"] = "auth"
-            ir["primary_problem"] = "friction_in_auth"
-            ir["requires_clarification"] = True
-        elif "password" in text and "mangta" in text:
-            ir["module"] = "auth"
-            ir["primary_problem"] = "friction_in_auth"
-            
-        elif "refund ka status kaha" in text:
-            ir["module"] = "navigation"
-            ir["primary_problem"] = "hidden_feature"
-            ir["requires_clarification"] = True
-        elif "settings kidhar" in text or "order history nahi mil" in text or "language change kaise" in text or "dark mode" in text or "font size" in text:
-            ir["module"] = "navigation"
-            ir["primary_problem"] = "feature_discoverability"
-            if "settings" in text or "language" in text:
-                ir["requires_clarification"] = True
-        elif "profile edit" in text:
-            ir["module"] = "navigation"
-            ir["primary_problem"] = "hidden_feature"
-        elif "wallet balance" in text:
-            ir["module"] = "navigation"
-            ir["primary_problem"] = "hidden_feature"
-            ir["requires_clarification"] = True
-        elif "address change" in text:
-            ir["module"] = "navigation"
-            ir["primary_problem"] = "feature_failure"
-        elif "back button" in text:
-            ir["module"] = "navigation"
-            ir["primary_problem"] = "navigation_flow_break"
-        elif "home page" in text:
-            ir["module"] = "navigation"
-            ir["primary_problem"] = "navigation_trap"
-        elif "search bar" in text:
-            ir["module"] = "navigation"
-            ir["primary_problem"] = "feature_failure"
-        elif "menu options" in text:
-            ir["module"] = "navigation"
-            ir["primary_problem"] = "ui_rendering_issue"
-            
-        elif "slow" in text:
-            ir["module"] = "performance"
-            ir["primary_problem"] = "performance_degradation"
-            ir["requires_diagnosis"] = True
-            if "crash" in text:
-                ir["secondary_problem"] = "application_crash"
-        elif "loading" in text or "screen freeze" in text or "khulte hi freeze" in text or "atakti hai" in text:
-            ir["module"] = "performance"
-            ir["primary_problem"] = "ui_freeze"
-            ir["requires_diagnosis"] = True
-            if "band ho jata" in text:
-                ir["secondary_problem"] = "application_crash"
-        elif "crash" in text or "band ho jata" in text:
-            ir["module"] = "performance"
-            ir["primary_problem"] = "application_crash"
-            ir["requires_diagnosis"] = True
-        elif "video play" in text:
-            ir["module"] = "performance"
-            ir["primary_problem"] = "high_latency"
-            ir["requires_diagnosis"] = True
-        elif "garam" in text or "battery" in text or "heat" in text:
-            ir["module"] = "performance"
-            ir["primary_problem"] = "high_resource_usage"
-            ir["requires_diagnosis"] = True
-        elif "image load" in text:
-            ir["module"] = "performance"
-            ir["primary_problem"] = "resource_loading_failure"
-            ir["requires_diagnosis"] = True
-        elif "scroll" in text:
-            ir["module"] = "performance"
-            ir["primary_problem"] = "ui_lag"
-            ir["requires_diagnosis"] = True
-            
-        elif "customer care" in text or "customer support" in text:
-            ir["module"] = "trust_support"
-            ir["primary_problem"] = "support_unreachable" if "kidhar hai" in text else "support_unresponsive"
-        elif "secure" in text:
-            ir["module"] = "trust_support"
-            ir["primary_problem"] = "security_anxiety"
-        elif "data safe" in text or "safe nahi" in text:
-            ir["module"] = "trust_support"
-            ir["primary_problem"] = "privacy_anxiety"
-        elif "fake" in text:
-            ir["module"] = "trust_support"
-            ir["primary_problem"] = "trust_deficit"
-            ir["requires_clarification"] = True
-        elif "support ticket" in text:
-            ir["module"] = "trust_support"
-            ir["primary_problem"] = "support_unresponsive"
-        elif "card details delete" in text:
-            ir["module"] = "trust_support"
-            ir["primary_problem"] = "privacy_control_anxiety"
-        elif "live chat" in text:
-            ir["module"] = "trust_support"
-            ir["primary_problem"] = "support_channel_missing"
-        elif "terms and conditions" in text or "privacy policy" in text:
-            ir["module"] = "trust_support"
-            ir["primary_problem"] = "policy_confusion"
-        elif "hack" in text:
-            ir["module"] = "trust_support"
-            ir["primary_problem"] = "security_anxiety"
-        elif "spam calls" in text:
-            ir["module"] = "trust_support"
-            ir["primary_problem"] = "data_leak_suspicion"
+        if not self.intent_rules:
+            return ir
 
-        return ir
+        matched_problems = []
+        evidence_found = []
+        found_module = None
+        
+        # Token proximity and semantic matching
+        # Convert tokens to a single list of strings for easy searching of tags and words
+        token_strings = [t["word"] if t["tag"] == "[WORD]" else t["tag"] for t in tokens]
+        
+        for module, problems in self.intent_rules.items():
+            for problem, rule in problems.items():
+                roots = rule.get("roots", [])
+                req_tags = rule.get("required_tags", [])
+                
+                # Check roots
+                has_root = False
+                matched_root = None
+                for r in roots:
+                    if r in raw:
+                        has_root = True
+                        matched_root = r
+                        break
+                        
+                if has_root:
+                    # Check tags
+                    has_tags = True
+                    if req_tags:
+                        has_tags = any(tag in raw or tag in token_strings for tag in req_tags)
+                        
+                    if has_tags:
+                        if problem not in matched_problems:
+                            matched_problems.append(problem)
+                        if found_module is None:
+                            found_module = module
+                        evidence_found.append(matched_root)
+
+    def extract_all(self, normalized_data):
+        """
+        Extracts multiple intents from the normalized data.
+        Returns a list of Intent IR objects.
+        """
+        intents = []
+        raw = normalized_data.get("raw", "").lower()
+        tokens = normalized_data.get("tokens", [])
+        
+        def get_idx(word):
+            for t in tokens:
+                if t["word"] == word:
+                    return t["index"]
+            return -1
+
+        def has_neg_after(idx, window=2):
+            for t in tokens:
+                if t["index"] > idx and t["index"] <= idx + window and t["tag"] == "[NEG]":
+                    return True
+            return False
+
+        # Token strings for easy searching
+        token_strings = [t["word"] if t["tag"] == "[WORD]" else t["tag"] for t in tokens]
+        
+        # Base bot logic
+        bot_idx = get_idx("bot")
+        if bot_idx != -1:
+            ir = {
+                "module": "trust_support",
+                "primary_problem": None,
+                "secondary_problem": None,
+                "evidence": [],
+                "requires_diagnosis": False,
+                "requires_clarification": False,
+                "confidence_score": 0.0
+            }
+            problem_idx = max(get_idx("problem"), get_idx("issue"))
+            if problem_idx != -1 and has_neg_after(problem_idx, window=2):
+                ir["primary_problem"] = None
+                ir["evidence"] = ["bot", "nahi"]
+                ir["confidence_score"] = 0.90
+            else:
+                ir["primary_problem"] = "bot_frustration"
+                ir["evidence"] = ["bot"]
+                ir["confidence_score"] = 0.94
+            
+            if ir["primary_problem"]:
+                intents.append(ir)
+
+        if not self.intent_rules:
+            # Fallback if no rules loaded
+            if not intents:
+                return [{
+                    "module": "unknown",
+                    "primary_problem": None,
+                    "secondary_problem": None,
+                    "evidence": [],
+                    "requires_diagnosis": False,
+                    "requires_clarification": False,
+                    "confidence_score": 0.0
+                }]
+            return intents
+            
+        for module, problems in self.intent_rules.items():
+            for problem, rule in problems.items():
+                roots = rule.get("roots", [])
+                req_tags = rule.get("required_tags", [])
+                
+                has_root = False
+                matched_root = None
+                for r in roots:
+                    if r.lower() in raw:
+                        has_root = True
+                        matched_root = r
+                        break
+                        
+                if has_root:
+                    has_tags = True
+                    if req_tags:
+                        has_tags = any(tag in raw or tag in token_strings for tag in req_tags)
+                        
+                    if has_tags:
+                        # Create a distinct Intent IR for this match
+                        ir = {
+                            "module": module,
+                            "primary_problem": problem,
+                            "secondary_problem": None,
+                            "evidence": [matched_root],
+                            "requires_diagnosis": problem in ["unauthorized_transaction_suspicion", "gateway_timeout", "friction_in_payment", "captcha_validation_error", "biometric_failure", "email_delivery_failure", "account_locked", "friction_in_auth", "feature_failure", "ui_rendering_issue", "performance_degradation", "application_crash", "high_latency", "high_resource_usage", "resource_loading_failure", "ui_freeze", "ui_lag", "trust_deficit", "data_leak_suspicion"],
+                            "requires_clarification": problem in ["friction_in_payment", "friction_in_auth", "hidden_feature", "feature_discoverability", "trust_deficit", "missing_payment_method"],
+                            "confidence_score": 0.92
+                        }
+                        # Avoid duplicates
+                        if not any(i.get("primary_problem") == problem for i in intents):
+                            intents.append(ir)
+
+        if not intents:
+            intents.append({
+                "module": "unknown",
+                "primary_problem": None,
+                "secondary_problem": None,
+                "evidence": [],
+                "requires_diagnosis": False,
+                "requires_clarification": False,
+                "confidence_score": 0.0
+            })
+
+        return intents
+
+    def extract(self, normalized_data):
+        # Legacy extract still returns the first match for backward compatibility
+        intents = self.extract_all(normalized_data)
+        if intents and intents[0]["primary_problem"] is not None:
+            return intents[0]
+        
+        # If unknown, just return the blank struct
+        return intents[0]

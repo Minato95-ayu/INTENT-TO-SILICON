@@ -1,0 +1,52 @@
+{
+  "payment": {
+    "orphaned_transaction": {"event": "payment_debited", "condition": "order_missing", "action": "trigger_refund"},
+    "duplicate_transaction": {"event": "payment_debited", "condition": "duplicate_charge", "action": "trigger_refund"},
+    "delayed_transaction": {"event": "payment_initiated", "condition": "status_pending", "action": "check_gateway_status"},
+    "false_failure_message": {"event": "payment_debited", "condition": "failure_message_shown", "action": "update_ui_status"},
+    "unauthorized_transaction_suspicion": {"event": "payment_debited", "condition": "user_unaware", "action": "freeze_account"},
+    "friction_in_payment": {"event": "payment_initiated", "condition": "method_failed", "action": "suggest_alternative_method"},
+    "promo_code_failure": {"event": "promo_applied", "condition": "validation_failed", "action": "show_promo_terms"},
+    "gateway_timeout": {"event": "payment_initiated", "condition": "gateway_unreachable", "action": "retry_with_fallback"},
+    "delayed_refund": {"event": "refund_initiated", "condition": "sla_breached", "action": "escalate_to_finance"},
+    "missing_payment_method": {"event": "checkout_started", "condition": "method_unavailable", "action": "log_feature_request"}
+  },
+  "auth": {
+    "otp_delivery_failure": {"event": "otp_requested", "condition": "sms_undelivered", "action": "trigger_voice_otp"},
+    "email_delivery_failure": {"event": "email_requested", "condition": "email_undelivered", "action": "resend_email"},
+    "friction_in_auth": {"event": "login_attempted", "condition": "auth_failed", "action": "trigger_recovery_flow"},
+    "captcha_validation_error": {"event": "captcha_submitted", "condition": "validation_failed", "action": "refresh_captcha"},
+    "account_locked": {"event": "login_attempted", "condition": "account_blocked", "action": "trigger_kyc_flow"},
+    "frequent_session_expiry": {"event": "session_validated", "condition": "token_expired", "action": "extend_session"},
+    "biometric_failure": {"event": "biometric_requested", "condition": "hardware_mismatch", "action": "fallback_to_pin"}
+  },
+  "performance": {
+    "ui_freeze": {"event": "ui_rendered", "condition": "main_thread_blocked", "action": "restart_app_state"},
+    "application_crash": {"event": "app_foregrounded", "condition": "fatal_exception", "action": "upload_crash_log"},
+    "performance_degradation": {"event": "app_running", "condition": "high_response_time", "action": "clear_cache"},
+    "high_latency": {"event": "network_request", "condition": "timeout_exceeded", "action": "switch_to_offline_mode"},
+    "high_resource_usage": {"event": "app_running", "condition": "battery_drain", "action": "reduce_background_sync"},
+    "resource_loading_failure": {"event": "asset_requested", "condition": "load_failed", "action": "show_placeholder"},
+    "ui_lag": {"event": "scroll_event", "condition": "frame_drop", "action": "disable_animations"}
+  },
+  "navigation": {
+    "hidden_feature": {"event": "user_searching", "condition": "feature_not_found", "action": "highlight_feature"},
+    "feature_discoverability": {"event": "user_searching", "condition": "feature_unclear", "action": "start_tooltip_tour"},
+    "navigation_trap": {"event": "navigation_event", "condition": "dead_end", "action": "show_home_button"},
+    "feature_failure": {"event": "feature_interacted", "condition": "no_response", "action": "log_error"},
+    "ui_rendering_issue": {"event": "ui_rendered", "condition": "layout_broken", "action": "force_redraw"},
+    "navigation_flow_break": {"event": "back_pressed", "condition": "unexpected_exit", "action": "intercept_back_press"}
+  },
+  "trust_support": {
+    "trust_deficit": {"event": "app_running", "condition": "user_anxious", "action": "show_trust_badges"},
+    "support_unreachable": {"event": "support_requested", "condition": "agent_busy", "action": "create_callback_ticket"},
+    "support_unresponsive": {"event": "ticket_open", "condition": "sla_breached", "action": "escalate_ticket"},
+    "privacy_anxiety": {"event": "data_requested", "condition": "user_hesitant", "action": "show_privacy_policy"},
+    "security_anxiety": {"event": "payment_initiated", "condition": "user_hesitant", "action": "show_encryption_badge"},
+    "bot_frustration": {"event": "bot_interacted", "condition": "negative_sentiment", "action": "route_to_human"},
+    "policy_confusion": {"event": "policy_viewed", "condition": "high_read_time", "action": "show_tldr"},
+    "data_leak_suspicion": {"event": "app_running", "condition": "user_reported_spam", "action": "audit_data_access"},
+    "support_channel_missing": {"event": "support_requested", "condition": "channel_unavailable", "action": "show_faq"},
+    "privacy_control_anxiety": {"event": "data_deletion_requested", "condition": "process_unclear", "action": "execute_gdpr_deletion"}
+  }
+}

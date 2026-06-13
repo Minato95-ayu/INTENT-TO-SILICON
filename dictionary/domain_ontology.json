@@ -1,0 +1,287 @@
+{
+  "entities": {
+    "student": {
+      "fields": [
+        {"name": "name", "type": "string"},
+        {"name": "email", "type": "string"},
+        {"name": "enrollment_number", "type": "string"}
+      ]
+    },
+    "academic_record": {
+      "fields": [
+        {"name": "semester", "type": "integer"},
+        {"name": "gpa", "type": "float"}
+      ],
+      "relations": ["student"]
+    },
+    "global_session": {
+      "fields": [
+        {"name": "session_token", "type": "string"},
+        {"name": "expires_at", "type": "datetime"}
+      ],
+      "relations": ["student"]
+    },
+    "app_registry": {
+      "fields": [
+        {"name": "app_name", "type": "string"},
+        {"name": "version", "type": "string"}
+      ],
+      "relations": []
+    },
+    "course": {
+      "fields": [
+        {"name": "title", "type": "string"},
+        {"name": "credits", "type": "integer"}
+      ],
+      "relations": []
+    },
+    "enrollment": {
+      "fields": [
+        {"name": "enrollment_date", "type": "datetime"}
+      ],
+      "relations": ["student", "course"]
+    },
+    "library": {
+      "fields": [
+        {"name": "name", "type": "string"},
+        {"name": "location", "type": "string"}
+      ]
+    },
+    "library_booking": {
+      "fields": [
+        {"name": "booking_date", "type": "datetime"},
+        {"name": "status", "type": "string"}
+      ],
+      "relations": ["student", "library"]
+    },
+    "hostel": {
+      "fields": [
+        {"name": "name", "type": "string"},
+        {"name": "capacity", "type": "integer"}
+      ]
+    },
+    "hostel_room": {
+      "fields": [
+        {"name": "room_number", "type": "string"},
+        {"name": "bed_count", "type": "integer"}
+      ],
+      "relations": ["hostel"]
+    },
+    "hostel_booking": {
+      "fields": [
+        {"name": "room_number", "type": "string"},
+        {"name": "move_in_date", "type": "datetime"}
+      ],
+      "relations": ["student", "hostel"]
+    },
+    "security_audit_log": {
+      "fields": [
+        {"name": "event_type", "type": "string"},
+        {"name": "ip_address", "type": "string"}
+      ],
+      "relations": ["student"]
+    },
+    "job": {
+      "fields": [
+        {"name": "title", "type": "string"},
+        {"name": "company", "type": "string"},
+        {"name": "salary_range", "type": "string"}
+      ]
+    },
+    "job_application": {
+      "fields": [
+        {"name": "status", "type": "string"},
+        {"name": "applied_on", "type": "datetime"}
+      ],
+      "relations": ["student", "job"]
+    },
+    "tutor": {
+      "fields": [
+        {"name": "name", "type": "string"},
+        {"name": "subject", "type": "string"},
+        {"name": "hourly_rate", "type": "float"}
+      ]
+    },
+    "tutor_session": {
+      "fields": [
+        {"name": "session_date", "type": "datetime"},
+        {"name": "duration_hours", "type": "integer"}
+      ],
+      "relations": ["student", "tutor"]
+    },
+    "payment_transaction": {
+      "fields": [
+        {"name": "amount", "type": "float"},
+        {"name": "payment_method", "type": "string"},
+        {"name": "status", "type": "string"}
+      ],
+      "relations": ["student"]
+    },
+    "otp_session": {
+      "fields": [
+        {"name": "phone_number", "type": "string"},
+        {"name": "otp_code", "type": "string"},
+        {"name": "expires_at", "type": "datetime"}
+      ],
+      "relations": []
+    },
+    "patient": {
+      "fields": [
+        {"name": "name", "type": "string"},
+        {"name": "age", "type": "integer"},
+        {"name": "gender", "type": "string"}
+      ]
+    },
+    "doctor": {
+      "fields": [
+        {"name": "name", "type": "string"},
+        {"name": "specialization", "type": "string"},
+        {"name": "phone", "type": "string"}
+      ]
+    },
+    "appointment": {
+      "fields": [
+        {"name": "appointment_date", "type": "datetime"},
+        {"name": "status", "type": "string"}
+      ],
+      "relations": ["patient", "doctor"]
+    },
+    "billing": {
+      "fields": [
+        {"name": "amount", "type": "float"},
+        {"name": "status", "type": "string"}
+      ],
+      "relations": ["patient", "appointment"]
+    },
+    "bed": {
+      "fields": [
+        {"name": "ward_name", "type": "string"},
+        {"name": "bed_number", "type": "string"},
+        {"name": "is_occupied", "type": "boolean"}
+      ]
+    },
+    "insurance_claim": {
+      "fields": [
+        {"name": "claim_number", "type": "string"},
+        {"name": "status", "type": "string"},
+        {"name": "approved_amount", "type": "float"}
+      ],
+      "relations": ["patient", "billing"]
+    },
+    "seller": {
+      "fields": [
+        {"name": "company_name", "type": "string"},
+        {"name": "contact_email", "type": "string"}
+      ]
+    },
+    "buyer": {
+      "fields": [
+        {"name": "company_name", "type": "string"},
+        {"name": "contact_email", "type": "string"}
+      ]
+    },
+    "product": {
+      "fields": [
+        {"name": "name", "type": "string"},
+        {"name": "description", "type": "string"},
+        {"name": "price", "type": "float"},
+        {"name": "stock_quantity", "type": "integer"}
+      ],
+      "relations": ["seller"]
+    },
+    "order": {
+      "fields": [
+        {"name": "order_date", "type": "datetime"},
+        {"name": "status", "type": "string"},
+        {"name": "total_amount", "type": "float"}
+      ],
+      "relations": ["buyer", "product"]
+    },
+    "invoice": {
+      "fields": [
+        {"name": "invoice_date", "type": "datetime"},
+        {"name": "amount_due", "type": "float"},
+        {"name": "status", "type": "string"}
+      ],
+      "relations": ["order"]
+    },
+    "shipment": {
+      "fields": [
+        {"name": "tracking_number", "type": "string"},
+        {"name": "carrier", "type": "string"},
+        {"name": "status", "type": "string"}
+      ],
+      "relations": ["order"]
+    },
+    "vehicle": {
+      "fields": [
+        {"name": "license_plate", "type": "string"},
+        {"name": "capacity", "type": "string"}
+      ],
+      "relations": []
+    },
+    "driver": {
+      "fields": [
+        {"name": "name", "type": "string"},
+        {"name": "license_number", "type": "string"}
+      ],
+      "relations": []
+    },
+    "route": {
+      "fields": [
+        {"name": "start_location", "type": "string"},
+        {"name": "end_location", "type": "string"}
+      ],
+      "relations": ["vehicle", "driver"]
+    },
+    "waypoint": {
+      "fields": [
+        {"name": "location", "type": "string"},
+        {"name": "arrival_time", "type": "datetime"}
+      ],
+      "relations": ["route"]
+    }
+  },
+  "domains": {
+    "education": [
+      "student",
+      "academic_record",
+      "global_session",
+      "app_registry",
+      "course",
+      "enrollment",
+      "library",
+      "library_booking",
+      "hostel",
+      "hostel_room",
+      "hostel_booking",
+      "job",
+      "job_application",
+      "tutor",
+      "tutor_session",
+      "payment_transaction",
+      "otp_session",
+      "security_audit_log"
+    ],
+    "healthcare": [
+      "patient",
+      "doctor",
+      "appointment",
+      "billing",
+      "bed",
+      "insurance_claim"
+    ],
+    "marketplace": [
+      "seller",
+      "buyer",
+      "product",
+      "order",
+      "invoice",
+      "shipment",
+      "vehicle",
+      "driver",
+      "route",
+      "waypoint"
+    ]
+  }
+}

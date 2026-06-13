@@ -59,7 +59,7 @@
     "weight": 1.0,
     "frontend_modules": ["patient_dashboard", "doctor_portal", "appointment_scheduler", "telemedicine_room"],
     "backend_modules": ["patient_records_service", "scheduling_engine", "billing_service"],
-    "data_entities": ["patient", "doctor", "appointment", "medical_record", "bill"],
+    "data_entities": ["patient", "doctor", "appointment", "billing", "bed", "insurance_claim"],
     "external_integrations": ["health_insurance_api", "video_call_sdk"]
   },
   "agriculture": {
@@ -122,7 +122,7 @@
     "weight": 0.9,
     "frontend_modules": ["listing_browser", "vendor_dashboard", "shopping_cart", "review_widget"],
     "backend_modules": ["matching_engine", "order_fulfillment", "rating_engine"],
-    "data_entities": ["listing", "vendor", "buyer", "review"],
+    "data_entities": ["seller", "buyer", "product", "order", "invoice", "shipment"],
     "external_integrations": ["shipping_api", "stripe_connect"]
   }
 }

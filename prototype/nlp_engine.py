@@ -173,34 +173,49 @@ def process_single_input(user_input, func_library, emotion_library, headless_rep
         metrics["status"] = "fail_hard"
         return metrics
         
-    # 2. Active Disambiguation (Functional)
+    # 2. Active Disambiguation (Functional) - v0.5 Upgrade
     if matched_func_categories:
         for category in matched_func_categories:
             data = func_library[category]
             
-            if headless_reply:
+            if headless_reply is not None:
                 reply = headless_reply
             else:
-                print(f"\nSystem (Disambiguation): {data['cross_question']}")
-                reply = input("Tu (Reply): ").lower()
+                print(f"\nSystem (Ambiguity Detected!): {data['cross_question']}")
+                reply = input("Tu (Reply: Enter option number): ").strip()
             
-            if '2' in reply or 'ekdum' in reply or 'proper' in reply or 'haan' in reply or 'yes' in reply:
-                final_func_specs.append({
-                    "category": category,
-                    "value": data['exact_value'],
-                    "confidence": 1.0,
-                    "source": "user clarified"
-                })
-                for dep in data['hard_dependencies']:
-                    hard_dependencies.add(dep)
+            options = data.get('options', {})
+            
+            # For backward compatibility with negated categories or if options aren't fully migrated
+            if 'exact_value' in data and not options:
+                # Legacy v0.4 logic fallback
+                if reply in ['yes', 'haan', '1', '2']:
+                    final_func_specs.append({
+                        "category": category,
+                        "value": data['exact_value'],
+                        "confidence": 1.0,
+                        "source": "user clarified (legacy)"
+                    })
+                    for dep in data.get('hard_dependencies', []):
+                        hard_dependencies.add(dep)
             else:
-                # User declined or didn't answer properly
-                pass
+                # v0.5 Strict Disambiguation
+                if reply in options:
+                    selected_option = options[reply]
+                    final_func_specs.append({
+                        "category": category,
+                        "value": selected_option['exact_value'],
+                        "confidence": 1.0,
+                        "source": f"user actively disambiguated (selected option {reply})"
+                    })
+                    for dep in selected_option['hard_dependencies']:
+                        hard_dependencies.add(dep)
+                else:
+                    # User provided invalid input, 'no', or missing headless reply. Ambiguity unresolved.
+                    pass
                 
-    # If it matched functional categories but NO final specs were locked, we consider it Clarification Required 
-    # (since the user didn't clarify successfully or it was vague).
-    # Wait, if `headless_reply="no"`, no specs lock. So it asks for clarification.
-    if not final_func_specs and matched_func_categories:
+    # If functional categories matched but ambiguity was not resolved for all of them
+    if matched_func_categories and len(final_func_specs) < len(matched_func_categories):
         metrics["status"] = "clarification_required"
         
     # 3. Emotion Mapping
@@ -217,9 +232,15 @@ def process_single_input(user_input, func_library, emotion_library, headless_rep
     # Process Negated Categories
     for category in negated_func_categories:
         data = func_library[category]
+        # In v0.5, exact_value is inside options. We will join all option values to show what's excluded.
+        if 'options' in data:
+            excluded_vals = " OR ".join([opt['exact_value'] for opt in data['options'].values()])
+        else:
+            excluded_vals = data.get('exact_value', 'Unknown')
+            
         final_excluded_specs.append({
             "category": category,
-            "value": data['exact_value'],
+            "value": excluded_vals,
             "confidence": 1.0,
             "source": "explicitly negated"
         })

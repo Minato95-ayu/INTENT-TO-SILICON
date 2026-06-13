@@ -39,12 +39,14 @@ def run_benchmarks():
             expected = row['expected_result']
             category = row['category']
             
-            # For "ambiguous" tests, simulate a user who gives a vague reply ("no" or anything not matching the exact confirmation)
-            # For "functional/emotional/mixed" simulate a "yes" reply
+            # v0.5 Benchmark update:
+            # The system now forces active disambiguation and expects an option choice (1, 2, etc).
+            # For "ambiguous" tests (expected="clarification_required"), simulate an unresolved/invalid reply ("no" or "")
+            # For "functional/emotional/mixed" tests, simulate a user who correctly chooses an option (e.g., "2")
             if expected == "clarification_required":
                 headless_reply = "no"
             else:
-                headless_reply = "yes"
+                headless_reply = "2"
                 
             metrics = process_single_input(input_text, func_lib, emotion_lib, headless_reply=headless_reply)
             
@@ -70,10 +72,10 @@ def run_benchmarks():
     print(" BENCHMARK REPORT")
     print("==================================================")
     print(f"Total Inputs              : {total_inputs}")
-    print(f"Direct Success %          : {(direct_success/total_inputs)*100:.1f}%")
-    print(f"Clarification Required %  : {(clarification_required/total_inputs)*100:.1f}%")
-    print(f"Hard Fail (OOV) %         : {(hard_fail/total_inputs)*100:.1f}%")
-    print(f"YAML Generated %          : {(yaml_generated/total_inputs)*100:.1f}%")
+    print(f"Resolved via Disambiguation %: {(direct_success/total_inputs)*100:.1f}%")
+    print(f"Unresolved Ambiguity (Halt) %: {(clarification_required/total_inputs)*100:.1f}%")
+    print(f"Out of Vocabulary (Halt) %   : {(hard_fail/total_inputs)*100:.1f}%")
+    print(f"Final YAML Blueprints Gen %  : {(yaml_generated/total_inputs)*100:.1f}%")
     
     if total_negation_cases > 0:
         print("--------------------------------------------------")

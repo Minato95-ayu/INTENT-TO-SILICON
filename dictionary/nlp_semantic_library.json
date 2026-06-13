@@ -1,38 +1,90 @@
 {
   "performance": {
     "root_lemmas": ["fast", "jaldi", "tez", "speed", "sheeghr", "tvarit"],
-    "cross_question": "Kitna fast chahiye? (1) Normal speed ya (2) Ultra-low latency (< 200ms)?",
-    "exact_value": "REQUIREMENT: P99 Latency < 200ms",
-    "hard_dependencies": ["CDN_CACHE_REQUIRED"]
+    "cross_question": "Kitna fast chahiye?\n  1. Loading speed fast chahiye (Static Content)\n  2. Search speed fast chahiye (Large Data)\n  3. Ultra-low latency chahiye (< 200ms API response)",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: CDN Cache & Static Site Generation",
+        "hard_dependencies": ["CDN_CACHE_REQUIRED"]
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: ElasticSearch & Optimized Indexes",
+        "hard_dependencies": ["SEARCH_ENGINE_REQUIRED"]
+      },
+      "3": {
+        "exact_value": "REQUIREMENT: P99 Latency < 200ms",
+        "hard_dependencies": ["IN_MEMORY_CACHE"]
+      }
+    }
   },
   "security": {
     "root_lemmas": ["secur", "safe", "hack", "privac", "suraksh", "gupt"],
-    "cross_question": "Security ka level? (1) Normal login ya (2) AES-256 bank-level encryption?",
-    "exact_value": "REQUIREMENT: HTTPS + JWT Auth + AES-256 Encryption",
-    "hard_dependencies": []
+    "cross_question": "Security ka level kya hoga?\n  1. Standard login (Email/Password)\n  2. Bank-level security (AES-256, 2FA, Audit Logs)",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: HTTPS + Standard JWT Auth",
+        "hard_dependencies": []
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: HTTPS + JWT Auth + AES-256 Encryption + 2FA",
+        "hard_dependencies": ["MFA_PROVIDER_REQUIRED", "AUDIT_LOGGING"]
+      }
+    }
   },
   "scale": {
     "root_lemmas": ["log", "public", "traffic", "hazaar", "lakh", "viral", "bheed"],
-    "cross_question": "Kitni public aayegi? (1) 100-200 log ya (2) 10,000+ concurrent users?",
-    "exact_value": "REQUIREMENT: Auto-scaling active",
-    "hard_dependencies": ["LOAD_BALANCER_REQUIRED"]
+    "cross_question": "Kitni public aayegi (Concurrent Users)?\n  1. 100-500 log (Basic Hosting)\n  2. 10,000+ users (Auto-scaling needed)",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: Single Instance Server",
+        "hard_dependencies": []
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: Auto-scaling active across 3 AZs",
+        "hard_dependencies": ["LOAD_BALANCER_REQUIRED", "AUTO_SCALING_GROUP"]
+      }
+    }
   },
   "database": {
     "root_lemmas": ["save", "record", "data", "history", "puran", "sanchit"],
-    "cross_question": "Data kaisa hoga? (1) Simple tables ya (2) Complex relationships aur search?",
-    "exact_value": "REQUIREMENT: Relational Database (PostgreSQL)",
-    "hard_dependencies": ["DATA_BACKUP_REQUIRED"]
+    "cross_question": "Data kaisa hoga?\n  1. Simple document-based data (NoSQL)\n  2. Complex relationships and transactions (SQL)",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: NoSQL Database (MongoDB/DynamoDB)",
+        "hard_dependencies": []
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: Relational Database (PostgreSQL) with ACID",
+        "hard_dependencies": ["DATA_BACKUP_REQUIRED", "MIGRATION_SYSTEM"]
+      }
+    }
   },
   "realtime": {
     "root_lemmas": ["live", "turant", "chat", "realtime", "saath"],
-    "cross_question": "Kya cheezein bina page refresh kiye update honi chahiye? (1) Nahi (2) Haan, live sync",
-    "exact_value": "REQUIREMENT: WebSockets Integration + Redis Pub/Sub",
-    "hard_dependencies": ["STATE_MANAGEMENT_REQUIRED"]
+    "cross_question": "Realtime ka matlab?\n  1. Simple background updates (Webhooks/Polling)\n  2. Live sync for chat/gaming (WebSockets)",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: Background Jobs & Webhooks",
+        "hard_dependencies": ["WORKER_QUEUE"]
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: WebSockets Integration + Redis Pub/Sub",
+        "hard_dependencies": ["STATE_MANAGEMENT_REQUIRED"]
+      }
+    }
   },
   "availability": {
     "root_lemmas": ["offline", "net", "network"],
-    "cross_question": "Agar internet na ho tab bhi chalna chahiye? (1) Nahi (2) Haan, offline support",
-    "exact_value": "REQUIREMENT: Offline-first Architecture",
-    "hard_dependencies": ["LOCAL_STORAGE_REQUIRED"]
+    "cross_question": "Agar internet na ho tab kya?\n  1. App error dikhaye aur ruk jaye (Standard)\n  2. Data local save ho aur baad me sync ho (Offline-first)",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: Standard Online Architecture",
+        "hard_dependencies": []
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: Offline-first Architecture (PWA)",
+        "hard_dependencies": ["LOCAL_STORAGE_REQUIRED", "BACKGROUND_SYNC"]
+      }
+    }
   }
 }

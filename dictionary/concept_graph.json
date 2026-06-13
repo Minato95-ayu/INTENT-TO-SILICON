@@ -1,0 +1,70 @@
+{
+  "healthcare": {
+    "requires": ["patient", "doctor", "appointment"],
+    "optional": ["billing", "insurance", "telemedicine", "authentication", "compliance"]
+  },
+  "hospital": {
+    "requires": ["patient", "doctor", "appointment"],
+    "optional": ["billing", "insurance", "telemedicine", "authentication", "compliance"]
+  },
+  "billing": {
+    "requires": ["transaction", "payment_gateway"],
+    "optional": ["invoice_generation"]
+  },
+  "payments": {
+    "requires": ["transaction", "payment_gateway"],
+    "optional": []
+  },
+  "insurance": {
+    "requires": ["claim", "policy"],
+    "optional": []
+  },
+  "education": {
+    "requires": ["student", "enrollment", "academic_record", "course_content"],
+    "optional": ["billing", "notifications", "authentication", "content_delivery"]
+  },
+  "school": {
+    "requires": ["student", "enrollment", "academic_record", "course_content"],
+    "optional": ["billing", "notifications", "authentication", "content_delivery"]
+  },
+  "agriculture": {
+    "requires": ["farmer", "farm_plot", "crop_log"],
+    "optional": ["localization", "offline_support", "notifications"]
+  },
+  "finance": {
+    "requires": ["bank_account", "transaction", "portfolio"],
+    "optional": ["authentication", "compliance", "fraud_detection", "notifications"]
+  },
+  "logistics": {
+    "requires": ["vehicle", "driver", "shipment"],
+    "optional": ["tracking", "offline_support", "routing"]
+  },
+  "government": {
+    "requires": ["citizen", "civic_request", "verified_document"],
+    "optional": ["authentication", "compliance", "accessibility"]
+  },
+  "ecommerce": {
+    "requires": ["product", "cart", "order"],
+    "optional": ["payments", "shipping", "inventory"]
+  },
+  "social": {
+    "requires": ["user_profile", "post", "comment"],
+    "optional": ["media_sharing", "push_notifications"]
+  },
+  "ai": {
+    "requires": ["training_logs", "predictions"],
+    "optional": ["user_prompts"]
+  },
+  "cybersecurity": {
+    "requires": ["security_event", "incident"],
+    "optional": ["threat_intel", "vulnerability_report"]
+  },
+  "marketplace": {
+    "requires": ["seller", "buyer", "product", "order"],
+    "optional": ["payments", "shipping", "inventory"]
+  },
+  "pharmacy": {
+    "requires": ["medicine", "inventory", "prescription"],
+    "optional": ["billing"]
+  }
+}

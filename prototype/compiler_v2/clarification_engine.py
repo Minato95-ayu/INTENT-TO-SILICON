@@ -2,7 +2,9 @@ import os
 import json
 import re
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Set
+
+from .concept_graph_engine import ConceptGraphEngine
 
 
 @dataclass
@@ -11,25 +13,29 @@ class ClarificationResult:
     questions: List[dict] = field(default_factory=list)
     # e.g. [{"concept": "authentication", "question": "...", "options": ["OTP", "Email", "SSO"]}]
 
+    detected_domains: List[str] = field(default_factory=list)
     detected_concepts: List[str] = field(default_factory=list)
-    # Concepts the engine confidently extracted from raw intent
-
+    inferred_concepts: List[str] = field(default_factory=list)
     missing_concepts: List[str] = field(default_factory=list)
-    # Concepts that are required but not mentioned
-
+    
     confidence: Dict[str, float] = field(default_factory=dict)
-    # Confidence score per concept (0.0 = absent, 1.0 = explicitly stated)
-
     is_complete: bool = False
-    # True if no clarifications are needed
 
 
 @dataclass
 class ResolvedIntent:
     """The output of resolve(). A structured, unambiguous representation of user intent."""
     domain: str = ""
+    
+    # 3-State Concept Model
+    detected: List[str] = field(default_factory=list)
+    inferred: List[str] = field(default_factory=list)
+    confirmed: List[str] = field(default_factory=list)
+    
+    # Kept for backward compatibility with BlueprintGenerator
     entities: List[str] = field(default_factory=list)
     features: List[str] = field(default_factory=list)
+    
     original_intent: str = ""
     answers: Dict[str, str] = field(default_factory=dict)
 
@@ -38,6 +44,7 @@ class ClarificationEngine:
     def __init__(self):
         self.clarification_library = {}
         self.concept_modules = {}
+        self.graph_engine = ConceptGraphEngine()
         
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
         try:
@@ -52,8 +59,8 @@ class ClarificationEngine:
         except Exception as e:
             print(f"Warning: Could not load concept_modules.json: {e}")
 
-    def _extract_domain(self, raw_intent_text: str) -> Optional[str]:
-        """Deterministically extract the primary domain from intent text."""
+    def _extract_domains(self, raw_intent_text: str) -> List[str]:
+        """Deterministically extract the primary domains from intent text."""
         raw_lower = raw_intent_text.lower()
         
         # Domain keyword mappings (internal identifiers are always English)
@@ -69,80 +76,34 @@ class ClarificationEngine:
             "social": ["social", "chat", "feed", "profile", "community"],
             "ai": ["ai", "ml", "machine learning", "inference", "llm"],
             "cybersecurity": ["security", "threat", "vulnerability", "siem", "incident"],
+            "pharmacy": ["pharmacy", "medicine", "prescription"]
         }
         
-        best_domain = None
-        best_score = 0
-        
         # Split intent into distinct words for precise matching
-        # This prevents "ai" matching inside "banana" or "hai"
-        import re
         words_in_intent = set(re.findall(r'\b\w+\b', raw_lower))
         
+        detected_domains = []
         for domain, keywords in domain_keywords.items():
-            score = sum(1 for kw in keywords if kw in words_in_intent)
-            if score > best_score:
-                best_score = score
-                best_domain = domain
-        
-        # If no domain-specific keywords were found at all, return None
-        # This triggers domain clarification instead of a false guess
-        if best_score == 0:
-            return None
+            if any(kw in words_in_intent for kw in keywords):
+                detected_domains.append(domain)
                 
-        return best_domain
-
-    def _compute_confidence(self, raw_intent_lower: str, concept: str) -> float:
-        """
-        Compute a confidence score (0.0 to 1.0) for whether a concept
-        is present in the raw intent text.
-        
-        - 1.0 = explicitly stated keyword match
-        - 0.5 = partial/indirect mention
-        - 0.0 = no mention at all
-        """
-        concept_keywords = self.clarification_library.get("_concept_keywords", {})
-        keywords = concept_keywords.get(concept, [concept])
-        
-        # Count how many keywords match
-        matches = sum(1 for kw in keywords if kw in raw_intent_lower)
-        
-        if matches == 0:
-            return 0.0
-        elif matches == 1:
-            return 0.6
-        else:
-            return min(1.0, 0.6 + (matches - 1) * 0.2)
+        return detected_domains
 
     def analyze(self, extracted_concepts: List[str], raw_intent_text: str) -> ClarificationResult:
         """
-        Analyzes the extracted concepts and raw intent to detect missing information.
-        
-        Returns a structured ClarificationResult with questions, confidence scores,
-        and a completeness flag.
+        Analyzes the extracted concepts and raw intent using ConceptGraphEngine.
         """
         result = ClarificationResult()
         
-        if not self.clarification_library:
-            result.is_complete = True
-            return result
-            
-        raw_intent_lower = raw_intent_text.lower()
+        # 1. Detect Explicit Concepts & Domains
+        result.detected_concepts.extend(extracted_concepts)
+        domains = self._extract_domains(raw_intent_text)
+        result.detected_domains = domains
         
-        # Detect domain
-        domain = self._extract_domain(raw_intent_text)
-        
-        # Find all concepts that were explicitly matched
-        for concept in extracted_concepts:
-            if concept in self.concept_modules:
-                result.detected_concepts.append(concept)
-                result.confidence[concept] = 1.0  # Explicitly extracted = full confidence
-        
-        # If domain is unknown, ask a domain clarification question FIRST
-        if domain is None:
+        # Rule: No domains detected -> Ask domain
+        if not domains:
             available_domains = [d for d in self.clarification_library.keys() if not d.startswith("_")]
             result.missing_concepts.append("domain")
-            result.confidence["domain"] = 0.0
             result.questions.append({
                 "concept": "domain",
                 "question": f"Kaunsa domain hai? Options: {', '.join(available_domains)}",
@@ -150,73 +111,105 @@ class ClarificationEngine:
             })
             result.is_complete = False
             return result
+            
+        # Rule: Multi-domain detected -> Ask integration question
+        if len(domains) > 1:
+            result.missing_concepts.append("integration")
+            result.questions.append({
+                "concept": "integration",
+                "question": f"Multi-domain detected: {', '.join(domains)}. How should these interact? Options: 1. Separate systems, 2. Shared records, 3. Integrated workflow",
+                "confidence": 0.0
+            })
         
-        # Now check domain-specific required concepts
-        if domain in self.clarification_library:
-            domain_rules = self.clarification_library[domain]
-            required_concepts = domain_rules.get("required_concepts", [])
+        # 2. Expand Graph to get Inferred and Optional Concepts
+        explicit_nodes = domains + result.detected_concepts
+        inferred_requires, optionals = self.graph_engine.expand(explicit_nodes)
+        
+        # 'Requires' -> Infer (do not ask, unless confidence is handled later)
+        for concept in inferred_requires:
+            if concept not in result.detected_concepts and concept not in domains:
+                result.inferred_concepts.append(concept)
+                
+        # 3. Generate Questions for Optional and Implementation Details
+        for domain in domains:
+            domain_rules = self.clarification_library.get(domain, {})
             questions_map = domain_rules.get("questions", {})
             
-            for req_concept in required_concepts:
-                confidence = self._compute_confidence(raw_intent_lower, req_concept)
-                result.confidence[req_concept] = confidence
-                
-                # Threshold: below 0.5 means we should ask
-                if confidence < 0.5:
-                    result.missing_concepts.append(req_concept)
-                    question_text = questions_map.get(req_concept)
-                    if question_text:
+            # Optional Concepts -> Always Ask
+            for opt in optionals:
+                if opt in questions_map:
+                    if not any(q['concept'] == opt for q in result.questions):
+                        result.missing_concepts.append(opt)
                         result.questions.append({
-                            "concept": req_concept,
-                            "question": question_text,
-                            "confidence": confidence,
+                            "concept": opt,
+                            "question": questions_map[opt],
+                            "confidence": 0.0
                         })
-        
+            
+            # Implementation Details (Requires concepts that have specific questions) -> Always Ask
+            for inf in inferred_requires:
+                if inf in questions_map:
+                    if not any(q['concept'] == inf for q in result.questions):
+                        result.missing_concepts.append(inf)
+                        result.questions.append({
+                            "concept": inf,
+                            "question": questions_map[inf],
+                            "confidence": 0.0
+                        })
+
         result.is_complete = len(result.questions) == 0
         return result
 
-    def resolve(self, original_intent: str, answers: Dict[str, str]) -> ResolvedIntent:
+    def resolve(self, original_intent: str, answers: Dict[str, str], detected_concepts: List[str] = None) -> ResolvedIntent:
         """
         Takes the original intent and user answers to clarification questions.
-        Produces a structured ResolvedIntent that unambiguously describes
-        what the user wants.
-        
-        Args:
-            original_intent: The raw, possibly vague, user intent string.
-            answers: Dict mapping concept names to user answers.
-                     e.g. {"authentication": "otp", "payments": "upi"}
-        
-        Returns:
-            A ResolvedIntent with domain, entities, and features.
+        Produces a structured ResolvedIntent using 3-State Model.
         """
+        if detected_concepts is None:
+            detected_concepts = []
+            
         resolved = ResolvedIntent()
         resolved.original_intent = original_intent
         resolved.answers = answers
         
-        # Detect primary domain
-        # If auto-detection fails, use the domain answer from clarification
-        domain = self._extract_domain(original_intent)
-        if domain is None and "domain" in answers:
-            # User answered the domain clarification question directly
-            domain = answers["domain"].lower().strip()
-        resolved.domain = domain or "unknown"
+        domains = self._extract_domains(original_intent)
+        if not domains and "domain" in answers:
+            ans_domain = answers["domain"].lower().strip()
+            domains = [ans_domain]
+            
+        resolved.domain = domains[0] if domains else "unknown"
         
-        # Get base entities from the domain's concept module
-        if domain and domain in self.concept_modules:
-            concept_data = self.concept_modules[domain]
-            resolved.entities = list(concept_data.get("data_entities", []))
+        explicit_nodes = domains.copy() + detected_concepts
         
-        # Add features from answers (concepts the user confirmed)
+        # Re-run graph expansion
+        inferred_requires, optionals = self.graph_engine.expand(explicit_nodes)
+        
+        # 3-State Population
+        resolved.detected = explicit_nodes
+        
+        for concept in inferred_requires:
+            if concept not in explicit_nodes:
+                resolved.inferred.append(concept)
+        
+        # Process answers
         for concept, answer in answers.items():
-            # Skip the meta 'domain' concept — it's not an application feature
-            if concept == "domain":
+            if concept in ("domain", "integration"):
                 continue
             answer_lower = answer.lower().strip()
-            if answer_lower in ("yes", "y", "haan", "ha", "true", "1"):
-                resolved.features.append(concept)
-            elif answer_lower not in ("no", "n", "nahi", "nah", "false", "0"):
-                # If the answer is a specific choice (e.g., "otp", "upi"), treat as yes + store detail
-                resolved.features.append(concept)
+            # If yes or a specific detail like 'otp'
+            if answer_lower in ("yes", "y", "haan", "ha", "true", "1") or answer_lower not in ("no", "n", "nahi", "nah", "false", "0"):
+                resolved.confirmed.append(concept)
+                
+        # Populate entities and features for BlueprintGenerator backward compatibility
+        all_concepts = set(resolved.detected + resolved.inferred + resolved.confirmed)
+        
+        # For data entities, we can use the domain ontology concepts if they are present
+        # To avoid breaking the existing BlueprintGenerator completely, we'll try to include all concepts
+        resolved.features = list(all_concepts)
+        resolved.entities = [c for c in all_concepts if c not in domains] # Assume everything not a domain is an entity
+        
+        # If the domain's concept module is explicitly requested, we can optionally merge it
+        # But we'll rely on our inferred graph for exact matches!
         
         return resolved
 
@@ -224,16 +217,6 @@ class ClarificationEngine:
         """
         Converts a ResolvedIntent into a locked, enriched intent string
         that the BlueprintGenerator can consume directly.
-        
-        This is the final output of the Clarification Engine —
-        an unambiguous specification of what should be built.
-        
-        Args:
-            resolved: A fully resolved ResolvedIntent.
-            
-        Returns:
-            A deterministic intent string, e.g.:
-            "Hospital Management System with: Patients, Doctors, Appointments, Authentication, Payments, Insurance"
         """
         # Domain name in title case
         domain_titles = {
@@ -248,48 +231,21 @@ class ClarificationEngine:
             "social": "Social Platform",
             "ai": "AI Platform",
             "cybersecurity": "Cybersecurity Dashboard",
+            "pharmacy": "Pharmacy Management System"
         }
         
-        title = domain_titles.get(resolved.domain, resolved.domain.title() + " Application")
+        title = domain_titles.get(resolved.domain, "Custom Application")
         
-        # Build the "with" clause from entities
-        entity_names = [e.replace('_', ' ').title() for e in resolved.entities]
+        # Get components (inferred + confirmed + detected) excluding domain names
+        components = set()
+        for c in resolved.detected + resolved.inferred + resolved.confirmed:
+            if c not in domain_titles:
+                components.add(c.replace('_', ' ').title())
+                
+        # Clean up duplicates
+        component_list = sorted(list(components))
         
-        # Add confirmed features
-        feature_names = [f.replace('_', ' ').title() for f in resolved.features]
-        
-        all_parts = entity_names + feature_names
-        
-        if all_parts:
-            return f"{title} with: {', '.join(all_parts)}"
+        if component_list:
+            return f"{title} with: {', '.join(component_list)}"
         else:
             return title
-
-
-if __name__ == "__main__":
-    engine = ClarificationEngine()
-    
-    print("=== Clarification Engine Test ===\n")
-    
-    # Test 1: Vague intent
-    print("--- Test 1: Vague Intent ---")
-    result = engine.analyze(["healthcare"], "Mujhe hospital app banana hai")
-    print(f"Detected: {result.detected_concepts}")
-    print(f"Missing: {result.missing_concepts}")
-    print(f"Confidence: {result.confidence}")
-    print(f"Complete: {result.is_complete}")
-    print(f"Questions: {len(result.questions)}")
-    for q in result.questions:
-        print(f"  [{q['concept']}] {q['question']}")
-    
-    # Test 2: Explicit intent (should have no questions)
-    print("\n--- Test 2: Explicit Intent ---")
-    result2 = engine.analyze(
-        ["healthcare"],
-        "Hospital management system with login OTP, payment gateway, video consultation, insurance"
-    )
-    print(f"Detected: {result2.detected_concepts}")
-    print(f"Missing: {result2.missing_concepts}")
-    print(f"Confidence: {result2.confidence}")
-    print(f"Complete: {result2.is_complete}")
-    print(f"Questions: {len(result2.questions)}")

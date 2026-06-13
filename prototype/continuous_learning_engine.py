@@ -46,13 +46,22 @@ def continuous_learning_loop(user_input, user_id):
         for i, cat in enumerate(categories):
             print(f"  {i+1}. {cat}")
             
-        # In a real system, we'd wait for user input. Simulating selection here:
+        # Simulated user response (in production, this would be real user input)
         target_category = "performance"
         target_word = "jhakkaas"
         print(f"\nTu: Word '{target_word}' ka matlab '{target_category}' hai.")
         
-        print(f"\n[System]: Learning mapped! '{target_word}' -> '{target_category}'")
+        # Input Validation: Only allow safe alphabetic words (no code injection)
+        import re
+        if not re.match(r'^[a-zA-Z\u0900-\u097F ]+$', target_word):
+            print(f"\n[Security] Invalid input rejected: '{target_word}' contains unsafe characters.")
+            return
+        if target_category not in categories:
+            print(f"\n[Security] Invalid category rejected: '{target_category}' is not a known category.")
+            return
         
+        print(f"\n[System]: Learning mapped! '{target_word}' -> '{target_category}'")
+
         # Save to user profile
         if "learned_slang" not in user_profile:
             user_profile["learned_slang"] = {}

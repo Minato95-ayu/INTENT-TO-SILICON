@@ -234,42 +234,54 @@ def process_single_input(user_input, func_library, emotion_library, headless_rep
     if matched_func_categories and len(final_func_specs) < len(matched_func_categories):
         metrics["status"] = "clarification_required"
         
-    # 3. Pain Point Mapping - v0.8 Upgrade (Active Disambiguation to Candidate Solutions)
+    # 3. Cognitive Questioning Framework - v0.10 Upgrade
     if matched_emotions:
         for category in matched_emotions:
             data = emotion_library[category]
             
-            prompt_text = data.get('clarification_prompt', data.get('cross_question', ''))
+            matrix = data.get('clarification_matrix', {})
+            # Step 1: Acknowledge
+            ack = matrix.get('acknowledge', "Pain point detected.")
+            print(f"\n[Acknowledge] System: {ack}")
             
-            options = data.get('options', {})
+            # Step 2: Isolate Symptom
+            isolate = matrix.get('isolate', {})
+            q_iso = isolate.get('question', "Sabse bada issue kya hai?")
+            options = isolate.get('options', {})
+            
             options_text = ""
-            for opt_key, opt_data in options.items():
-                q_text = opt_data.get('question', str(opt_data.get('ux_patterns', [''])[0]))
-                options_text += f"\n  {opt_key}. {q_text}"
+            for opt_key, opt_text in options.items():
+                options_text += f"\n  {opt_key}. {opt_text}"
                 
-            full_prompt = prompt_text + options_text
+            full_iso_prompt = q_iso + options_text
             
-            # Apply User Context (Behavior)
-            if user_profile:
-                if category == "trust_deficit" and user_profile.get("risk_tolerance") == "conservative":
-                    full_prompt += f"\n[Context: As a conservative {user_profile.get('business_domain', '')} user, you might want to prioritize Data/Payment security.]"
-                
             if headless_reply is not None:
-                print(f"\nSystem (Pain Point Detected!): {full_prompt}")
+                print(f"[Isolate] System: {full_iso_prompt}")
                 reply = headless_reply
             else:
-                print(f"\nSystem (Pain Point Detected!): {full_prompt}")
+                print(f"[Isolate] System: {full_iso_prompt}")
                 reply = input("Tu (Reply: Enter option number): ").strip()
             
             if reply in options:
-                selected_option = options[reply]
+                # Step 3: Determine Impact
+                impact = matrix.get('impact', "Kya isse flow block ho raha hai? (y/n)")
+                if headless_reply is not None:
+                    print(f"[Impact] System: {impact}")
+                else:
+                    print(f"[Impact] System: {impact}")
+                    input("Tu (Reply y/n): ")
+                    
+                cand_sols = data.get('candidate_solutions', {}).get(reply, [])
                 emotion_candidates.append({
-                    "pain_point": data.get('root_intent', data.get('emotion_type', 'Unknown')),
+                    "pain_point": data.get('root_intent', category),
                     "source": f"user clarified (selected option {reply})",
-                    "candidate_solutions": selected_option.get('candidate_solutions', [selected_option.get('technical_spec')])
+                    "candidate_solutions": cand_sols
                 })
             else:
-                pass
+                # Safe-Halting Policy
+                print("\n[Safe-Halting Policy] System: Sorry, aapka jawab predefined architectural patterns se match nahi ho raha. Main galat architecture nahi banaunga. Is issue par human research ki zaroorat hai.")
+                metrics["status"] = "fail_hard"
+                return metrics
                     
     # If emotions matched but ambiguity was not resolved for all of them
     if matched_emotions and len(emotion_candidates) < len(matched_emotions):

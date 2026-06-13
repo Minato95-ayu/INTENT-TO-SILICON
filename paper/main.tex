@@ -61,18 +61,20 @@ A significant challenge in intent parsing is handling explicit feature exclusion
 
 Features matching these heuristics are stripped from the active requirements pool and explicitly serialized into an \texttt{excluded_requirements} section of the YAML blueprint, proving successful exclusion to the downstream generator.
 
-\subsection{4.3 Layer 3: Pain Point Taxonomy & Active Disambiguation (v0.8)}
+\subsection{4.3 Layer 3: Pain Point Taxonomy & Dynamic Clarification Matrix (v0.10)}
 
-Rather than performing generic sentiment analysis (e.g., classifying text simply as "anger" or "joy"), the framework maps unstructured, colloquial expressions to specific UX Engineering heuristics using a \textbf{Pain Point Taxonomy}. 
+Rather than performing generic sentiment analysis, the framework maps unstructured colloquial expressions to specific UX Engineering heuristics using a \textbf{Pain Point Taxonomy}. 
 
-For example, when a user states \texttt{"paise kat gaye par order nahi hua"} (money deducted but order failed), the system does not arbitrarily infer a technical solution like Razorpay Escrow. Instead, it recognizes the root intent (\texttt{Payment Anxiety}) and triggers an intermediate clarification stage:
+When a user provides a colloquial input (e.g., \texttt{"paise kat gaye par order nahi hua"}), the system does not arbitrarily infer a technical solution. Instead, it utilizes a 3-step \textbf{Dynamic Clarification Matrix} to precisely extract intent without hallucination:
 
-> *System: "Mujhe payment-related anxiety detect hui. Sabse bada issue kya hai?"*
-> 1. *Refund ka wait hai*
-> 2. *Payment status clear nahi hai*
-> 3. *Scam ka dar hai*
+1. \textbf{Acknowledge:} The system acknowledges the specific pain point (e.g., *System: "Mujhe payment-related anxiety detect hui."*)
+2. \textbf{Isolate Symptom:} The system asks a targeted cross-question to isolate the exact cause (e.g., *System: "Sabse bada issue kya hai? (1) Refund ka wait hai (2) Budget issue..."*)
+3. \textbf{Determine Impact:} The system confirms the severity of the issue (e.g., *System: "Kya is wajah se order completely ruk gaya hai?"*)
 
-If the user selects option 1, the engine outputs \textbf{Candidate Solutions} (e.g., \texttt{refund_tracker}, \texttt{automated_refund_webhooks}) rather than rigidly locking a single technical mandate. This methodology ensures that the generated specifications accurately reflect software engineering best practices without succumbing to architectural hallucination.
+Upon successful clarification, the engine outputs \textbf{Candidate Solutions} (e.g., \texttt{refund_tracker}, \texttt{automated_refund_webhooks}) rather than rigidly locking a single technical mandate.
+
+#### Safe-Halting Policy
+If the user provides an invalid response or the system lacks sufficient confidence during the Clarification Matrix, a strict \textbf{Safe-Halting Policy} is enforced. The system explicitly declines architectural generation by stating: *"Main galat architecture nahi banaunga. Is issue par human research ki zaroorat hai."* This rigorously counteracts the tendency of generative models to over-prescribe solutions based on guesswork.
 
 \subsection{3.4 Safe Halting (Hallucination Avoidance)}
 If an input is entirely out-of-vocabulary (OOV) and matches no functional or emotional root lemmas, the system is hardcoded to halt execution and return a \texttt{fail_hard} status. This deliberate limitation ensures that the framework prefers to ask for clarification rather than utilizing unsupported inference to generate hallucinated specifications.

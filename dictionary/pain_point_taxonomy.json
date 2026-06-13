@@ -1,213 +1,518 @@
 {
-  "trust_deficit": {
+  "payment_anxiety": {
+    "engineering_signal": "Payment Architecture & Audit Logging",
+    "description": "User fears financial loss, transaction failure, or hidden charges.",
     "examples": [
-      {"phrase": "dar", "meaning": "Fear of financial loss, fraud, or data breach."},
-      {"phrase": "shanka", "meaning": "Doubt regarding platform authenticity or hidden terms."},
-      {"phrase": "fraud", "meaning": "Direct accusation or anxiety about being scammed."},
-      {"phrase": "dhoka", "meaning": "Feeling of betrayal by the service or misleading UI."},
-      {"phrase": "trust", "meaning": "Concerns about reliability and brand reputation."},
-      {"phrase": "vishwas", "meaning": "Lack of faith in the platform's promises."},
-      {"phrase": "chori", "meaning": "Fear of unauthorized transactions or data theft."},
-      {"phrase": "scam", "meaning": "Suspecting fraudulent activity or fake users."},
-      {"phrase": "bharam", "meaning": "Confusion leading to mistrust in the process."},
-      {"phrase": "gaban", "meaning": "Fear of funds being embezzled or withheld."},
-      {"phrase": "safe nahi", "meaning": "Explicit statement that the platform feels insecure."},
-      {"phrase": "secure nahi", "meaning": "Concerns about technical security (e.g., lack of SSL/HTTPS)."},
-      {"phrase": "risk hai", "meaning": "Perceiving high risk in proceeding with a transaction."},
-      {"phrase": "arre yaar", "meaning": "Exclamation of frustrated disappointment often tied to broken trust."}
-    ],
-    "root_intent": "Trust Deficit",
-    "clarification_matrix": {
-      "acknowledge": "Mujhe trust/security related anxiety detect hui.",
-      "isolate": {
-        "question": "Sabse bada dar kya hai?",
-        "options": {
-          "1": "Payment ya paise chori hone ka dar",
-          "2": "Personal data leak hone ka dar",
-          "3": "Fake users ya bots ka dar"
-        }
+      {
+        "phrase": "paise kat gaye",
+        "meaning": "Amount deducted but order not placed"
       },
-      "impact": "Kya is darr ki wajah se user platform chhod raha hai? (y/n)"
-    },
-    "candidate_solutions": {
-      "1": ["escrow_payment", "transaction_audit_logs", "pci_dss_compliance"],
-      "2": ["2fa", "aes_256_encryption", "jwt_auth", "visible_ssl_badge"],
-      "3": ["identity_verification", "kyc_integration", "rbac"]
-    }
+      {
+        "phrase": "refund kab aayega",
+        "meaning": "Anxiety over refund timeline"
+      },
+      {
+        "phrase": "payment fail ho gaya",
+        "meaning": "Transaction failed mid-way"
+      },
+      {
+        "phrase": "account se paise udaye",
+        "meaning": "Suspicion of unauthorized deduction"
+      },
+      {
+        "phrase": "double payment lag gaya",
+        "meaning": "Charged twice for single transaction"
+      },
+      {
+        "phrase": "bank se message aaya par app mein nahi dikha",
+        "meaning": "Sync issue between gateway and app"
+      },
+      {
+        "phrase": "transaction pending hai",
+        "meaning": "Transaction stuck in pending state"
+      },
+      {
+        "phrase": "fraud ho gaya mere sath",
+        "meaning": "General financial fraud fear"
+      },
+      {
+        "phrase": "OTP aa gaya par payment nahi hua",
+        "meaning": "Session timeout after OTP"
+      },
+      {
+        "phrase": "wallet se balance gayab",
+        "meaning": "Missing wallet balance"
+      },
+      {
+        "phrase": "hidden charges laga diye",
+        "meaning": "Unexpected taxes or fees added at checkout"
+      },
+      {
+        "phrase": "paisa wapas chahiye",
+        "meaning": "Urgent refund request"
+      },
+      {
+        "phrase": "account khali kar dega ye app",
+        "meaning": "Fear of app draining bank account"
+      },
+      {
+        "phrase": "payment atak gaya",
+        "meaning": "Transaction stuck midway"
+      },
+      {
+        "phrase": "paisa fas gaya",
+        "meaning": "Money blocked in the system"
+      },
+      {
+        "phrase": "extra paise kat liye",
+        "meaning": "Overcharged"
+      },
+      {
+        "phrase": "kahan gaye mere paise",
+        "meaning": "Lost money tracking"
+      },
+      {
+        "phrase": "payment gateway error",
+        "meaning": "Technical failure at payment provider"
+      },
+      {
+        "phrase": "card decline ho gaya",
+        "meaning": "Card payment rejected"
+      },
+      {
+        "phrase": "auto debit band karna hai",
+        "meaning": "Fear of recurring charges"
+      }
+    ]
   },
   "navigation_confusion": {
+    "engineering_signal": "UX Flow & Minimum Click Pathways",
+    "description": "User is unable to find a feature or complete a flow.",
     "examples": [
-      {"phrase": "uljhan", "meaning": "Feeling tangled or lost within the app's navigation."},
-      {"phrase": "pareshan", "meaning": "Bothered or distressed by complex workflows."},
-      {"phrase": "mushkil", "meaning": "Finding the interface too difficult to operate."},
-      {"phrase": "samajh nahi", "meaning": "Inability to comprehend the UI copy or next steps."},
-      {"phrase": "hard", "meaning": "Perceiving the task as physically/mentally taxing due to friction."},
-      {"phrase": "bhaari", "meaning": "UI feels heavy, cluttered, or overwhelming."},
-      {"phrase": "bhatak", "meaning": "Losing track of location within the app hierarchy."},
-      {"phrase": "bhool", "meaning": "Forgetting previous steps due to lack of breadcrumbs."},
-      {"phrase": "kya karu", "meaning": "Complete lack of direction or clear Call to Action (CTA)."},
-      {"phrase": "pata nahi", "meaning": "Uncertainty about system status or consequences of clicking."},
-      {"phrase": "confuse", "meaning": "Cognitive overload from too many options."},
-      {"phrase": "complicated", "meaning": "Workflow has too many unnecessary steps."},
-      {"phrase": "sir ke upar", "meaning": "Technical jargon or layout goes completely over the user's head."},
-      {"phrase": "bawasir", "meaning": "Harsh slang indicating an extremely poor and painful user experience."},
-      {"phrase": "kaha click", "meaning": "Inability to locate primary action buttons."}
-    ],
-    "root_intent": "Navigation / UI Confusion",
-    "clarification_matrix": {
-      "acknowledge": "Mujhe UI/UX confusion detect hui.",
-      "isolate": {
-        "question": "Uljhan kis wajah se ho sakti hai?",
-        "options": {
-          "1": "Bohot saare options hain (Cluttered UI)",
-          "2": "Technical terms samajh nahi aa rahe",
-          "3": "Pata nahi aage kya karna hai"
-        }
+      {
+        "phrase": "kaha click karu",
+        "meaning": "Cannot find the primary Call-To-Action"
       },
-      "impact": "Kya user is flow mein atak gaya hai aur aage nahi badh paa raha? (y/n)"
-    },
-    "candidate_solutions": {
-      "1": ["simplified_lite_mode", "progressive_disclosure", "dynamic_ui_rendering"],
-      "2": ["contextual_tooltips", "plain_language_helpers", "localization_engine"],
-      "3": ["guided_onboarding", "breadcrumbs", "floating_action_button"]
-    }
-  },
-  "urgency": {
-    "examples": [
-      {"phrase": "jaldi", "meaning": "Need for immediate task completion."},
-      {"phrase": "aapaat", "meaning": "Emergency situation requiring bypass of normal slow flows."},
-      {"phrase": "turant", "meaning": "Instantaneous response expected by the user."},
-      {"phrase": "emergency", "meaning": "High-stakes scenario where delay causes real-world harm."},
-      {"phrase": "time nahi", "meaning": "User is impatient and will bounce if process is lengthy."},
-      {"phrase": "wait nahi", "meaning": "Refusal to tolerate loading spinners or queues."},
-      {"phrase": "fatafat", "meaning": "Desire for a snappy, friction-free experience."},
-      {"phrase": "abhi", "meaning": "Demand for real-time, synchronous results."},
-      {"phrase": "der mat karo", "meaning": "Warning that delays will result in cart abandonment."},
-      {"phrase": "bhago", "meaning": "Urge to skip steps and rush to the end goal."},
-      {"phrase": "fast kar", "meaning": "Direct command to optimize performance or UX flows."},
-      {"phrase": "waat lag gayi", "meaning": "Situation is ruined due to failure to meet urgent deadlines."}
-    ],
-    "root_intent": "Urgency",
-    "clarification_matrix": {
-      "acknowledge": "Mujhe urgency/impatience detect hui.",
-      "isolate": {
-        "question": "Jaldi ka kya context hai?",
-        "options": {
-          "1": "Fast checkout chahiye",
-          "2": "Emergency action lena hai",
-          "3": "Tezi se data entry karni hai"
-        }
+      {
+        "phrase": "option nahi mil raha",
+        "meaning": "Missing expected setting or menu item"
       },
-      "impact": "Kya delay hone se business/user ka nuksaan hoga? (y/n)"
-    },
-    "candidate_solutions": {
-      "1": ["one_click_checkout", "guest_login", "session_based_carts"],
-      "2": ["prominent_sos_button", "direct_call_to_action", "webrtc_integration"],
-      "3": ["autofill_forms", "keyboard_shortcuts", "predictive_text"]
-    }
+      {
+        "phrase": "samajh nahi aa raha",
+        "meaning": "General UI complexity overload"
+      },
+      {
+        "phrase": "kuch samajh nahi aa raha",
+        "meaning": "Severe confusion with interface"
+      },
+      {
+        "phrase": "kidhar jana hai",
+        "meaning": "Lost in the navigation hierarchy"
+      },
+      {
+        "phrase": "menu kahan hai",
+        "meaning": "Hamburger or bottom nav is hidden"
+      },
+      {
+        "phrase": "back kaise jau",
+        "meaning": "Trapped in a screen without back button"
+      },
+      {
+        "phrase": "profile edit nahi ho rahi",
+        "meaning": "Cannot find edit action"
+      },
+      {
+        "phrase": "order history kahan hai",
+        "meaning": "Cannot locate past transactions"
+      },
+      {
+        "phrase": "bohot bekar UI hai",
+        "meaning": "Visually unappealing or cluttered interface"
+      },
+      {
+        "phrase": "itna complex kyu banaya",
+        "meaning": "Over-engineered user flow"
+      },
+      {
+        "phrase": "button kaam nahi kar raha",
+        "meaning": "Unresponsive UI element or unclear state"
+      },
+      {
+        "phrase": "kuch dikh nahi raha",
+        "meaning": "Contrast issues or text too small"
+      },
+      {
+        "phrase": "screen par bheed bohot hai",
+        "meaning": "Information overload on single screen"
+      },
+      {
+        "phrase": "kuch clear nahi hai",
+        "meaning": "Lack of visual hierarchy"
+      },
+      {
+        "phrase": "sir ke upar se gaya ye interface",
+        "meaning": "Interface is too technical for user"
+      },
+      {
+        "phrase": "pata nahi aage kya karna hai confuse hu",
+        "meaning": "No clear next step indicated"
+      },
+      {
+        "phrase": "bohot bawasir UI hai",
+        "meaning": "Extremely frustrating user experience"
+      },
+      {
+        "phrase": "uljhan ho rahi hai hard hai",
+        "meaning": "Cognitive overload during task"
+      },
+      {
+        "phrase": "setting kaha chhupayi hai",
+        "meaning": "Settings menu is deeply nested"
+      }
+    ]
   },
   "performance_frustration": {
+    "engineering_signal": "Latency Optimization & Loading States",
+    "description": "User is experiencing slow load times, crashes, or lag.",
     "examples": [
-      {"phrase": "gussa", "meaning": "Anger directed at app unresponsiveness."},
-      {"phrase": "irritate", "meaning": "Annoyance from micro-lags and stutters."},
-      {"phrase": "thak", "meaning": "Fatigue from waiting for screens to render."},
-      {"phrase": "fas", "meaning": "Feeling trapped in a frozen state or loop."},
-      {"phrase": "atak", "meaning": "App is stuck processing a request indefinitely."},
-      {"phrase": "hang", "meaning": "Device or app UI thread is completely blocked."},
-      {"phrase": "krodh", "meaning": "Severe anger, likely leading to a 1-star review."},
-      {"phrase": "bekar", "meaning": "Dismissing the app as useless due to poor optimization."},
-      {"phrase": "bakwas", "meaning": "Trash-talking the technical quality of the software."},
-      {"phrase": "slow hai", "meaning": "Direct complaint about network or rendering latency."},
-      {"phrase": "kaam nahi karta", "meaning": "Core functionality is broken or timing out."},
-      {"phrase": "tang aa gaya", "meaning": "Reaching the limit of patience with buggy software."},
-      {"phrase": "ghoom", "meaning": "Infinite loading spinners without progress indication."},
-      {"phrase": "subah", "meaning": "Sarcastic remark about tasks taking overnight to finish."},
-      {"phrase": "safed screen", "meaning": "White Screen of Death (WSOD) or rendering failure."},
-      {"phrase": "blank", "meaning": "UI fails to paint content, leaving empty containers."},
-      {"phrase": "time lag", "meaning": "Noticeable delay between user input and visual feedback."},
-      {"phrase": "load nahi", "meaning": "Network request failed or assets are too heavy."},
-      {"phrase": "dimaag ki dahi", "meaning": "Extreme mental frustration caused by repeated technical glitches."},
-      {"phrase": "faaltu speed", "meaning": "Sarcastic insult towards bandwidth or backend response times."}
-    ],
-    "root_intent": "Performance Frustration",
-    "clarification_matrix": {
-      "acknowledge": "Mujhe performance-related frustration detect hui.",
-      "isolate": {
-        "question": "App mein exact problem kya hai?",
-        "options": {
-          "1": "App loading mein atak raha hai (Blank screen)",
-          "2": "Data upload/download fail ho raha hai",
-          "3": "Kaam karte waqt achanak crash ho gaya"
-        }
+      {
+        "phrase": "app hang ho gaya",
+        "meaning": "App froze and is unresponsive"
       },
-      "impact": "Kya is frustration se user direct uninstall kar raha hai? (y/n)"
-    },
-    "candidate_solutions": {
-      "1": ["skeleton_loaders", "lazy_loading", "cdn_edge_caching"],
-      "2": ["optimistic_ui_updates", "background_sync", "service_workers"],
-      "3": ["error_boundaries", "auto_save_drafts", "localforage_sync"]
-    }
+      {
+        "phrase": "blank screen aa gayi",
+        "meaning": "View failed to render (white screen of death)"
+      },
+      {
+        "phrase": "load nahi ho raha",
+        "meaning": "Infinite loading spinner"
+      },
+      {
+        "phrase": "ghoom raha hai kabse",
+        "meaning": "Stuck on loading animation"
+      },
+      {
+        "phrase": "safed screen",
+        "meaning": "White screen error"
+      },
+      {
+        "phrase": "app crash ho gaya",
+        "meaning": "Application force closed unexpectedly"
+      },
+      {
+        "phrase": "bar bar band ho raha hai",
+        "meaning": "Repeated crashing upon launch"
+      },
+      {
+        "phrase": "bahut slow hai",
+        "meaning": "High latency in interactions"
+      },
+      {
+        "phrase": "time lagata hai",
+        "meaning": "Operations take too long to complete"
+      },
+      {
+        "phrase": "phone garam ho raha hai",
+        "meaning": "High CPU/GPU usage causing device heat"
+      },
+      {
+        "phrase": "battery pee raha hai",
+        "meaning": "Severe battery drain detected"
+      },
+      {
+        "phrase": "internet hai phir bhi nahi chal raha",
+        "meaning": "Network request failing despite connection"
+      },
+      {
+        "phrase": "server down hai kya",
+        "meaning": "Suspected backend outage"
+      },
+      {
+        "phrase": "lag kar raha hai",
+        "meaning": "Stuttering scroll or animations"
+      },
+      {
+        "phrase": "kholte kholte subah ho jayegi",
+        "meaning": "Extremely slow initial startup time"
+      },
+      {
+        "phrase": "app hang ho gaya beech mein",
+        "meaning": "Freeze during critical task"
+      },
+      {
+        "phrase": "safed screen aa gayi aur atak gaya",
+        "meaning": "Render fail with no recovery"
+      },
+      {
+        "phrase": "slow hai bekar app",
+        "meaning": "General performance dissatisfaction"
+      },
+      {
+        "phrase": "load nahi ho raha hai ghoom raha hai",
+        "meaning": "API timeout resulting in infinite spin"
+      },
+      {
+        "phrase": "chalta hi nahi hai",
+        "meaning": "Completely non-functional performance"
+      }
+    ]
   },
-  "payment_anxiety": {
+  "trust_deficit": {
+    "engineering_signal": "Data Encryption & Privacy Policies",
+    "description": "User lacks trust in the platform's security or data handling.",
     "examples": [
-      {"phrase": "kat gaye", "meaning": "Money deducted from bank but service not provided."},
-      {"phrase": "refund", "meaning": "Anxiety about the timeline and guarantee of getting money back."},
-      {"phrase": "scam", "meaning": "Belief that the company intentionally stole the money."},
-      {"phrase": "loot", "meaning": "Feeling extorted by high or hidden fees."},
-      {"phrase": "paisa doob", "meaning": "Despair over lost investment or failed transaction."},
-      {"phrase": "paisa nahi", "meaning": "Lack of funds, requiring deferred payment options."},
-      {"phrase": "mehenga", "meaning": "Pricing is perceived as uncompetitively high."},
-      {"phrase": "afford", "meaning": "Inability to pay the upfront cost of the service."},
-      {"phrase": "budget", "meaning": "Financial constraints requiring tiered pricing."},
-      {"phrase": "sasta", "meaning": "Desire for a more economical alternative or discount."},
-      {"phrase": "free chahiye", "meaning": "Demand for a freemium model or trial period."},
-      {"phrase": "karcha", "meaning": "Concern about the overall expense of using the platform."},
-      {"phrase": "gareeb", "meaning": "Expression of inability to pay, highlighting need for accessibility."},
-      {"phrase": "khali", "meaning": "Account being emptied or drained by the service."}
-    ],
-    "root_intent": "Payment Anxiety",
-    "clarification_matrix": {
-      "acknowledge": "Mujhe financial/payment anxiety detect hui.",
-      "isolate": {
-        "question": "Sabse bada issue kya hai?",
-        "options": {
-          "1": "Paise kat gaye, refund ka wait hai",
-          "2": "Paise ek saath nahi de sakte (Budget issue)",
-          "3": "Hidden charges ka dar hai"
-        }
+      {
+        "phrase": "data chori kar lega",
+        "meaning": "Fear of data theft by app owners"
       },
-      "impact": "Kya is wajah se order/transaction completely ruk gaya hai? (y/n)"
-    },
-    "candidate_solutions": {
-      "1": ["refund_tracker", "automated_refund_webhooks", "refund_timeline_ui"],
-      "2": ["emi_options", "bnpl_integration", "freemium_model"],
-      "3": ["price_transparency_calculator", "no_hidden_fees_badge", "real_time_pricing_engine"]
-    }
+      {
+        "phrase": "safe nahi lag raha",
+        "meaning": "Lack of visual security cues (SSL, locks)"
+      },
+      {
+        "phrase": "fraud app",
+        "meaning": "Suspicion of being a scam"
+      },
+      {
+        "phrase": "fake hai",
+        "meaning": "Doubting the authenticity of the service"
+      },
+      {
+        "phrase": "scam lag raha hai",
+        "meaning": "Appears to be a phishing or scam attempt"
+      },
+      {
+        "phrase": "mera number leak ho gaya",
+        "meaning": "Fear of contact info being sold"
+      },
+      {
+        "phrase": "password maang raha hai",
+        "meaning": "Suspicious request for credentials"
+      },
+      {
+        "phrase": "kisi ko pata to nahi chalega",
+        "meaning": "Need for absolute privacy/anonymity"
+      },
+      {
+        "phrase": "hack ho jayega",
+        "meaning": "Fear of account vulnerability"
+      },
+      {
+        "phrase": "virus lag raha hai",
+        "meaning": "Suspicion of malware behavior"
+      },
+      {
+        "phrase": "permission kyu maang raha hai itni",
+        "meaning": "Over-requesting device permissions (Camera/Mic)"
+      },
+      {
+        "phrase": "camera access kyu chahiye",
+        "meaning": "Unjustified camera permission request"
+      },
+      {
+        "phrase": "data leak hone ka dar hai",
+        "meaning": "Fear of database breach"
+      },
+      {
+        "phrase": "safe nahi lag raha fraud hoga",
+        "meaning": "Lack of trust preventing conversion"
+      },
+      {
+        "phrase": "mera data chori ho gaya toh?",
+        "meaning": "Anxiety over personal data security"
+      },
+      {
+        "phrase": "yeh real hai ya fake",
+        "meaning": "Doubting platform legitimacy"
+      },
+      {
+        "phrase": "kisi aur ko message ja raha hai",
+        "meaning": "Fear of unauthorized access/actions"
+      },
+      {
+        "phrase": "track kar raha hai mujhe",
+        "meaning": "Fear of location/activity tracking"
+      },
+      {
+        "phrase": "spam calls aane lage",
+        "meaning": "Linking app usage to spam"
+      },
+      {
+        "phrase": "account safe hai na",
+        "meaning": "Asking for reassurance on security"
+      }
+    ]
   },
   "support_frustration": {
+    "engineering_signal": "Customer Service & Ticketing Integration",
+    "description": "User is angry due to lack of human support or unresolved tickets.",
     "examples": [
-      {"phrase": "koi sunta nahi", "meaning": "Feeling ignored by automated customer service loops."},
-      {"phrase": "bot bakwas hai", "meaning": "Severe dissatisfaction with generic chatbot responses."},
-      {"phrase": "insaan se baat", "meaning": "Desperate need for a human agent to resolve complex nuances."},
-      {"phrase": "customer care", "meaning": "Actively seeking a direct lifeline to the company."},
-      {"phrase": "help nahi mil rahi", "meaning": "Failure of self-serve FAQs to address the specific issue."},
-      {"phrase": "pareshan hu", "meaning": "Emotional distress caused by lack of technical assistance."}
-    ],
-    "root_intent": "Support Frustration",
-    "clarification_matrix": {
-      "acknowledge": "Mujhe customer support se frustration detect hui.",
-      "isolate": {
-        "question": "Sabse zyada gussa kis baat par hai?",
-        "options": {
-          "1": "Insaan se direct baat nahi ho pa rahi",
-          "2": "Ticket ka status pata nahi chal raha"
-        }
+      {
+        "phrase": "customer care number nahi hai",
+        "meaning": "Cannot find a phone number to call"
       },
-      "impact": "Kya problem 24 hours se zyada se unresolved hai? (y/n)"
-    },
-    "candidate_solutions": {
-      "1": ["human_agent_bypass", "live_support_fab", "priority_queue_routing"],
-      "2": ["ticket_status_tracker", "whatsapp_notifications"]
-    }
+      {
+        "phrase": "koi phone nahi uthata",
+        "meaning": "Support line is continuously busy or unanswered"
+      },
+      {
+        "phrase": "bot se baat nahi karni",
+        "meaning": "Frustration with automated chatbot loops"
+      },
+      {
+        "phrase": "insaan se connect karo",
+        "meaning": "Demand for human agent escalation"
+      },
+      {
+        "phrase": "email ka reply nahi aaya",
+        "meaning": "High latency in async support"
+      },
+      {
+        "phrase": "ticket close kar di bina solve kiye",
+        "meaning": "Support closed issue prematurely"
+      },
+      {
+        "phrase": "koi help nahi mil rahi",
+        "meaning": "General lack of assistance"
+      },
+      {
+        "phrase": "support bekar hai",
+        "meaning": "Terrible customer service experience"
+      },
+      {
+        "phrase": "call center kahan hai",
+        "meaning": "Looking for physical or voice support"
+      },
+      {
+        "phrase": "complaint kahan karu",
+        "meaning": "Cannot find the grievance redressal mechanism"
+      },
+      {
+        "phrase": "koi sunne wala nahi hai",
+        "meaning": "Feeling ignored by the company"
+      },
+      {
+        "phrase": "customer care se baat karni hai koi nahi sunta",
+        "meaning": "Complete failure of support channels"
+      },
+      {
+        "phrase": "bot bakwas hai insaan se connect karo",
+        "meaning": "Chatbot failed to understand context"
+      },
+      {
+        "phrase": "mera problem waise ka waisa hai",
+        "meaning": "Issue unresolved after interaction"
+      },
+      {
+        "phrase": "sirf automated reply aata hai",
+        "meaning": "Lack of personalized support"
+      },
+      {
+        "phrase": "gussa aa raha hai support pe",
+        "meaning": "High anger at support staff/system"
+      },
+      {
+        "phrase": "kisse baat karu ab main",
+        "meaning": "Lost on how to escalate issue"
+      },
+      {
+        "phrase": "chat disconnect ho gayi",
+        "meaning": "Technical failure during support chat"
+      },
+      {
+        "phrase": "koi solution nahi diya",
+        "meaning": "Support provided unhelpful generic advice"
+      },
+      {
+        "phrase": "bekar service hai refund do aur account delete karo",
+        "meaning": "Ultimate churn due to bad support"
+      }
+    ]
+  },
+  "urgency": {
+    "engineering_signal": "Real-time Processing & Fast-Path UX",
+    "description": "User is in a rush and needs immediate execution without friction.",
+    "examples": [
+      {
+        "phrase": "jaldi karo",
+        "meaning": "General impatience for action completion"
+      },
+      {
+        "phrase": "time nahi hai",
+        "meaning": "User has extremely limited session time"
+      },
+      {
+        "phrase": "fatafat hona chahiye",
+        "meaning": "Expectation of instant results"
+      },
+      {
+        "phrase": "emergency hai",
+        "meaning": "Critical situation requiring immediate tool use"
+      },
+      {
+        "phrase": "turant chahiye",
+        "meaning": "Zero-tolerance for latency"
+      },
+      {
+        "phrase": "abhi ke abhi karna hai",
+        "meaning": "Immediate processing required"
+      },
+      {
+        "phrase": "wait nahi kar sakta",
+        "meaning": "Will abandon task if delayed"
+      },
+      {
+        "phrase": "jaldi process karo",
+        "meaning": "Backend processing is too slow"
+      },
+      {
+        "phrase": "urgent kaam hai atak gaya",
+        "meaning": "Critical workflow blocked by system"
+      },
+      {
+        "phrase": "fast forward karo",
+        "meaning": "Skip unnecessary onboarding/steps"
+      },
+      {
+        "phrase": "jaldi kar bhai time nahi hai",
+        "meaning": "Extreme impatience"
+      },
+      {
+        "phrase": "fatafat checkout karna hai",
+        "meaning": "Friction at payment/checkout step"
+      },
+      {
+        "phrase": "emergency mein turant kaam aana chahiye",
+        "meaning": "App must be reliable in emergencies"
+      },
+      {
+        "phrase": "kab tak wait karu",
+        "meaning": "Patience exhausted waiting for result"
+      },
+      {
+        "phrase": "skip karo ye sab",
+        "meaning": "Frustration with mandatory non-essential steps"
+      },
+      {
+        "phrase": "direct point pe aao",
+        "meaning": "Too much reading/fluff in UI"
+      },
+      {
+        "phrase": "jaldi dikhao result",
+        "meaning": "Search/Filter is too slow"
+      },
+      {
+        "phrase": "mera time waste ho raha hai",
+        "meaning": "Perceived inefficiency of app"
+      },
+      {
+        "phrase": "speed badhao iski",
+        "meaning": "Demand for faster app performance"
+      },
+      {
+        "phrase": "bina delay ke payment karo",
+        "meaning": "Need for 1-click payment"
+      }
+    ]
   }
 }

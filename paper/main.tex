@@ -15,7 +15,7 @@
 
 \maketitle
 \begin{abstract}
-The transition from human thought to machine-executable code is hindered not primarily by the reasoning limitations of artificial intelligence, but by the inherent ambiguity of natural language. While modern Large Language Models (LLMs) possess significant code-generation capabilities, their reliance on underspecified, vague human input frequently leads to hallucinated specifications and erroneous software architectures. This paper introduces \textbf{Intent-to-Silicon}, an active ambiguity-reduction framework designed to intercept and process raw human intent—specifically in multilingual contexts (Hindi/Hinglish/English)—before code generation occurs. Through a 7-layer processing pipeline featuring an Active Disambiguation Engine, a Hinglish-to-Technical Semantic Dictionary, and Clause Boundary Negation heuristics, the framework translates ambiguous user statements into strictly typed, machine-readable YAML blueprints. Empirical benchmarking on a synthetic dataset of 121 diverse inputs demonstrates that the system achieves a 66.1% direct specification success rate and an 85.0% negation parsing accuracy. Crucially, by preferring safe halting over unsupported inference, the framework completely eliminates architectural hallucination (0% rate) on out-of-vocabulary inputs.
+The transition from human thought to machine-executable code is hindered not primarily by the reasoning limitations of artificial intelligence, but by the inherent ambiguity of natural language. While modern Large Language Models (LLMs) possess significant code-generation capabilities, their reliance on underspecified, vague human input frequently leads to hallucinated specifications and erroneous software architectures. This paper introduces \textbf{Intent-to-Silicon}, an active ambiguity-reduction framework designed to intercept and process raw human intent—specifically in multilingual contexts (Hindi/Hinglish/English)—before code generation occurs. Through a 7-layer processing pipeline featuring an Active Disambiguation Engine, a Hinglish-to-Technical Semantic Dictionary, and Clause Boundary Negation heuristics, the framework translates ambiguous user statements into strictly typed, machine-readable YAML blueprints. Empirical benchmarking on a synthetic dataset of 121 diverse inputs demonstrates that the system achieves a 62.0% disambiguation success rate and an 85.0% negation parsing accuracy. Crucially, by preferring safe halting over unsupported inference, the framework completely eliminates architectural hallucination (0% rate) on out-of-vocabulary inputs.
 \end{abstract}
 
 
@@ -117,17 +117,17 @@ Three primary outcomes were measured:
 The v2.0 evaluation produced the following results:
 
 \begin{itemize}
-    \item Resolved via Active Disambiguation: 64.5\%
-    \item Out of Vocabulary (Safe Halt): 32.2\%
-    \item Unresolved Ambiguity (Safe Halt): 3.3\%
+    \item Resolved via Active Disambiguation: 62.0\%
+    \item Out of Vocabulary (OOV) Rate: 37.2\%
+    \item Unresolved Ambiguity (Safe Halt): 0.8\%
 \end{itemize}
 
-These results highlight the framework's strict adherence to zero-assumption architecture. In 64.5\% of cases, the system actively engaged the user to resolve ambiguity before generating blueprints, completely eliminating blind assumptions. If ambiguity could not be resolved, the system safely halted.
+These results highlight the framework's strict adherence to zero-assumption architecture. In 62.0\% of cases, the system actively engaged the user to resolve ambiguity before generating blueprints, completely eliminating blind assumptions. If ambiguity could not be resolved, the system safely halted.
 
 Furthermore, syntactic and psychological testing yielded the following accuracies:
 \begin{itemize}
     \item Negation Accuracy: 85.0\% (successfully stripping negated features from the active requirements pool).
-    \item Emotion Detection Accuracy: 64.0\% (successfully mapping subjective emotional statements to the correct psychological category and subsequently to structural UX patterns).
+    \item Emotion Detection Accuracy: 44.0\% (successfully mapping subjective emotional statements to the correct psychological category and subsequently to structural UX patterns).
 \end{itemize}
 
 
@@ -160,7 +160,7 @@ Rather than manual curation, an extraction script filters raw internet "noise" f
 
 The translation of human thought to machine-executable code remains one of the most significant challenges in artificial intelligence. Existing Natural Language to Code (NL2Code) systems frequently fail because they attempt to generate code from underspecified, ambiguous intent, leading to architectural hallucinations. 
 
-The Intent-to-Silicon framework proposes that ambiguity reduction must occur as a strict, active pre-processing step before any code is generated. By leveraging a domain-specific Hinglish-to-Technical semantic dictionary, clause boundary negation heuristics, and a rigorous safe-halting philosophy, the framework successfully translates vague, multilingual inputs into highly structured, machine-readable YAML specifications. Preliminary empirical benchmarks demonstrate a 66.1\% direct specification success rate and an 85.0\% negation accuracy, all while maintaining a 0\% hallucination rate on unsupported inputs. Ultimately, these results suggest that focusing on intent clarification—rather than purely on generative reasoning—offers a more robust pathway toward reliable, autonomous software engineering.
+The Intent-to-Silicon framework proposes that ambiguity reduction must occur as a strict, active pre-processing step before any code is generated. By leveraging a domain-specific Hinglish-to-Technical semantic dictionary, clause boundary negation heuristics, and a rigorous safe-halting philosophy, the framework successfully translates vague, multilingual inputs into highly structured, machine-readable YAML specifications. Preliminary empirical benchmarks demonstrate a 62.0\% disambiguation success rate and an 85.0\% negation accuracy, all while maintaining a 0\% hallucination rate on unsupported inputs. Ultimately, these results suggest that focusing on intent clarification—rather than purely on generative reasoning—offers a more robust pathway toward reliable, autonomous software engineering.
 
 
 

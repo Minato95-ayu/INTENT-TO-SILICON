@@ -139,8 +139,10 @@ def process_single_input(user_input, func_library, emotion_library, headless_rep
                     clause_funcs.append((category, i))
             
         for category, data in emotion_library.items():
-            for example in data.get('examples', data.get('root_lemmas', [])):
-                if example in clause:
+            for example_item in data.get('examples', data.get('root_lemmas', [])):
+                # Support v0.12 schema where example might be a dict with 'phrase' and 'meaning'
+                phrase = example_item.get('phrase', example_item) if isinstance(example_item, dict) else example_item
+                if phrase in clause:
                     clause_emotions.append((category, 0))
                     break
                     

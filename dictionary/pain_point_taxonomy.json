@@ -1,6 +1,21 @@
 {
   "trust_deficit": {
-    "examples": ["dar", "shanka", "fraud", "dhoka", "trust", "vishwas", "chori", "scam", "bharam", "gaban", "safe nahi", "secure nahi", "risk hai", "arre yaar"],
+    "examples": [
+      {"phrase": "dar", "meaning": "Fear of financial loss, fraud, or data breach."},
+      {"phrase": "shanka", "meaning": "Doubt regarding platform authenticity or hidden terms."},
+      {"phrase": "fraud", "meaning": "Direct accusation or anxiety about being scammed."},
+      {"phrase": "dhoka", "meaning": "Feeling of betrayal by the service or misleading UI."},
+      {"phrase": "trust", "meaning": "Concerns about reliability and brand reputation."},
+      {"phrase": "vishwas", "meaning": "Lack of faith in the platform's promises."},
+      {"phrase": "chori", "meaning": "Fear of unauthorized transactions or data theft."},
+      {"phrase": "scam", "meaning": "Suspecting fraudulent activity or fake users."},
+      {"phrase": "bharam", "meaning": "Confusion leading to mistrust in the process."},
+      {"phrase": "gaban", "meaning": "Fear of funds being embezzled or withheld."},
+      {"phrase": "safe nahi", "meaning": "Explicit statement that the platform feels insecure."},
+      {"phrase": "secure nahi", "meaning": "Concerns about technical security (e.g., lack of SSL/HTTPS)."},
+      {"phrase": "risk hai", "meaning": "Perceiving high risk in proceeding with a transaction."},
+      {"phrase": "arre yaar", "meaning": "Exclamation of frustrated disappointment often tied to broken trust."}
+    ],
     "root_intent": "Trust Deficit",
     "clarification_matrix": {
       "acknowledge": "Mujhe trust/security related anxiety detect hui.",
@@ -21,7 +36,23 @@
     }
   },
   "navigation_confusion": {
-    "examples": ["uljhan", "pareshan", "mushkil", "samajh nahi", "hard", "bhaari", "bhatak", "bhool", "kya karu", "pata nahi", "confuse", "complicated", "sir ke upar", "bawasir", "kaha click"],
+    "examples": [
+      {"phrase": "uljhan", "meaning": "Feeling tangled or lost within the app's navigation."},
+      {"phrase": "pareshan", "meaning": "Bothered or distressed by complex workflows."},
+      {"phrase": "mushkil", "meaning": "Finding the interface too difficult to operate."},
+      {"phrase": "samajh nahi", "meaning": "Inability to comprehend the UI copy or next steps."},
+      {"phrase": "hard", "meaning": "Perceiving the task as physically/mentally taxing due to friction."},
+      {"phrase": "bhaari", "meaning": "UI feels heavy, cluttered, or overwhelming."},
+      {"phrase": "bhatak", "meaning": "Losing track of location within the app hierarchy."},
+      {"phrase": "bhool", "meaning": "Forgetting previous steps due to lack of breadcrumbs."},
+      {"phrase": "kya karu", "meaning": "Complete lack of direction or clear Call to Action (CTA)."},
+      {"phrase": "pata nahi", "meaning": "Uncertainty about system status or consequences of clicking."},
+      {"phrase": "confuse", "meaning": "Cognitive overload from too many options."},
+      {"phrase": "complicated", "meaning": "Workflow has too many unnecessary steps."},
+      {"phrase": "sir ke upar", "meaning": "Technical jargon or layout goes completely over the user's head."},
+      {"phrase": "bawasir", "meaning": "Harsh slang indicating an extremely poor and painful user experience."},
+      {"phrase": "kaha click", "meaning": "Inability to locate primary action buttons."}
+    ],
     "root_intent": "Navigation / UI Confusion",
     "clarification_matrix": {
       "acknowledge": "Mujhe UI/UX confusion detect hui.",
@@ -42,7 +73,20 @@
     }
   },
   "urgency": {
-    "examples": ["jaldi", "aapaat", "turant", "emergency", "time nahi", "wait nahi", "fatafat", "abhi", "der mat karo", "bhago", "fast kar", "waat lag gayi"],
+    "examples": [
+      {"phrase": "jaldi", "meaning": "Need for immediate task completion."},
+      {"phrase": "aapaat", "meaning": "Emergency situation requiring bypass of normal slow flows."},
+      {"phrase": "turant", "meaning": "Instantaneous response expected by the user."},
+      {"phrase": "emergency", "meaning": "High-stakes scenario where delay causes real-world harm."},
+      {"phrase": "time nahi", "meaning": "User is impatient and will bounce if process is lengthy."},
+      {"phrase": "wait nahi", "meaning": "Refusal to tolerate loading spinners or queues."},
+      {"phrase": "fatafat", "meaning": "Desire for a snappy, friction-free experience."},
+      {"phrase": "abhi", "meaning": "Demand for real-time, synchronous results."},
+      {"phrase": "der mat karo", "meaning": "Warning that delays will result in cart abandonment."},
+      {"phrase": "bhago", "meaning": "Urge to skip steps and rush to the end goal."},
+      {"phrase": "fast kar", "meaning": "Direct command to optimize performance or UX flows."},
+      {"phrase": "waat lag gayi", "meaning": "Situation is ruined due to failure to meet urgent deadlines."}
+    ],
     "root_intent": "Urgency",
     "clarification_matrix": {
       "acknowledge": "Mujhe urgency/impatience detect hui.",
@@ -63,7 +107,28 @@
     }
   },
   "performance_frustration": {
-    "examples": ["gussa", "irritate", "thak", "fas", "atak", "hang", "krodh", "bekar", "bakwas", "slow hai", "kaam nahi karta", "tang aa gaya", "ghoom", "subah", "safed screen", "blank", "time lag", "load nahi", "dimaag ki dahi", "faaltu speed"],
+    "examples": [
+      {"phrase": "gussa", "meaning": "Anger directed at app unresponsiveness."},
+      {"phrase": "irritate", "meaning": "Annoyance from micro-lags and stutters."},
+      {"phrase": "thak", "meaning": "Fatigue from waiting for screens to render."},
+      {"phrase": "fas", "meaning": "Feeling trapped in a frozen state or loop."},
+      {"phrase": "atak", "meaning": "App is stuck processing a request indefinitely."},
+      {"phrase": "hang", "meaning": "Device or app UI thread is completely blocked."},
+      {"phrase": "krodh", "meaning": "Severe anger, likely leading to a 1-star review."},
+      {"phrase": "bekar", "meaning": "Dismissing the app as useless due to poor optimization."},
+      {"phrase": "bakwas", "meaning": "Trash-talking the technical quality of the software."},
+      {"phrase": "slow hai", "meaning": "Direct complaint about network or rendering latency."},
+      {"phrase": "kaam nahi karta", "meaning": "Core functionality is broken or timing out."},
+      {"phrase": "tang aa gaya", "meaning": "Reaching the limit of patience with buggy software."},
+      {"phrase": "ghoom", "meaning": "Infinite loading spinners without progress indication."},
+      {"phrase": "subah", "meaning": "Sarcastic remark about tasks taking overnight to finish."},
+      {"phrase": "safed screen", "meaning": "White Screen of Death (WSOD) or rendering failure."},
+      {"phrase": "blank", "meaning": "UI fails to paint content, leaving empty containers."},
+      {"phrase": "time lag", "meaning": "Noticeable delay between user input and visual feedback."},
+      {"phrase": "load nahi", "meaning": "Network request failed or assets are too heavy."},
+      {"phrase": "dimaag ki dahi", "meaning": "Extreme mental frustration caused by repeated technical glitches."},
+      {"phrase": "faaltu speed", "meaning": "Sarcastic insult towards bandwidth or backend response times."}
+    ],
     "root_intent": "Performance Frustration",
     "clarification_matrix": {
       "acknowledge": "Mujhe performance-related frustration detect hui.",
@@ -84,7 +149,21 @@
     }
   },
   "payment_anxiety": {
-    "examples": ["kat gaye", "refund", "scam", "loot", "paisa doob", "paisa nahi", "mehenga", "afford", "budget", "sasta", "free chahiye", "karcha", "gareeb"],
+    "examples": [
+      {"phrase": "kat gaye", "meaning": "Money deducted from bank but service not provided."},
+      {"phrase": "refund", "meaning": "Anxiety about the timeline and guarantee of getting money back."},
+      {"phrase": "scam", "meaning": "Belief that the company intentionally stole the money."},
+      {"phrase": "loot", "meaning": "Feeling extorted by high or hidden fees."},
+      {"phrase": "paisa doob", "meaning": "Despair over lost investment or failed transaction."},
+      {"phrase": "paisa nahi", "meaning": "Lack of funds, requiring deferred payment options."},
+      {"phrase": "mehenga", "meaning": "Pricing is perceived as uncompetitively high."},
+      {"phrase": "afford", "meaning": "Inability to pay the upfront cost of the service."},
+      {"phrase": "budget", "meaning": "Financial constraints requiring tiered pricing."},
+      {"phrase": "sasta", "meaning": "Desire for a more economical alternative or discount."},
+      {"phrase": "free chahiye", "meaning": "Demand for a freemium model or trial period."},
+      {"phrase": "karcha", "meaning": "Concern about the overall expense of using the platform."},
+      {"phrase": "gareeb", "meaning": "Expression of inability to pay, highlighting need for accessibility."}
+    ],
     "root_intent": "Payment Anxiety",
     "clarification_matrix": {
       "acknowledge": "Mujhe financial/payment anxiety detect hui.",
@@ -105,7 +184,14 @@
     }
   },
   "support_frustration": {
-    "examples": ["koi sunta nahi", "bot bakwas hai", "insaan se baat", "customer care", "help nahi mil rahi", "pareshan hu"],
+    "examples": [
+      {"phrase": "koi sunta nahi", "meaning": "Feeling ignored by automated customer service loops."},
+      {"phrase": "bot bakwas hai", "meaning": "Severe dissatisfaction with generic chatbot responses."},
+      {"phrase": "insaan se baat", "meaning": "Desperate need for a human agent to resolve complex nuances."},
+      {"phrase": "customer care", "meaning": "Actively seeking a direct lifeline to the company."},
+      {"phrase": "help nahi mil rahi", "meaning": "Failure of self-serve FAQs to address the specific issue."},
+      {"phrase": "pareshan hu", "meaning": "Emotional distress caused by lack of technical assistance."}
+    ],
     "root_intent": "Support Frustration",
     "clarification_matrix": {
       "acknowledge": "Mujhe customer support se frustration detect hui.",

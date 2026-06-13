@@ -199,7 +199,48 @@ INTENT-TO-SILICON/
 
 ---
 
-## Current Status & Architecture Progress
+## Current Status
+
+```text
+Research Paper         ✅ Complete
+Voice Transcript       ✅ Documented  
+Dictionary             ✅ 4 files — pain_point_taxonomy, 
+                          nlp_semantic_library, semantic_library,
+                          hinglish_technical_map
+Prototype              ✅ nlp_engine.py, chat_engine.py,
+                          continuous_learning_engine.py
+Experiments            ✅ Benchmarks 28/28 passing
+Versions Completed     ✅ v0.4 → v0.12
+arXiv Submission       ⏳ Planned — Month 2
+Conference — ICON 2026 ⏳ Planned — October
+```
+
+## How to Run
+
+### Requirements
+Python 3.8+
+
+### Install
+No external libraries needed — pure Python.
+
+### Run Chat Engine
+```bash
+python prototype/chat_engine.py
+```
+
+### Run Benchmarks  
+```bash
+python experiments/benchmark_runner.py
+```
+
+### Run NLP Engine
+```bash
+python prototype/nlp_engine.py
+```
+
+---
+
+## Architecture Progress
 
 > **Transparency Note:** All benchmarks are currently run against **synthetic (self-authored) test phrases (N=28)**, not real-world user data. The disambiguation engine is **rule-based and deterministic**, not probabilistic or Bayesian. The social media mining pipeline uses **simulated data**, not actual scraped content. These are honest limitations of a research prototype.
 

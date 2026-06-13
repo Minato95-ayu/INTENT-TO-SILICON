@@ -37,10 +37,14 @@ Conference — ICON 2026 ⏳ Planned — October
 
 ---
 
-## 💻 How to Run
+## 💻 How to Run (The Prototype)
+
+> ⚠️ **Wait, why are we using Python?**  
+> We are **NOT** asking the user to code in Python. The end-user of this framework will *only* speak Hindi/English.  
+> Just like the first C++ compiler was written in C, the first prototype of our "Human-to-Binary" translator is currently being built using Python. Python is just the factory building the machine; the machine itself only understands Human Language.
 
 ### Requirements
-* Python 3.8+
+* Python 3.8+ (For running the prototype engine)
 * No external libraries needed — pure Python!
 
 ### Run Chat Engine (Interactive Translation)

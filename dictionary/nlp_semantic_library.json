@@ -5,7 +5,16 @@
     "options": {
       "1": {
         "exact_value": "REQUIREMENT: CDN Cache & Static Site Generation",
-        "hard_dependencies": ["CDN_CACHE_REQUIRED"]
+        "hard_dependencies": ["CDN_CACHE_REQUIRED"],
+        "dependency_questions": [
+          {
+            "question": "Data kaha serve karna hai?\n  1. Sirf India mein (Local CDN)\n  2. Global audience ke liye (Global Edge Network)",
+            "options": {
+              "1": {"exact_value": "REQUIREMENT: AWS CloudFront India Region Only"},
+              "2": {"exact_value": "REQUIREMENT: Cloudflare Global Edge Delivery"}
+            }
+          }
+        ]
       },
       "2": {
         "exact_value": "REQUIREMENT: ElasticSearch & Optimized Indexes",
@@ -13,12 +22,21 @@
       },
       "3": {
         "exact_value": "REQUIREMENT: P99 Latency < 200ms",
-        "hard_dependencies": ["IN_MEMORY_CACHE"]
+        "hard_dependencies": ["IN_MEMORY_CACHE"],
+        "dependency_questions": [
+          {
+            "question": "Kya heavy traffic peaks bhi handle karne hain?\n  1. Haan, unpredictable traffic aayega\n  2. Nahi, traffic stable rahega",
+            "options": {
+              "1": {"exact_value": "REQUIREMENT: K8s HPA + Redis Burst Cache"},
+              "2": {"exact_value": "REQUIREMENT: Standard Redis + Fixed Instances"}
+            }
+          }
+        ]
       }
     }
   },
   "security": {
-    "root_lemmas": ["secur", "safe", "hack", "privac", "suraksh", "gupt"],
+    "root_lemmas": ["secur", "safe", "hack", "privac", "suraksh", "gupt", "login", "auth", "password", "email", "account", "support", "contact", "call", "phone", "number"],
     "cross_question": "Security ka level kya hoga?\n  1. Standard login (Email/Password)\n  2. Bank-level security (AES-256, 2FA, Audit Logs)",
     "options": {
       "1": {
@@ -27,35 +45,62 @@
       },
       "2": {
         "exact_value": "REQUIREMENT: HTTPS + JWT Auth + AES-256 Encryption + 2FA",
-        "hard_dependencies": ["MFA_PROVIDER_REQUIRED", "AUDIT_LOGGING"]
+        "hard_dependencies": ["MFA_PROVIDER_REQUIRED", "AUDIT_LOGGING"],
+        "dependency_questions": [
+          {
+            "question": "Is system mein kiska data aayega?\n  1. Normal user data\n  2. Health ya Financial data (GDPR/HIPAA/RBI Compliance)",
+            "options": {
+              "1": {"exact_value": "REQUIREMENT: Standard Encrypted DB"},
+              "2": {"exact_value": "REQUIREMENT: PII Masking & Regulatory Compliance Audit"}
+            }
+          }
+        ]
       }
     }
   },
   "scale": {
-    "root_lemmas": ["log", "public", "traffic", "hazaar", "lakh", "viral", "bheed"],
+    "root_lemmas": ["logo ", "public", "traffic", "hazaar", "lakh", "viral", "bheed", "scale", "load"],
     "cross_question": "Kitni public aayegi (Concurrent Users)?\n  1. 100-500 log (Basic Hosting)\n  2. 10,000+ users (Auto-scaling needed)",
     "options": {
       "1": {
-        "exact_value": "REQUIREMENT: Single Instance Server",
+        "exact_value": "REQUIREMENT: Single Instance Backend",
         "hard_dependencies": []
       },
       "2": {
-        "exact_value": "REQUIREMENT: Auto-scaling active across 3 AZs",
-        "hard_dependencies": ["LOAD_BALANCER_REQUIRED", "AUTO_SCALING_GROUP"]
+        "exact_value": "REQUIREMENT: K8s / Auto-scaling Group + Load Balancer",
+        "hard_dependencies": ["DOCKERIZED", "REDIS_CACHE"],
+        "dependency_questions": [
+          {
+            "question": "Data kaha serve karna hai?\n  1. Sirf India mein (Local CDN)\n  2. Global audience ke liye (Global Edge Network)",
+            "options": {
+              "1": {"exact_value": "REQUIREMENT: Local CDN"},
+              "2": {"exact_value": "REQUIREMENT: Global Edge Network"}
+            }
+          }
+        ]
       }
     }
   },
   "database": {
-    "root_lemmas": ["save", "record", "data", "history", "puran", "sanchit"],
+    "root_lemmas": ["save", "record", "data", "history", "puran", "sanchit", "sql", "mongodb", "backend", "nodejs"],
     "cross_question": "Data kaisa hoga?\n  1. Simple document-based data (NoSQL)\n  2. Complex relationships and transactions (SQL)",
     "options": {
       "1": {
-        "exact_value": "REQUIREMENT: NoSQL Database (MongoDB/DynamoDB)",
+        "exact_value": "REQUIREMENT: NoSQL Document Store (MongoDB/DynamoDB)",
         "hard_dependencies": []
       },
       "2": {
-        "exact_value": "REQUIREMENT: Relational Database (PostgreSQL) with ACID",
-        "hard_dependencies": ["DATA_BACKUP_REQUIRED", "MIGRATION_SYSTEM"]
+        "exact_value": "REQUIREMENT: ACID Compliant SQL DB (PostgreSQL/MySQL)",
+        "hard_dependencies": ["MIGRATION_SYSTEM", "ORM_REQUIRED"],
+        "dependency_questions": [
+          {
+            "question": "Agar internet na ho tab kya?\n  1. App error dikhaye aur ruk jaye (Standard)\n  2. Data local save ho aur baad me sync ho (Offline-first)",
+            "options": {
+              "1": {"exact_value": "REQUIREMENT: Standard online only"},
+              "2": {"exact_value": "REQUIREMENT: Offline-first architecture (SQLite/WatermelonDB) with Sync"}
+            }
+          }
+        ]
       }
     }
   },
@@ -65,7 +110,16 @@
     "options": {
       "1": {
         "exact_value": "REQUIREMENT: Background Jobs & Webhooks",
-        "hard_dependencies": ["WORKER_QUEUE"]
+        "hard_dependencies": ["WORKER_QUEUE"],
+        "dependency_questions": [
+          {
+            "question": "Kya event delivery guaranteed honi chahiye?\n  1. Haan, at-least-once delivery chahiye\n  2. Nahi, best-effort chalega",
+            "options": {
+              "1": {"exact_value": "REQUIREMENT: Kafka / SQS Event Bus"},
+              "2": {"exact_value": "REQUIREMENT: Standard Redis Queue"}
+            }
+          }
+        ]
       },
       "2": {
         "exact_value": "REQUIREMENT: WebSockets Integration + Redis Pub/Sub",
@@ -83,7 +137,34 @@
       },
       "2": {
         "exact_value": "REQUIREMENT: Offline-first Architecture (PWA)",
-        "hard_dependencies": ["LOCAL_STORAGE_REQUIRED", "BACKGROUND_SYNC"]
+        "hard_dependencies": ["LOCAL_STORAGE_REQUIRED", "BACKGROUND_SYNC"],
+        "dependency_questions": [
+          {
+            "question": "Sync conflict kaise handle karein?\n  1. Last write wins (Simple)\n  2. Custom merge logic (Complex CRDTs)",
+            "options": {
+              "1": {"exact_value": "REQUIREMENT: CouchDB/PouchDB Basic Sync"},
+              "2": {"exact_value": "REQUIREMENT: Yjs / Automerge CRDTs"}
+            }
+          }
+        ]
+      }
+    }
+  },
+  "generic_intent": {
+    "root_lemmas": ["app", "website", "system", "idea", "startup", "accha", "badhiya", "naya", "sundar", "unique", "mast", "best", "next level", "viral", "world class"],
+    "cross_question": "Aapko kis type ka application chahiye?\n  1. E-commerce / Business\n  2. Social / Content App\n  3. Internal Tool / Dashboard",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: E-commerce Architecture",
+        "hard_dependencies": ["PAYMENT_GATEWAY", "INVENTORY_DB"]
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: Social Media Architecture",
+        "hard_dependencies": ["GRAPH_DB", "CDN_CACHE"]
+      },
+      "3": {
+        "exact_value": "REQUIREMENT: Internal Tool Architecture",
+        "hard_dependencies": ["SSO_INTEGRATION", "ROLE_BASED_ACCESS"]
       }
     }
   }

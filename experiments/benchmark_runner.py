@@ -17,69 +17,109 @@ def run_benchmark():
     func_lib, emotion_lib = load_libraries()
     
     total = len(dataset)
-    correct_intent = 0
-    correct_safe_halt = 0
-    safe_halt_total = 0
-    clarification_triggered = 0
+    
+    metrics = {
+        "valid_inputs": 0,
+        "oov_failures": 0,
+        "emotion_total": 0,
+        "emotion_correct": 0,
+        "negation_total": 0,
+        "negation_correct": 0,
+        "total_questions_asked": 0,
+        "inputs_with_questions": 0
+    }
     
     results_log = []
     
     for item in dataset:
         phrase = item["phrase"]
-        expected = item["expected_intent"]
+        expected = item["expected_category"]
+        test_type = item.get("type", "functional")
+        negated_expected = item.get("negated", None)
         
         # We pass headless_reply="1" so it auto-selects option 1 if clarification triggers
-        metrics = process_single_input(phrase, func_lib, emotion_lib, headless_reply="1")
+        result = process_single_input(phrase, func_lib, emotion_lib, headless_reply="1")
         
-        status = metrics["status"]
-        pain_points = metrics.get("pain_points", [])
+        status = result["status"]
+        q_asked = result.get("questions_asked", 0)
         
-        # Evaluate
         is_correct = False
+        actual_output = ""
         
-        if expected == "safe_halt":
-            safe_halt_total += 1
+        if test_type == "oov":
             if status == "fail_hard":
-                correct_safe_halt += 1
                 is_correct = True
+                actual_output = "safe_halt (Expected)"
+            else:
+                actual_output = "FAILED_HALT"
         else:
-            if status == "success" and expected in pain_points:
-                correct_intent += 1
-                clarification_triggered += 1  # In v0.8, successful intent extraction means clarification was triggered and resolved
-                is_correct = True
+            metrics["valid_inputs"] += 1
+            if status == "fail_hard":
+                metrics["oov_failures"] += 1
+                actual_output = "OOV_FAILURE"
+            else:
+                metrics["inputs_with_questions"] += 1
+                metrics["total_questions_asked"] += q_asked
                 
+                matched_funcs = result.get("matched_func_categories", [])
+                matched_emotions = result.get("matched_emotions", [])
+                negated_funcs = result.get("negated_func_categories", [])
+                
+                if test_type == "emotion":
+                    metrics["emotion_total"] += 1
+                    if expected in matched_emotions:
+                        metrics["emotion_correct"] += 1
+                        is_correct = True
+                    actual_output = f"E:{matched_emotions} F:{matched_funcs}"
+                        
+                elif test_type == "negation":
+                    metrics["negation_total"] += 1
+                    if negated_expected in negated_funcs and expected in matched_funcs:
+                        metrics["negation_correct"] += 1
+                        is_correct = True
+                    actual_output = f"Matched:{matched_funcs} Negated:{negated_funcs}"
+                        
+                else: # functional or low_confidence
+                    if expected in matched_funcs:
+                        is_correct = True
+                    actual_output = f"Matched:{matched_funcs}"
+                    
         results_log.append({
             "phrase": phrase,
+            "type": test_type,
             "expected": expected,
-            "actual": pain_points if pain_points else status,
-            "is_correct": is_correct
+            "actual": actual_output,
+            "is_correct": is_correct,
+            "questions": q_asked
         })
         
     # Generate Report
-    accuracy = (correct_intent / (total - safe_halt_total)) * 100 if (total - safe_halt_total) > 0 else 0
-    safe_halt_accuracy = (correct_safe_halt / safe_halt_total) * 100 if safe_halt_total > 0 else 0
+    oov_rate = (metrics["oov_failures"] / metrics["valid_inputs"]) * 100 if metrics["valid_inputs"] > 0 else 0
+    emotion_acc = (metrics["emotion_correct"] / metrics["emotion_total"]) * 100 if metrics["emotion_total"] > 0 else 0
+    negation_acc = (metrics["negation_correct"] / metrics["negation_total"]) * 100 if metrics["negation_total"] > 0 else 0
+    avg_questions = metrics["total_questions_asked"] / metrics["inputs_with_questions"] if metrics["inputs_with_questions"] > 0 else 0
     
-    report_md = f"""# NLP Engine Benchmark Report (v0.9)
+    report_md = f"""# NLP Engine Aggressive Benchmark Report (v2.0)
 
-## Summary
-- **Total Phrases Tested**: {total}
-- **Intent Recognition Accuracy**: {accuracy:.1f}% ({correct_intent}/{total - safe_halt_total})
-- **Safe Halt (OOV) Accuracy**: {safe_halt_accuracy:.1f}% ({correct_safe_halt}/{safe_halt_total})
-- **Clarification Trigger Rate**: {clarification_triggered} times triggered correctly.
+## Targets Evaluation
+- **Target 1: OOV Rate < 5%** -> Actual: **{oov_rate:.1f}%** (Failures: {metrics["oov_failures"]}/{metrics["valid_inputs"]})
+- **Target 2: Pain Point Accuracy > 90%** -> Actual: **{emotion_acc:.1f}%** ({metrics["emotion_correct"]}/{metrics["emotion_total"]})
+- **Target 3: Avg Questions > 2.0** -> Actual: **{avg_questions:.2f}** (Total Qs: {metrics["total_questions_asked"]} / Inputs: {metrics["inputs_with_questions"]})
+- **Target 4: Negation Accuracy > 95%** -> Actual: **{negation_acc:.1f}%** ({metrics["negation_correct"]}/{metrics["negation_total"]})
 
 ## Detailed Logs
-| Phrase | Expected | Actual | Pass |
-| --- | --- | --- | --- |
+| Phrase | Type | Expected | Actual | Pass | Qs |
+| --- | --- | --- | --- | --- | --- |
 """
     for log in results_log:
         pass_str = "✅" if log["is_correct"] else "❌"
-        actual_str = str(log["actual"])
-        report_md += f"| {log['phrase']} | {log['expected']} | {actual_str} | {pass_str} |\n"
+        report_md += f"| {log['phrase']} | {log['type']} | {log['expected']} | {log['actual']} | {pass_str} | {log['questions']} |\n"
         
     with open(report_path, 'w', encoding='utf-8') as f:
         f.write(report_md)
         
-    print(f"Benchmark complete! Accuracy: {accuracy:.1f}%. Report saved to {report_path}")
+    print(f"Benchmark complete! Results saved to {report_path}")
+    print(f"OOV: {oov_rate:.1f}% | Emotion: {emotion_acc:.1f}% | Negation: {negation_acc:.1f}% | Avg Qs: {avg_questions:.2f}")
 
 if __name__ == "__main__":
     run_benchmark()

@@ -105,8 +105,8 @@ def generate_blueprint_yaml(func_specs, hard_dependencies, emotion_candidates, e
 def process_single_input(user_input, func_library, emotion_library, headless_reply=None, user_id=None):
     """Processes a single input and returns metrics and blueprint path."""
     user_profile = load_user_profile(user_id) if user_id else None
-    BACKWARD_NEGATORS = ['nahi', 'nahin', 'mat', 'na']
-    FORWARD_NEGATORS = ['without', 'exclude', 'remove', 'no', "don't", 'do not']
+    BACKWARD_NEGATORS = ['nahi', 'nahin', 'mat', 'na', 'bina', 'without']
+    FORWARD_NEGATORS = ['without', 'exclude', 'remove', 'no', "don't", 'do not', 'bina']
     CLAUSE_DELIMITERS = [',', '.', 'lekin', 'par', 'but', 'and', 'aur']
 
     normalized_input = user_input.lower()
@@ -121,6 +121,7 @@ def process_single_input(user_input, func_library, emotion_library, headless_rep
     matched_func_categories = []
     matched_emotions = []
     negated_func_categories = []
+    negated_emotions = []
     
     final_func_specs = []
     final_excluded_specs = []
@@ -139,11 +140,19 @@ def process_single_input(user_input, func_library, emotion_library, headless_rep
                     clause_funcs.append((category, i))
             
         for category, data in emotion_library.items():
-            for example_item in data.get('examples', data.get('root_lemmas', [])):
-                # Support v0.12 schema where example might be a dict with 'phrase' and 'meaning'
-                phrase = example_item.get('phrase', example_item) if isinstance(example_item, dict) else example_item
+            phrases = []
+            for ex in data.get('examples', []):
+                phrases.append(ex.get('phrase', ex) if isinstance(ex, dict) else ex)
+            for lemma in data.get('root_lemmas', []):
+                phrases.append(lemma)
+                
+            for phrase in phrases:
+                phrase_words = phrase.split()
                 if phrase in clause:
-                    clause_emotions.append((category, 0))
+                    idx = 0
+                    if phrase_words[0] in words:
+                        idx = words.index(phrase_words[0])
+                    clause_emotions.append((category, idx))
                     break
                     
         backward_indices = [i for i, w in enumerate(words) if w in BACKWARD_NEGATORS]
@@ -168,24 +177,118 @@ def process_single_input(user_input, func_library, emotion_library, headless_rep
                     matched_func_categories.append(cat)
                     
         for cat, idx in clause_emotions:
-            if cat not in matched_emotions:
-                matched_emotions.append(cat)
+            is_negated = False
+            for b_idx in backward_indices:
+                if 0 < b_idx - idx <= 3:
+                    is_negated = True
+                    break
+            for f_idx in forward_indices:
+                if 0 < idx - f_idx <= 3:
+                    is_negated = True
+                    break
+                    
+            if is_negated:
+                if cat not in negated_emotions:
+                    negated_emotions.append(cat)
+            else:
+                if cat not in matched_emotions:
+                    matched_emotions.append(cat)
                 
     metrics = {
-        "initial_ambiguity_count": len(matched_func_categories),
-        "emotions_detected": len(matched_emotions),
-        "negated_intents_detected": len(negated_func_categories),
+        "matched_func_categories": matched_func_categories,
+        "matched_emotions": matched_emotions,
+        "negated_func_categories": negated_func_categories,
+        "negated_emotions": negated_emotions,
         "status": "success",
         "blueprint_path": None,
-        "questions_asked": len(matched_func_categories)
+        "questions_asked": 0
     }
 
-    # OOV Detection
-    if not matched_func_categories and not matched_emotions and not negated_func_categories:
+    # OOV Detection & Strict Confidence Threshold
+    total_matched = len(matched_func_categories) + len(matched_emotions)
+    
+    if total_matched == 0 and not negated_func_categories and not negated_emotions:
         metrics["status"] = "fail_hard"
         return metrics
         
-    # 2. Active Disambiguation (Functional) - v0.5 Upgrade
+    # 2. Cognitive Mapping (Emotion-First Strategy)
+    if matched_emotions:
+        for category in matched_emotions:
+            data = emotion_library[category]
+            signal = data.get('engineering_signal', 'Unknown Feature')
+            desc = data.get('description', 'Pain point detected')
+            
+            print(f"\n[Pain Point Detected] System: {desc}")
+            emotion_candidates.append(category)
+            
+            # Multi-stage Emotion Interrogation
+            if 'cross_question' in data:
+                print(f"\nSystem (Pain Point Interrogation): {data['cross_question']}")
+                
+                if headless_reply is not None:
+                    if isinstance(headless_reply, list) and len(headless_reply) > 0:
+                        reply = str(headless_reply.pop(0))
+                    else:
+                        reply = str(headless_reply)
+                else:
+                    reply = input("Tu (Reply: Enter option number): ").strip()
+                    
+                metrics["questions_asked"] += 1
+                options = data.get('options', {})
+                
+                if reply in options:
+                    selected_option = options[reply]
+                    final_func_specs.append({
+                        "category": f"pain_point_{category}",
+                        "value": selected_option.get('exact_value', f"REQUIREMENT: {signal}"),
+                        "confidence": 1.0,
+                        "source": f"pain point disambiguated ({reply})"
+                    })
+                    for dep in selected_option.get('hard_dependencies', []):
+                        hard_dependencies.add(dep)
+                        
+                    # Dependency Chaining for Pain Points
+                    if 'dependency_questions' in selected_option:
+                        for dep_q in selected_option['dependency_questions']:
+                            print(f"\nSystem (Dependency Triggered): {dep_q['question']}")
+                            if headless_reply is not None:
+                                if isinstance(headless_reply, list) and len(headless_reply) > 0:
+                                    dep_reply = str(headless_reply.pop(0))
+                                else:
+                                    dep_reply = str(headless_reply)
+                            else:
+                                dep_reply = input("Tu (Reply: Enter option number): ").strip()
+                                
+                            metrics["questions_asked"] += 1
+                            if dep_reply in dep_q.get('options', {}):
+                                final_func_specs.append({
+                                    "category": f"pain_point_{category}_dependency",
+                                    "value": dep_q['options'][dep_reply]['exact_value'],
+                                    "confidence": 1.0,
+                                    "source": f"pain point dependency chain ({dep_reply})"
+                                })
+                else:
+                    # User didn't pick an option, fallback to base signal
+                    final_func_specs.append({
+                        "category": f"pain_point_{category}",
+                        "value": f"REQUIREMENT: {signal}",
+                        "confidence": 0.8,
+                        "source": "emotion corpus mapping (unresolved options)"
+                    })
+            else:
+                # Legacy behavior if no cross_question exists
+                final_func_specs.append({
+                    "category": f"pain_point_{category}",
+                    "value": f"REQUIREMENT: {signal}",
+                    "confidence": 1.0,
+                    "source": "emotion corpus mapping"
+                })
+
+    # If emotions matched but ambiguity was not resolved for all of them
+    if matched_emotions and len(emotion_candidates) < len(matched_emotions):
+        metrics["status"] = "clarification_required"
+
+    # 3. Active Disambiguation (Functional)
     if matched_func_categories:
         for category in matched_func_categories:
             data = func_library[category]
@@ -195,16 +298,18 @@ def process_single_input(user_input, func_library, emotion_library, headless_rep
                 past_choice = user_profile['history'][f"{category}_choices"][0]
                 prompt_text += f" [Context: You usually pick Option {past_choice}]"
                 
+            print(f"\nSystem (Ambiguity Detected!): {prompt_text}")
             if headless_reply is not None:
-                print(f"\nSystem (Ambiguity Detected!): {prompt_text}")
-                reply = headless_reply
+                if isinstance(headless_reply, list) and len(headless_reply) > 0:
+                    reply = str(headless_reply.pop(0))
+                else:
+                    reply = str(headless_reply)
             else:
-                print(f"\nSystem (Ambiguity Detected!): {prompt_text}")
                 reply = input("Tu (Reply: Enter option number): ").strip()
             
+            metrics["questions_asked"] += 1
             options = data.get('options', {})
             
-            # For backward compatibility with negated categories or if options aren't fully migrated
             if 'exact_value' in data and not options:
                 # Legacy v0.4 logic fallback
                 if reply in ['yes', 'haan', '1', '2']:
@@ -228,71 +333,39 @@ def process_single_input(user_input, func_library, emotion_library, headless_rep
                     })
                     for dep in selected_option['hard_dependencies']:
                         hard_dependencies.add(dep)
+                        
+                    # Dependency Chaining (Aggressive Interrogation)
+                    if 'dependency_questions' in selected_option:
+                        for dep_q in selected_option['dependency_questions']:
+                            print(f"\nSystem (Dependency Triggered): {dep_q['question']}")
+                            if headless_reply is not None:
+                                if isinstance(headless_reply, list) and len(headless_reply) > 0:
+                                    dep_reply = str(headless_reply.pop(0))
+                                else:
+                                    dep_reply = str(headless_reply)
+                            else:
+                                dep_reply = input("Tu (Reply: Enter option number): ").strip()
+                            metrics["questions_asked"] += 1
+                            if dep_reply in dep_q.get('options', {}):
+                                final_func_specs.append({
+                                    "category": f"{category}_dependency",
+                                    "value": dep_q['options'][dep_reply]['exact_value'],
+                                    "confidence": 1.0,
+                                    "source": f"dependency chained clarification ({dep_reply})"
+                                })
                 else:
                     # User provided invalid input, 'no', or missing headless reply. Ambiguity unresolved.
                     pass
                 
     # If functional categories matched but ambiguity was not resolved for all of them
-    if matched_func_categories and len(final_func_specs) < len(matched_func_categories):
-        metrics["status"] = "clarification_required"
-        
-    # 3. Cognitive Questioning Framework - v0.10 Upgrade
-    if matched_emotions:
-        for category in matched_emotions:
-            data = emotion_library[category]
+    if matched_func_categories:
+        func_specs_count = sum(1 for spec in final_func_specs if "pain_point" not in spec["category"] and "isolated_feature" not in spec["category"])
+        if func_specs_count < len(matched_func_categories):
+            metrics["status"] = "clarification_required"
             
-            matrix = data.get('clarification_matrix', {})
-            # Step 1: Acknowledge
-            ack = matrix.get('acknowledge', "Pain point detected.")
-            print(f"\n[Acknowledge] System: {ack}")
-            
-            # Step 2: Isolate Symptom
-            isolate = matrix.get('isolate', {})
-            q_iso = isolate.get('question', "Sabse bada issue kya hai?")
-            options = isolate.get('options', {})
-            
-            options_text = ""
-            for opt_key, opt_text in options.items():
-                options_text += f"\n  {opt_key}. {opt_text}"
-                
-            full_iso_prompt = q_iso + options_text
-            
-            if headless_reply is not None:
-                print(f"[Isolate] System: {full_iso_prompt}")
-                reply = headless_reply
-            else:
-                print(f"[Isolate] System: {full_iso_prompt}")
-                reply = input("Tu (Reply: Enter option number): ").strip()
-            
-            if reply in options:
-                # Step 3: Determine Impact
-                impact = matrix.get('impact', "Kya isse flow block ho raha hai? (y/n)")
-                if headless_reply is not None:
-                    print(f"[Impact] System: {impact}")
-                else:
-                    print(f"[Impact] System: {impact}")
-                    input("Tu (Reply y/n): ")
-                    
-                cand_sols = data.get('candidate_solutions', {}).get(reply, [])
-                emotion_candidates.append({
-                    "pain_point": data.get('root_intent', category),
-                    "source": f"user clarified (selected option {reply})",
-                    "candidate_solutions": cand_sols
-                })
-            else:
-                # Safe-Halting Policy
-                print("\n[Safe-Halting Policy] System: Sorry, aapka jawab predefined architectural patterns se match nahi ho raha. Main galat architecture nahi banaunga. Is issue par human research ki zaroorat hai.")
-                metrics["status"] = "fail_hard"
-                return metrics
-                    
-    # If emotions matched but ambiguity was not resolved for all of them
-    if matched_emotions and len(emotion_candidates) < len(matched_emotions):
-        metrics["status"] = "clarification_required"
-
     # Process Negated Categories
     for category in negated_func_categories:
         data = func_library[category]
-        # In v0.5, exact_value is inside options. We will join all option values to show what's excluded.
         if 'options' in data:
             excluded_vals = " OR ".join([opt['exact_value'] for opt in data['options'].values()])
         else:
@@ -302,15 +375,23 @@ def process_single_input(user_input, func_library, emotion_library, headless_rep
             "category": category,
             "value": excluded_vals,
             "confidence": 1.0,
-            "source": "explicitly negated"
+            "source": "explicitly negated functional"
+        })
+        
+    for category in negated_emotions:
+        data = emotion_library[category]
+        signal = data.get('engineering_signal', 'Unknown Feature')
+        final_excluded_specs.append({
+            "category": f"pain_point_{category}",
+            "value": f"EXCLUDED REQUIREMENT: {signal}",
+            "confidence": 1.0,
+            "source": "explicitly negated emotion"
         })
 
     # 4. Generate YAML if valid intent locked
-    if final_func_specs or emotion_candidates or final_excluded_specs:
-        blueprint_path = generate_blueprint_yaml(final_func_specs, hard_dependencies, emotion_candidates, final_excluded_specs)
-        metrics["blueprint_path"] = blueprint_path
-        
-    metrics["pain_points"] = [e['pain_point'] for e in emotion_candidates]
+    if final_func_specs:
+        bp_path = generate_blueprint_yaml(final_func_specs, hard_dependencies, emotion_candidates, final_excluded_specs)
+        metrics["blueprint_path"] = bp_path
         
     return metrics
 

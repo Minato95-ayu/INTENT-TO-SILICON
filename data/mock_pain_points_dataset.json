@@ -1,142 +1,507 @@
 [
   {
     "phrase": "paise kat gaye par order nahi hua",
-    "expected_intent": "Payment Anxiety",
-    "category": "payment_anxiety"
+    "expected_category": "payment_anxiety",
+    "type": "emotion"
   },
   {
     "phrase": "refund kab aayega bhai",
-    "expected_intent": "Payment Anxiety",
-    "category": "payment_anxiety"
+    "expected_category": "payment_anxiety",
+    "type": "emotion"
   },
   {
     "phrase": "account khali kar dega ye app",
-    "expected_intent": "Payment Anxiety",
-    "category": "payment_anxiety"
+    "expected_category": "payment_anxiety",
+    "type": "emotion"
   },
   {
-    "phrase": "scam lag raha hai mereko",
-    "expected_intent": "Payment Anxiety",
-    "category": "payment_anxiety"
+    "phrase": "fraud ho gaya mere sath",
+    "expected_category": "payment_anxiety",
+    "type": "emotion"
   },
   {
-    "phrase": "gareeb bana dega mehenga hai",
-    "expected_intent": "Payment Anxiety",
-    "category": "payment_anxiety"
-  },
-  {
-    "phrase": "kholte kholte subah ho jayegi",
-    "expected_intent": "Performance Frustration",
-    "category": "performance_frustration"
-  },
-  {
-    "phrase": "app hang ho gaya beech mein",
-    "expected_intent": "Performance Frustration",
-    "category": "performance_frustration"
-  },
-  {
-    "phrase": "safed screen aa gayi aur atak gaya",
-    "expected_intent": "Performance Frustration",
-    "category": "performance_frustration"
-  },
-  {
-    "phrase": "slow hai bekar app",
-    "expected_intent": "Performance Frustration",
-    "category": "performance_frustration"
-  },
-  {
-    "phrase": "load nahi ho raha hai ghoom raha hai",
-    "expected_intent": "Performance Frustration",
-    "category": "performance_frustration"
+    "phrase": "double payment lag gaya",
+    "expected_category": "payment_anxiety",
+    "type": "emotion"
   },
   {
     "phrase": "kaha click karu kuch samajh nahi aa raha",
-    "expected_intent": "Navigation / UI Confusion",
-    "category": "navigation_confusion"
+    "expected_category": "navigation_confusion",
+    "type": "emotion"
   },
   {
     "phrase": "pata nahi aage kya karna hai confuse hu",
-    "expected_intent": "Navigation / UI Confusion",
-    "category": "navigation_confusion"
+    "expected_category": "navigation_confusion",
+    "type": "emotion"
   },
   {
     "phrase": "sir ke upar se gaya ye interface",
-    "expected_intent": "Navigation / UI Confusion",
-    "category": "navigation_confusion"
+    "expected_category": "navigation_confusion",
+    "type": "emotion"
   },
   {
-    "phrase": "bohot bawasir UI hai",
-    "expected_intent": "Navigation / UI Confusion",
-    "category": "navigation_confusion"
+    "phrase": "kuch dikh nahi raha",
+    "expected_category": "navigation_confusion",
+    "type": "emotion"
   },
   {
-    "phrase": "uljhan ho rahi hai hard hai",
-    "expected_intent": "Navigation / UI Confusion",
-    "category": "navigation_confusion"
+    "phrase": "app hang ho gaya beech mein",
+    "expected_category": "performance_frustration",
+    "type": "emotion"
   },
   {
-    "phrase": "jaldi kar bhai time nahi hai",
-    "expected_intent": "Urgency",
-    "category": "urgency"
+    "phrase": "safed screen aa gayi aur atak gaya",
+    "expected_category": "performance_frustration",
+    "type": "emotion"
   },
   {
-    "phrase": "fatafat checkout karna hai",
-    "expected_intent": "Urgency",
-    "category": "urgency"
+    "phrase": "slow hai bekar app",
+    "expected_category": "performance_frustration",
+    "type": "emotion"
   },
   {
-    "phrase": "emergency mein turant kaam aana chahiye",
-    "expected_intent": "Urgency",
-    "category": "urgency"
+    "phrase": "kholte kholte subah ho jayegi",
+    "expected_category": "performance_frustration",
+    "type": "emotion"
+  },
+  {
+    "phrase": "load nahi ho raha hai ghoom raha hai",
+    "expected_category": "performance_frustration",
+    "type": "emotion"
   },
   {
     "phrase": "data leak hone ka dar hai",
-    "expected_intent": "Trust Deficit",
-    "category": "trust_deficit"
+    "expected_category": "trust_deficit",
+    "type": "emotion"
   },
   {
     "phrase": "safe nahi lag raha fraud hoga",
-    "expected_intent": "Trust Deficit",
-    "category": "trust_deficit"
+    "expected_category": "trust_deficit",
+    "type": "emotion"
   },
   {
     "phrase": "mera data chori ho gaya toh?",
-    "expected_intent": "Trust Deficit",
-    "category": "trust_deficit"
+    "expected_category": "trust_deficit",
+    "type": "emotion"
   },
   {
     "phrase": "customer care se baat karni hai koi nahi sunta",
-    "expected_intent": "Support Frustration",
-    "category": "support_frustration"
+    "expected_category": "support_frustration",
+    "type": "emotion"
   },
   {
     "phrase": "bot bakwas hai insaan se connect karo",
-    "expected_intent": "Support Frustration",
-    "category": "support_frustration"
+    "expected_category": "support_frustration",
+    "type": "emotion"
+  },
+  {
+    "phrase": "koi sunne wala nahi hai",
+    "expected_category": "support_frustration",
+    "type": "emotion"
+  },
+  {
+    "phrase": "fast chahiye par chat nahi",
+    "expected_category": "performance",
+    "negated": "realtime",
+    "type": "negation"
+  },
+  {
+    "phrase": "safe hona chahiye, bina live sync ke",
+    "expected_category": "security",
+    "negated": "realtime",
+    "type": "negation"
+  },
+  {
+    "phrase": "database chahiye lekin offline mat dena",
+    "expected_category": "database",
+    "negated": "availability",
+    "type": "negation"
+  },
+  {
+    "phrase": "speed chahiye par bina login ke",
+    "expected_category": "performance",
+    "negated": "security",
+    "type": "negation"
+  },
+  {
+    "phrase": "scale acha ho, par data save mat karna",
+    "expected_category": "scale",
+    "negated": "database",
+    "type": "negation"
   },
   {
     "phrase": "mujhe pizza khana hai",
-    "expected_intent": "safe_halt",
-    "category": "safe_halt"
+    "expected_category": "safe_halt",
+    "type": "oov"
   },
   {
     "phrase": "xyz123 random words hdjskd",
-    "expected_intent": "safe_halt",
-    "category": "safe_halt"
+    "expected_category": "safe_halt",
+    "type": "oov"
   },
   {
     "phrase": "aaj mausam kaisa hai",
-    "expected_intent": "safe_halt",
-    "category": "safe_halt"
+    "expected_category": "safe_halt",
+    "type": "oov"
   },
   {
     "phrase": "sachin tendulkar ne match jeeta",
-    "expected_intent": "safe_halt",
-    "category": "safe_halt"
+    "expected_category": "safe_halt",
+    "type": "oov"
   },
   {
     "phrase": "I want to watch a movie on netflix",
-    "expected_intent": "safe_halt",
-    "category": "safe_halt"
+    "expected_category": "safe_halt",
+    "type": "oov"
+  },
+  {
+    "phrase": "sirf data theek karo",
+    "expected_category": "database",
+    "type": "low_confidence"
+  },
+  {
+    "phrase": "login banao",
+    "expected_category": "security",
+    "type": "low_confidence"
+  },
+  {
+    "phrase": "chat chahiye",
+    "expected_category": "realtime",
+    "type": "low_confidence"
+  },
+  {
+    "phrase": "fast speed loading chahiye 811",
+    "expected_category": "performance",
+    "type": "functional"
+  },
+  {
+    "phrase": "bohot public aayegi server crash nahi hona chahiye 556",
+    "expected_category": "scale",
+    "type": "functional"
+  },
+  {
+    "phrase": "fast speed loading chahiye 331",
+    "expected_category": "performance",
+    "type": "functional"
+  },
+  {
+    "phrase": "fast speed loading chahiye 23",
+    "expected_category": "performance",
+    "type": "functional"
+  },
+  {
+    "phrase": "bohot public aayegi server crash nahi hona chahiye 987",
+    "expected_category": "scale",
+    "type": "functional"
+  },
+  {
+    "phrase": "offline bhi chalna chahiye 157",
+    "expected_category": "availability",
+    "type": "functional"
+  },
+  {
+    "phrase": "bohot public aayegi server crash nahi hona chahiye 783",
+    "expected_category": "scale",
+    "type": "functional"
+  },
+  {
+    "phrase": "realtime chat chahiye jismein speed achi ho 359",
+    "expected_category": "realtime",
+    "type": "functional"
+  },
+  {
+    "phrase": "fast speed loading chahiye 286",
+    "expected_category": "performance",
+    "type": "functional"
+  },
+  {
+    "phrase": "offline bhi chalna chahiye 263",
+    "expected_category": "availability",
+    "type": "functional"
+  },
+  {
+    "phrase": "fast speed loading chahiye 609",
+    "expected_category": "performance",
+    "type": "functional"
+  },
+  {
+    "phrase": "fast speed loading chahiye 826",
+    "expected_category": "performance",
+    "type": "functional"
+  },
+  {
+    "phrase": "realtime chat chahiye jismein speed achi ho 466",
+    "expected_category": "realtime",
+    "type": "functional"
+  },
+  {
+    "phrase": "bohot public aayegi server crash nahi hona chahiye 575",
+    "expected_category": "scale",
+    "type": "functional"
+  },
+  {
+    "phrase": "offline bhi chalna chahiye 661",
+    "expected_category": "availability",
+    "type": "functional"
+  },
+  {
+    "phrase": "fast speed loading chahiye 357",
+    "expected_category": "performance",
+    "type": "functional"
+  },
+  {
+    "phrase": "realtime chat chahiye jismein speed achi ho 41",
+    "expected_category": "realtime",
+    "type": "functional"
+  },
+  {
+    "phrase": "realtime chat chahiye jismein speed achi ho 19",
+    "expected_category": "realtime",
+    "type": "functional"
+  },
+  {
+    "phrase": "data database mein save hona chahiye security ke sath 346",
+    "expected_category": "database",
+    "type": "functional"
+  },
+  {
+    "phrase": "realtime chat chahiye jismein speed achi ho 474",
+    "expected_category": "realtime",
+    "type": "functional"
+  },
+  {
+    "phrase": "data database mein save hona chahiye security ke sath 17",
+    "expected_category": "database",
+    "type": "functional"
+  },
+  {
+    "phrase": "fast speed loading chahiye 942",
+    "expected_category": "performance",
+    "type": "functional"
+  },
+  {
+    "phrase": "data database mein save hona chahiye security ke sath 682",
+    "expected_category": "database",
+    "type": "functional"
+  },
+  {
+    "phrase": "fast speed loading chahiye 660",
+    "expected_category": "performance",
+    "type": "functional"
+  },
+  {
+    "phrase": "data database mein save hona chahiye security ke sath 85",
+    "expected_category": "database",
+    "type": "functional"
+  },
+  {
+    "phrase": "data database mein save hona chahiye security ke sath 780",
+    "expected_category": "database",
+    "type": "functional"
+  },
+  {
+    "phrase": "realtime chat chahiye jismein speed achi ho 544",
+    "expected_category": "realtime",
+    "type": "functional"
+  },
+  {
+    "phrase": "bohot public aayegi server crash nahi hona chahiye 995",
+    "expected_category": "scale",
+    "type": "functional"
+  },
+  {
+    "phrase": "offline bhi chalna chahiye 446",
+    "expected_category": "availability",
+    "type": "functional"
+  },
+  {
+    "phrase": "realtime chat chahiye jismein speed achi ho 947",
+    "expected_category": "realtime",
+    "type": "functional"
+  },
+  {
+    "phrase": "offline bhi chalna chahiye 32",
+    "expected_category": "availability",
+    "type": "functional"
+  },
+  {
+    "phrase": "realtime chat chahiye jismein speed achi ho 971",
+    "expected_category": "realtime",
+    "type": "functional"
+  },
+  {
+    "phrase": "bohot public aayegi server crash nahi hona chahiye 211",
+    "expected_category": "scale",
+    "type": "functional"
+  },
+  {
+    "phrase": "data database mein save hona chahiye security ke sath 819",
+    "expected_category": "database",
+    "type": "functional"
+  },
+  {
+    "phrase": "data database mein save hona chahiye security ke sath 261",
+    "expected_category": "database",
+    "type": "functional"
+  },
+  {
+    "phrase": "data database mein save hona chahiye security ke sath 882",
+    "expected_category": "database",
+    "type": "functional"
+  },
+  {
+    "phrase": "realtime chat chahiye jismein speed achi ho 868",
+    "expected_category": "realtime",
+    "type": "functional"
+  },
+  {
+    "phrase": "fast speed loading chahiye 537",
+    "expected_category": "performance",
+    "type": "functional"
+  },
+  {
+    "phrase": "data database mein save hona chahiye security ke sath 287",
+    "expected_category": "database",
+    "type": "functional"
+  },
+  {
+    "phrase": "bohot public aayegi server crash nahi hona chahiye 555",
+    "expected_category": "scale",
+    "type": "functional"
+  },
+  {
+    "phrase": "data database mein save hona chahiye security ke sath 579",
+    "expected_category": "database",
+    "type": "functional"
+  },
+  {
+    "phrase": "fast speed loading chahiye 594",
+    "expected_category": "performance",
+    "type": "functional"
+  },
+  {
+    "phrase": "bohot public aayegi server crash nahi hona chahiye 572",
+    "expected_category": "scale",
+    "type": "functional"
+  },
+  {
+    "phrase": "fast speed loading chahiye 102",
+    "expected_category": "performance",
+    "type": "functional"
+  },
+  {
+    "phrase": "fast speed loading chahiye 391",
+    "expected_category": "performance",
+    "type": "functional"
+  },
+  {
+    "phrase": "data database mein save hona chahiye security ke sath 737",
+    "expected_category": "database",
+    "type": "functional"
+  },
+  {
+    "phrase": "realtime chat chahiye jismein speed achi ho 43",
+    "expected_category": "realtime",
+    "type": "functional"
+  },
+  {
+    "phrase": "realtime chat chahiye jismein speed achi ho 307",
+    "expected_category": "realtime",
+    "type": "functional"
+  },
+  {
+    "phrase": "data database mein save hona chahiye security ke sath 772",
+    "expected_category": "database",
+    "type": "functional"
+  },
+  {
+    "phrase": "data database mein save hona chahiye security ke sath 441",
+    "expected_category": "database",
+    "type": "functional"
+  },
+  {
+    "phrase": "bohot public aayegi server crash nahi hona chahiye 81",
+    "expected_category": "scale",
+    "type": "functional"
+  },
+  {
+    "phrase": "bohot public aayegi server crash nahi hona chahiye 762",
+    "expected_category": "scale",
+    "type": "functional"
+  },
+  {
+    "phrase": "data database mein save hona chahiye security ke sath 945",
+    "expected_category": "database",
+    "type": "functional"
+  },
+  {
+    "phrase": "data database mein save hona chahiye security ke sath 564",
+    "expected_category": "database",
+    "type": "functional"
+  },
+  {
+    "phrase": "bohot public aayegi server crash nahi hona chahiye 157",
+    "expected_category": "scale",
+    "type": "functional"
+  },
+  {
+    "phrase": "offline bhi chalna chahiye 890",
+    "expected_category": "availability",
+    "type": "functional"
+  },
+  {
+    "phrase": "realtime chat chahiye jismein speed achi ho 700",
+    "expected_category": "realtime",
+    "type": "functional"
+  },
+  {
+    "phrase": "fast speed loading chahiye 583",
+    "expected_category": "performance",
+    "type": "functional"
+  },
+  {
+    "phrase": "fast speed loading chahiye 913",
+    "expected_category": "performance",
+    "type": "functional"
+  },
+  {
+    "phrase": "data database mein save hona chahiye security ke sath 615",
+    "expected_category": "database",
+    "type": "functional"
+  },
+  {
+    "phrase": "bohot public aayegi server crash nahi hona chahiye 415",
+    "expected_category": "scale",
+    "type": "functional"
+  },
+  {
+    "phrase": "bohot public aayegi server crash nahi hona chahiye 199",
+    "expected_category": "scale",
+    "type": "functional"
+  },
+  {
+    "phrase": "bohot public aayegi server crash nahi hona chahiye 327",
+    "expected_category": "scale",
+    "type": "functional"
+  },
+  {
+    "phrase": "offline bhi chalna chahiye 958",
+    "expected_category": "availability",
+    "type": "functional"
+  },
+  {
+    "phrase": "realtime chat chahiye jismein speed achi ho 908",
+    "expected_category": "realtime",
+    "type": "functional"
+  },
+  {
+    "phrase": "realtime chat chahiye jismein speed achi ho 243",
+    "expected_category": "realtime",
+    "type": "functional"
+  },
+  {
+    "phrase": "bohot public aayegi server crash nahi hona chahiye 808",
+    "expected_category": "scale",
+    "type": "functional"
   }
 ]

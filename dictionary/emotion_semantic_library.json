@@ -1,6 +1,6 @@
 {
   "trust_fear": {
-    "root_lemmas": ["dar", "shanka", "fraud", "dhoka", "trust", "vishwas", "chori", "scam", "bharam", "gaban"],
+    "root_lemmas": ["dar", "shanka", "fraud", "dhoka", "trust", "vishwas", "chori", "scam", "bharam", "gaban", "safe nahi", "secure nahi", "risk hai"],
     "emotion_type": "Fear / Distrust",
     "base_confidence": 0.88,
     "cross_question": "Kaunsa darr zyada hai? (1) Payment fraud (2) Data chori (3) Fake users",
@@ -20,7 +20,7 @@
     }
   },
   "confusion": {
-    "root_lemmas": ["uljhan", "pareshan", "mushkil", "samajh nahi", "hard", "bhaari", "bhatak", "bhool"],
+    "root_lemmas": ["uljhan", "pareshan", "mushkil", "samajh nahi", "hard", "bhaari", "bhatak", "bhool", "kya karu", "pata nahi", "confuse", "complicated"],
     "emotion_type": "Confusion / Overwhelm",
     "base_confidence": 0.90,
     "cross_question": "Uljhan kis wajah se ho sakti hai? (1) Bohot saare options (2) Technical terms (3) Navigation",
@@ -40,7 +40,7 @@
     }
   },
   "urgency": {
-    "root_lemmas": ["jaldi", "aapaat", "turant", "emergency", "time nahi", "wait nahi", "fatafat"],
+    "root_lemmas": ["jaldi", "aapaat", "turant", "emergency", "time nahi", "wait nahi", "fatafat", "abhi", "der mat karo", "bhago", "fast kar"],
     "emotion_type": "Urgency / Impatience",
     "base_confidence": 0.95,
     "cross_question": "Jaldi ka kya context hai? (1) Fast checkout (2) Emergency contact (3) Fast data entry",
@@ -80,7 +80,7 @@
     }
   },
   "frustration": {
-    "root_lemmas": ["gussa", "irritate", "thak", "fas", "atak", "hang", "krodh"],
+    "root_lemmas": ["gussa", "irritate", "thak", "fas", "atak", "hang", "krodh", "bekar", "bakwas", "slow hai", "kaam nahi karta", "tang aa gaya"],
     "emotion_type": "Frustration / Friction",
     "base_confidence": 0.92,
     "cross_question": "Gussa kis baat pe aata hai? (1) App hang hona (2) Data udd jana (3) Support na milna",

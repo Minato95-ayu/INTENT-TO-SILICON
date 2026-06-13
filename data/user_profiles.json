@@ -1,0 +1,30 @@
+{
+  "user_founder_rahul": {
+    "name": "Rahul (Startup Founder)",
+    "technical_expertise": "low",
+    "business_domain": "ecommerce",
+    "risk_tolerance": "aggressive",
+    "preferences": {
+      "default_infrastructure": "Managed Services (Vercel/Heroku)",
+      "prioritize": "Time to Market"
+    },
+    "history": {
+      "database_choices": ["2"], 
+      "security_choices": ["1"]
+    }
+  },
+  "user_tech_lead_anjali": {
+    "name": "Anjali (Senior Backend Engineer)",
+    "technical_expertise": "high",
+    "business_domain": "fintech",
+    "risk_tolerance": "conservative",
+    "preferences": {
+      "default_infrastructure": "AWS / Kubernetes",
+      "prioritize": "Security and Scale"
+    },
+    "history": {
+      "database_choices": ["1"], 
+      "security_choices": ["2"]
+    }
+  }
+}

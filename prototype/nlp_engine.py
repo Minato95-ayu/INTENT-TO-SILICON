@@ -8,14 +8,21 @@ from datetime import datetime
 # Track Clarification Required instead of Fail_Ambiguous.
 # =====================================================================
 
-def load_json(filename):
+def load_json(filename, folder='dictionary'):
     base_dir = os.path.dirname(os.path.dirname(__file__))
-    path = os.path.join(base_dir, 'dictionary', filename)
+    path = os.path.join(base_dir, folder, filename)
     with open(path, 'r', encoding='utf-8') as f:
         return json.load(f)
 
 def load_libraries():
     return load_json('nlp_semantic_library.json'), load_json('emotion_semantic_library.json')
+
+def load_user_profile(user_id):
+    try:
+        profiles = load_json('user_profiles.json', folder='data')
+        return profiles.get(user_id, None)
+    except Exception:
+        return None
 
 def is_word_matching_root(input_word, root_lemmas):
     for root in root_lemmas:
@@ -95,8 +102,9 @@ def generate_blueprint_yaml(func_specs, hard_dependencies, emotion_candidates, e
         
     return blueprint_path
 
-def process_single_input(user_input, func_library, emotion_library, headless_reply=None):
+def process_single_input(user_input, func_library, emotion_library, headless_reply=None, user_id=None):
     """Processes a single input and returns metrics and blueprint path."""
+    user_profile = load_user_profile(user_id) if user_id else None
     BACKWARD_NEGATORS = ['nahi', 'nahin', 'mat', 'na']
     FORWARD_NEGATORS = ['without', 'exclude', 'remove', 'no', "don't", 'do not']
     CLAUSE_DELIMITERS = [',', '.', 'lekin', 'par', 'but', 'and', 'aur']
@@ -178,10 +186,16 @@ def process_single_input(user_input, func_library, emotion_library, headless_rep
         for category in matched_func_categories:
             data = func_library[category]
             
+            prompt_text = data['cross_question']
+            if user_profile and f"{category}_choices" in user_profile.get('history', {}):
+                past_choice = user_profile['history'][f"{category}_choices"][0]
+                prompt_text += f" [Context: You usually pick Option {past_choice}]"
+                
             if headless_reply is not None:
+                print(f"\nSystem (Ambiguity Detected!): {prompt_text}")
                 reply = headless_reply
             else:
-                print(f"\nSystem (Ambiguity Detected!): {data['cross_question']}")
+                print(f"\nSystem (Ambiguity Detected!): {prompt_text}")
                 reply = input("Tu (Reply: Enter option number): ").strip()
             
             options = data.get('options', {})
@@ -223,10 +237,18 @@ def process_single_input(user_input, func_library, emotion_library, headless_rep
         for category in matched_emotions:
             data = emotion_library[category]
             
+            prompt_text = data['cross_question']
+            
+            # Apply User Context (Behavior)
+            if user_profile:
+                if category == "trust_fear" and user_profile.get("risk_tolerance") == "conservative":
+                    prompt_text += f"\n[Context: As a conservative {user_profile.get('business_domain', '')} user, you might want to prioritize Data/Payment security.]"
+                
             if headless_reply is not None:
+                print(f"\nSystem (Emotional Ambiguity Detected!): {prompt_text}")
                 reply = headless_reply
             else:
-                print(f"\nSystem (Emotional Ambiguity Detected!): {data['cross_question']}")
+                print(f"\nSystem (Emotional Ambiguity Detected!): {prompt_text}")
                 reply = input("Tu (Reply: Enter option number): ").strip()
             
             options = data.get('options', {})

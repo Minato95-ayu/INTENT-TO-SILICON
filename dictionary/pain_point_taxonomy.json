@@ -1,6 +1,6 @@
 {
   "trust_deficit": {
-    "examples": ["dar", "shanka", "fraud", "dhoka", "trust", "vishwas", "chori", "scam", "bharam", "gaban", "safe nahi", "secure nahi", "risk hai"],
+    "examples": ["dar", "shanka", "fraud", "dhoka", "trust", "vishwas", "chori", "scam", "bharam", "gaban", "safe nahi", "secure nahi", "risk hai", "arre yaar"],
     "root_intent": "Trust Deficit",
     "clarification_matrix": {
       "acknowledge": "Mujhe trust/security related anxiety detect hui.",
@@ -42,7 +42,7 @@
     }
   },
   "urgency": {
-    "examples": ["jaldi", "aapaat", "turant", "emergency", "time nahi", "wait nahi", "fatafat", "abhi", "der mat karo", "bhago", "fast kar"],
+    "examples": ["jaldi", "aapaat", "turant", "emergency", "time nahi", "wait nahi", "fatafat", "abhi", "der mat karo", "bhago", "fast kar", "waat lag gayi"],
     "root_intent": "Urgency",
     "clarification_matrix": {
       "acknowledge": "Mujhe urgency/impatience detect hui.",
@@ -63,7 +63,7 @@
     }
   },
   "performance_frustration": {
-    "examples": ["gussa", "irritate", "thak", "fas", "atak", "hang", "krodh", "bekar", "bakwas", "slow hai", "kaam nahi karta", "tang aa gaya", "ghoom", "subah", "safed screen", "blank", "time lag", "load nahi"],
+    "examples": ["gussa", "irritate", "thak", "fas", "atak", "hang", "krodh", "bekar", "bakwas", "slow hai", "kaam nahi karta", "tang aa gaya", "ghoom", "subah", "safed screen", "blank", "time lag", "load nahi", "dimaag ki dahi", "faaltu speed"],
     "root_intent": "Performance Frustration",
     "clarification_matrix": {
       "acknowledge": "Mujhe performance-related frustration detect hui.",

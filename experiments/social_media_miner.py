@@ -5,34 +5,34 @@ import sys
 # Simulated Extraction Rules (In production, this would be an LLM call)
 EXTRACTION_RULES = [
     {
-        "keywords": ["gol gol ghoomne", "slow", "time lagata"],
+        "keywords": ["dimaag ki dahi", "slow", "time lagata", "faaltu speed", "hang ho gaya"],
         "pain_point": "performance_frustration",
-        "extracted_phrase": "gol gol ghoomne"
+        "extracted_phrase": "dimaag ki dahi"
     },
     {
-        "keywords": ["udd gaye", "kat gaye", "lootere"],
-        "pain_point": "payment_anxiety",
-        "extracted_phrase": "rupay udd gaye"
-    },
-    {
-        "keywords": ["itne saare button", "samajh nahi aata", "chidiya ud jaye"],
-        "pain_point": "navigation_confusion",
-        "extracted_phrase": "chidiya ud jaye"
-    },
-    {
-        "keywords": ["data leak", "dar lagta", "delete"],
-        "pain_point": "trust_deficit",
-        "extracted_phrase": "data leak ho jayega"
-    },
-    {
-        "keywords": ["tatkal book", "fast", "session expire"],
+        "keywords": ["waat lag gayi", "session expire"],
         "pain_point": "urgency",
-        "extracted_phrase": "session expire"
+        "extracted_phrase": "waat lag gayi"
     },
     {
-        "keywords": ["bot system", "insaan se baat", "phone nahi uthate"],
+        "keywords": ["faaltu", "bakwaas", "hang ho gaya"],
+        "pain_point": "performance_frustration",
+        "extracted_phrase": "faaltu speed"
+    },
+    {
+        "keywords": ["arre yaar", "data leak", "dar lagta"],
+        "pain_point": "trust_deficit",
+        "extracted_phrase": "arre yaar"
+    },
+    {
+        "keywords": ["bot system", "insaan se baat", "dimaag kharab"],
         "pain_point": "support_frustration",
-        "extracted_phrase": "phone nahi uthate"
+        "extracted_phrase": "insaan se baat"
+    },
+    {
+        "keywords": ["kahan click karu", "sir ke upar"],
+        "pain_point": "navigation_confusion",
+        "extracted_phrase": "sir ke upar"
     }
 ]
 

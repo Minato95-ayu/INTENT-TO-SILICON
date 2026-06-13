@@ -1,0 +1,182 @@
+[
+  {
+    "test_id": 1,
+    "category": "Semantic Equivalence (Auth)",
+    "input": "OTP nahi aaya",
+    "expected_module": "auth",
+    "expected_primary_problem": "otp_delivery_failure",
+    "requires_diagnosis": false,
+    "requires_clarification": false
+  },
+  {
+    "test_id": 2,
+    "category": "Semantic Equivalence (Auth)",
+    "input": "OTP receive nahi hua",
+    "expected_module": "auth",
+    "expected_primary_problem": "otp_delivery_failure",
+    "requires_diagnosis": false,
+    "requires_clarification": false
+  },
+  {
+    "test_id": 3,
+    "category": "Semantic Equivalence (Auth)",
+    "input": "Code nahi mila",
+    "expected_module": "auth",
+    "expected_primary_problem": "otp_delivery_failure",
+    "requires_diagnosis": false,
+    "requires_clarification": false
+  },
+  {
+    "test_id": 4,
+    "category": "Semantic Equivalence (Auth)",
+    "input": "Verification SMS nahi aaya",
+    "expected_module": "auth",
+    "expected_primary_problem": "otp_delivery_failure",
+    "requires_diagnosis": false,
+    "requires_clarification": false
+  },
+  {
+    "test_id": 5,
+    "category": "Semantic Equivalence (Payment)",
+    "input": "paise kat gaye",
+    "expected_module": "payment",
+    "expected_primary_problem": "orphaned_transaction",
+    "requires_diagnosis": false,
+    "requires_clarification": false
+  },
+  {
+    "test_id": 6,
+    "category": "Semantic Equivalence (Payment)",
+    "input": "account se amount deduct ho gaya",
+    "expected_module": "payment",
+    "expected_primary_problem": "orphaned_transaction",
+    "requires_diagnosis": false,
+    "requires_clarification": false
+  },
+  {
+    "test_id": 7,
+    "category": "Semantic Equivalence (Payment)",
+    "input": "money debited par order nahi bana",
+    "expected_module": "payment",
+    "expected_primary_problem": "orphaned_transaction",
+    "requires_diagnosis": false,
+    "requires_clarification": false
+  },
+  {
+    "test_id": 8,
+    "category": "Ambiguity Test",
+    "input": "refund ka status kaha dekhu",
+    "expected_module": "navigation",
+    "expected_primary_problem": null,
+    "requires_diagnosis": false,
+    "requires_clarification": true
+  },
+  {
+    "test_id": 9,
+    "category": "Ambiguity Test",
+    "input": "settings kidhar hai",
+    "expected_module": "navigation",
+    "expected_primary_problem": "feature_discoverability",
+    "requires_diagnosis": false,
+    "requires_clarification": true
+  },
+  {
+    "test_id": 10,
+    "category": "No Technical Guessing",
+    "input": "app slow hai",
+    "expected_module": "performance",
+    "expected_primary_problem": "performance_degradation",
+    "requires_diagnosis": true,
+    "requires_clarification": false
+  },
+  {
+    "test_id": 11,
+    "category": "No Technical Guessing",
+    "input": "loading pe atak gaya",
+    "expected_module": "performance",
+    "expected_primary_problem": "ui_freeze",
+    "requires_diagnosis": true,
+    "requires_clarification": false
+  },
+  {
+    "test_id": 12,
+    "category": "No Technical Guessing",
+    "input": "screen freeze ho gayi",
+    "expected_module": "performance",
+    "expected_primary_problem": "ui_freeze",
+    "requires_diagnosis": true,
+    "requires_clarification": false
+  },
+  {
+    "test_id": 13,
+    "category": "No Technical Guessing",
+    "input": "app crash ho gaya",
+    "expected_module": "performance",
+    "expected_primary_problem": "application_crash",
+    "requires_diagnosis": true,
+    "requires_clarification": false
+  },
+  {
+    "test_id": 14,
+    "category": "No Technical Guessing",
+    "input": "bahut jaldi band ho jata hai",
+    "expected_module": "performance",
+    "expected_primary_problem": "application_crash",
+    "requires_diagnosis": true,
+    "requires_clarification": false
+  },
+  {
+    "test_id": 15,
+    "category": "Ambiguous Diagnosis",
+    "input": "login kaam nahi kar raha",
+    "expected_module": "auth",
+    "expected_primary_problem": null,
+    "requires_diagnosis": true,
+    "requires_clarification": true
+  },
+  {
+    "test_id": 16,
+    "category": "Ambiguous Diagnosis",
+    "input": "andar nahi ja pa raha",
+    "expected_module": "auth",
+    "expected_primary_problem": null,
+    "requires_diagnosis": true,
+    "requires_clarification": true
+  },
+  {
+    "test_id": 17,
+    "category": "Negation Focus",
+    "input": "login bina OTP ke karna hai",
+    "expected_module": "auth",
+    "expected_primary_problem": "friction_in_auth",
+    "requires_diagnosis": false,
+    "requires_clarification": true
+  },
+  {
+    "test_id": 18,
+    "category": "Friction Extraction",
+    "input": "bar bar password kyu mangta hai",
+    "expected_module": "auth",
+    "expected_primary_problem": "friction_in_auth",
+    "requires_diagnosis": false,
+    "requires_clarification": false
+  },
+  {
+    "test_id": 19,
+    "category": "Mixed Intent",
+    "input": "app bahut slow hai aur crash bhi hota hai",
+    "expected_module": "performance",
+    "expected_primary_problem": "performance_degradation",
+    "requires_diagnosis": true,
+    "requires_clarification": false
+  },
+  {
+    "test_id": 20,
+    "category": "Mixed Intent",
+    "input": "paise bhi gaye aur app bhi hang ho gaya",
+    "expected_module": "payment",
+    "expected_primary_problem": "orphaned_transaction",
+    "requires_diagnosis": true,
+    "requires_clarification": false
+  }
+]

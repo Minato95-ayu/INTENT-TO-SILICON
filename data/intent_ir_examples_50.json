@@ -1,0 +1,802 @@
+[
+  {
+    "test_id": "payment_1",
+    "input": "paise kat gaye par order nahi bana",
+    "intent_ir": {
+      "module": "payment",
+      "primary_problem": "orphaned_transaction",
+      "secondary_problem": null,
+      "evidence": [
+        "paise",
+        "kat gaye",
+        "order nahi bana"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.95
+    }
+  },
+  {
+    "test_id": "payment_2",
+    "input": "amount debited but flight not booked",
+    "intent_ir": {
+      "module": "payment",
+      "primary_problem": "orphaned_transaction",
+      "secondary_problem": null,
+      "evidence": [
+        "amount debited",
+        "flight not booked"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.94
+    }
+  },
+  {
+    "test_id": "payment_3",
+    "input": "refund abhi tak account me nahi aaya",
+    "intent_ir": {
+      "module": "payment",
+      "primary_problem": "delayed_refund",
+      "secondary_problem": null,
+      "evidence": [
+        "refund",
+        "abhi tak",
+        "nahi aaya"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.92
+    }
+  },
+  {
+    "test_id": "payment_4",
+    "input": "double payment ho gaya galti se",
+    "intent_ir": {
+      "module": "payment",
+      "primary_problem": "duplicate_transaction",
+      "secondary_problem": null,
+      "evidence": [
+        "double payment",
+        "galti se"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.96
+    }
+  },
+  {
+    "test_id": "payment_5",
+    "input": "payment failed bata raha hai par paise cut gaye",
+    "intent_ir": {
+      "module": "payment",
+      "primary_problem": "orphaned_transaction",
+      "secondary_problem": "false_failure_message",
+      "evidence": [
+        "payment failed",
+        "paise cut gaye"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.9
+    }
+  },
+  {
+    "test_id": "payment_6",
+    "input": "emi ka option kyu nahi dikh raha",
+    "intent_ir": {
+      "module": "payment",
+      "primary_problem": "missing_payment_method",
+      "secondary_problem": null,
+      "evidence": [
+        "emi",
+        "option",
+        "nahi dikh raha"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.88
+    }
+  },
+  {
+    "test_id": "payment_7",
+    "input": "bank server down hai kya payment stuck hai",
+    "intent_ir": {
+      "module": "payment",
+      "primary_problem": "gateway_timeout",
+      "secondary_problem": null,
+      "evidence": [
+        "bank server down",
+        "payment stuck"
+      ],
+      "requires_diagnosis": true,
+      "requires_clarification": false,
+      "confidence_score": 0.85
+    }
+  },
+  {
+    "test_id": "payment_8",
+    "input": "bina UPI ke payment kaise karu",
+    "intent_ir": {
+      "module": "payment",
+      "primary_problem": "friction_in_payment",
+      "secondary_problem": null,
+      "evidence": [
+        "bina UPI",
+        "kaise karu"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": true,
+      "confidence_score": 0.82
+    }
+  },
+  {
+    "test_id": "payment_9",
+    "input": "promo code invalid bata raha hai",
+    "intent_ir": {
+      "module": "payment",
+      "primary_problem": "promo_code_failure",
+      "secondary_problem": null,
+      "evidence": [
+        "promo code",
+        "invalid"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.93
+    }
+  },
+  {
+    "test_id": "payment_10",
+    "input": "transaction pending me atka hua hai 2 ghante se",
+    "intent_ir": {
+      "module": "payment",
+      "primary_problem": "delayed_transaction",
+      "secondary_problem": null,
+      "evidence": [
+        "transaction pending",
+        "atka hua"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.91
+    }
+  },
+  {
+    "test_id": "auth_1",
+    "input": "OTP nahi aaya",
+    "intent_ir": {
+      "module": "auth",
+      "primary_problem": "otp_delivery_failure",
+      "secondary_problem": null,
+      "evidence": [
+        "OTP",
+        "nahi aaya"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.95
+    }
+  },
+  {
+    "test_id": "auth_2",
+    "input": "OTP receive nahi hua",
+    "intent_ir": {
+      "module": "auth",
+      "primary_problem": "otp_delivery_failure",
+      "secondary_problem": null,
+      "evidence": [
+        "OTP",
+        "receive nahi hua"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.95
+    }
+  },
+  {
+    "test_id": "auth_3",
+    "input": "login kaam nahi kar raha",
+    "intent_ir": {
+      "module": "auth",
+      "primary_problem": null,
+      "secondary_problem": null,
+      "evidence": [
+        "login",
+        "kaam nahi kar raha"
+      ],
+      "requires_diagnosis": true,
+      "requires_clarification": true,
+      "confidence_score": 0.5
+    }
+  },
+  {
+    "test_id": "auth_4",
+    "input": "bar bar password kyu mangta hai",
+    "intent_ir": {
+      "module": "auth",
+      "primary_problem": "friction_in_auth",
+      "secondary_problem": null,
+      "evidence": [
+        "bar bar password",
+        "mangta hai"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.89
+    }
+  },
+  {
+    "test_id": "auth_5",
+    "input": "account locked bata raha hai",
+    "intent_ir": {
+      "module": "auth",
+      "primary_problem": "account_locked",
+      "secondary_problem": null,
+      "evidence": [
+        "account locked"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.94
+    }
+  },
+  {
+    "test_id": "auth_6",
+    "input": "password reset link mail pe nahi aayi",
+    "intent_ir": {
+      "module": "auth",
+      "primary_problem": "email_delivery_failure",
+      "secondary_problem": null,
+      "evidence": [
+        "password reset link",
+        "nahi aayi"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.93
+    }
+  },
+  {
+    "test_id": "auth_7",
+    "input": "fingerprint se login nahi ho raha",
+    "intent_ir": {
+      "module": "auth",
+      "primary_problem": "biometric_failure",
+      "secondary_problem": null,
+      "evidence": [
+        "fingerprint",
+        "login nahi ho raha"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.91
+    }
+  },
+  {
+    "test_id": "auth_8",
+    "input": "session expired bar bar kyu likh raha hai",
+    "intent_ir": {
+      "module": "auth",
+      "primary_problem": "frequent_session_expiry",
+      "secondary_problem": null,
+      "evidence": [
+        "session expired",
+        "bar bar"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.88
+    }
+  },
+  {
+    "test_id": "auth_9",
+    "input": "login bina OTP ke karna hai",
+    "intent_ir": {
+      "module": "auth",
+      "primary_problem": "friction_in_auth",
+      "secondary_problem": null,
+      "evidence": [
+        "login",
+        "bina OTP"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": true,
+      "confidence_score": 0.87
+    }
+  },
+  {
+    "test_id": "auth_10",
+    "input": "captcha galat bata raha hai jabki sahi dala hai",
+    "intent_ir": {
+      "module": "auth",
+      "primary_problem": "captcha_validation_error",
+      "secondary_problem": null,
+      "evidence": [
+        "captcha",
+        "galat bata raha"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.92
+    }
+  },
+  {
+    "test_id": "navigation_1",
+    "input": "refund ka status kaha dekhu",
+    "intent_ir": {
+      "module": "navigation",
+      "primary_problem": "hidden_feature",
+      "secondary_problem": null,
+      "evidence": [
+        "refund status",
+        "kaha dekhu"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": true,
+      "confidence_score": 0.7
+    }
+  },
+  {
+    "test_id": "navigation_2",
+    "input": "settings kidhar hai",
+    "intent_ir": {
+      "module": "navigation",
+      "primary_problem": "feature_discoverability",
+      "secondary_problem": null,
+      "evidence": [
+        "settings",
+        "kidhar hai"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": true,
+      "confidence_score": 0.75
+    }
+  },
+  {
+    "test_id": "navigation_3",
+    "input": "order history nahi mil rahi",
+    "intent_ir": {
+      "module": "navigation",
+      "primary_problem": "feature_discoverability",
+      "secondary_problem": null,
+      "evidence": [
+        "order history",
+        "nahi mil rahi"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.88
+    }
+  },
+  {
+    "test_id": "navigation_4",
+    "input": "profile edit karne ka option kaha hai",
+    "intent_ir": {
+      "module": "navigation",
+      "primary_problem": "hidden_feature",
+      "secondary_problem": null,
+      "evidence": [
+        "profile edit",
+        "option kaha hai"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.89
+    }
+  },
+  {
+    "test_id": "navigation_5",
+    "input": "back button dabane pe app band ho gaya",
+    "intent_ir": {
+      "module": "navigation",
+      "primary_problem": "navigation_flow_break",
+      "secondary_problem": "application_crash",
+      "evidence": [
+        "back button",
+        "app band"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.9
+    }
+  },
+  {
+    "test_id": "navigation_6",
+    "input": "home page pe wapas kaise jau",
+    "intent_ir": {
+      "module": "navigation",
+      "primary_problem": "navigation_trap",
+      "secondary_problem": null,
+      "evidence": [
+        "home page",
+        "wapas kaise jau"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.85
+    }
+  },
+  {
+    "test_id": "navigation_7",
+    "input": "search bar kaam nahi kar raha",
+    "intent_ir": {
+      "module": "navigation",
+      "primary_problem": "feature_failure",
+      "secondary_problem": null,
+      "evidence": [
+        "search bar",
+        "kaam nahi kar raha"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.91
+    }
+  },
+  {
+    "test_id": "navigation_8",
+    "input": "menu options aadhe cut rahe hain screen pe",
+    "intent_ir": {
+      "module": "navigation",
+      "primary_problem": "ui_rendering_issue",
+      "secondary_problem": null,
+      "evidence": [
+        "menu options",
+        "cut rahe hain"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.93
+    }
+  },
+  {
+    "test_id": "navigation_9",
+    "input": "language change kaise karu",
+    "intent_ir": {
+      "module": "navigation",
+      "primary_problem": "feature_discoverability",
+      "secondary_problem": null,
+      "evidence": [
+        "language change",
+        "kaise karu"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": true,
+      "confidence_score": 0.8
+    }
+  },
+  {
+    "test_id": "navigation_10",
+    "input": "dark mode on karne ka button nahi mil raha",
+    "intent_ir": {
+      "module": "navigation",
+      "primary_problem": "feature_discoverability",
+      "secondary_problem": null,
+      "evidence": [
+        "dark mode",
+        "button nahi mil raha"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.87
+    }
+  },
+  {
+    "test_id": "performance_1",
+    "input": "app slow hai",
+    "intent_ir": {
+      "module": "performance",
+      "primary_problem": "performance_degradation",
+      "secondary_problem": null,
+      "evidence": [
+        "app",
+        "slow hai"
+      ],
+      "requires_diagnosis": true,
+      "requires_clarification": false,
+      "confidence_score": 0.6
+    }
+  },
+  {
+    "test_id": "performance_2",
+    "input": "loading pe atak gaya",
+    "intent_ir": {
+      "module": "performance",
+      "primary_problem": "ui_freeze",
+      "secondary_problem": null,
+      "evidence": [
+        "loading",
+        "atak gaya"
+      ],
+      "requires_diagnosis": true,
+      "requires_clarification": false,
+      "confidence_score": 0.85
+    }
+  },
+  {
+    "test_id": "performance_3",
+    "input": "screen freeze ho gayi",
+    "intent_ir": {
+      "module": "performance",
+      "primary_problem": "ui_freeze",
+      "secondary_problem": null,
+      "evidence": [
+        "screen freeze"
+      ],
+      "requires_diagnosis": true,
+      "requires_clarification": false,
+      "confidence_score": 0.88
+    }
+  },
+  {
+    "test_id": "performance_4",
+    "input": "app crash ho gaya",
+    "intent_ir": {
+      "module": "performance",
+      "primary_problem": "application_crash",
+      "secondary_problem": null,
+      "evidence": [
+        "app crash"
+      ],
+      "requires_diagnosis": true,
+      "requires_clarification": false,
+      "confidence_score": 0.9
+    }
+  },
+  {
+    "test_id": "performance_5",
+    "input": "app bahut slow hai aur crash bhi hota hai",
+    "intent_ir": {
+      "module": "performance",
+      "primary_problem": "performance_degradation",
+      "secondary_problem": "application_crash",
+      "evidence": [
+        "slow",
+        "crash"
+      ],
+      "requires_diagnosis": true,
+      "requires_clarification": false,
+      "confidence_score": 0.62
+    }
+  },
+  {
+    "test_id": "performance_6",
+    "input": "video play hone me bahut time le raha hai",
+    "intent_ir": {
+      "module": "performance",
+      "primary_problem": "high_latency",
+      "secondary_problem": null,
+      "evidence": [
+        "video play",
+        "bahut time"
+      ],
+      "requires_diagnosis": true,
+      "requires_clarification": false,
+      "confidence_score": 0.85
+    }
+  },
+  {
+    "test_id": "performance_7",
+    "input": "phone garam ho jata hai app chalane pe",
+    "intent_ir": {
+      "module": "performance",
+      "primary_problem": "high_resource_usage",
+      "secondary_problem": null,
+      "evidence": [
+        "phone garam",
+        "app chalane pe"
+      ],
+      "requires_diagnosis": true,
+      "requires_clarification": false,
+      "confidence_score": 0.88
+    }
+  },
+  {
+    "test_id": "performance_8",
+    "input": "battery bahut jaldi drain ho rahi hai",
+    "intent_ir": {
+      "module": "performance",
+      "primary_problem": "high_resource_usage",
+      "secondary_problem": null,
+      "evidence": [
+        "battery",
+        "drain ho rahi hai"
+      ],
+      "requires_diagnosis": true,
+      "requires_clarification": false,
+      "confidence_score": 0.89
+    }
+  },
+  {
+    "test_id": "performance_9",
+    "input": "image load hi nahi ho rahi",
+    "intent_ir": {
+      "module": "performance",
+      "primary_problem": "resource_loading_failure",
+      "secondary_problem": null,
+      "evidence": [
+        "image load",
+        "nahi ho rahi"
+      ],
+      "requires_diagnosis": true,
+      "requires_clarification": false,
+      "confidence_score": 0.84
+    }
+  },
+  {
+    "test_id": "performance_10",
+    "input": "scroll karte waqt lag ho raha hai",
+    "intent_ir": {
+      "module": "performance",
+      "primary_problem": "ui_lag",
+      "secondary_problem": null,
+      "evidence": [
+        "scroll karte",
+        "lag ho raha"
+      ],
+      "requires_diagnosis": true,
+      "requires_clarification": false,
+      "confidence_score": 0.91
+    }
+  },
+  {
+    "test_id": "trust_support_1",
+    "input": "customer care ka number kidhar hai bhai",
+    "intent_ir": {
+      "module": "trust_support",
+      "primary_problem": "support_unreachable",
+      "secondary_problem": null,
+      "evidence": [
+        "customer care",
+        "number kidhar hai"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.9
+    }
+  },
+  {
+    "test_id": "trust_support_2",
+    "input": "payment secure hai ya nahi dar lag raha hai",
+    "intent_ir": {
+      "module": "trust_support",
+      "primary_problem": "security_anxiety",
+      "secondary_problem": null,
+      "evidence": [
+        "payment secure",
+        "dar lag raha hai"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.85
+    }
+  },
+  {
+    "test_id": "trust_support_3",
+    "input": "mera data safe hai ya nahi kaise pata chalega",
+    "intent_ir": {
+      "module": "trust_support",
+      "primary_problem": "privacy_anxiety",
+      "secondary_problem": null,
+      "evidence": [
+        "data safe",
+        "kaise pata"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.88
+    }
+  },
+  {
+    "test_id": "trust_support_4",
+    "input": "app fake lag raha hai fraud toh nahi",
+    "intent_ir": {
+      "module": "trust_support",
+      "primary_problem": "trust_deficit",
+      "secondary_problem": null,
+      "evidence": [
+        "app fake",
+        "fraud"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": true,
+      "confidence_score": 0.82
+    }
+  },
+  {
+    "test_id": "trust_support_5",
+    "input": "support ticket raise kiya tha koi reply nahi aaya",
+    "intent_ir": {
+      "module": "trust_support",
+      "primary_problem": "support_unresponsive",
+      "secondary_problem": null,
+      "evidence": [
+        "support ticket",
+        "koi reply nahi"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.92
+    }
+  },
+  {
+    "test_id": "trust_support_6",
+    "input": "meri card details delete kaise karu",
+    "intent_ir": {
+      "module": "trust_support",
+      "primary_problem": "privacy_control_anxiety",
+      "secondary_problem": null,
+      "evidence": [
+        "card details",
+        "delete kaise karu"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.89
+    }
+  },
+  {
+    "test_id": "trust_support_7",
+    "input": "live chat option kyu nahi hai yaha",
+    "intent_ir": {
+      "module": "trust_support",
+      "primary_problem": "support_channel_missing",
+      "secondary_problem": null,
+      "evidence": [
+        "live chat",
+        "kyu nahi hai"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.91
+    }
+  },
+  {
+    "test_id": "trust_support_8",
+    "input": "terms and conditions bahut confusing hain",
+    "intent_ir": {
+      "module": "trust_support",
+      "primary_problem": "policy_confusion",
+      "secondary_problem": null,
+      "evidence": [
+        "terms and conditions",
+        "confusing"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.86
+    }
+  },
+  {
+    "test_id": "trust_support_9",
+    "input": "bot se baat nahi karni real human chahiye",
+    "intent_ir": {
+      "module": "trust_support",
+      "primary_problem": "bot_frustration",
+      "secondary_problem": null,
+      "evidence": [
+        "bot se baat nahi",
+        "real human chahiye"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.94
+    }
+  },
+  {
+    "test_id": "trust_support_10",
+    "input": "spam calls aa rahe hain jabse app install kiya",
+    "intent_ir": {
+      "module": "trust_support",
+      "primary_problem": "data_leak_suspicion",
+      "secondary_problem": null,
+      "evidence": [
+        "spam calls",
+        "app install kiya"
+      ],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.95
+    }
+  }
+]

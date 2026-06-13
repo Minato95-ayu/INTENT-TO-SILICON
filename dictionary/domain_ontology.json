@@ -79,7 +79,7 @@
         {"name": "event_type", "type": "string"},
         {"name": "ip_address", "type": "string"}
       ],
-      "relations": ["student"]
+      "relations": []
     },
     "job": {
       "fields": [
@@ -211,7 +211,22 @@
         {"name": "carrier", "type": "string"},
         {"name": "status", "type": "string"}
       ],
-      "relations": ["order"]
+      "relations": ["vehicle", "driver"]
+    },
+    "warehouse": {
+      "fields": [
+        {"name": "name", "type": "string"},
+        {"name": "location", "type": "string"},
+        {"name": "capacity", "type": "integer"}
+      ],
+      "relations": []
+    },
+    "delivery": {
+      "fields": [
+        {"name": "delivery_date", "type": "datetime"},
+        {"name": "recipient_signature", "type": "string"}
+      ],
+      "relations": ["shipment", "warehouse"]
     },
     "vehicle": {
       "fields": [
@@ -240,6 +255,44 @@
         {"name": "arrival_time", "type": "datetime"}
       ],
       "relations": ["route"]
+    },
+    "farmer": {
+      "fields": [
+        {"name": "name", "type": "string"},
+        {"name": "phone", "type": "string"},
+        {"name": "location", "type": "string"}
+      ]
+    },
+    "farm_plot": {
+      "fields": [
+        {"name": "size_acres", "type": "float"},
+        {"name": "soil_type", "type": "string"}
+      ],
+      "relations": ["farmer"]
+    },
+    "crop_log": {
+      "fields": [
+        {"name": "crop_name", "type": "string"},
+        {"name": "plant_date", "type": "datetime"},
+        {"name": "expected_yield", "type": "float"}
+      ],
+      "relations": ["farm_plot"]
+    },
+    "weather_data": {
+      "fields": [
+        {"name": "date", "type": "datetime"},
+        {"name": "temperature", "type": "float"},
+        {"name": "rainfall_mm", "type": "float"}
+      ],
+      "relations": ["farm_plot"]
+    },
+    "market_price": {
+      "fields": [
+        {"name": "crop_name", "type": "string"},
+        {"name": "price_per_kg", "type": "float"},
+        {"name": "date", "type": "datetime"}
+      ],
+      "relations": []
     }
   },
   "domains": {
@@ -282,6 +335,20 @@
       "driver",
       "route",
       "waypoint"
+    ],
+    "agriculture": [
+      "farmer",
+      "farm_plot",
+      "crop_log",
+      "weather_data",
+      "market_price"
+    ],
+    "logistics": [
+      "driver",
+      "vehicle",
+      "shipment",
+      "warehouse",
+      "delivery"
     ]
   }
 }

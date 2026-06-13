@@ -29,6 +29,8 @@ class APIGenerator:
                 py_type = self._type_mapper(field["type"])
                 if not field.get("required") and not field.get("primary_key"):
                     py_type = f"Optional[{py_type}] = None"
+                elif field.get("primary_key"):
+                    py_type = f"Optional[{py_type}] = None" # DB handles generation
                 pydantic_fields.append(f"    {field['name']}: {py_type}")
                 
             if pydantic_fields:

@@ -62,6 +62,13 @@
     "data_entities": ["patient", "doctor", "appointment", "billing", "bed", "insurance_claim"],
     "external_integrations": ["health_insurance_api", "video_call_sdk"]
   },
+  "hospital": {
+    "weight": 1.0,
+    "frontend_modules": ["patient_dashboard", "doctor_portal", "appointment_scheduler", "telemedicine_room"],
+    "backend_modules": ["patient_records_service", "scheduling_engine", "billing_service"],
+    "data_entities": ["patient", "doctor", "appointment", "billing", "bed", "insurance_claim"],
+    "external_integrations": ["health_insurance_api", "video_call_sdk"]
+  },
   "agriculture": {
     "weight": 0.8,
     "frontend_modules": ["farmer_dashboard", "crop_advisory_panel", "weather_widget", "market_price_tracker"],
@@ -80,7 +87,7 @@
     "weight": 0.9,
     "frontend_modules": ["fleet_tracker_ui", "driver_app_shell", "shipment_dashboard", "route_map"],
     "backend_modules": ["routing_engine", "fleet_management_service", "shipment_tracker"],
-    "data_entities": ["vehicle", "driver", "shipment", "route", "waypoint"],
+    "data_entities": ["vehicle", "driver", "shipment", "warehouse", "delivery"],
     "external_integrations": ["maps_api", "gps_telematics"]
   },
   "government": {

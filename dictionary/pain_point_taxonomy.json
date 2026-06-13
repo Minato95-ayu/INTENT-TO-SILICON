@@ -162,7 +162,8 @@
       {"phrase": "sasta", "meaning": "Desire for a more economical alternative or discount."},
       {"phrase": "free chahiye", "meaning": "Demand for a freemium model or trial period."},
       {"phrase": "karcha", "meaning": "Concern about the overall expense of using the platform."},
-      {"phrase": "gareeb", "meaning": "Expression of inability to pay, highlighting need for accessibility."}
+      {"phrase": "gareeb", "meaning": "Expression of inability to pay, highlighting need for accessibility."},
+      {"phrase": "khali", "meaning": "Account being emptied or drained by the service."}
     ],
     "root_intent": "Payment Anxiety",
     "clarification_matrix": {

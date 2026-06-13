@@ -3,9 +3,9 @@ import os
 from datetime import datetime
 
 # =====================================================================
-# INTENT-TO-SILICON: NLP Engine v0.4 (Evaluation Ready)
-# Decoupled processing logic for benchmarking and headless evaluation.
-# Track Clarification Required instead of Fail_Ambiguous.
+# INTENT-TO-SILICON: NLP Engine v0.12
+# Rule-based intent extraction with deterministic clarification matrix.
+# Supports object-based emotion dictionary schema (phrase + meaning).
 # =====================================================================
 
 def load_json(filename, folder='dictionary'):

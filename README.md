@@ -110,8 +110,8 @@ User speaks in any language (Hindi / Urdu / English / Hinglish)
                         ↓
            LAYER 3 — Active Disambiguation Engine
         Ask ONE question at a time — never frustrate
-        Uses Bayesian Experimental Design to pick
-        the question that removes most uncertainty
+        Uses a rule-based deterministic clarification matrix
+        (Acknowledge → Isolate → Determine Impact)
                         ↓
            LAYER 4 — Semantic Dictionary Lookup
         Match vague words to precise specs:
@@ -133,11 +133,12 @@ User speaks in any language (Hindi / Urdu / English / Hinglish)
 
 ---
 
-## 🧠 Cognitive Expansion (v0.6 & v0.7)
+## 🧠 Cognitive Expansion (v0.6 & v0.7) — Experimental
 
-Beyond static parsing, the framework implements a **Cognitive Architecture**:
-- **v0.6 Context Awareness:** Profiles users based on past behavior (e.g., risk tolerance) to dynamically adapt and personalize cross-questions.
-- **v0.7 Continuous Active Learning:** Automatically detects OOV (Out-of-Vocabulary) slang, prompts the user for clarification, and permanently injects it into the user's localized dictionary for future use, making the AI continuously smarter over time.
+> **Note:** These features are early-stage prototypes and have **not been benchmark-validated** yet. They are included as proof-of-concept code demonstrating the research direction.
+
+- **v0.6 Context Awareness (Experimental):** Profiles users based on past behavior (e.g., risk tolerance) to dynamically adapt and personalize cross-questions.
+- **v0.7 Continuous Active Learning (Experimental):** Detects OOV (Out-of-Vocabulary) slang, prompts the user for clarification, and registers it in a localized dictionary for future use.
 
 ---
 
@@ -170,42 +171,58 @@ INTENT-TO-SILICON/
 │   └── main.tex                       ← LaTeX source for arXiv
 │
 ├── prototype/
-│   ├── nlp_engine.py                  ← Core 7-Layer & Context Aware logic
-│   ├── continuous_learning_engine.py  ← v0.7 Continuous Active Learning Loop
-│   └── chat_engine.py                 ← Terminal simulation
+│   ├── nlp_engine.py                  ← Core NLP Engine (rule-based intent extraction)
+│   ├── chat_engine.py                 ← Terminal simulation for interactive testing
+│   └── continuous_learning_engine.py  ← v0.7 OOV learning loop (experimental)
 │
 ├── dictionary/
-│   ├── nlp_semantic_library.json      ← Functional constraints map
-│   └── emotion_semantic_library.json  ← Emotional UX heuristics map
+│   ├── nlp_semantic_library.json      ← Functional constraints map (performance, security, scale)
+│   ├── pain_point_taxonomy.json       ← Emotional UX heuristics map (v0.12, with meanings)
+│   ├── semantic_library.json          ← Legacy semantic library
+│   └── hinglish_technical_map.csv     ← Quick-reference Hinglish-to-Technical lookup
 │
 ├── experiments/
-│   └── run_benchmarks.py              ← Headless empirical evaluation script
+│   ├── benchmark_runner.py            ← Headless empirical evaluation script
+│   ├── benchmark_report.md            ← Latest benchmark results
+│   ├── social_media_miner.py          ← v0.11 Data ingestion pipeline (synthetic)
+│   ├── run_benchmarks.py              ← Legacy benchmark script
+│   └── generate_mock_dataset.py       ← Synthetic dataset generator
 │
-└── data/
-    └── user_profiles.json             ← Context profiling data
+├── data/
+│   ├── mock_pain_points_dataset.json  ← Synthetic benchmark phrases (N=28)
+│   ├── raw_social_media_dump.json     ← Simulated social media reviews
+│   ├── proposed_new_patterns.json     ← Miner output (pending human review)
+│   └── user_profiles.json             ← Context profiling data (experimental)
+│
+└── output/                            ← Generated YAML blueprints
 ```
 
 ---
 
 ## Current Status & Architecture Progress
 
-The framework is rapidly advancing towards production readiness. Progress is tracked directly against the core architectural flowchart:
+> **Transparency Note:** All benchmarks are currently run against **synthetic (self-authored) test phrases (N=28)**, not real-world user data. The disambiguation engine is **rule-based and deterministic**, not probabilistic or Bayesian. The social media mining pipeline uses **simulated data**, not actual scraped content. These are honest limitations of a research prototype.
 
-### ✅ Phase 1: Input & Understanding (100% DONE)
+### ✅ Phase 1: Input & Understanding (Complete)
 - **User Input (Hindi/Hinglish):** Ingests raw, unstructured, and colloquial frustration phrases.
-- **Semantic Libraries (v0.12):** Upgraded `pain_point_taxonomy.json` to a fully semantic object array where every Hinglish slang is mapped directly to its exact technical UX context.
+- **Semantic Libraries (v0.12):** `pain_point_taxonomy.json` stores every Hinglish slang with its exact technical UX meaning.
 
-### ✅ Phase 2: Safety & Halting (100% DONE)
-- **Zero Hallucination (Safe-Halting Policy):** If the intent engine fails to map user phrases to known heuristics, it halts execution instead of hallucinating logic.
-- **Empirical Benchmarks:** Maintaining a rigid **95.7% accuracy** rate on intent locking.
+### ✅ Phase 2: Safety & Halting (Complete)
+- **Safe-Halting Policy:** If the intent engine fails to map user phrases to known heuristics, it halts execution instead of hallucinating logic.
+- **Empirical Benchmarks:** Intent recognition accuracy on synthetic benchmark (N=28).
 
-### ✅ Phase 3: Disambiguation & Strategy (100% DONE)
-- **Active Disambiguation Engine:** Replaces generic clarification with a 3-step structured prompt matrix: `Acknowledge -> Isolate -> Determine Impact`.
-- **Automated Dataset Scaling (v0.11):** Implemented a social media ingestion pipeline that mines real-world frustration phrases (e.g., App Store, Reddit) and proposes them for manual taxonomy validation.
+### ✅ Phase 3: Disambiguation (Complete)
+- **Active Disambiguation Engine:** A rule-based 3-step structured clarification matrix: `Acknowledge → Isolate → Determine Impact`.
+- **Dataset Scaling (v0.11):** A simulated data ingestion pipeline that demonstrates how real-world phrases could be proposed for taxonomy expansion with human-in-the-loop validation.
 
-### ⏳ Phase 4 & 5: Output Layer & Silicon Generation (In Progress)
+### ⏳ Phase 4 & 5: Output Layer & Silicon Generation (Not Started)
 - **YAML Blueprint (Next Milestone):** Converting the locked NLP intent into a strict, machine-readable YAML specification.
-- **Executable Code:** Future phase to pipe the YAML Blueprint directly into an LLM code-generation engine (e.g. Cursor).
+- **Executable Code:** Future phase to pipe the YAML Blueprint into a code-generation engine.
+
+### Known Limitations
+- Benchmark dataset is small (N=28) and self-authored. Real-world user testing has not been conducted.
+- The engine uses keyword/substring matching, not deep NLP (no embeddings, no transformers).
+- Layers 5-7 (Requirement Structuring, Architecture Generation, Code Execution) are conceptual and not yet implemented.
 
 ---
 

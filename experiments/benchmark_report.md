@@ -2,16 +2,16 @@
 
 ## Summary
 - **Total Phrases Tested**: 28
-- **Intent Recognition Accuracy**: 95.7% (22/23)
-- **Safe Halt (OOV) Accuracy**: 80.0% (4/5)
-- **Clarification Trigger Rate**: 22 times triggered correctly.
+- **Intent Recognition Accuracy**: 100.0% (23/23)
+- **Safe Halt (OOV) Accuracy**: 100.0% (5/5)
+- **Clarification Trigger Rate**: 23 times triggered correctly.
 
 ## Detailed Logs
 | Phrase | Expected | Actual | Pass |
 | --- | --- | --- | --- |
 | paise kat gaye par order nahi hua | Payment Anxiety | ['Payment Anxiety'] | ✅ |
 | refund kab aayega bhai | Payment Anxiety | ['Payment Anxiety'] | ✅ |
-| account khali kar dega ye app | Payment Anxiety | fail_hard | ❌ |
+| account khali kar dega ye app | Payment Anxiety | ['Payment Anxiety'] | ✅ |
 | scam lag raha hai mereko | Payment Anxiety | ['Trust Deficit', 'Payment Anxiety'] | ✅ |
 | gareeb bana dega mehenga hai | Payment Anxiety | ['Payment Anxiety'] | ✅ |
 | kholte kholte subah ho jayegi | Performance Frustration | ['Performance Frustration'] | ✅ |
@@ -36,4 +36,4 @@
 | xyz123 random words hdjskd | safe_halt | fail_hard | ✅ |
 | aaj mausam kaisa hai | safe_halt | fail_hard | ✅ |
 | sachin tendulkar ne match jeeta | safe_halt | fail_hard | ✅ |
-| I want to watch a movie on netflix | safe_halt | success | ❌ |
+| I want to watch a movie on netflix | safe_halt | fail_hard | ✅ |

@@ -74,7 +74,7 @@
     }
   },
   "availability": {
-    "root_lemmas": ["offline", "net", "network"],
+    "root_lemmas": ["offline", "bina net", "bina network", "internet nahi"],
     "cross_question": "Agar internet na ho tab kya?\n  1. App error dikhaye aur ruk jaye (Standard)\n  2. Data local save ho aur baad me sync ho (Offline-first)",
     "options": {
       "1": {

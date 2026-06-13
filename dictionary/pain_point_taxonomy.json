@@ -97,10 +97,10 @@
     }
   },
   "otp_failure": {
-    "engineering_signal": "SMS Gateway Redundancy",
-    "description": "OTP is delayed or failing entirely.",
-    "root_lemmas": ["otp", "message", "sms", "delay", "receive", "verify"],
-    "cross_question": "Kya OTP delivery international users ke liye bhi hai?\n  1. Haan, Global\n  2. Sirf Local (India)",
+    "engineering_signal": "OTP Service Redundancy & Rate Limiting",
+    "description": "User is unable to receive or verify OTP.",
+    "root_lemmas": ["otp", "sms", "verification", "code", "invalid"],
+    "cross_question": "Problem kis step par hai?\n  1. OTP aa hi nahi raha\n  2. OTP aa raha hai par invalid bata raha hai",
     "options": {
       "1": {
         "exact_value": "REQUIREMENT: Twilio/MessageBird Auto-Failover Gateway"
@@ -236,9 +236,9 @@
     }
   },
   "navigation_confusion": {
-    "engineering_signal": "Information Architecture Review",
+    "engineering_signal": "Breadcrumb Navigation & Information Architecture Simplification",
     "description": "User is confused where to click or go next.",
-    "root_lemmas": ["samajh", "click", "kaha", "mil", "confuse", "ganda", "ui"],
+    "root_lemmas": ["samajh", "click", "find", "kaha", "kidhar", "hard", "complex", "setting", "hidden", "gayab", "menu", "button"],
     "cross_question": "App complexity kaisi hai?\n  1. Super App (Many features)\n  2. Single-purpose App",
     "options": {
       "1": {

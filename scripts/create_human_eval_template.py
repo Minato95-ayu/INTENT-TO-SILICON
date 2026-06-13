@@ -4,30 +4,61 @@ import os
 
 def create_template():
     base_dir = os.path.dirname(os.path.dirname(__file__))
-    corpus_file = os.path.join(base_dir, 'data', 'corpus_v1', 'payment_anxiety.csv')
+    corpus_dir = os.path.join(base_dir, 'data', 'corpus_v1')
     
-    if not os.path.exists(corpus_file):
-        print("Corpus file not found.")
-        return
+    categories = [
+        "payment_anxiety",
+        "otp_failure",
+        "navigation_confusion",
+        "performance_frustration"
+    ]
+    
+    selected_phrases = []
+    
+    # 1. Select 10 from each category
+    for cat in categories:
+        file_path = os.path.join(corpus_dir, f"{cat}.csv")
+        phrases = []
+        if os.path.exists(file_path):
+            with open(file_path, 'r', encoding='utf-8') as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    phrases.append((row['phrase'], cat))
         
-    phrases = []
-    with open(corpus_file, 'r', encoding='utf-8') as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            phrases.append(row['phrase'])
+        # Pick 10
+        if phrases:
+            sampled = random.sample(phrases, min(10, len(phrases)))
+            selected_phrases.extend(sampled)
             
-    # Select 50 random phrases
-    selected = random.sample(phrases, min(50, len(phrases)))
+    # 2. Add 10 Mixed / Ambiguous phrases
+    mixed_phrases = [
+        ("app bahut slow hai aur refund nahi aaya", "mixed"),
+        ("OTP fail ho raha hai kaha click karu", "mixed"),
+        ("payment stuck hai, setting hidden hai", "mixed"),
+        ("video upload crash ho gaya mera 500 ud gaya", "mixed"),
+        ("samajh nahi aa raha paise wapas kaise lu", "mixed"),
+        ("login invalid hai, order cancel ho gaya", "mixed"),
+        ("customer care ka number kidhar hai fraud app", "mixed"),
+        ("loading loading... otp hi nahi aata", "mixed"),
+        ("menu nahi mil raha, payment fail dikha raha hai", "mixed"),
+        ("double charge ho gaya aur phone hang kar raha hai", "mixed")
+    ]
+    
+    selected_phrases.extend(mixed_phrases)
+    
+    # Shuffle the 50 phrases so it's a blind test
+    random.shuffle(selected_phrases)
     
     output_path = os.path.join(base_dir, 'data', 'human_eval_template.csv')
     
     with open(output_path, 'w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
-        writer.writerow(['phrase', 'correct_label'])
-        for p in selected:
-            writer.writerow([p, ''])
+        writer.writerow(['phrase', 'actual_category', 'human_label'])
+        for p, cat in selected_phrases:
+            # We keep actual_category for the validation script to know the truth/source
+            writer.writerow([p, cat, ''])
             
-    print(f"Created template at {output_path} with {len(selected)} phrases.")
+    print(f"Created template at {output_path} with {len(selected_phrases)} phrases.")
 
 if __name__ == "__main__":
     create_template()

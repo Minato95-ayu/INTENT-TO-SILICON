@@ -1,0 +1,122 @@
+[
+  {
+    "input": "paise kat gaye par order nahi bana",
+    "intent_ir": {
+      "module": "payment",
+      "primary_problem": "orphaned_transaction",
+      "secondary_problem": null,
+      "evidence": ["paise", "kat gaye", "order nahi bana"],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.95
+    }
+  },
+  {
+    "input": "app loading pe stuck ho jata hai",
+    "intent_ir": {
+      "module": "performance",
+      "primary_problem": "ui_freeze",
+      "secondary_problem": null,
+      "evidence": ["loading", "stuck"],
+      "requires_diagnosis": true,
+      "requires_clarification": false,
+      "confidence_score": 0.92
+    }
+  },
+  {
+    "input": "OTP aaya hi nahi, 3 baar try kiya",
+    "intent_ir": {
+      "module": "auth",
+      "primary_problem": "otp_delivery_failure",
+      "secondary_problem": "multiple_failed_attempts",
+      "evidence": ["OTP", "aaya hi nahi", "3 baar try"],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.96
+    }
+  },
+  {
+    "input": "refund ka status kaha dekhu",
+    "intent_ir": {
+      "module": "navigation",
+      "primary_problem": "hidden_feature",
+      "secondary_problem": null,
+      "evidence": ["refund", "status", "kaha dekhu"],
+      "requires_diagnosis": false,
+      "requires_clarification": true,
+      "confidence_score": 0.70
+    }
+  },
+  {
+    "input": "customer care ka number kidhar hai bhai",
+    "intent_ir": {
+      "module": "support",
+      "primary_problem": "support_unreachable",
+      "secondary_problem": null,
+      "evidence": ["customer care", "number kidhar hai"],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.90
+    }
+  },
+  {
+    "input": "payment secure hai ya nahi dar lag raha hai",
+    "intent_ir": {
+      "module": "trust",
+      "primary_problem": "security_anxiety",
+      "secondary_problem": null,
+      "evidence": ["payment", "secure", "dar lag raha hai"],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.85
+    }
+  },
+  {
+    "input": "account delete karna hai par setting nahi mil rahi",
+    "intent_ir": {
+      "module": "account",
+      "primary_problem": "feature_discoverability",
+      "secondary_problem": null,
+      "evidence": ["account delete", "setting nahi mil rahi"],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.91
+    }
+  },
+  {
+    "input": "login bina OTP ke nahi ho sakta kya?",
+    "intent_ir": {
+      "module": "auth",
+      "primary_problem": "friction_in_auth",
+      "secondary_problem": null,
+      "evidence": ["login", "bina OTP ke"],
+      "requires_diagnosis": false,
+      "requires_clarification": true,
+      "confidence_score": 0.89
+    }
+  },
+  {
+    "input": "app bahut slow hai aur crash bhi hota hai",
+    "intent_ir": {
+      "module": "performance",
+      "primary_problem": "performance_degradation",
+      "secondary_problem": "application_crash",
+      "evidence": ["slow", "crash"],
+      "requires_diagnosis": true,
+      "requires_clarification": false,
+      "confidence_score": 0.62
+    }
+  },
+  {
+    "input": "dark mode kaam nahi kar raha",
+    "intent_ir": {
+      "module": "ui",
+      "primary_problem": "theme_toggle_failure",
+      "secondary_problem": null,
+      "evidence": ["dark mode", "kaam nahi kar raha"],
+      "requires_diagnosis": false,
+      "requires_clarification": false,
+      "confidence_score": 0.93
+    }
+  }
+]

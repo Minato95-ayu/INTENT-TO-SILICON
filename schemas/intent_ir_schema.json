@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Layer 1: Core Intent IR",
+  "description": "Strict semantic representation of human intent, devoid of assumed technical solutions.",
+  "type": "object",
+  "required": [
+    "module",
+    "primary_problem",
+    "evidence",
+    "requires_diagnosis",
+    "requires_clarification",
+    "confidence_score"
+  ],
+  "properties": {
+    "module": {
+      "type": "string",
+      "description": "The functional domain (e.g., 'payment', 'auth', 'navigation', 'performance')."
+    },
+    "primary_problem": {
+      "type": "string",
+      "description": "The exact pain point or intent observed (e.g., 'orphaned_transaction', 'performance_degradation')."
+    },
+    "secondary_problem": {
+      "type": ["string", "null"],
+      "description": "Any additional pain point observed in the same input."
+    },
+    "evidence": {
+      "type": "array",
+      "description": "The raw tokens/words that triggered this mapping.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "requires_diagnosis": {
+      "type": "boolean",
+      "description": "True if the system cannot pinpoint the root technical cause (e.g., 'slow' does not strictly mean 'memory_leak')."
+    },
+    "requires_clarification": {
+      "type": "boolean",
+      "description": "True if multiple interpretations exist and the Clarification Engine must be triggered."
+    },
+    "confidence_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Calculated dynamically based on matched signals, negation stability, conflict count, and clarification success."
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "performance_frustration": [
+    {
+      "phrase": "gol gol ghoomne",
+      "source": "twitter",
+      "raw_context": "Bhai kya raddi app banaya hai, payment page par aate hi gol gol ghoomne lagta hai, dimaag kharab kar diya."
+    }
+  ],
+  "payment_anxiety": [
+    {
+      "phrase": "rupay udd gaye",
+      "source": "play_store",
+      "raw_context": "Worst experience! Mere account se 500 rupay udd gaye aur ticket book nahi hui. Customer care wale phone nahi uthate. Lootere hain saale."
+    }
+  ],
+  "support_frustration": [
+    {
+      "phrase": "phone nahi uthate",
+      "source": "play_store",
+      "raw_context": "Worst experience! Mere account se 500 rupay udd gaye aur ticket book nahi hui. Customer care wale phone nahi uthate. Lootere hain saale."
+    }
+  ],
+  "navigation_confusion": [
+    {
+      "phrase": "chidiya ud jaye",
+      "source": "reddit",
+      "raw_context": "Can someone help? App kholte hi itne saare button aa jaate hain, menu itna chupa hua hai ki dhoondhte dhoondhte chidiya ud jaye. Samajh nahi aata kahan se start karu."
+    }
+  ],
+  "urgency": [
+    {
+      "phrase": "session expire",
+      "source": "play_store",
+      "raw_context": "App badiya hai par bohot time lagata hai. Mujhe tatkal book karna tha, pata chala mera session expire ho gaya. Thoda fast banao yaar."
+    }
+  ],
+  "trust_deficit": [
+    {
+      "phrase": "data leak ho jayega",
+      "source": "twitter",
+      "raw_context": "OTP 15 minute baad aa raha hai. Bank details save karne ka bolta hai. Bhai mujhe dar lagta hai inka data leak ho jayega. Delete kar raha hu."
+    }
+  ]
+}

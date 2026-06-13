@@ -122,16 +122,15 @@ The current evaluation is limited by the use of synthetic benchmark data. While 
 
 ---
 
-## 8. Future Work: Continuous Active Learning & Personalized Pattern Recognition (v0.7)
+## 8. Future Work
 
-To address current deterministic limitations and scale vocabulary dynamically without sacrificing architectural safety, an ongoing expansion towards a "Continuous Active Learning" layer (v0.7) has been architected. 
+### 8.1 Continuous Active Learning & Personalized Pattern Recognition (v0.7)
+To address current deterministic limitations and scale vocabulary dynamically without sacrificing architectural safety, an ongoing expansion towards a "Continuous Active Learning" layer has been architected. 
+This proposed layer shifts the system from a static parsing engine to a dynamic, user-adaptive cognitive framework via mechanisms like Self-Updating Dictionaries and Persistent User Profiling (dynamically altering clarification questions based on historical user behavior).
 
-This proposed layer shifts the system from a static parsing engine to a dynamic, user-adaptive cognitive framework via three primary mechanisms:
-1. **Self-Updating Dictionary:** When the system encounters an out-of-vocabulary (OOV) slang or typo (e.g., "fatafat"), it triggers a localized safe-halt to explicitly clarify the semantic mapping with the user. Upon confirmation, the dictionary permanently registers the term within the user's localized profile.
-2. **Dynamic Cross-Questioning:** By tracking user history and behavior patterns, the active disambiguation layer filters out historically ignored options, presenting increasingly personalized and concise cross-questions (e.g., automatically narrowing a 3-option choice to a binary 2-option choice).
-3. **Confidence Evolution:** As interactions accumulate, the system adjusts the `base_confidence` scores of specific UX patterns based on selection frequency, enabling highly accurate, predictive intent-locking.
-
-Future evaluations will incorporate real-user datasets to validate these continuous learning mechanisms against baseline static workflows.
+### 8.2 Automated Dataset Scaling via Social Media Mining (v0.11)
+To organically expand the Pain Point Taxonomy, a Data Ingestion Pipeline is proposed to mine raw, unstructured colloquialisms from public forums (e.g., App Store reviews, Twitter). 
+Rather than manual curation, an extraction script filters raw internet "noise" for exact frustration phrases (e.g., `"dhoondhte dhoondhte chidiya ud jaye"`) and maps them to the appropriate Pain Point category (e.g., `Navigation / UI Confusion`). To maintain the Zero Hallucination policy, these mined patterns are isolated in a proposed state until validated by a human researcher, ensuring the core dictionary scales accurately without accumulating semantic garbage.
 
 ---
 

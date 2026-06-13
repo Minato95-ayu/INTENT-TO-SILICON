@@ -110,9 +110,16 @@ The current evaluation is limited by the use of synthetic benchmark data. While 
 
 ---
 
-## 8. Future Work
+## 8. Future Work: Continuous Active Learning & Personalized Pattern Recognition (v0.7)
 
-To address current limitations, an ongoing data-collection effort has been initiated through public survey forms. Future evaluations will incorporate real-user requests and compare prototype behavior against baseline natural-language-to-code workflows. Additional future work includes the expansion of the semantic dictionary utilizing localized, heavily constrained LLM inference to expand vocabulary dynamically without sacrificing deterministic safety.
+To address current deterministic limitations and scale vocabulary dynamically without sacrificing architectural safety, an ongoing expansion towards a "Continuous Active Learning" layer (v0.7) has been architected. 
+
+This proposed layer shifts the system from a static parsing engine to a dynamic, user-adaptive cognitive framework via three primary mechanisms:
+1. **Self-Updating Dictionary:** When the system encounters an out-of-vocabulary (OOV) slang or typo (e.g., "fatafat"), it triggers a localized safe-halt to explicitly clarify the semantic mapping with the user. Upon confirmation, the dictionary permanently registers the term within the user's localized profile.
+2. **Dynamic Cross-Questioning:** By tracking user history and behavior patterns, the active disambiguation layer filters out historically ignored options, presenting increasingly personalized and concise cross-questions (e.g., automatically narrowing a 3-option choice to a binary 2-option choice).
+3. **Confidence Evolution:** As interactions accumulate, the system adjusts the `base_confidence` scores of specific UX patterns based on selection frequency, enabling highly accurate, predictive intent-locking.
+
+Future evaluations will incorporate real-user datasets to validate these continuous learning mechanisms against baseline static workflows.
 
 ---
 

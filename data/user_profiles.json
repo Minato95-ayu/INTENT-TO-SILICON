@@ -9,8 +9,12 @@
       "prioritize": "Time to Market"
     },
     "history": {
-      "database_choices": ["2"], 
-      "security_choices": ["1"]
+      "database_choices": [
+        "2"
+      ],
+      "security_choices": [
+        "1"
+      ]
     }
   },
   "user_tech_lead_anjali": {
@@ -23,8 +27,16 @@
       "prioritize": "Security and Scale"
     },
     "history": {
-      "database_choices": ["1"], 
-      "security_choices": ["2"]
+      "database_choices": [
+        "1"
+      ],
+      "security_choices": [
+        "2"
+      ]
+    },
+    "learned_slang": {
+      "fatafat": "urgency",
+      "jhakkaas": "performance"
     }
   }
 }

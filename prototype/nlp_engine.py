@@ -138,9 +138,11 @@ def process_single_input(user_input, func_library, emotion_library, headless_rep
                 if is_word_matching_root(word, data['root_lemmas']):
                     clause_funcs.append((category, i))
             
-            for category, data in emotion_library.items():
-                if is_word_matching_root(word, data.get('examples', data.get('root_lemmas', []))):
-                    clause_emotions.append((category, i))
+        for category, data in emotion_library.items():
+            for example in data.get('examples', data.get('root_lemmas', [])):
+                if example in clause:
+                    clause_emotions.append((category, 0))
+                    break
                     
         backward_indices = [i for i, w in enumerate(words) if w in BACKWARD_NEGATORS]
         forward_indices = [i for i, w in enumerate(words) if w in FORWARD_NEGATORS]
@@ -293,6 +295,8 @@ def process_single_input(user_input, func_library, emotion_library, headless_rep
     if final_func_specs or emotion_candidates or final_excluded_specs:
         blueprint_path = generate_blueprint_yaml(final_func_specs, hard_dependencies, emotion_candidates, final_excluded_specs)
         metrics["blueprint_path"] = blueprint_path
+        
+    metrics["pain_points"] = [e['pain_point'] for e in emotion_candidates]
         
     return metrics
 

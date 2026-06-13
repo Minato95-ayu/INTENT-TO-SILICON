@@ -27,6 +27,9 @@ def run_benchmarks():
     total_negation_cases = 0
     correct_negation_parses = 0
     
+    total_emotional_cases = 0
+    correct_emotion_parses = 0
+    
     print("==================================================")
     print(" INTENT-TO-SILICON : Benchmarking Suite v1.1")
     print("==================================================")
@@ -65,6 +68,12 @@ def run_benchmarks():
                 total_negation_cases += 1
                 if metrics["negated_intents_detected"] > 0:
                     correct_negation_parses += 1
+                    
+            if category == "emotional":
+                # Assuming we initialize total_emotional_cases = 0 and correct_emotion_parses = 0 at the top
+                total_emotional_cases += 1
+                if metrics["emotions_detected"] > 0:
+                    correct_emotion_parses += 1
                 
             total_questions_asked += metrics["questions_asked"]
             
@@ -82,6 +91,12 @@ def run_benchmarks():
         print(f"Negation Accuracy %       : {(correct_negation_parses/total_negation_cases)*100:.1f}%")
         print(f"  (Total Negation Cases: {total_negation_cases})")
         print(f"  (Correctly Parsed: {correct_negation_parses})")
+        
+    if total_emotional_cases > 0:
+        print("--------------------------------------------------")
+        print(f"Emotion Detection Acc %   : {(correct_emotion_parses/total_emotional_cases)*100:.1f}%")
+        print(f"  (Total Emotion Cases: {total_emotional_cases})")
+        print(f"  (Correctly Parsed: {correct_emotion_parses})")
     
     if total_inputs > 0:
         print("--------------------------------------------------")

@@ -97,7 +97,7 @@ def convert_md_to_latex(md_filepath, tex_filepath):
 
 if __name__ == "__main__":
     md_path = "paper/Intent_to_Silicon_v2.md"
-    tex_path = "paper/Intent_to_Silicon_v2.tex"
+    tex_path = "paper/main.tex"
     if os.path.exists(md_path):
         convert_md_to_latex(md_path, tex_path)
     else:

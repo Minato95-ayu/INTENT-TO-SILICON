@@ -32,7 +32,7 @@ class SQLAlchemyGenerator:
         
         # 1. Imports and Base setup
         lines.append("from sqlalchemy import Column, String, Integer, ForeignKey")
-        lines.append("from sqlalchemy.ext.declarative import declarative_base")
+        lines.append("from sqlalchemy.orm import declarative_base")
         lines.append("\nBase = declarative_base()\n")
 
         # 2. Model Classes

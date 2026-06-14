@@ -23,6 +23,8 @@ class TokenType(Enum):
     # Symbols
     COLON = auto()
     ARROW = auto()
+    LPAREN = auto()
+    RPAREN = auto()
     
     # Identifiers
     IDENTIFIER = auto()
@@ -53,6 +55,10 @@ class Token:
                 return "COLON"
             if self.type == TokenType.ARROW:
                 return "ARROW"
+            if self.type == TokenType.LPAREN:
+                return "LPAREN"
+            if self.type == TokenType.RPAREN:
+                return "RPAREN"
             return self.type.name
         else:
             return f"{self.type.name}({self.value})"
@@ -126,6 +132,18 @@ class Lexer:
             if c == '-' and self._peek(1) == '>':
                 self.tokens.append(Token(TokenType.ARROW, "->", self.line, self.column))
                 self._advance(2)
+                emitted_tokens_on_current_line = True
+                continue
+
+            if c == '(':
+                self.tokens.append(Token(TokenType.LPAREN, "(", self.line, self.column))
+                self._advance()
+                emitted_tokens_on_current_line = True
+                continue
+                
+            if c == ')':
+                self.tokens.append(Token(TokenType.RPAREN, ")", self.line, self.column))
+                self._advance()
                 emitted_tokens_on_current_line = True
                 continue
 

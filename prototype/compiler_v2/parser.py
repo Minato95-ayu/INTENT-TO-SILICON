@@ -115,21 +115,43 @@ class AayuParser:
         self._skip_newlines()
         while self._peek().type == TokenType.IDENTIFIER:
             id_token = self._advance()
-            target_list.append(node_class(line=id_token.line, column=id_token.column, name=id_token.value))
+            
+            # Check for optional (type)
+            type_val = None
+            if self._peek().type == TokenType.LPAREN:
+                self._advance()
+                type_token = self._consume(TokenType.IDENTIFIER, "Expected type identifier inside parentheses")
+                type_val = type_token.value
+                self._consume(TokenType.RPAREN, "Expected ')' after type")
+                
+            if node_class in (EntityNode, SharedNode):
+                target_list.append(node_class(line=id_token.line, column=id_token.column, name=id_token.value, type=type_val))
+            else:
+                target_list.append(node_class(line=id_token.line, column=id_token.column, name=id_token.value))
+                
             self._skip_newlines()
 
     def _parse_relations(self, target_list: List[RelationNode]):
-        """Parses relation lines: IDENTIFIER -> IDENTIFIER"""
+        """Parses relation lines: IDENTIFIER -> IDENTIFIER (optional_type)"""
         self._skip_newlines()
         while self._peek().type == TokenType.IDENTIFIER:
             src_token = self._advance()
             self._consume(TokenType.ARROW, f"Expected '->' after source entity '{src_token.value}'")
             tgt_token = self._consume(TokenType.IDENTIFIER, "Expected target entity after '->'")
             
+            # Check for optional (type)
+            type_val = None
+            if self._peek().type == TokenType.LPAREN:
+                self._advance()
+                type_token = self._consume(TokenType.IDENTIFIER, "Expected type identifier inside parentheses")
+                type_val = type_token.value
+                self._consume(TokenType.RPAREN, "Expected ')' after type")
+            
             target_list.append(RelationNode(
                 line=src_token.line, 
                 column=src_token.column, 
                 source=src_token.value, 
-                target=tgt_token.value
+                target=tgt_token.value,
+                type=type_val
             ))
             self._skip_newlines()

@@ -25,10 +25,12 @@ class DomainNode(ASTNode):
 @dataclass
 class SharedNode(ASTNode):
     name: str
+    type: Optional[str] = None
 
 @dataclass
 class EntityNode(ASTNode):
     name: str
+    type: Optional[str] = None
 
 @dataclass
 class FeatureNode(ASTNode):
@@ -38,6 +40,7 @@ class FeatureNode(ASTNode):
 class RelationNode(ASTNode):
     source: str
     target: str
+    type: Optional[str] = None
 
 @dataclass
 class AayuAST:

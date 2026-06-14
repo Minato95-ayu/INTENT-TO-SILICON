@@ -74,8 +74,17 @@ class SemanticAnalyzer:
                 errors.append(SemanticError(f"Duplicate entity declaration: '{e.name}'", e.line, e.column))
             if e.name in declared_shared:
                 errors.append(SemanticError(f"Shared vs Local Collision: '{e.name}' is declared as both shared and local entity", e.line, e.column))
+            
+            # Type Validation
+            if e.type is not None and e.type not in ('actor', 'resource', 'transaction'):
+                errors.append(SemanticError(f"Invalid entity type: '{e.type}'. Allowed types are actor, resource, transaction", e.line, e.column))
+                
             declared_entities.add(e.name)
             
+        for s in ast.shared:
+            if s.type is not None and s.type not in ('actor', 'resource', 'transaction'):
+                errors.append(SemanticError(f"Invalid shared entity type: '{s.type}'. Allowed types are actor, resource, transaction", s.line, s.column))
+
         all_valid_entities = declared_entities.union(declared_shared)
         
         # Rule 1: Undefined Entity Reference in Relations
@@ -90,6 +99,10 @@ class SemanticAnalyzer:
                 errors.append(SemanticError(f"Undefined entity reference in relation target: '{r.target}'", r.line, r.column))
             else:
                 used_entities.add(r.target)
+                
+            # Type Validation
+            if r.type is not None and r.type not in ('one_to_one', 'one_to_many', 'many_to_many'):
+                errors.append(SemanticError(f"Invalid relation type: '{r.type}'. Allowed types are one_to_one, one_to_many, many_to_many", r.line, r.column))
                 
         # Optional Warning: Orphan Entity Detection
         if not errors: # Only check warnings if valid architecture

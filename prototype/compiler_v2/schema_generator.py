@@ -79,6 +79,7 @@ class SchemaGenerator:
                     junction_table.columns.append(Column(
                         name=f"{rel.source}_id",
                         type="UUID",
+                        is_primary_key=True,
                         is_foreign_key=True,
                         references_table=rel.source
                     ))
@@ -87,6 +88,7 @@ class SchemaGenerator:
                     junction_table.columns.append(Column(
                         name=f"{rel.target}_id",
                         type="UUID",
+                        is_primary_key=True,
                         is_foreign_key=True,
                         references_table=rel.target
                     ))

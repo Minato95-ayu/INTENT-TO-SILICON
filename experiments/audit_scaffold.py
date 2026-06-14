@@ -47,12 +47,13 @@ def execute_scaffold_test(name: str, source: str) -> bool:
             "__init__.py", "database.py", "models.py", "schemas.py", 
             "main.py", "requirements.txt", "README.md"
         ]
+        backend_dir = os.path.join(app_dir, "backend")
         for f in expected_files:
-            if not os.path.exists(os.path.join(app_dir, f)):
+            if not os.path.exists(os.path.join(backend_dir, f)):
                 print(f"  [FAIL] Missing expected file: {f}")
                 return False
                 
-        if not os.path.exists(os.path.join(app_dir, "routers", "__init__.py")):
+        if not os.path.exists(os.path.join(backend_dir, "routers", "__init__.py")):
             print("  [FAIL] Missing routers directory or __init__.py")
             return False
             
@@ -64,7 +65,7 @@ def execute_scaffold_test(name: str, source: str) -> bool:
         if experiments_dir not in sys.path:
             sys.path.insert(0, experiments_dir)
             
-        module_name = f"generated_{name.lower()}_app.main"
+        module_name = f"generated_{name.lower()}_app.backend.main"
         try:
             import importlib
             main_module = importlib.import_module(module_name)

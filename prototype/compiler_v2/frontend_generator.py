@@ -1,190 +1,330 @@
-import os
+"""
+Aayu Frontend Generator
+
+Generates a React + Vite application driven strictly by the OpenAPI Spec.
+No AST, no SchemaModel. Just OpenAPI.
+"""
 import json
+from typing import Dict, List, Set
 
 class FrontendGenerator:
     def __init__(self):
         pass
 
-    def generate_component_code(self, module_name, entities_in_context, resolved_schema):
-        """Generates a React component dynamically, using the resolved schema."""
+    def _to_pascal_case(self, text: str) -> str:
+        return "".join(x.title() for x in text.replace("-", "_").split("_"))
+
+    def _extract_entities(self, openapi_spec: dict) -> List[str]:
+        entities = set()
+        paths = openapi_spec.get("paths", {})
+        for path in paths.keys():
+            # e.g., "/patient" or "/patient/{item_id}"
+            parts = [p for p in path.split("/") if p]
+            if len(parts) > 0 and not parts[0].startswith("{"):
+                entities.add(parts[0])
+        return sorted(list(entities))
+
+    def _get_schema_properties(self, openapi_spec: dict, entity: str) -> Dict[str, dict]:
+        pascal_entity = self._to_pascal_case(entity)
+        schemas = openapi_spec.get("components", {}).get("schemas", {})
+        # Look for {Entity}Create schema to know what fields to show in the form
+        schema_name = f"{pascal_entity}Create"
+        if schema_name in schemas:
+            return schemas[schema_name].get("properties", {})
+        return {}
+
+    def generate(self, openapi_spec: dict) -> Dict[str, str]:
+        files = {}
+        entities = self._extract_entities(openapi_spec)
         
-        component_name = ''.join(word.title() for word in module_name.split('_'))
+        # 1. Base Project Files
+        files["package.json"] = self._gen_package_json()
+        files["vite.config.ts"] = self._gen_vite_config()
+        files["tsconfig.json"] = self._gen_tsconfig()
+        files["index.html"] = self._gen_index_html()
+        files["src/main.tsx"] = self._gen_main_tsx()
+        files["src/services/api.ts"] = self._gen_api_service()
         
-        # Try to find a matching entity for this module (e.g. library_booking for booking_form)
-        matched_entity = None
-        for entity in entities_in_context:
-            # simple heuristic: if entity name is part of module name or vice-versa
-            if entity.split('_')[0] in module_name or module_name.split('_')[0] in entity:
-                matched_entity = entity
+        # 2. Entity Pages
+        for entity in entities:
+            pascal = self._to_pascal_case(entity)
+            props = self._get_schema_properties(openapi_spec, entity)
+            files[f"src/pages/{pascal}List.tsx"] = self._gen_entity_list(entity, pascal, props)
+            files[f"src/pages/{pascal}Form.tsx"] = self._gen_entity_form(entity, pascal, props)
+            
+        # 3. App Routing
+        files["src/App.tsx"] = self._gen_app_tsx(entities)
+        
+        return files
+
+    def _gen_package_json(self) -> str:
+        return """{
+  "name": "aayu-generated-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "^18.2.15",
+    "@vitejs/plugin-react": "^4.2.0",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.0"
+  }
+}
+"""
+
+    def _gen_vite_config(self) -> str:
+        return """import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react()],
+})
+"""
+
+    def _gen_tsconfig(self) -> str:
+        return """{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": false
+  },
+  "include": ["src"]
+}
+"""
+
+    def _gen_index_html(self) -> str:
+        return """<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aayu App</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+"""
+
+    def _gen_main_tsx(self) -> str:
+        return """import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.tsx'
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)
+"""
+
+    def _gen_api_service(self) -> str:
+        return """import axios from 'axios';
+
+// Ensure this matches your FastAPI backend URL
+export const api = axios.create({
+  baseURL: 'http://localhost:8000',
+});
+"""
+
+    def _gen_entity_list(self, entity: str, pascal: str, props: dict) -> str:
+        # Display ID and the first string field if available
+        display_col = "id"
+        for p_name, p_val in props.items():
+            if p_name != "id":
+                display_col = p_name
                 break
                 
-        # If it's a form or list, we can generate dynamic props
-        if matched_entity and "form" in module_name.lower():
-            return self._generate_form(component_name, matched_entity, resolved_schema)
-        elif matched_entity and "list" in module_name.lower():
-            return self._generate_list(component_name, matched_entity, resolved_schema)
-        else:
-            return self._generate_basic_component(component_name)
+        return f"""import React, {{ useEffect, useState }} from 'react';
+import {{ Link }} from 'react-router-dom';
+import {{ api }} from '../services/api';
 
-    def _generate_basic_component(self, name):
-        return f"""import React from 'react';
+export default function {pascal}List() {{
+  const [items, setItems] = useState<any[]>([]);
 
-// TODO: Generated by Aayu Compiler
-export default function {name}() {{
+  const fetchItems = async () => {{
+    const res = await api.get('/{entity}');
+    setItems(res.data);
+  }};
+
+  useEffect(() => {{
+    fetchItems();
+  }}, []);
+
+  const handleDelete = async (id: string) => {{
+    await api.delete(`/{entity}/${{id}}`);
+    fetchItems();
+  }};
+
   return (
-    <div className="{name.lower()}-container">
-      <h1>{name}</h1>
+    <div>
+      <h1>{pascal} List</h1>
+      <Link to="/{entity}/new">
+        <button>Add New {pascal}</button>
+      </Link>
+      <table border={{1}} style={{{{ marginTop: "1rem" }}}}>
+        <thead>
+          <tr>
+            <th>ID</th>
+            {f"<th>{display_col.title()}</th>" if display_col != "id" else ""}
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{items.map(item => (
+            <tr key={{item.id}}>
+              <td>{{item.id}}</td>
+              {f"<td>{{item.{display_col}}}</td>" if display_col != "id" else ""}
+              <td>
+                <Link to={{`/{entity}/edit/${{item.id}}`}}>
+                  <button>Edit</button>
+                </Link>
+                <button onClick={{() => handleDelete(item.id)}} style={{{{ marginLeft: "0.5rem" }}}}>Delete</button>
+              </td>
+            </tr>
+          ))}}
+        </tbody>
+      </table>
     </div>
   );
 }}
 """
 
-    def _generate_form(self, component_name, entity, resolved_schema):
-        definition = resolved_schema.get(entity, {})
-        fields = definition.get("fields", [])
-        
+    def _gen_entity_form(self, entity: str, pascal: str, props: dict) -> str:
+        # Construct form fields dynamically from openapi properties
+        form_fields = []
         state_init = []
-        form_elements = []
-        for field in fields:
-            if field['name'] in ['id', 'created_at']: continue
-            
-            input_type = "text"
-            if "DATE" in field['type'].upper() or "TIMESTAMP" in field['type'].upper(): input_type = "date"
-            if "INT" in field['type'].upper() or "DECIMAL" in field['type'].upper() or "FLOAT" in field['type'].upper(): input_type = "number"
-            
-            state_init.append(f"{field['name']}: ''")
-            
-            form_elements.append(f"""        <div className="form-group" style={{{{ marginBottom: '10px' }}}}>
-          <label style={{{{ display: 'block', marginBottom: '5px' }}}}>{field['name'].replace('_', ' ').title()}</label>
+        for p_name in props.keys():
+            if p_name == "id": continue
+            form_fields.append(f"""
+        <div>
+          <label>{p_name.title()}: </label>
           <input 
-            type="{input_type}" 
-            name="{field['name']}" 
-            value={{formData.{field['name']}}}
-            onChange={{handleChange}}
-            required={{{str(field.get('required', False)).lower()}}} 
-            style={{{{ width: '100%', padding: '8px' }}}}
+            value={{formData.{p_name} || ''}} 
+            onChange={{e => setFormData({{
+            ...formData,
+            {p_name}: e.target.value
+          }})}} 
           />
-        </div>""")
+        </div>
+            """)
+            state_init.append(f"{p_name}: ''")
+            
+        initial_state = "{ " + ", ".join(state_init) + " }"
         
-        elements_str = "\n".join(form_elements)
-        state_init_str = "{" + ", ".join(state_init) + "}"
-        
-        return f"""import React, {{ useState }} from 'react';
+        return f"""import React, {{ useEffect, useState }} from 'react';
+import {{ useNavigate, useParams }} from 'react-router-dom';
+import {{ api }} from '../services/api';
 
-// TODO: Generated by Aayu Compiler (Deterministic UI Synthesis)
-export default function {component_name}() {{
-  const [formData, setFormData] = useState({state_init_str});
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
+export default function {pascal}Form() {{
+  const [formData, setFormData] = useState<any>({initial_state});
+  const navigate = useNavigate();
+  const {{ id }} = useParams();
+  const isEdit = Boolean(id);
 
-  const handleChange = (e: any) => {{
-    const {{ name, value }} = e.target;
-    // Basic type coercion for number inputs to satisfy API schema
-    const parsedValue = e.target.type === 'number' && value !== '' ? Number(value) : value;
-    setFormData(prev => ({{ ...prev, [name]: parsedValue }}));
-  }};
+  useEffect(() => {{
+    if (isEdit) {{
+      api.get(`/{entity}/${{id}}`).then(res => setFormData(res.data));
+    }}
+  }}, [id, isEdit]);
 
   const handleSubmit = async (e: React.FormEvent) => {{
     e.preventDefault();
-    setLoading(true);
-    setMessage('');
-    try {{
-      const response = await fetch('/api/{entity}', {{
-        method: 'POST',
-        headers: {{ 'Content-Type': 'application/json' }},
-        body: JSON.stringify(formData)
-      }});
-      if (!response.ok) throw new Error('Failed to create {entity}');
-      setMessage('Successfully created {entity}!');
-      setFormData({state_init_str});
-    }} catch (error: any) {{
-      setMessage(error.message);
-    }} finally {{
-      setLoading(false);
+    if (isEdit) {{
+      await api.put(`/{entity}/${{id}}`, formData);
+    }} else {{
+      await api.post('/{entity}', formData);
     }}
+    navigate('/{entity}');
   }};
 
   return (
-    <div className="form-container" style={{{{ border: '1px solid #ccc', padding: '20px', borderRadius: '8px', maxWidth: '400px' }}}}>
-      <h2>Create {entity.replace('_', ' ').title()}</h2>
-      {{message && <p style={{{{ color: message.includes('Success') ? 'green' : 'red' }}}}>{{message}}</p>}}
+    <div>
+      <h1>{{isEdit ? 'Edit' : 'Create'}} {pascal}</h1>
       <form onSubmit={{handleSubmit}}>
-{elements_str}
-        <button type="submit" disabled={{loading}} style={{{{ marginTop: '10px', padding: '10px 15px', cursor: 'pointer' }}}}>
-          {{loading ? 'Submitting...' : 'Submit'}}
-        </button>
+        {"".join(form_fields)}
+        <br />
+        <button type="submit">Save</button>
+        <button type="button" onClick={{() => navigate('/{entity}')}} style={{{{ marginLeft: "0.5rem" }}}}>Cancel</button>
       </form>
     </div>
   );
 }}
 """
 
-    def _generate_list(self, component_name, entity, resolved_schema):
-        definition = resolved_schema.get(entity, {})
-        fields = definition.get("fields", [])
+    def _gen_app_tsx(self, entities: List[str]) -> str:
+        imports = []
+        routes = []
+        links = []
         
-        headers = []
-        cells = []
-        for field in fields:
-            headers.append(f"            <th style={{{{ padding: '8px', borderBottom: '1px solid #ccc' }}}}>{field['name'].replace('_', ' ').title()}</th>")
-            cells.append(f"            <td style={{{{ padding: '8px', borderBottom: '1px solid #eee' }}}}>{{item.{field['name']}}}</td>")
+        for entity in entities:
+            pascal = self._to_pascal_case(entity)
+            imports.append(f"import {pascal}List from './pages/{pascal}List';")
+            imports.append(f"import {pascal}Form from './pages/{pascal}Form';")
             
-        headers_str = "\n".join(headers)
-        cells_str = "\n".join(cells)
+            links.append(f'        <Link to="/{entity}" style={{{{marginRight: "1rem"}}}}>{entity.replace("_", " ").title()}</Link>')
+            
+            routes.append(f'          <Route path="/{entity}" element={{<{pascal}List />}} />')
+            routes.append(f'          <Route path="/{entity}/new" element={{<{pascal}Form />}} />')
+            routes.append(f'          <Route path="/{entity}/edit/:id" element={{<{pascal}Form />}} />')
+
+        imports_str = "\n".join(imports)
+        links_str = "\n".join(links)
+        routes_str = "\n".join(routes)
         
-        return f"""import React, {{ useEffect, useState }} from 'react';
+        return f"""import React from 'react';
+import {{ BrowserRouter, Routes, Route, Link }} from 'react-router-dom';
+{imports_str}
 
-// TODO: Generated by Aayu Compiler (Deterministic UI Synthesis)
-export default function {component_name}() {{
-  const [data, setData] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  const fetchData = async () => {{
-    try {{
-      setLoading(true);
-      const response = await fetch('/api/{entity}');
-      if (!response.ok) throw new Error('Failed to fetch {entity} data');
-      const result = await response.json();
-      setData(result);
-    }} catch (err: any) {{
-      setError(err.message);
-    }} finally {{
-      setLoading(false);
-    }}
-  }};
-
-  useEffect(() => {{
-    fetchData();
-  }}, []);
-
+function Home() {{
   return (
-    <div className="list-container" style={{{{ marginTop: '20px' }}}}>
-      <h2>{entity.replace('_', ' ').title()} List</h2>
-      <button onClick={{fetchData}} style={{{{ marginBottom: '10px', padding: '5px 10px', cursor: 'pointer' }}}}>Refresh Data</button>
-      {{error && <p style={{{{ color: 'red' }}}}>{{error}}</p>}}
-      {{loading ? <p>Loading...</p> : (
-        <table style={{{{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}}}>
-          <thead>
-            <tr>
-{headers_str}
-            </tr>
-          </thead>
-          <tbody>
-            {{data.map((item, index) => (
-              <tr key={{item.id || index}}>
-{cells_str}
-              </tr>
-            ))}}
-            {{data.length === 0 && (
-              <tr>
-                <td colSpan={{{len(fields)}}} style={{{{ textAlign: 'center', padding: '20px' }}}}>No records found.</td>
-              </tr>
-            )}}
-          </tbody>
-        </table>
-      )}}
+    <div>
+      <h1>Aayu Generated Dashboard</h1>
+      <p>Welcome to your full-stack application.</p>
     </div>
+  );
+}}
+
+export default function App() {{
+  return (
+    <BrowserRouter>
+      <nav style={{{{ padding: '1rem', background: '#f0f0f0', marginBottom: '2rem' }}}}>
+        <Link to="/" style={{{{marginRight: "2rem", fontWeight: "bold"}}}}>Home</Link>
+{links_str}
+      </nav>
+      <div style={{{{ padding: '0 2rem' }}}}>
+        <Routes>
+          <Route path="/" element={{<Home />}} />
+{routes_str}
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }}
 """

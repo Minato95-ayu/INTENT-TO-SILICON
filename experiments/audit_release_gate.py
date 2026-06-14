@@ -95,20 +95,30 @@ def execute_pipeline(name: str, source: str) -> bool:
         if experiments_dir not in sys.path:
             sys.path.insert(0, experiments_dir)
             
-        module_name = f"generated_{name.lower()}_app.main"
+        module_name = f"generated_{name.lower()}_app.backend.main"
         import importlib
         main_module = importlib.import_module(module_name)
         print("  [PASS] Main Application Module Imported")
         
-        # Since AppPackager generated main.py with create_all() already executed on import
-        # we can just use the created engine
-        db_module = importlib.import_module(f"generated_{name.lower()}_app.database")
-        
+        db_module = importlib.import_module(f"generated_{name.lower()}_app.backend.database")
         inspector = inspect(db_module.engine)
         tables = set(inspector.get_table_names())
         print(f"  [PASS] Database Bootstrapped Successfully with tables: {tables}")
         
-        # We don't delete the folder here so the user can inspect it if needed, or we can leave it as generated artifacts.
+        # 7. Frontend Build Verification
+        frontend_dir = os.path.join(app_dir, "frontend")
+        import subprocess
+        install_res = subprocess.run(["npm", "install"], cwd=frontend_dir, capture_output=True, text=True, shell=True)
+        if install_res.returncode != 0:
+            print(f"  [FAIL] Frontend npm install failed:\\n{install_res.stderr}")
+            return False
+            
+        build_res = subprocess.run(["npm", "run", "build"], cwd=frontend_dir, capture_output=True, text=True, shell=True)
+        if build_res.returncode != 0:
+            print(f"  [FAIL] Frontend npm run build failed:\\n{build_res.stderr}")
+            return False
+        print("  [PASS] React+Vite Frontend Build Succeeded")
+        
         return True
         
     except Exception as e:

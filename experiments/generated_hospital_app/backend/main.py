@@ -4,7 +4,6 @@ from . import models
 
 from .routers import patient
 from .routers import doctor
-from .routers import appointment
 
 # Create database tables
 models.Base.metadata.create_all(bind=engine)
@@ -17,4 +16,3 @@ def health_check():
 
 app.include_router(patient.router)
 app.include_router(doctor.router)
-app.include_router(appointment.router)

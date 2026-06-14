@@ -14,6 +14,7 @@ from .pydantic_generator import PydanticGenerator
 from .router_generator import RouterGenerator
 from .main_generator import MainGenerator
 from .frontend_generator import FrontendGenerator
+from .deployment_generator import DeploymentGenerator
 
 class AppPackager:
     def __init__(self, output_dir: str):
@@ -34,6 +35,19 @@ class AppPackager:
         
         # 4. Generate Frontend
         self._package_frontend(openapi_spec, frontend_dir)
+        
+        # 5. Generate Deployment Files
+        self._package_deployment()
+        
+    def _package_deployment(self):
+        generator = DeploymentGenerator()
+        files = generator.generate()
+        
+        for file_path, content in files.items():
+            full_path = os.path.join(self.output_dir, file_path)
+            os.makedirs(os.path.dirname(full_path), exist_ok=True)
+            with open(full_path, "w", encoding="utf-8") as f:
+                f.write(content)
         
     def _package_backend(self, schema: SchemaModel, backend_dir: str):
         # Write root module init

@@ -1,7 +1,5 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import AppointmentList from './pages/AppointmentList';
-import AppointmentForm from './pages/AppointmentForm';
 import DoctorList from './pages/DoctorList';
 import DoctorForm from './pages/DoctorForm';
 import PatientList from './pages/PatientList';
@@ -21,16 +19,12 @@ export default function App() {
     <BrowserRouter>
       <nav style={{ padding: '1rem', background: '#f0f0f0', marginBottom: '2rem' }}>
         <Link to="/" style={{marginRight: "2rem", fontWeight: "bold"}}>Home</Link>
-        <Link to="/appointment" style={{marginRight: "1rem"}}>Appointment</Link>
         <Link to="/doctor" style={{marginRight: "1rem"}}>Doctor</Link>
         <Link to="/patient" style={{marginRight: "1rem"}}>Patient</Link>
       </nav>
       <div style={{ padding: '0 2rem' }}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/appointment" element={<AppointmentList />} />
-          <Route path="/appointment/new" element={<AppointmentForm />} />
-          <Route path="/appointment/edit/:id" element={<AppointmentForm />} />
           <Route path="/doctor" element={<DoctorList />} />
           <Route path="/doctor/new" element={<DoctorForm />} />
           <Route path="/doctor/edit/:id" element={<DoctorForm />} />

@@ -20,15 +20,3 @@ class DoctorUpdate(BaseModel):
 class DoctorResponse(DoctorCreate):
     id: str
     model_config = ConfigDict(from_attributes=True)
-
-class AppointmentCreate(BaseModel):
-    patient_id: str
-    doctor_id: str
-
-class AppointmentUpdate(BaseModel):
-    patient_id: Optional[str] = None
-    doctor_id: Optional[str] = None
-
-class AppointmentResponse(AppointmentCreate):
-    id: str
-    model_config = ConfigDict(from_attributes=True)

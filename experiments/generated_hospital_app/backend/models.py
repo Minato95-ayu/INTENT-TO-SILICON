@@ -12,11 +12,3 @@ class Doctor(Base):
 
     id = Column(String, primary_key=True)
 
-
-class Appointment(Base):
-    __tablename__ = "appointment"
-
-    id = Column(String, primary_key=True)
-    patient_id = Column(String, ForeignKey("patient.id"))
-    doctor_id = Column(String, ForeignKey("doctor.id"))
-

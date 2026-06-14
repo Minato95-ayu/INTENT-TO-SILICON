@@ -11,6 +11,7 @@ import os
 import sys
 import importlib.util
 from sqlalchemy import create_engine, inspect
+from sqlalchemy.pool import StaticPool
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -21,6 +22,7 @@ from prototype.compiler_v2.ir_generator import IRGenerator
 from prototype.compiler_v2.schema_generator import SchemaGenerator
 from prototype.compiler_v2.sql_generator import SQLGenerator
 from prototype.compiler_v2.sqlalchemy_generator import SQLAlchemyGenerator
+from prototype.compiler_v2.api_generator import FastAPIGenerator
 
 BENCHMARKS = {
     "Hospital": """system Hospital
@@ -80,18 +82,22 @@ def execute_pipeline(name: str, source: str) -> bool:
         # 4. ORM Compilation & Execution
         orm_code = SQLAlchemyGenerator().generate(schema)
         
+        # 5. API Compilation
+        api_code = FastAPIGenerator().generate(schema)
+        app_code = orm_code + "\n\n" + api_code
+        
         temp_file = os.path.join(os.path.dirname(__file__), f"_release_{name.lower()}.py")
         with open(temp_file, "w", encoding="utf-8") as f:
-            f.write(orm_code)
+            f.write(app_code)
             
         spec = importlib.util.spec_from_file_location(f"models_{name}", temp_file)
         module = importlib.util.module_from_spec(spec)
         sys.modules[f"models_{name}"] = module
         spec.loader.exec_module(module)
-        print("  [PASS] ORM Code Generated & Imported")
+        print("  [PASS] API Code Generated & Imported")
         
-        # 5. Bootstrap Database
-        engine = create_engine("sqlite:///:memory:")
+        # 6. Bootstrap Database
+        engine = create_engine("sqlite:///:memory:", connect_args={'check_same_thread': False}, poolclass=StaticPool)
         module.Base.metadata.create_all(engine)
         
         inspector = inspect(engine)

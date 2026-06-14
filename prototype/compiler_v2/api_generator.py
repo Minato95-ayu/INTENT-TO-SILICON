@@ -1,90 +1,152 @@
-import os
-import json
+"""
+Aayu FastAPI CRUD Generator (Sprint 29)
 
-class APIGenerator:
+Converts the generic database-agnostic SchemaModel into valid FastAPI Application code.
+Generates Pydantic schemas (Create, Update, Response) and FastAPI Router endpoints (CRUD) for each table.
+"""
+
+from .schema_nodes import SchemaModel, Table, Column
+
+class FastAPIGenerator:
     def __init__(self):
         pass
 
-    def _type_mapper(self, sql_type):
-        sql_type = sql_type.upper()
-        if "UUID" in sql_type: return "str"  # using str for UUID to simplify SQLite JSON serialization
-        if "VARCHAR" in sql_type: return "str"
-        if "STRING" in sql_type: return "str"
-        if "INT" in sql_type: return "int"
-        if "BOOLEAN" in sql_type: return "bool"
-        if "TIMESTAMP" in sql_type or "DATE" in sql_type or "DATETIME" in sql_type: return "datetime"
-        if "DECIMAL" in sql_type or "FLOAT" in sql_type: return "float"
+    def _to_pascal_case(self, snake_str: str) -> str:
+        """Converts snake_case table name to PascalCase class name."""
+        components = snake_str.split('_')
+        return "".join(x.title() for x in components)
+        
+    def _map_pydantic_type(self, generic_type: str) -> str:
+        """Maps generic schema types to Python/Pydantic types."""
+        if generic_type.upper() == "UUID":
+            return "str"
+        elif generic_type.upper() == "INTEGER":
+            return "int"
         return "str"
 
-    def generate_schemas(self, resolved_schema):
-        code = "from pydantic import BaseModel\n"
-        code += "from typing import List, Optional\n"
-        code += "from datetime import datetime\n\n"
+    def generate(self, schema: SchemaModel) -> str:
+        """
+        Generates a valid Python script containing FastAPI Application, Pydantic schemas, and CRUD routes.
+        This string is meant to be appended after the SQLAlchemy ORM models generation.
+        """
+        lines = []
         
-        for entity, definition in resolved_schema.items():
-            model_name = ''.join(word.title() for word in entity.split('_'))
+        # 1. Imports
+        lines.append("from typing import List, Optional")
+        lines.append("import uuid")
+        lines.append("from fastapi import FastAPI, Depends, HTTPException")
+        lines.append("from pydantic import BaseModel, ConfigDict")
+        lines.append("from sqlalchemy.orm import Session")
+        lines.append("from sqlalchemy import create_engine")
+        lines.append("from sqlalchemy.orm import sessionmaker")
+        lines.append("from sqlalchemy.pool import StaticPool")
+        
+        lines.append("\n# Database Dependency setup (Assuming SQLite memory for testing, can be replaced)")
+        lines.append("engine = create_engine('sqlite:///:memory:', connect_args={'check_same_thread': False}, poolclass=StaticPool)")
+        lines.append("SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)")
+        
+        lines.append("\ndef get_db():")
+        lines.append("    db = SessionLocal()")
+        lines.append("    try:")
+        lines.append("        yield db")
+        lines.append("    finally:")
+        lines.append("        db.close()\n")
+        
+        lines.append("app = FastAPI(title='Aayu Generated API')\n")
+        
+        # 2. Pydantic Schemas
+        lines.append("# --- PYDANTIC SCHEMAS ---")
+        for table in schema.tables:
+            pascal_name = self._to_pascal_case(table.name)
             
-            pydantic_fields = []
-            for field in definition.get("fields", []):
-                py_type = self._type_mapper(field["type"])
-                if not field.get("required") and not field.get("primary_key"):
-                    py_type = f"Optional[{py_type}] = None"
-                elif field.get("primary_key"):
-                    py_type = f"Optional[{py_type}] = None" # DB handles generation
-                pydantic_fields.append(f"    {field['name']}: {py_type}")
+            # Create Schema
+            lines.append(f"class {pascal_name}Create(BaseModel):")
+            has_create_fields = False
+            for col in table.columns:
+                if col.name != "id": # Exclude 'id' from creation
+                    ptype = self._map_pydantic_type(col.type)
+                    # For V1, making foreign keys required
+                    lines.append(f"    {col.name}: {ptype}")
+                    has_create_fields = True
+            if not has_create_fields:
+                lines.append("    pass")
+            lines.append("")
                 
-            if pydantic_fields:
-                fields_code = "\n".join(pydantic_fields)
-            else:
-                fields_code = "    pass"
+            # Update Schema (all fields optional)
+            lines.append(f"class {pascal_name}Update(BaseModel):")
+            has_update_fields = False
+            for col in table.columns:
+                if col.name != "id":
+                    ptype = self._map_pydantic_type(col.type)
+                    lines.append(f"    {col.name}: Optional[{ptype}] = None")
+                    has_update_fields = True
+            if not has_update_fields:
+                lines.append("    pass")
+            lines.append("")
+                
+            # Response Schema
+            lines.append(f"class {pascal_name}Response({pascal_name}Create):")
+            id_col_type = next((self._map_pydantic_type(c.type) for c in table.columns if c.name == "id"), "str")
+            lines.append(f"    id: {id_col_type}")
+            lines.append("    model_config = ConfigDict(from_attributes=True)\n")
+
+        # 3. FastAPI Endpoints
+        lines.append("# --- FASTAPI ENDPOINTS ---")
+        for table in schema.tables:
+            route_name = table.name
+            pascal_name = self._to_pascal_case(table.name)
             
-            code += f"class {model_name}Base(BaseModel):\n"
-            code += fields_code + "\n\n"
+            # GET List
+            lines.append(f"@app.get('/{route_name}', response_model=List[{pascal_name}Response])")
+            lines.append(f"def read_{route_name}_list(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):")
+            lines.append(f"    return db.query({pascal_name}).offset(skip).limit(limit).all()\n")
             
-            code += f"class {model_name}Create({model_name}Base):\n"
-            code += "    pass\n\n"
+            # GET Item
+            lines.append(f"@app.get('/{route_name}/{{item_id}}', response_model={pascal_name}Response)")
+            lines.append(f"def read_{route_name}(item_id: str, db: Session = Depends(get_db)):")
+            lines.append(f"    db_item = db.query({pascal_name}).filter({pascal_name}.id == item_id).first()")
+            lines.append(f"    if db_item is None:")
+            lines.append(f"        raise HTTPException(status_code=404, detail='Not found')")
+            lines.append(f"    return db_item\n")
             
-            code += f"class {model_name}({model_name}Base):\n"
-            code += "    class Config:\n"
-            code += "        from_attributes = True\n\n"
+            # POST
+            lines.append(f"@app.post('/{route_name}', response_model={pascal_name}Response)")
+            lines.append(f"def create_{route_name}(item: {pascal_name}Create, db: Session = Depends(get_db)):")
+            lines.append(f"    # Basic unique constraint check for 1-to-1 relationships for V1")
+            for col in table.columns:
+                if col.is_unique:
+                    lines.append(f"    if getattr(item, '{col.name}', None):")
+                    lines.append(f"        existing = db.query({pascal_name}).filter({pascal_name}.{col.name} == item.{col.name}).first()")
+                    lines.append(f"        if existing:")
+                    lines.append(f"            raise HTTPException(status_code=400, detail='{col.name} already in use')")
+                    
+            lines.append(f"    db_item = {pascal_name}(id=str(uuid.uuid4()), **item.model_dump())")
+            lines.append(f"    db.add(db_item)")
+            lines.append(f"    db.commit()")
+            lines.append(f"    db.refresh(db_item)")
+            lines.append(f"    return db_item\n")
             
-        return code
-
-    def generate_api_code(self, entity):
-        """Generates FastAPI router with SQLAlchemy integration"""
-        model_name = ''.join(word.title() for word in entity.split('_'))
-        
-        return f"""# TODO: Generated by Aayu Compiler
-# Deterministic API Synthesis with SQLAlchemy
-
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from typing import List
-
-import models
-import schemas
-from database import get_db
-
-router = APIRouter()
-
-@router.post('/api/{entity}', response_model=schemas.{model_name})
-def create_{entity}(item: schemas.{model_name}Create, db: Session = Depends(get_db)):
-    db_item = models.{model_name}(**item.dict())
-    db.add(db_item)
-    db.commit()
-    db.refresh(db_item)
-    return db_item
-
-@router.get('/api/{entity}', response_model=List[schemas.{model_name}])
-def get_all_{entity}(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    items = db.query(models.{model_name}).offset(skip).limit(limit).all()
-    return items
-
-@router.get('/api/{entity}/{{item_id}}', response_model=schemas.{model_name})
-def get_{entity}(item_id: str, db: Session = Depends(get_db)):
-    item = db.query(models.{model_name}).filter(models.{model_name}.id == item_id).first()
-    if item is None:
-        raise HTTPException(status_code=404, detail="{model_name} not found")
-    return item
-"""
-
+            # PUT
+            lines.append(f"@app.put('/{route_name}/{{item_id}}', response_model={pascal_name}Response)")
+            lines.append(f"def update_{route_name}(item_id: str, item: {pascal_name}Update, db: Session = Depends(get_db)):")
+            lines.append(f"    db_item = db.query({pascal_name}).filter({pascal_name}.id == item_id).first()")
+            lines.append(f"    if db_item is None:")
+            lines.append(f"        raise HTTPException(status_code=404, detail='Not found')")
+            lines.append(f"    update_data = item.model_dump(exclude_unset=True)")
+            lines.append(f"    for key, value in update_data.items():")
+            lines.append(f"        setattr(db_item, key, value)")
+            lines.append(f"    db.commit()")
+            lines.append(f"    db.refresh(db_item)")
+            lines.append(f"    return db_item\n")
+            
+            # DELETE
+            lines.append(f"@app.delete('/{route_name}/{{item_id}}', response_model={pascal_name}Response)")
+            lines.append(f"def delete_{route_name}(item_id: str, db: Session = Depends(get_db)):")
+            lines.append(f"    db_item = db.query({pascal_name}).filter({pascal_name}.id == item_id).first()")
+            lines.append(f"    if db_item is None:")
+            lines.append(f"        raise HTTPException(status_code=404, detail='Not found')")
+            lines.append(f"    db.delete(db_item)")
+            lines.append(f"    db.commit()")
+            lines.append(f"    return db_item\n")
+            
+        return "\n".join(lines)

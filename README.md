@@ -38,7 +38,13 @@ User Input → Normalizer → Pain Point Extractor → Intent IR (Intermediate R
 2. **`pain_point_extractor.py`:** Uses a **Root Word + Proximity** graph to handle complex syntax. For example, it detects the root "dar" and checks a window of proximity for a `[NEG]` tag to correctly identify that the user is *not* afraid.
 3. **`compiler.py`:** The main driver script that glues the pipeline together.
 
----
+### The Code Generation Pipeline (Sprints 26 - 37)
+
+The intermediate representation is transformed into a deployable application via a series of specialized generators:
+1. **Schema & Models**: Translates IR to robust SQLAlchemy models (`models.py`) and Pydantic schemas (`schemas.py`) with support for relationships (one-to-many, many-to-many).
+2. **FastAPI Backend**: Automatically generates CRUD endpoints (`routers/`), JWT Authentication (`auth.py`), Role-Based Access Control (RBAC), and Observability/Logging middleware (`logger.py`).
+3. **React Frontend**: Scaffolds a complete Vite + React application matching the generated OpenAPI specification, complete with forms, pagination, and search capabilities.
+4. **Automated Testing**: Dynamically writes `pytest` integration tests (`test_api.py`) covering all generated routes, ensuring functional parity and preventing regressions via the `audit_release_gate.py`.
 
 ## 📊 Benchmark Results (V2 Compiler)
 

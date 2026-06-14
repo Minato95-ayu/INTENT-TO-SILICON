@@ -79,35 +79,36 @@ def execute_pipeline(name: str, source: str) -> bool:
         sql = SQLGenerator().generate(schema)
         print("  [PASS] SQL Generation Passed")
 
-        # 4. ORM Compilation & Execution
-        orm_code = SQLAlchemyGenerator().generate(schema)
-        
-        # 5. API Compilation
-        api_code = FastAPIGenerator().generate(schema)
-        app_code = orm_code + "\n\n" + api_code
-        
-        temp_file = os.path.join(os.path.dirname(__file__), f"_release_{name.lower()}.py")
-        with open(temp_file, "w", encoding="utf-8") as f:
-            f.write(app_code)
+        # 5. App Packaging
+        app_dir = os.path.join(os.path.dirname(__file__), f"generated_{name.lower()}_app")
+        import shutil
+        if os.path.exists(app_dir):
+            shutil.rmtree(app_dir)
             
-        spec = importlib.util.spec_from_file_location(f"models_{name}", temp_file)
-        module = importlib.util.module_from_spec(spec)
-        sys.modules[f"models_{name}"] = module
-        spec.loader.exec_module(module)
-        print("  [PASS] API Code Generated & Imported")
+        from prototype.compiler_v2.app_packager import AppPackager
+        packager = AppPackager(app_dir)
+        packager.package(schema)
+        print(f"  [PASS] Application successfully scaffolded to {app_dir}")
         
-        # 6. Bootstrap Database
-        engine = create_engine("sqlite:///:memory:", connect_args={'check_same_thread': False}, poolclass=StaticPool)
-        module.Base.metadata.create_all(engine)
+        # 6. Dynamic Import & Bootstrap Database
+        experiments_dir = os.path.dirname(__file__)
+        if experiments_dir not in sys.path:
+            sys.path.insert(0, experiments_dir)
+            
+        module_name = f"generated_{name.lower()}_app.main"
+        import importlib
+        main_module = importlib.import_module(module_name)
+        print("  [PASS] Main Application Module Imported")
         
-        inspector = inspect(engine)
+        # Since AppPackager generated main.py with create_all() already executed on import
+        # we can just use the created engine
+        db_module = importlib.import_module(f"generated_{name.lower()}_app.database")
+        
+        inspector = inspect(db_module.engine)
         tables = set(inspector.get_table_names())
         print(f"  [PASS] Database Bootstrapped Successfully with tables: {tables}")
         
-        # Cleanup
-        if os.path.exists(temp_file):
-            os.remove(temp_file)
-            
+        # We don't delete the folder here so the user can inspect it if needed, or we can leave it as generated artifacts.
         return True
         
     except Exception as e:

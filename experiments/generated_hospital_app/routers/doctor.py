@@ -1,0 +1,49 @@
+from typing import List
+import uuid
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from ..database import get_db
+from ..models import Doctor
+from ..schemas import DoctorCreate, DoctorUpdate, DoctorResponse
+
+router = APIRouter(prefix='/doctor', tags=['doctor'])
+
+@router.get('/', response_model=List[DoctorResponse])
+def read_doctor_list(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    return db.query(Doctor).offset(skip).limit(limit).all()
+
+@router.get('/{item_id}', response_model=DoctorResponse)
+def read_doctor(item_id: str, db: Session = Depends(get_db)):
+    db_item = db.query(Doctor).filter(Doctor.id == item_id).first()
+    if db_item is None:
+        raise HTTPException(status_code=404, detail='Not found')
+    return db_item
+
+@router.post('/', response_model=DoctorResponse)
+def create_doctor(item: DoctorCreate, db: Session = Depends(get_db)):
+    db_item = Doctor(id=str(uuid.uuid4()), **item.model_dump())
+    db.add(db_item)
+    db.commit()
+    db.refresh(db_item)
+    return db_item
+
+@router.put('/{item_id}', response_model=DoctorResponse)
+def update_doctor(item_id: str, item: DoctorUpdate, db: Session = Depends(get_db)):
+    db_item = db.query(Doctor).filter(Doctor.id == item_id).first()
+    if db_item is None:
+        raise HTTPException(status_code=404, detail='Not found')
+    update_data = item.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_item, key, value)
+    db.commit()
+    db.refresh(db_item)
+    return db_item
+
+@router.delete('/{item_id}', response_model=DoctorResponse)
+def delete_doctor(item_id: str, db: Session = Depends(get_db)):
+    db_item = db.query(Doctor).filter(Doctor.id == item_id).first()
+    if db_item is None:
+        raise HTTPException(status_code=404, detail='Not found')
+    db.delete(db_item)
+    db.commit()
+    return db_item

@@ -27,6 +27,7 @@ class SchemaGenerator:
             # If IR somehow had duplicates, we could check here, but IR guarantees uniqueness
             if not schema.get_table(entity.name):
                 t = Table(name=entity.name)
+                t.is_system = getattr(entity, 'is_system', False)
                 # Every table gets a UUID primary key
                 t.columns.append(Column(
                     name="id",
@@ -42,6 +43,16 @@ class SchemaGenerator:
                 # If RBAC is enabled, role and permission get 'name'
                 if schema.has_rbac and entity.name in ["role", "permission"]:
                     t.columns.append(Column(name="name", type="VARCHAR", is_unique=True))
+
+                # If entity is audit_log
+                if entity.name == "audit_log":
+                    t.columns.append(Column(name="timestamp", type="DATETIME"))
+                    t.columns.append(Column(name="action", type="VARCHAR"))
+                    t.columns.append(Column(name="entity_name", type="VARCHAR"))
+                    t.columns.append(Column(name="entity_id", type="VARCHAR"))
+                    t.columns.append(Column(name="request_id", type="VARCHAR"))
+                    if schema.has_auth:
+                        t.columns.append(Column(name="user_id", type="VARCHAR"))
                     
                 schema.tables.append(t)
 

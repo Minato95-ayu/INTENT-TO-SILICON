@@ -151,6 +151,9 @@ def test_health_endpoint(client: TestClient):
         client_fixture = "admin_client" if getattr(schema, 'has_rbac', False) else "client"
         
         for table in schema.tables:
+            if getattr(table, 'is_system', False):
+                continue
+                
             # Skip testing junction tables or auth internal tables directly if they are just infrastructure
             if table.name in ["role", "permission", "user_role", "role_permission"] and getattr(schema, 'has_rbac', False):
                 continue
@@ -247,15 +250,37 @@ def test_health_endpoint(client: TestClient):
             lines.append(f"    assert response2.status_code == 404")
             lines.append("")
             
-        if getattr(schema, 'has_rbac', False):
-            # RBAC Specific tests
-            test_target = schema.tables[0].name
-            if test_target in ["user", "role", "permission", "user_role", "role_permission"]:
-                for t in schema.tables:
-                    if t.name not in ["user", "role", "permission", "user_role", "role_permission"]:
-                        test_target = t.name
-                        break
-            
+        # Observability Tests
+        has_audit = any(t.name == 'audit_log' for t in schema.tables)
+        test_target = None
+        for t in schema.tables:
+            if not getattr(t, 'is_system', False) and t.name not in ["role", "permission", "user_role", "role_permission"]:
+                test_target = t.name
+                break
+                
+        if test_target:
+            lines.extend([
+                f"def test_observability_request_id({client_fixture}: TestClient):",
+                f"    response = {client_fixture}.get('/{test_target}')",
+                "    assert response.status_code == 200",
+                "    assert 'x-request-id' in response.headers",
+                "    assert response.headers['x-request-id'] != ''",
+                ""
+            ])
+            if has_audit:
+                lines.extend([
+                    f"def test_audit_log_created({client_fixture}: TestClient, db_session):",
+                    "    from models import AuditLog",
+                    "    initial_count = db_session.query(AuditLog).count()",
+                    f"    item = test_create_{test_target}({client_fixture})",
+                    "    assert db_session.query(AuditLog).count() > initial_count",
+                    f"    audit_rec = db_session.query(AuditLog).filter_by(action='create', entity_name='{test_target}').first()",
+                    "    assert audit_rec is not None",
+                    "    assert audit_rec.request_id is not None",
+                    ""
+                ])
+
+        if getattr(schema, 'has_rbac', False) and test_target:
             lines.extend([
                 "def test_rbac_unauthorized(client: TestClient):",
                 f"    response = client.delete('/{test_target}/123')",

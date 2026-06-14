@@ -21,6 +21,17 @@ class Student(Base):
     id = Column(String, primary_key=True)
 
 
+class AuditLog(Base):
+    __tablename__ = "audit_log"
+
+    id = Column(String, primary_key=True)
+    timestamp = Column(String)
+    action = Column(String)
+    entity_name = Column(String)
+    entity_id = Column(String)
+    request_id = Column(String)
+
+
 class StudentCourse(Base):
     __tablename__ = "student_course"
 

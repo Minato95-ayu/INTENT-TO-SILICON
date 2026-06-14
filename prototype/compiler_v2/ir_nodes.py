@@ -18,6 +18,7 @@ class IREntity:
     name: str
     category: Optional[str] = None  # e.g., 'actor', 'resource', 'transaction'
     is_shared: bool = False
+    is_system: bool = False
     metadata: Dict[str, Any] = field(default_factory=dict)
 
 @dataclass

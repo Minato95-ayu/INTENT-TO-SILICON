@@ -42,7 +42,8 @@ class IRGenerator:
         # Map Features to capabilities dictionary
         model.capabilities = {
             "auth": False,
-            "rbac": False
+            "rbac": False,
+            "observability": True
         }
         
         for f in ast.features:
@@ -55,6 +56,11 @@ class IRGenerator:
                 model.capabilities["rbac"] = True
                 # If rbac is specified, it inherently needs auth
                 model.capabilities["auth"] = True
+
+        # Inject observability entity
+        if model.capabilities.get("observability", True):
+            if not any(e.name == "audit_log" for e in model.entities):
+                model.entities.append(IREntity(name="audit_log", category="concept", is_shared=True, is_system=True))
 
         # Inject auth/rbac entities if features are present
         if model.capabilities["auth"]:

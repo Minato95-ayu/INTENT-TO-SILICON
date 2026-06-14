@@ -153,6 +153,21 @@ def test_delete_user(admin_client: TestClient):
     response2 = admin_client.get(f'/user/{item["id"]}')
     assert response2.status_code == 404
 
+def test_observability_request_id(admin_client: TestClient):
+    response = admin_client.get('/patient')
+    assert response.status_code == 200
+    assert 'x-request-id' in response.headers
+    assert response.headers['x-request-id'] != ''
+
+def test_audit_log_created(admin_client: TestClient, db_session):
+    from models import AuditLog
+    initial_count = db_session.query(AuditLog).count()
+    item = test_create_patient(admin_client)
+    assert db_session.query(AuditLog).count() > initial_count
+    audit_rec = db_session.query(AuditLog).filter_by(action='create', entity_name='patient').first()
+    assert audit_rec is not None
+    assert audit_rec.request_id is not None
+
 def test_rbac_unauthorized(client: TestClient):
     response = client.delete('/patient/123')
     assert response.status_code == 401

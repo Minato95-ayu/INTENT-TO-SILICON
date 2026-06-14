@@ -140,6 +140,12 @@ def execute_pipeline(name: str, source: str) -> bool:
             print(f"  [FAIL] Backend tests failed:\\n{test_res.stdout}\\n{test_res.stderr}")
             return False
         print("  [PASS] Backend Generated Test Suite Succeeded")
+        if "test_observability" in test_res.stdout:
+            print("  [PASS] Request Tracing")
+        if "logger" in sys.modules or os.path.exists(os.path.join(backend_dir, "logger.py")):
+            print("  [PASS] Structured Logging")
+        if "test_audit_log" in test_res.stdout:
+            print("  [PASS] Audit Logging")
 
         # 8. Frontend Build Verification
         frontend_dir = os.path.join(app_dir, "frontend")

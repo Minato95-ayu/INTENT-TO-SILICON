@@ -15,6 +15,18 @@ class Appointment(Base):
     patient_id = Column(String, ForeignKey("patient.id"))
 
 
+class AuditLog(Base):
+    __tablename__ = "audit_log"
+
+    id = Column(String, primary_key=True)
+    timestamp = Column(String)
+    action = Column(String)
+    entity_name = Column(String)
+    entity_id = Column(String)
+    request_id = Column(String)
+    user_id = Column(String)
+
+
 class User(Base):
     __tablename__ = "user"
 

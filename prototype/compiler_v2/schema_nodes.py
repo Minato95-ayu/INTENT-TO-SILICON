@@ -21,6 +21,7 @@ class Column:
 class Table:
     name: str
     columns: List[Column] = field(default_factory=list)
+    is_system: bool = False
 
     @property
     def searchable_columns(self) -> List[Column]:

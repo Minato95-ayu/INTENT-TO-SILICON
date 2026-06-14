@@ -17,6 +17,7 @@ from .frontend_generator import FrontendGenerator
 from .deployment_generator import DeploymentGenerator
 from .auth_generator import AuthGenerator
 from .test_generator import TestGenerator
+from .logger_generator import LoggerGenerator
 
 class AppPackager:
     def __init__(self, output_dir: str):
@@ -61,6 +62,8 @@ class AppPackager:
             
         with open(os.path.join(backend_dir, "models.py"), "w") as f:
             f.write(SQLAlchemyGenerator().generate(schema))
+            
+        LoggerGenerator(schema, backend_dir).generate()
             
         with open(os.path.join(backend_dir, "schemas.py"), "w") as f:
             f.write(PydanticGenerator().generate(schema))

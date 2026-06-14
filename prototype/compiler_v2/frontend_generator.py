@@ -177,6 +177,13 @@ api.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       localStorage.removeItem('token');
       window.location.href = '/login';
+    } else if (error.response && error.response.status >= 400) {
+      const data = error.response.data;
+      const reqId = data?.request_id || error.response.headers?.['x-request-id'] || 'unknown';
+      const msg = data?.detail || data?.error || 'Request Failed';
+      alert(`${msg}\nReference: ${reqId}`);
+    } else {
+      alert(`Network Error\nReference: unknown`);
     }
     return Promise.reject(error);
   }

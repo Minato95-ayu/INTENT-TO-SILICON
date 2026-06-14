@@ -50,3 +50,27 @@ class PaginatedAppointmentResponse(BaseModel):
     total: int
     page: int
     size: int
+
+class AuditLogCreate(BaseModel):
+    timestamp: str
+    action: str
+    entity_name: str
+    entity_id: str
+    request_id: str
+
+class AuditLogUpdate(BaseModel):
+    timestamp: Optional[str] = None
+    action: Optional[str] = None
+    entity_name: Optional[str] = None
+    entity_id: Optional[str] = None
+    request_id: Optional[str] = None
+
+class AuditLogResponse(AuditLogCreate):
+    id: str
+    model_config = ConfigDict(from_attributes=True)
+
+class PaginatedAuditLogResponse(BaseModel):
+    items: List[AuditLogResponse]
+    total: int
+    page: int
+    size: int

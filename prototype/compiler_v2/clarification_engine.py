@@ -107,6 +107,8 @@ class ClarificationEngine:
             result.questions.append({
                 "concept": "domain",
                 "question": f"Kaunsa domain hai? Options: {', '.join(available_domains)}",
+                "type": "feature",
+                "priority": "critical",
                 "confidence": 0.0,
             })
             result.is_complete = False
@@ -118,6 +120,8 @@ class ClarificationEngine:
             result.questions.append({
                 "concept": "integration",
                 "question": f"Multi-domain detected: {', '.join(domains)}. How should these interact? Options: 1. Separate systems, 2. Shared records, 3. Integrated workflow",
+                "type": "integration",
+                "priority": "critical",
                 "confidence": 0.0
             })
         
@@ -140,9 +144,13 @@ class ClarificationEngine:
                 if opt in questions_map:
                     if not any(q['concept'] == opt for q in result.questions):
                         result.missing_concepts.append(opt)
+                        q_obj = questions_map[opt]
                         result.questions.append({
                             "concept": opt,
-                            "question": questions_map[opt],
+                            "question": q_obj["question"],
+                            "type": q_obj.get("type", "feature"),
+                            "priority": q_obj.get("priority", "optional"),
+                            "default": q_obj.get("default"),
                             "confidence": 0.0
                         })
             
@@ -151,9 +159,13 @@ class ClarificationEngine:
                 if inf in questions_map:
                     if not any(q['concept'] == inf for q in result.questions):
                         result.missing_concepts.append(inf)
+                        q_obj = questions_map[inf]
                         result.questions.append({
                             "concept": inf,
-                            "question": questions_map[inf],
+                            "question": q_obj["question"],
+                            "type": q_obj.get("type", "implementation"),
+                            "priority": q_obj.get("priority", "critical"),
+                            "default": q_obj.get("default"),
                             "confidence": 0.0
                         })
 

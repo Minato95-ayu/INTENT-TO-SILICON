@@ -1,11 +1,11 @@
 {
   "healthcare": {
     "requires": ["patient", "doctor", "appointment"],
-    "optional": ["billing", "insurance", "telemedicine", "authentication", "compliance"]
+    "optional": ["billing", "insurance", "telemedicine", "authentication", "compliance", "payments"]
   },
   "hospital": {
     "requires": ["patient", "doctor", "appointment"],
-    "optional": ["billing", "insurance", "telemedicine", "authentication", "compliance"]
+    "optional": ["billing", "insurance", "telemedicine", "authentication", "compliance", "payments"]
   },
   "billing": {
     "requires": ["transaction", "payment_gateway"],

@@ -37,7 +37,7 @@
   },
   "logistics": {
     "requires": ["vehicle", "driver", "shipment"],
-    "optional": ["tracking", "offline_support", "routing"]
+    "optional": ["tracking", "offline_support", "routing", "payments"]
   },
   "government": {
     "requires": ["citizen", "civic_request", "verified_document"],
@@ -59,12 +59,28 @@
     "requires": ["security_event", "incident"],
     "optional": ["threat_intel", "vulnerability_report"]
   },
-  "marketplace": {
-    "requires": ["seller", "buyer", "product", "order"],
-    "optional": ["payments", "shipping", "inventory"]
+  "threat_intel": {
+    "requires": ["external_feed"],
+    "optional": []
   },
   "pharmacy": {
-    "requires": ["medicine", "inventory", "prescription"],
-    "optional": ["billing"]
+    "requires": ["medication_inventory", "prescription"],
+    "optional": ["payments", "billing"]
+  },
+  "housing": {
+    "requires": ["room_allocation", "student"],
+    "optional": ["payments", "maintenance"]
+  },
+  "employment": {
+    "requires": ["job_listing", "application"],
+    "optional": ["interviews", "payments"]
+  },
+  "library": {
+    "requires": ["book_catalog", "borrow_record"],
+    "optional": ["digital_content"]
+  },
+  "marketplace": {
+    "requires": ["product", "seller", "buyer", "order"],
+    "optional": ["logistics", "payments", "subscriptions"]
   }
 }

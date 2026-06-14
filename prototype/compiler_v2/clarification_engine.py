@@ -66,10 +66,13 @@ class ClarificationEngine:
         # Domain keyword mappings (internal identifiers are always English)
         domain_keywords = {
             "healthcare": ["hospital", "clinic", "doctor", "patient", "medical", "health"],
-            "education": ["student", "school", "university", "college", "education", "ecosystem", "library", "hostel"],
+            "education": ["student ecosystem", "student", "school", "university", "college", "education"],
+            "housing": ["hostel", "dorm", "housing", "accommodation"],
+            "employment": ["jobs", "employment", "career", "hiring"],
+            "library": ["library", "books"],
             "agriculture": ["agriculture", "farm", "crop", "farmer", "agri"],
             "logistics": ["logistics", "fleet", "shipment", "delivery", "warehouse", "tracking"],
-            "finance": ["finance", "bank", "payment", "transaction", "portfolio"],
+            "finance": ["finance", "bank", "portfolio"],
             "ecommerce": ["ecommerce", "shop", "cart", "product catalog", "checkout"],
             "marketplace": ["marketplace", "seller", "buyer", "vendor", "b2b"],
             "government": ["government", "citizen", "civic", "municipal"],
@@ -79,13 +82,28 @@ class ClarificationEngine:
             "pharmacy": ["pharmacy", "medicine", "prescription"]
         }
         
-        # Split intent into distinct words for precise matching
-        words_in_intent = set(re.findall(r'\b\w+\b', raw_lower))
-        
         detected_domains = []
         for domain, keywords in domain_keywords.items():
-            if any(kw in words_in_intent for kw in keywords):
-                detected_domains.append(domain)
+            for kw in keywords:
+                if re.search(r'\b' + re.escape(kw) + r'\b', raw_lower):
+                    if domain not in detected_domains:
+                        detected_domains.append(domain)
+                    break
+                    
+        # Hybrid logic for Insurance
+        if "insurance" in raw_lower:
+            if "with insurance" in raw_lower:
+                pass # Feature
+            elif "+" in raw_intent_text or len(detected_domains) == 0:
+                detected_domains.append("insurance")
+                
+        # Hybrid logic for Payments
+        if "payment" in raw_lower or "payments" in raw_lower:
+            if "with " in raw_lower and "payment" in raw_lower.split("with ")[1]:
+                pass # Feature
+            elif "+" in raw_intent_text or len(detected_domains) == 0:
+                if "finance" not in detected_domains:
+                    detected_domains.append("payments")
                 
         return detected_domains
 
@@ -114,12 +132,27 @@ class ClarificationEngine:
             result.is_complete = False
             return result
             
-        # Rule: Multi-domain detected -> Ask integration question
+        # Rule: Multi-domain detected -> Ask structured integration question
         if len(domains) > 1:
+            shared_entities = {}
+            for d in domains:
+                d_nodes = self.graph_engine.expand([d])[0]
+                for n in d_nodes:
+                    shared_entities[n] = shared_entities.get(n, 0) + 1
+            
+            # Find concepts that appear in multiple domains
+            common = [k for k, v in shared_entities.items() if v > 1]
+            
+            if common:
+                entity = common[0] # Pick the most common one, e.g. 'student'
+                question = f"Multi-domain detected: {', '.join(domains)}. Should they all use the same {entity} profile?"
+            else:
+                question = f"Multi-domain detected: {', '.join(domains)}. How should these interact? Options: 1. Separate systems, 2. Shared records, 3. Integrated workflow"
+                
             result.missing_concepts.append("integration")
             result.questions.append({
                 "concept": "integration",
-                "question": f"Multi-domain detected: {', '.join(domains)}. How should these interact? Options: 1. Separate systems, 2. Shared records, 3. Integrated workflow",
+                "question": question,
                 "type": "integration",
                 "priority": "critical",
                 "confidence": 0.0

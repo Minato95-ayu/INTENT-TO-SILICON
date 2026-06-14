@@ -270,29 +270,24 @@
   },
   "marketplace": {
     "required_concepts": [
-      "payments",
-      "escrow",
-      "reviews",
-      "search"
+      "product",
+      "seller",
+      "buyer",
+      "order"
     ],
     "questions": {
-      "payments": {
-        "question": "Vendor payouts manual honge ya Stripe Connect jaisa automated split payment?",
-        "type": "feature",
+      "seller": {
+        "question": "Sellers ka KYC verification process kaisa hoga?",
+        "type": "implementation",
         "priority": "critical"
       },
-      "escrow": {
-        "question": "Funds escrow mein hold karne hain jab tak service complete na ho?",
-        "type": "feature",
-        "priority": "optional"
+      "logistics": {
+        "question": "Shipping seller handle karega ya platform?",
+        "type": "implementation",
+        "priority": "critical"
       },
-      "reviews": {
-        "question": "Review system moderation-based hoga ya open for all?",
-        "type": "feature",
-        "priority": "optional"
-      },
-      "search": {
-        "question": "ElasticSearch ya Algolia jaisa advanced search & filter chahiye?",
+      "subscriptions": {
+        "question": "Buyers ke liye premium subscription model chahiye?",
         "type": "feature",
         "priority": "optional"
       }
@@ -440,5 +435,82 @@
       "elastic",
       "algolia"
     ]
+  },
+  "pharmacy": {
+    "required_concepts": [
+      "medication_inventory",
+      "prescription"
+    ],
+    "questions": {
+      "medication_inventory": {
+        "question": "Medicine inventory manual hogi ya supplier ERP se linked?",
+        "type": "implementation",
+        "priority": "critical"
+      },
+      "prescription": {
+        "question": "Digital prescription upload accept karenge ya sirf doctor generated?",
+        "type": "implementation",
+        "priority": "critical"
+      },
+      "payments": {
+        "question": "Online payments chahiye ya sirf pay-at-counter?",
+        "type": "feature",
+        "priority": "optional"
+      }
+    }
+  },
+  "housing": {
+    "required_concepts": [
+      "room_allocation",
+      "student"
+    ],
+    "questions": {
+      "room_allocation": {
+        "question": "Room allocation manual hoga ya automated rules pe?",
+        "type": "implementation",
+        "priority": "critical"
+      },
+      "maintenance": {
+        "question": "Maintenance complaints in-app track karni hain?",
+        "type": "feature",
+        "priority": "optional"
+      }
+    }
+  },
+  "employment": {
+    "required_concepts": [
+      "job_listing",
+      "application"
+    ],
+    "questions": {
+      "job_listing": {
+        "question": "Jobs admin post karega ya employers direct aayenge?",
+        "type": "implementation",
+        "priority": "critical"
+      },
+      "interviews": {
+        "question": "Interview scheduling in-app karni hai?",
+        "type": "feature",
+        "priority": "optional"
+      }
+    }
+  },
+  "library": {
+    "required_concepts": [
+      "book_catalog",
+      "borrow_record"
+    ],
+    "questions": {
+      "book_catalog": {
+        "question": "Library catalog external API se fetch hoga?",
+        "type": "implementation",
+        "priority": "critical"
+      },
+      "digital_content": {
+        "question": "E-books aur PDFs bhi host karne hain?",
+        "type": "feature",
+        "priority": "optional"
+      }
+    }
   }
 }

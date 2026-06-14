@@ -53,8 +53,17 @@ class PydanticGenerator:
                 
             # Response Schema
             lines.append(f"class {pascal_name}Response({pascal_name}Create):")
-            id_col_type = next((self._map_pydantic_type(c.type) for c in table.columns if c.name == "id"), "str")
-            lines.append(f"    id: {id_col_type}")
+            has_id = any(c.name == 'id' for c in table.columns)
+            if has_id:
+                id_col_type = next((self._map_pydantic_type(c.type) for c in table.columns if c.name == "id"), "str")
+                lines.append(f"    id: {id_col_type}")
             lines.append("    model_config = ConfigDict(from_attributes=True)\n")
+            
+            # Paginated Response Schema
+            lines.append(f"class Paginated{pascal_name}Response(BaseModel):")
+            lines.append(f"    items: List[{pascal_name}Response]")
+            lines.append(f"    total: int")
+            lines.append(f"    page: int")
+            lines.append(f"    size: int\n")
             
         return "\n".join(lines)

@@ -39,14 +39,41 @@ class IRGenerator:
                 is_shared=True
             ))
 
-        # Map Features
+        # Map Features to capabilities dictionary
+        model.capabilities = {
+            "auth": False,
+            "rbac": False
+        }
+        
         for f in ast.features:
             model.features.append(IRFeature(
-                name=f.name,
-                category=f.type
+                name=f.name
             ))
+            if f.name == "authentication":
+                model.capabilities["auth"] = True
+            elif f.name == "rbac":
+                model.capabilities["rbac"] = True
+                # If rbac is specified, it inherently needs auth
+                model.capabilities["auth"] = True
 
-        # Map Relationships
+        # Inject auth/rbac entities if features are present
+        if model.capabilities["auth"]:
+            if not any(e.name == "user" for e in model.entities):
+                model.entities.append(IREntity(name="user", category="actor", is_shared=True))
+            if not any(e.name == "role" for e in model.entities):
+                model.entities.append(IREntity(name="role", category="concept", is_shared=True))
+                
+        if model.capabilities["rbac"]:
+            if not any(e.name == "permission" for e in model.entities):
+                model.entities.append(IREntity(name="permission", category="concept", is_shared=True))
+            
+            # Map Many-to-Many relationships for RBAC
+            # user <-> role
+            if not any(r.source == "user" and r.target == "role" for r in model.relationships):
+                model.relationships.append(IRRelationship(source="user", target="role", cardinality="many_to_many"))
+            # role <-> permission
+            if not any(r.source == "role" and r.target == "permission" for r in model.relationships):
+                model.relationships.append(IRRelationship(source="role", target="permission", cardinality="many_to_many"))
         for r in ast.relations:
             model.relationships.append(IRRelationship(
                 source=r.source,

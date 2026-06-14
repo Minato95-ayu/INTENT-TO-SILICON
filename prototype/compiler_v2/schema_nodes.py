@@ -22,9 +22,15 @@ class Table:
     name: str
     columns: List[Column] = field(default_factory=list)
 
+    @property
+    def searchable_columns(self) -> List[Column]:
+        search_heuristics = {"name", "email", "title", "description", "username", "phone", "code"}
+        return [c for c in self.columns if c.name in search_heuristics and c.type.upper() in ["VARCHAR", "STRING", "TEXT"]]
+
 @dataclass
 class SchemaModel:
     tables: List[Table] = field(default_factory=list)
+    has_auth: bool = False
 
     def get_table(self, name: str) -> Optional[Table]:
         for t in self.tables:

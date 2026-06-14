@@ -1,16 +1,20 @@
-from typing import List
+from typing import List, Optional
 import uuid
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from ..database import get_db
-from ..models import Order
-from ..schemas import OrderCreate, OrderUpdate, OrderResponse
+from database import get_db
+from models import Order
+from schemas import OrderCreate, OrderUpdate, OrderResponse, PaginatedOrderResponse
 
 router = APIRouter(prefix='/order', tags=['order'])
 
-@router.get('/', response_model=List[OrderResponse])
-def read_order_list(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return db.query(Order).offset(skip).limit(limit).all()
+@router.get('/', response_model=PaginatedOrderResponse)
+def read_order_list(page: int = 1, size: int = Query(20, ge=1, le=100), search: Optional[str] = None, sort: Optional[str] = None, order: Optional[str] = 'asc', db: Session = Depends(get_db)):
+    from sqlalchemy import or_, func
+    query = db.query(Order)
+    total = query.count()
+    items = query.offset((page - 1) * size).limit(size).all()
+    return {'items': items, 'total': total, 'page': page, 'size': size}
 
 @router.get('/{item_id}', response_model=OrderResponse)
 def read_order(item_id: str, db: Session = Depends(get_db)):

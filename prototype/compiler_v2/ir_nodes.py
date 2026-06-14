@@ -38,3 +38,4 @@ class IRModel:
     entities: List[IREntity] = field(default_factory=list)
     features: List[IRFeature] = field(default_factory=list)
     relationships: List[IRRelationship] = field(default_factory=list)
+    has_auth: bool = False

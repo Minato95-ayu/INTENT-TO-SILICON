@@ -15,6 +15,8 @@ from .router_generator import RouterGenerator
 from .main_generator import MainGenerator
 from .frontend_generator import FrontendGenerator
 from .deployment_generator import DeploymentGenerator
+from .auth_generator import AuthGenerator
+from .test_generator import TestGenerator
 
 class AppPackager:
     def __init__(self, output_dir: str):
@@ -34,10 +36,11 @@ class AppPackager:
         openapi_spec = self._extract_openapi_spec(backend_dir)
         
         # 4. Generate Frontend
-        self._package_frontend(openapi_spec, frontend_dir)
+        self._package_frontend(openapi_spec, frontend_dir, schema.has_auth)
         
         # 5. Generate Deployment Files
         self._package_deployment()
+
         
     def _package_deployment(self):
         generator = DeploymentGenerator()
@@ -70,11 +73,33 @@ class AppPackager:
             with open(os.path.join(routers_dir, filename), "w") as f:
                 f.write(router_code)
                 
+        # Auth files
+        if schema.has_auth:
+            auth_gen = AuthGenerator()
+            auth_files = auth_gen.generate(schema)
+            for filepath, content in auth_files.items():
+                with open(os.path.join(backend_dir, filepath), "w", encoding="utf-8") as f:
+                    f.write(content)
+
+        # Tests
+        test_gen = TestGenerator()
+        test_files = test_gen.generate(schema)
+        for filepath, content in test_files.items():
+            full_path = os.path.join(backend_dir, filepath)
+            os.makedirs(os.path.dirname(full_path), exist_ok=True)
+            with open(full_path, "w", encoding="utf-8") as f:
+                f.write(content)
+
+        # Main App
         with open(os.path.join(backend_dir, "main.py"), "w") as f:
             f.write(MainGenerator().generate(schema))
             
-        with open(os.path.join(backend_dir, "requirements.txt"), "w") as f:
-            f.write("fastapi\nhttpx\npydantic\nsqlalchemy\nuvicorn\n")
+        # Requirements
+        reqs = ["fastapi", "uvicorn", "sqlalchemy", "pydantic", "httpx", "pytest"]
+        if schema.has_auth:
+            reqs.extend(["passlib[bcrypt]", "python-jose[cryptography]", "python-multipart"])
+        with open(os.path.join(backend_dir, "requirements.txt"), "w", encoding="utf-8") as f:
+            f.write("\n".join(reqs) + "\n")
             
         readme = [
             "# Aayu Generated Backend\n",
@@ -89,6 +114,8 @@ class AppPackager:
         parent_dir = os.path.dirname(backend_dir)
         if parent_dir not in sys.path:
             sys.path.insert(0, parent_dir)
+        if backend_dir not in sys.path:
+            sys.path.insert(0, backend_dir)
             
         backend_name = os.path.basename(backend_dir)
         app_name = os.path.basename(parent_dir)
@@ -97,9 +124,10 @@ class AppPackager:
         main_module = importlib.import_module(module_path)
         return main_module.app.openapi()
         
-    def _package_frontend(self, openapi_spec: dict, frontend_dir: str):
-        generator = FrontendGenerator()
-        files = generator.generate(openapi_spec)
+    def _package_frontend(self, openapi_spec: dict, frontend_dir: str, has_auth: bool):
+        # Setup frontend scaffold
+        gen = FrontendGenerator()
+        files = gen.generate(openapi_spec)
         
         for file_path, content in files.items():
             full_path = os.path.join(frontend_dir, file_path)

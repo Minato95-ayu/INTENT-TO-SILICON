@@ -28,11 +28,12 @@ class SQLAlchemyGenerator:
         """
         Generates a valid Python script containing SQLAlchemy models.
         """
-        lines = []
-        
-        # 1. Imports and Base setup
-        lines.append("from sqlalchemy import Column, String, Integer, ForeignKey")
-        lines.append("from .database import Base\n")
+        lines = [
+            "from sqlalchemy import Column, String, Integer, Boolean, ForeignKey, Table",
+            "from sqlalchemy.orm import relationship",
+            "from database import Base",
+            ""
+        ]
 
         # 2. Model Classes
         for table in schema.tables:

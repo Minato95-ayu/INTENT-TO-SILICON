@@ -55,6 +55,30 @@ entities:
 relations:
   student -> course (many_to_many)
   student -> room_allocation (one_to_one)
+""",
+    
+    "AuthTest": """system AuthTest
+domains:
+  hospital
+entities:
+  patient (actor)
+  appointment (transaction)
+features:
+  authentication
+relations:
+  patient -> appointment (one_to_many)
+""",
+    
+    "RBACTest": """system RBACTest
+domains:
+  hospital
+entities:
+  patient (actor)
+  appointment (transaction)
+features:
+  rbac
+relations:
+  patient -> appointment (one_to_many)
 """
 }
 
@@ -92,8 +116,11 @@ def execute_pipeline(name: str, source: str) -> bool:
         
         # 6. Dynamic Import & Bootstrap Database
         experiments_dir = os.path.dirname(__file__)
+        backend_dir = os.path.join(app_dir, "backend")
         if experiments_dir not in sys.path:
             sys.path.insert(0, experiments_dir)
+        if backend_dir not in sys.path:
+            sys.path.insert(0, backend_dir)
             
         module_name = f"generated_{name.lower()}_app.backend.main"
         import importlib
@@ -105,7 +132,16 @@ def execute_pipeline(name: str, source: str) -> bool:
         tables = set(inspector.get_table_names())
         print(f"  [PASS] Database Bootstrapped Successfully with tables: {tables}")
         
-        # 7. Frontend Build Verification
+        # 7. Backend Pytest Verification
+        backend_dir = os.path.join(app_dir, "backend")
+        import subprocess
+        test_res = subprocess.run(["pytest"], cwd=backend_dir, capture_output=True, text=True, shell=True)
+        if test_res.returncode != 0:
+            print(f"  [FAIL] Backend tests failed:\\n{test_res.stdout}\\n{test_res.stderr}")
+            return False
+        print("  [PASS] Backend Generated Test Suite Succeeded")
+
+        # 8. Frontend Build Verification
         frontend_dir = os.path.join(app_dir, "frontend")
         import subprocess
         install_res = subprocess.run(["npm", "install"], cwd=frontend_dir, capture_output=True, text=True, shell=True)
@@ -122,8 +158,30 @@ def execute_pipeline(name: str, source: str) -> bool:
         return True
         
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         print(f"  [FAIL] PIPELINE CRASH: {type(e).__name__}: {e}")
         return False
+    finally:
+        # 9. Clean up module cache
+        keys_to_remove = []
+        for key in sys.modules.keys():
+            if key in ["database", "models", "schemas", "auth", "main", "routers"]:
+                keys_to_remove.append(key)
+            elif key.startswith(f"generated_{name.lower()}_app"):
+                keys_to_remove.append(key)
+            elif key.startswith("routers."):
+                keys_to_remove.append(key)
+        for key in keys_to_remove:
+            sys.modules.pop(key, None)
+            
+        app_dir = os.path.join(os.path.dirname(__file__), f"generated_{name.lower()}_app")
+        backend_dir = os.path.join(app_dir, "backend")
+        if backend_dir in sys.path:
+            sys.path.remove(backend_dir)
+            
+        # also remove experiments_dir just in case it accumulated, though it's likely safe.
+        # But wait, removing experiments_dir is only okay if it was added. Let's just remove backend_dir.
 
 def run_release_gate():
     print("=" * 60)

@@ -1,0 +1,68 @@
+from typing import List, Optional
+from pydantic import BaseModel, ConfigDict
+
+class PatientCreate(BaseModel):
+    pass
+
+class PatientUpdate(BaseModel):
+    pass
+
+class PatientResponse(PatientCreate):
+    id: str
+    model_config = ConfigDict(from_attributes=True)
+
+class PaginatedPatientResponse(BaseModel):
+    items: List[PatientResponse]
+    total: int
+    page: int
+    size: int
+
+class AppointmentCreate(BaseModel):
+    patient_id: str
+
+class AppointmentUpdate(BaseModel):
+    patient_id: Optional[str] = None
+
+class AppointmentResponse(AppointmentCreate):
+    id: str
+    model_config = ConfigDict(from_attributes=True)
+
+class PaginatedAppointmentResponse(BaseModel):
+    items: List[AppointmentResponse]
+    total: int
+    page: int
+    size: int
+
+class UserCreate(BaseModel):
+    email: str
+    password_hash: str
+
+class UserUpdate(BaseModel):
+    email: Optional[str] = None
+    password_hash: Optional[str] = None
+
+class UserResponse(UserCreate):
+    id: str
+    model_config = ConfigDict(from_attributes=True)
+
+class PaginatedUserResponse(BaseModel):
+    items: List[UserResponse]
+    total: int
+    page: int
+    size: int
+
+class RoleCreate(BaseModel):
+    pass
+
+class RoleUpdate(BaseModel):
+    pass
+
+class RoleResponse(RoleCreate):
+    id: str
+    model_config = ConfigDict(from_attributes=True)
+
+class PaginatedRoleResponse(BaseModel):
+    items: List[RoleResponse]
+    total: int
+    page: int
+    size: int

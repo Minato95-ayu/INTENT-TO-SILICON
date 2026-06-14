@@ -36,6 +36,7 @@ class FrontendGenerator:
     def generate(self, openapi_spec: dict) -> Dict[str, str]:
         files = {}
         entities = self._extract_entities(openapi_spec)
+        self.has_auth = "/auth/login" in openapi_spec.get("paths", {})
         
         # 1. Base Project Files
         files["package.json"] = self._gen_package_json()
@@ -45,15 +46,22 @@ class FrontendGenerator:
         files["src/main.tsx"] = self._gen_main_tsx()
         files["src/services/api.ts"] = self._gen_api_service()
         
-        # 2. Entity Pages
+        # 2. Auth Pages
+        if self.has_auth:
+            files["src/pages/Login.tsx"] = self._gen_login_page()
+            files["src/pages/Register.tsx"] = self._gen_register_page()
+        
+        # 3. Entity Pages
+        entity_data = []
         for entity in entities:
             pascal = self._to_pascal_case(entity)
+            entity_data.append({"name": entity, "pascal": pascal})
             props = self._get_schema_properties(openapi_spec, entity)
             files[f"src/pages/{pascal}List.tsx"] = self._gen_entity_list(entity, pascal, props)
             files[f"src/pages/{pascal}Form.tsx"] = self._gen_entity_form(entity, pascal, props)
             
-        # 3. App Routing
-        files["src/App.tsx"] = self._gen_app_tsx(entities)
+        # 4. App Routing
+        files["src/App.tsx"] = self._gen_app_tsx(entity_data)
         
         return files
 
@@ -111,7 +119,8 @@ export default defineConfig({
     "strict": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "types": ["vite/client"]
   },
   "include": ["src"]
 }
@@ -151,6 +160,27 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
 });
+
+// Intercept requests to attach JWT token
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Intercept responses to redirect to login on 401
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
 """
 
     def _gen_entity_list(self, entity: str, pascal: str, props: dict) -> str:
@@ -167,15 +197,29 @@ import {{ api }} from '../services/api';
 
 export default function {pascal}List() {{
   const [items, setItems] = useState<any[]>([]);
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const size = 20;
 
   const fetchItems = async () => {{
-    const res = await api.get('/{entity}');
-    setItems(res.data);
+    const params = new URLSearchParams();
+    params.append('page', page.toString());
+    params.append('size', size.toString());
+    if (search) params.append('search', search);
+    
+    const res = await api.get(`/{entity}?${{params.toString()}}`);
+    setItems(res.data.items || []);
   }};
 
   useEffect(() => {{
     fetchItems();
-  }}, []);
+  }}, [page]); // Re-fetch when page changes
+  
+  const handleSearch = (e: React.FormEvent) => {{
+    e.preventDefault();
+    setPage(1); // Reset to first page on new search
+    fetchItems();
+  }};
 
   const handleDelete = async (id: string) => {{
     await api.delete(`/{entity}/${{id}}`);
@@ -185,10 +229,21 @@ export default function {pascal}List() {{
   return (
     <div>
       <h1>{pascal} List</h1>
-      <Link to="/{entity}/new">
-        <button>Add New {pascal}</button>
-      </Link>
-      <table border={{1}} style={{{{ marginTop: "1rem" }}}}>
+      <div style={{{{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}}}>
+        <Link to="/{entity}/new">
+          <button>Add New {pascal}</button>
+        </Link>
+        <form onSubmit={{handleSearch}}>
+          <input 
+            type="text" 
+            placeholder="Search..." 
+            value={{search}} 
+            onChange={{e => setSearch(e.target.value)}} 
+          />
+          <button type="submit" style={{{{ marginLeft: '0.5rem' }}}}>Search</button>
+        </form>
+      </div>
+      <table border={{1}} width="100%">
         <thead>
           <tr>
             <th>ID</th>
@@ -209,8 +264,19 @@ export default function {pascal}List() {{
               </td>
             </tr>
           ))}}
+          {{items.length === 0 && (
+            <tr>
+              <td colSpan={{3}} style={{{{ textAlign: 'center' }}}}>No records found.</td>
+            </tr>
+          )}}
         </tbody>
       </table>
+      
+      <div style={{{{ marginTop: '1rem', display: 'flex', gap: '1rem', alignItems: 'center' }}}}>
+        <button disabled={{page <= 1}} onClick={{() => setPage(p => p - 1)}}>Previous</button>
+        <span>Page {{page}}</span>
+        <button onClick={{() => setPage(p => p + 1)}}>Next</button>
+      </div>
     </div>
   );
 }}
@@ -278,53 +344,112 @@ export default function {pascal}Form() {{
 }}
 """
 
-    def _gen_app_tsx(self, entities: List[str]) -> str:
-        imports = []
-        routes = []
-        links = []
-        
-        for entity in entities:
-            pascal = self._to_pascal_case(entity)
-            imports.append(f"import {pascal}List from './pages/{pascal}List';")
-            imports.append(f"import {pascal}Form from './pages/{pascal}Form';")
-            
-            links.append(f'        <Link to="/{entity}" style={{{{marginRight: "1rem"}}}}>{entity.replace("_", " ").title()}</Link>')
-            
-            routes.append(f'          <Route path="/{entity}" element={{<{pascal}List />}} />')
-            routes.append(f'          <Route path="/{entity}/new" element={{<{pascal}Form />}} />')
-            routes.append(f'          <Route path="/{entity}/edit/:id" element={{<{pascal}Form />}} />')
+    def _gen_login_page(self) -> str:
+        return """import React, { useState } from 'react';
+import { api } from '../services/api';
 
+export default function Login() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    params.append('username', username);
+    params.append('password', password);
+    const res = await api.post('/auth/login', params);
+    localStorage.setItem('token', res.data.access_token);
+    window.location.href = '/';
+  };
+
+  return (
+    <form onSubmit={handleLogin}>
+      <h1>Login</h1>
+      <input type="text" placeholder="Username" onChange={e => setUsername(e.target.value)} />
+      <input type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />
+      <button type="submit">Login</button>
+    </form>
+  );
+}
+"""
+
+    def _gen_register_page(self) -> str:
+        return """import React, { useState } from 'react';
+import { api } from '../services/api';
+import { useNavigate } from 'react-router-dom';
+
+export default function Register() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await api.post('/auth/register', { username, password });
+    navigate('/login');
+  };
+
+  return (
+    <form onSubmit={handleRegister}>
+      <h1>Register</h1>
+      <input type="text" placeholder="Username" onChange={e => setUsername(e.target.value)} />
+      <input type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />
+      <button type="submit">Register</button>
+    </form>
+  );
+}
+"""
+
+    def _gen_app_tsx(self, entities: List[Dict]) -> str:
+        imports = []
+        for e in entities:
+            imports.append(f"import {e['pascal']}List from './pages/{e['pascal']}List';")
+            imports.append(f"import {e['pascal']}Form from './pages/{e['pascal']}Form';")
+            
+        if self.has_auth:
+            imports.append("import Login from './pages/Login';")
+            imports.append("import Register from './pages/Register';")
+            
+        routes = ["<Route path='/' element={<h2>Welcome to Aayu Generated App</h2>} />"]
+        if self.has_auth:
+            routes.append("<Route path='/login' element={<Login />} />")
+            routes.append("<Route path='/register' element={<Register />} />")
+            
+        for e in entities:
+            routes.append(f"<Route path='/{e['name']}' element={{<{e['pascal']}List />}} />")
+            routes.append(f"<Route path='/{e['name']}/new' element={{<{e['pascal']}Form />}} />")
+            routes.append(f"<Route path='/{e['name']}/edit/:id' element={{<{e['pascal']}Form />}} />")
+            
         imports_str = "\n".join(imports)
-        links_str = "\n".join(links)
-        routes_str = "\n".join(routes)
+        routes_str = "\n          ".join(routes)
+        
+        nav_links = [f"<Link to='/{e['name']}'>{e['pascal']}</Link>" for e in entities]
+        nav_links_str = " | ".join(nav_links)
+        
+        auth_nav = ""
+        if self.has_auth:
+            auth_nav = """
+        <div style={{ float: 'right' }}>
+          <Link to="/login">Login</Link> | <Link to="/register">Register</Link> | 
+          <button onClick={() => { localStorage.removeItem('token'); window.location.href='/login'; }}>Logout</button>
+        </div>"""
         
         return f"""import React from 'react';
-import {{ BrowserRouter, Routes, Route, Link }} from 'react-router-dom';
+import {{ BrowserRouter as Router, Routes, Route, Link }} from 'react-router-dom';
 {imports_str}
-
-function Home() {{
-  return (
-    <div>
-      <h1>Aayu Generated Dashboard</h1>
-      <p>Welcome to your full-stack application.</p>
-    </div>
-  );
-}}
 
 export default function App() {{
   return (
-    <BrowserRouter>
-      <nav style={{{{ padding: '1rem', background: '#f0f0f0', marginBottom: '2rem' }}}}>
-        <Link to="/" style={{{{marginRight: "2rem", fontWeight: "bold"}}}}>Home</Link>
-{links_str}
+    <Router>
+      <nav style={{{{ padding: '1rem', borderBottom: '1px solid #ccc' }}}}>
+        <strong>Aayu App</strong> | {nav_links_str} {auth_nav}
       </nav>
-      <div style={{{{ padding: '0 2rem' }}}}>
+      <div style={{{{ padding: '1rem' }}}}>
         <Routes>
-          <Route path="/" element={{<Home />}} />
-{routes_str}
+          {routes_str}
         </Routes>
       </div>
-    </BrowserRouter>
+    </Router>
   );
 }}
 """

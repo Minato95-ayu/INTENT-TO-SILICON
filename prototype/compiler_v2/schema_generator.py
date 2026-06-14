@@ -17,6 +17,9 @@ class SchemaGenerator:
         Deterministically maps an IRModel to a database-agnostic SchemaModel.
         """
         schema = SchemaModel()
+        schema.capabilities = getattr(ir_model, 'capabilities', {"auth": False, "rbac": False})
+        schema.has_auth = schema.capabilities.get("auth", False)
+        schema.has_rbac = schema.capabilities.get("rbac", False)
         
         # 1. Base Tables (Entities)
         for entity in ir_model.entities:
@@ -30,6 +33,16 @@ class SchemaGenerator:
                     type="UUID",
                     is_primary_key=True
                 ))
+                
+                # If authentication is enabled, 'user' gets email and password_hash
+                if schema.has_auth and entity.name == "user":
+                    t.columns.append(Column(name="email", type="VARCHAR", is_unique=True))
+                    t.columns.append(Column(name="password_hash", type="VARCHAR"))
+                    
+                # If RBAC is enabled, role and permission get 'name'
+                if schema.has_rbac and entity.name in ["role", "permission"]:
+                    t.columns.append(Column(name="name", type="VARCHAR", is_unique=True))
+                    
                 schema.tables.append(t)
 
         # 2. Relationships (Foreign Keys & Junction Tables)

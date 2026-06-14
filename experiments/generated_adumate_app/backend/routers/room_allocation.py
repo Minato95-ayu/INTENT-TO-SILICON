@@ -1,16 +1,20 @@
-from typing import List
+from typing import List, Optional
 import uuid
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from ..database import get_db
-from ..models import RoomAllocation
-from ..schemas import RoomAllocationCreate, RoomAllocationUpdate, RoomAllocationResponse
+from database import get_db
+from models import RoomAllocation
+from schemas import RoomAllocationCreate, RoomAllocationUpdate, RoomAllocationResponse, PaginatedRoomAllocationResponse
 
 router = APIRouter(prefix='/room_allocation', tags=['room_allocation'])
 
-@router.get('/', response_model=List[RoomAllocationResponse])
-def read_room_allocation_list(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return db.query(RoomAllocation).offset(skip).limit(limit).all()
+@router.get('/', response_model=PaginatedRoomAllocationResponse)
+def read_room_allocation_list(page: int = 1, size: int = Query(20, ge=1, le=100), search: Optional[str] = None, sort: Optional[str] = None, order: Optional[str] = 'asc', db: Session = Depends(get_db)):
+    from sqlalchemy import or_, func
+    query = db.query(RoomAllocation)
+    total = query.count()
+    items = query.offset((page - 1) * size).limit(size).all()
+    return {'items': items, 'total': total, 'page': page, 'size': size}
 
 @router.get('/{item_id}', response_model=RoomAllocationResponse)
 def read_room_allocation(item_id: str, db: Session = Depends(get_db)):

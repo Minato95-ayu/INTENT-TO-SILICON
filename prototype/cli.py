@@ -21,6 +21,8 @@ def print_usage():
     print("  aayu run                 - Run the current project")
     print("  aayu install <package>   - Install a package")
     print("  aayu test                - Run test suite")
+    print("  aayu compile <file.aayu> - Compile AAYU file to bytecode (.ayc)")
+    print("  aayu vm <file.aayu/.ayc> - Run AAYU file/bytecode on the stack VM")
     print("  aayu build               - Build the project (stub)")
 
 def do_version():
@@ -166,23 +168,21 @@ def main():
         test_py = os.path.join(cli_dir, "aayu_language", "test_runner.py")
         import subprocess
         sys.exit(subprocess.call([sys.executable, test_py]))
-    elif cmd == "vm":
+    elif cmd == "compile":
         args = sys.argv[2:]
         if not args:
-            print("Error: `aayu vm` requires a file to run.")
-            print("Usage: aayu vm <file.aayu>")
+            print("Error: `aayu compile` requires a file to compile.")
+            print("Usage: aayu compile <file.aayu>")
             sys.exit(1)
         filepath = args[0]
         
-        # Add aayu_language to sys.path
         cli_dir = os.path.dirname(__file__)
         sys.path.append(os.path.join(cli_dir, "aayu_language"))
         
-        # Parse
         from lexer import Lexer
         from parser import Parser
         from compiler import AAYUCompiler
-        from vm import VirtualMachine
+        from serializer import serialize
         
         with open(filepath, 'r', encoding='utf-8') as f:
             source = f.read()
@@ -191,11 +191,53 @@ def main():
         parser = Parser(lexer.tokenize(), filename=filepath)
         ast = parser.parse()
         
-        # Compile
         compiler = AAYUCompiler()
         bytecode = compiler.compile(ast)
         
-        # Execute
+        serialized = serialize(bytecode)
+        
+        if filepath.endswith('.aayu'):
+            out_path = filepath[:-5] + '.ayc'
+        else:
+            out_path = filepath + '.ayc'
+            
+        with open(out_path, 'w', encoding='utf-8') as f:
+            f.write(serialized)
+        print(f"Compiled successfully: '{filepath}' -> '{out_path}'")
+        
+    elif cmd == "vm":
+        args = sys.argv[2:]
+        if not args:
+            print("Error: `aayu vm` requires a file to run.")
+            print("Usage: aayu vm <file.aayu/.ayc>")
+            sys.exit(1)
+        filepath = args[0]
+        
+        cli_dir = os.path.dirname(__file__)
+        sys.path.append(os.path.join(cli_dir, "aayu_language"))
+        
+        from vm import VirtualMachine
+        
+        if filepath.endswith('.ayc'):
+            from serializer import deserialize
+            with open(filepath, 'r', encoding='utf-8') as f:
+                serialized = f.read()
+            bytecode = deserialize(serialized)
+        else:
+            from lexer import Lexer
+            from parser import Parser
+            from compiler import AAYUCompiler
+            
+            with open(filepath, 'r', encoding='utf-8') as f:
+                source = f.read()
+                
+            lexer = Lexer(source)
+            parser = Parser(lexer.tokenize(), filename=filepath)
+            ast = parser.parse()
+            
+            compiler = AAYUCompiler()
+            bytecode = compiler.compile(ast)
+            
         vm = VirtualMachine()
         vm.run(bytecode)
     else:

@@ -69,8 +69,12 @@ class AAYUCompiler:
             self._emit(Opcode.MUL)
         elif node.operator == '/':
             self._emit(Opcode.DIV)
-        elif node.operator == 'is' or node.operator == 'equals' or node.operator == 'equal to':
+        elif node.operator in ('is', 'equals', 'equal to', '=='):
             self._emit(Opcode.EQUAL)
+        elif node.operator == '>':
+            self._emit(Opcode.GREATER)
+        elif node.operator == '<':
+            self._emit(Opcode.LESS)
             
     def visit_IfNode(self, node: IfNode):
         self.visit(node.condition)
@@ -79,24 +83,24 @@ class AAYUCompiler:
         jump_if_false_idx = len(self.bytecode.instructions)
         self._emit(Opcode.JUMP_IF_FALSE, 0)
         
-        for stmt in node.then_branch:
+        for stmt in node.body:
             self.visit(stmt)
             
-        if node.else_branch:
+        if node.else_body:
             jump_forward_idx = len(self.bytecode.instructions)
             self._emit(Opcode.JUMP_FORWARD, 0)
             
             # Patch JUMP_IF_FALSE to jump here
-            self.bytecode.instructions[jump_if_false_idx].operand = len(self.bytecode.instructions) - jump_if_false_idx - 1
+            self.bytecode.instructions[jump_if_false_idx].operand = len(self.bytecode.instructions) - jump_if_false_idx
             
-            for stmt in node.else_branch:
+            for stmt in node.else_body:
                 self.visit(stmt)
                 
             # Patch JUMP_FORWARD to jump here
-            self.bytecode.instructions[jump_forward_idx].operand = len(self.bytecode.instructions) - jump_forward_idx - 1
+            self.bytecode.instructions[jump_forward_idx].operand = len(self.bytecode.instructions) - jump_forward_idx
         else:
             # Patch JUMP_IF_FALSE to jump here
-            self.bytecode.instructions[jump_if_false_idx].operand = len(self.bytecode.instructions) - jump_if_false_idx - 1
+            self.bytecode.instructions[jump_if_false_idx].operand = len(self.bytecode.instructions) - jump_if_false_idx
 
     def visit_WhileNode(self, node: WhileNode):
         start_idx = len(self.bytecode.instructions)
@@ -113,7 +117,7 @@ class AAYUCompiler:
         self._emit(Opcode.JUMP_BACKWARD, offset)
         
         # Patch JUMP_IF_FALSE
-        self.bytecode.instructions[jump_if_false_idx].operand = len(self.bytecode.instructions) - jump_if_false_idx - 1
+        self.bytecode.instructions[jump_if_false_idx].operand = len(self.bytecode.instructions) - jump_if_false_idx
         
     def visit_TaskNode(self, node: TaskNode):
         # In a real compiler, we would probably compile tasks into separate bytecode objects
@@ -133,7 +137,15 @@ class AAYUCompiler:
         self._emit(Opcode.RETURN)
         
         # Patch JUMP_FORWARD
-        self.bytecode.instructions[jump_over_idx].operand = len(self.bytecode.instructions) - jump_over_idx - 1
+        self.bytecode.instructions[jump_over_idx].operand = len(self.bytecode.instructions) - jump_over_idx
+
+    def visit_AssignmentNode(self, node: AssignmentNode):
+        if isinstance(node.target, VariableNode):
+            self.visit(node.value)
+            idx = self._add_name(node.target.name)
+            self._emit(Opcode.STORE_NAME, idx)
+        else:
+            raise NotImplementedError("Only variable assignment is supported in the VM compiler.")
 
     def visit_ReturnNode(self, node: ReturnNode):
         if node.value:

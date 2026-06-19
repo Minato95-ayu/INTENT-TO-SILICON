@@ -52,6 +52,39 @@ class VirtualMachine:
                 left = self.stack.pop()
                 self.stack.append(left / right)
                 
+            elif opcode == Opcode.EQUAL:
+                right = self.stack.pop()
+                left = self.stack.pop()
+                self.stack.append(left == right)
+                
+            elif opcode == Opcode.GREATER:
+                right = self.stack.pop()
+                left = self.stack.pop()
+                self.stack.append(left > right)
+                
+            elif opcode == Opcode.LESS:
+                right = self.stack.pop()
+                left = self.stack.pop()
+                self.stack.append(left < right)
+                
+            elif opcode == Opcode.NOT:
+                val = self.stack.pop()
+                self.stack.append(not val)
+                
+            elif opcode == Opcode.JUMP_FORWARD:
+                self.ip += operand
+                continue
+                
+            elif opcode == Opcode.JUMP_IF_FALSE:
+                condition = self.stack.pop()
+                if not condition:
+                    self.ip += operand
+                    continue
+                    
+            elif opcode == Opcode.JUMP_BACKWARD:
+                self.ip -= operand
+                continue
+                
             elif opcode == Opcode.PRINT:
                 val = self.stack.pop()
                 self.output.append(val)

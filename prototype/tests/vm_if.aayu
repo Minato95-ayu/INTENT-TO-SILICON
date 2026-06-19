@@ -1,0 +1,7 @@
+number x is 10.
+
+if x == 10.
+    show 1.
+else.
+    show 0.
+end.

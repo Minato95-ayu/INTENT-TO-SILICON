@@ -1,0 +1,5 @@
+number x is 2.
+
+if x < 5.
+    show 100.
+end.

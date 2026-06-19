@@ -15,6 +15,8 @@ class Opcode(Enum):
     MUL = auto()
     DIV = auto()
     EQUAL = auto()
+    GREATER = auto()
+    LESS = auto()
     NOT = auto()
     
     # Control Flow

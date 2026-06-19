@@ -475,21 +475,28 @@ class Parser:
         has_is = self.match("KEYWORD", "is")
         
         operator = None
-        if self.match("KEYWORD", "greater"):
-            self.consume("KEYWORD", "Expect 'than' after 'greater'.", "than")
-            operator = ">"
-        elif self.match("KEYWORD", "less"):
-            self.consume("KEYWORD", "Expect 'than' after 'less'.", "than")
-            operator = "<"
-        elif self.match("KEYWORD", "equal"):
-            self.consume("KEYWORD", "Expect 'to' after 'equal'.", "to")
+        if has_is:
+            if self.match("KEYWORD", "greater"):
+                self.consume("KEYWORD", "Expect 'than' after 'greater'.", "than")
+                operator = ">"
+            elif self.match("KEYWORD", "less"):
+                self.consume("KEYWORD", "Expect 'than' after 'less'.", "than")
+                operator = "<"
+            elif self.match("KEYWORD", "equal"):
+                self.consume("KEYWORD", "Expect 'to' after 'equal'.", "to")
+                operator = "=="
+            else:
+                raise AAYUSyntaxError("Expect comparator after 'is'", self.peek().line, hint="Example: 'is greater than', 'is less than', 'is equal to'.")
+        elif self.match("EQ_EQ"):
             operator = "=="
+        elif self.match("GREATER"):
+            operator = ">"
+        elif self.match("LESS"):
+            operator = "<"
             
         if operator:
             right = self.parse_term()
             expr = BinaryExpressionNode(left=expr, operator=operator, right=right)
-        elif has_is:
-            raise AAYUSyntaxError("Expect comparator after 'is'", self.peek().line, hint="Example: 'is greater than', 'is less than', 'is equal to'.")
             
         return expr
 

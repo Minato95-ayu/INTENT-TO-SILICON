@@ -1,0 +1,6 @@
+number count is 3.
+
+while count > 0.
+    show count.
+    count is count - 1.
+end.

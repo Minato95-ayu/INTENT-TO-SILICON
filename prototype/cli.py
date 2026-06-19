@@ -167,11 +167,16 @@ def main():
         import subprocess
         sys.exit(subprocess.call([sys.executable, test_py]))
     elif cmd == "vm":
+        args = sys.argv[2:]
         if not args:
             print("Error: `aayu vm` requires a file to run.")
             print("Usage: aayu vm <file.aayu>")
             sys.exit(1)
         filepath = args[0]
+        
+        # Add aayu_language to sys.path
+        cli_dir = os.path.dirname(__file__)
+        sys.path.append(os.path.join(cli_dir, "aayu_language"))
         
         # Parse
         from lexer import Lexer

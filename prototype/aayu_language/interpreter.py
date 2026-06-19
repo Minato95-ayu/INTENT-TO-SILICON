@@ -366,14 +366,22 @@ class Interpreter:
         except Exception:
             self.throw_error(f"Variable '{node.map_name}' was not found.")
             
-        if not isinstance(target_map, dict):
-            self.throw_error(f"Variable '{node.map_name}' is not a map.")
-            
-        key_val = self.evaluate(node.key)
-        if key_val not in target_map:
-            self.throw_error(f"Key '{key_val}' was not found in map '{node.map_name}'.")
-            
-        return target_map[key_val]
+        if isinstance(target_map, list):
+            key_val = self.evaluate(node.key)
+            try:
+                idx = int(key_val)
+                return target_map[idx]
+            except (ValueError, TypeError):
+                self.throw_error(f"List index must be an integer, got '{key_val}'.")
+            except IndexError:
+                self.throw_error(f"List index out of range: {key_val}.")
+        elif isinstance(target_map, dict):
+            key_val = self.evaluate(node.key)
+            if key_val not in target_map:
+                self.throw_error(f"Key '{key_val}' was not found in map '{node.map_name}'.")
+            return target_map[key_val]
+        else:
+            self.throw_error(f"Variable '{node.map_name}' is not a collection.")
 
     def visit_BuiltinFunctionNode(self, node: BuiltinFunctionNode):
         args = [self.evaluate(arg) for arg in node.arguments]

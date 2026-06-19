@@ -1,0 +1,4 @@
+map user.
+set "name" to "Ayush" in user.
+text n is get "name" from user.
+show n.

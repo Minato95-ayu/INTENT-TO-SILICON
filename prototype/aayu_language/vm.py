@@ -57,6 +57,9 @@ class VirtualMachine:
                 else:
                     raise AAYURuntimeError(f"Undefined variable '{name}'.", 1, f"Initialize the variable before using it.")
                     
+            elif opcode == Opcode.POP:
+                current_frame.stack.pop()
+                    
             elif opcode == Opcode.ADD:
                 right = current_frame.stack.pop()
                 left = current_frame.stack.pop()
@@ -146,6 +149,46 @@ class VirtualMachine:
                     self.frames[-1].stack.append(ret_val)
                 continue
                 
+            elif opcode == Opcode.BUILD_LIST:
+                current_frame.stack.append([])
+                
+            elif opcode == Opcode.BUILD_MAP:
+                current_frame.stack.append({})
+                
+            elif opcode == Opcode.ADD_TO_LIST:
+                list_obj = current_frame.stack.pop()
+                item = current_frame.stack.pop()
+                if not isinstance(list_obj, list):
+                    raise AAYURuntimeError("Target of 'add' must be a list.", 1, "")
+                list_obj.append(item)
+                current_frame.stack.append(list_obj)
+                
+            elif opcode == Opcode.MAP_SET:
+                map_obj = current_frame.stack.pop()
+                key = current_frame.stack.pop()
+                value = current_frame.stack.pop()
+                if not isinstance(map_obj, dict):
+                    raise AAYURuntimeError("Target of 'set' must be a map.", 1, "")
+                map_obj[key] = value
+                
+            elif opcode == Opcode.GET_ITEM:
+                coll = current_frame.stack.pop()
+                key = current_frame.stack.pop()
+                if isinstance(coll, list):
+                    try:
+                        idx = int(key)
+                        current_frame.stack.append(coll[idx])
+                    except (ValueError, TypeError):
+                        raise AAYURuntimeError(f"List index must be an integer, got '{key}'.", 1, "")
+                    except IndexError:
+                        raise AAYURuntimeError(f"List index out of range: {key}.", 1, "")
+                elif isinstance(coll, dict):
+                    if key not in coll:
+                        raise AAYURuntimeError(f"Key '{key}' not found in map.", 1, "")
+                    current_frame.stack.append(coll[key])
+                else:
+                    raise AAYURuntimeError("Cannot read items from a non-collection object.", 1, "")
+
             elif opcode == Opcode.PRINT:
                 val = current_frame.stack.pop()
                 self.output.append(val)

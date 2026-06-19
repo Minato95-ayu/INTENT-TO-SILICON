@@ -167,6 +167,36 @@ class AAYUCompiler:
             self._emit(Opcode.LOAD_CONST, self._add_constant(None))
         self._emit(Opcode.RETURN)
 
+    def visit_ListDeclarationNode(self, node: ListDeclarationNode):
+        self._emit(Opcode.BUILD_LIST, 0)
+        idx = self._add_name(node.name)
+        self._emit(Opcode.STORE_NAME, idx)
+
+    def visit_AddToListNode(self, node: AddToListNode):
+        self.visit(node.item)
+        idx = self._add_name(node.list_name)
+        self._emit(Opcode.LOAD_NAME, idx)
+        self._emit(Opcode.ADD_TO_LIST)
+        self._emit(Opcode.POP)
+
+    def visit_MapDeclarationNode(self, node: MapDeclarationNode):
+        self._emit(Opcode.BUILD_MAP, 0)
+        idx = self._add_name(node.name)
+        self._emit(Opcode.STORE_NAME, idx)
+
+    def visit_SetInMapNode(self, node: SetInMapNode):
+        self.visit(node.value)
+        self.visit(node.key)
+        idx = self._add_name(node.map_name)
+        self._emit(Opcode.LOAD_NAME, idx)
+        self._emit(Opcode.MAP_SET)
+
+    def visit_GetFromMapNode(self, node: GetFromMapNode):
+        self.visit(node.key)
+        idx = self._add_name(node.map_name)
+        self._emit(Opcode.LOAD_NAME, idx)
+        self._emit(Opcode.GET_ITEM)
+
 if __name__ == "__main__":
     from lexer import Lexer
     from parser import Parser

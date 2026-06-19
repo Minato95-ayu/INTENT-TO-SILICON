@@ -1,0 +1,95 @@
+{
+  "name": "",
+  "parameters": [],
+  "names": [
+    "todos"
+  ],
+  "constants": [
+    "Learn VM",
+    "Build Runtime",
+    0.0,
+    1.0
+  ],
+  "instructions": [
+    [
+      "BUILD_LIST",
+      0
+    ],
+    [
+      "STORE_NAME",
+      0
+    ],
+    [
+      "LOAD_CONST",
+      0
+    ],
+    [
+      "LOAD_NAME",
+      0
+    ],
+    [
+      "ADD_TO_LIST",
+      null
+    ],
+    [
+      "POP",
+      null
+    ],
+    [
+      "LOAD_CONST",
+      1
+    ],
+    [
+      "LOAD_NAME",
+      0
+    ],
+    [
+      "ADD_TO_LIST",
+      null
+    ],
+    [
+      "POP",
+      null
+    ],
+    [
+      "LOAD_NAME",
+      0
+    ],
+    [
+      "PRINT",
+      null
+    ],
+    [
+      "LOAD_CONST",
+      2
+    ],
+    [
+      "LOAD_NAME",
+      0
+    ],
+    [
+      "GET_ITEM",
+      null
+    ],
+    [
+      "PRINT",
+      null
+    ],
+    [
+      "LOAD_CONST",
+      3
+    ],
+    [
+      "LOAD_NAME",
+      0
+    ],
+    [
+      "GET_ITEM",
+      null
+    ],
+    [
+      "PRINT",
+      null
+    ]
+  ]
+}

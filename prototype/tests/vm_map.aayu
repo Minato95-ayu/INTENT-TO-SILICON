@@ -1,0 +1,6 @@
+map user.
+set "name" to "Ayush" in user.
+set "age" to 20 in user.
+show user.
+show get "name" from user.
+show get "age" from user.

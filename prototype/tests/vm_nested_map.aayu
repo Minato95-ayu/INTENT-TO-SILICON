@@ -1,0 +1,5 @@
+map user.
+set "name" to "Ayush" in user.
+list users.
+add user to users.
+show users.

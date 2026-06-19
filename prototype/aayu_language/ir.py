@@ -27,6 +27,10 @@ class Opcode(Enum):
     # Special Features
     PRINT = auto()
     BUILD_LIST = auto()
+    BUILD_MAP = auto()
+    ADD_TO_LIST = auto()
+    MAP_SET = auto()
+    GET_ITEM = auto()
     CALL_TASK = auto()
     RETURN = auto()
 

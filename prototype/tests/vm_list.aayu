@@ -1,0 +1,6 @@
+list todos.
+add "Learn VM" to todos.
+add "Build Runtime" to todos.
+show todos.
+show get 0 from todos.
+show get 1 from todos.

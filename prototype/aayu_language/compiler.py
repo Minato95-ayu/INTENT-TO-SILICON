@@ -120,24 +120,37 @@ class AAYUCompiler:
         self.bytecode.instructions[jump_if_false_idx].operand = len(self.bytecode.instructions) - jump_if_false_idx
         
     def visit_TaskNode(self, node: TaskNode):
-        # In a real compiler, we would probably compile tasks into separate bytecode objects
-        # or store the jump location. For V1, we'll keep it simple: we skip compiling tasks inline
-        # unless they are explicitly called, or we compile them but jump over them.
+        # Compile task body in a new compiler context
+        task_compiler = AAYUCompiler()
+        task_bytecode = task_compiler.compile(ProgramNode(node.body))
         
-        jump_over_idx = len(self.bytecode.instructions)
-        self._emit(Opcode.JUMP_FORWARD, 0)
-        
-        # Remember where this task starts
-        # For a full implementation, we'd store this in a task table
-        task_start_idx = len(self.bytecode.instructions)
-        
-        for stmt in node.body:
-            self.visit(stmt)
+        # Ensure the bytecode ends with a RETURN
+        if not task_bytecode.instructions or task_bytecode.instructions[-1].opcode != Opcode.RETURN:
+            none_idx = task_compiler._add_constant(None)
+            task_compiler._emit(Opcode.LOAD_CONST, none_idx)
+            task_compiler._emit(Opcode.RETURN)
             
-        self._emit(Opcode.RETURN)
+        task_bytecode.parameters = node.parameters
+        task_bytecode.name = node.name
         
-        # Patch JUMP_FORWARD
-        self.bytecode.instructions[jump_over_idx].operand = len(self.bytecode.instructions) - jump_over_idx
+        # Add to parent constant pool and emit code to register the task variable
+        const_idx = self._add_constant(task_bytecode)
+        name_idx = self._add_name(node.name)
+        
+        self._emit(Opcode.LOAD_CONST, const_idx)
+        self._emit(Opcode.STORE_NAME, name_idx)
+        
+    def visit_RunNode(self, node: RunNode):
+        # Push arguments to stack
+        for arg in node.arguments:
+            self.visit(arg)
+            
+        # Load the task object
+        name_idx = self._add_name(node.name)
+        self._emit(Opcode.LOAD_NAME, name_idx)
+        
+        # Call task with number of arguments as operand
+        self._emit(Opcode.CALL_TASK, len(node.arguments))
 
     def visit_AssignmentNode(self, node: AssignmentNode):
         if isinstance(node.target, VariableNode):

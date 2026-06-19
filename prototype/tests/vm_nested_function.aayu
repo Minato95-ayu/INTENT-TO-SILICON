@@ -1,0 +1,15 @@
+task double with x.
+    return x * 2.
+end.
+
+task triple with x.
+    return x * 3.
+end.
+
+task compute with x.
+    number d is run double with x.
+    number t is run triple with x.
+    return d + t.
+end.
+
+show run compute with 5.

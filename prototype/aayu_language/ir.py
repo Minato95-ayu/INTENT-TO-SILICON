@@ -45,6 +45,8 @@ class Bytecode:
     instructions: List[Instruction] = field(default_factory=list)
     constants: List[Any] = field(default_factory=list)
     names: List[str] = field(default_factory=list)
+    parameters: List[str] = field(default_factory=list)
+    name: str = ""
     
     def format(self) -> str:
         res = []

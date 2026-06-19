@@ -1,0 +1,8 @@
+number x is 100.
+
+task test_scope with x.
+    return x + 1.
+end.
+
+show run test_scope with 5.
+show x.

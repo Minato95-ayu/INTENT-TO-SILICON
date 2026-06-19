@@ -172,6 +172,11 @@ class AAYUCompiler:
         idx = self._add_name(node.name)
         self._emit(Opcode.STORE_NAME, idx)
 
+    def visit_ListInitializationNode(self, node: ListInitializationNode):
+        self.visit(node.value)
+        idx = self._add_name(node.name)
+        self._emit(Opcode.STORE_NAME, idx)
+
     def visit_AddToListNode(self, node: AddToListNode):
         self.visit(node.item)
         idx = self._add_name(node.list_name)
@@ -196,6 +201,104 @@ class AAYUCompiler:
         idx = self._add_name(node.map_name)
         self._emit(Opcode.LOAD_NAME, idx)
         self._emit(Opcode.GET_ITEM)
+
+    def visit_EntityDeclarationNode(self, node: EntityDeclarationNode):
+        name_idx = self._add_constant(node.name)
+        self._emit(Opcode.LOAD_CONST, name_idx)
+
+        fields_idx = self._add_constant(node.fields)
+        self._emit(Opcode.LOAD_CONST, fields_idx)
+        
+        fn_idx = self._add_name("db_register_entity")
+        self._emit(Opcode.LOAD_NAME, fn_idx)
+        
+        self._emit(Opcode.CALL_TASK, 2)
+        self._emit(Opcode.POP)
+
+    def visit_CreateEntityNode(self, node: CreateEntityNode):
+        name_idx = self._add_constant(node.entity_name)
+        self._emit(Opcode.LOAD_CONST, name_idx)
+        
+        map_idx = self._add_name(node.data_map)
+        self._emit(Opcode.LOAD_NAME, map_idx)
+        
+        fn_idx = self._add_name("db_create")
+        self._emit(Opcode.LOAD_NAME, fn_idx)
+        
+        self._emit(Opcode.CALL_TASK, 2)
+        self._emit(Opcode.POP)
+
+    def visit_FindEntityNode(self, node: FindEntityNode):
+        name_idx = self._add_constant(node.entity_name)
+        self._emit(Opcode.LOAD_CONST, name_idx)
+        
+        field_idx = self._add_constant(node.condition_field)
+        self._emit(Opcode.LOAD_CONST, field_idx)
+        
+        if node.condition_value:
+            self.visit(node.condition_value)
+        else:
+            self._emit(Opcode.LOAD_CONST, self._add_constant(None))
+            
+        fn_idx = self._add_name("db_find")
+        self._emit(Opcode.LOAD_NAME, fn_idx)
+        
+        self._emit(Opcode.CALL_TASK, 3)
+
+    def visit_UpdateEntityNode(self, node: UpdateEntityNode):
+        name_idx = self._add_constant(node.entity_name)
+        self._emit(Opcode.LOAD_CONST, name_idx)
+        
+        field_idx = self._add_constant(node.condition_field)
+        self._emit(Opcode.LOAD_CONST, field_idx)
+        
+        self.visit(node.condition_value)
+        
+        map_idx = self._add_name(node.data_map)
+        self._emit(Opcode.LOAD_NAME, map_idx)
+        
+        fn_idx = self._add_name("db_update")
+        self._emit(Opcode.LOAD_NAME, fn_idx)
+        
+        self._emit(Opcode.CALL_TASK, 4)
+        self._emit(Opcode.POP)
+
+    def visit_DeleteEntityNode(self, node: DeleteEntityNode):
+        name_idx = self._add_constant(node.entity_name)
+        self._emit(Opcode.LOAD_CONST, name_idx)
+        
+        field_idx = self._add_constant(node.condition_field)
+        self._emit(Opcode.LOAD_CONST, field_idx)
+        
+        self.visit(node.condition_value)
+        
+        fn_idx = self._add_name("db_delete")
+        self._emit(Opcode.LOAD_NAME, fn_idx)
+        
+        self._emit(Opcode.CALL_TASK, 3)
+        self._emit(Opcode.POP)
+
+    def visit_JsonSerializeNode(self, node: JsonSerializeNode):
+        self.visit(node.data)
+        
+        fn_idx = self._add_name("json_serialize")
+        self._emit(Opcode.LOAD_NAME, fn_idx)
+        
+        self._emit(Opcode.CALL_TASK, 1)
+
+    def visit_RenderExpressionNode(self, node: RenderExpressionNode):
+        self.visit(node.template_path)
+        
+        if node.context_map_name:
+            map_idx = self._add_name(node.context_map_name)
+            self._emit(Opcode.LOAD_NAME, map_idx)
+        else:
+            self._emit(Opcode.LOAD_CONST, self._add_constant(None))
+            
+        fn_idx = self._add_name("render_template")
+        self._emit(Opcode.LOAD_NAME, fn_idx)
+        
+        self._emit(Opcode.CALL_TASK, 2)
 
 if __name__ == "__main__":
     from lexer import Lexer

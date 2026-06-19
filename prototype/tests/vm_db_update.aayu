@@ -1,0 +1,16 @@
+entity User.
+    text name.
+end.
+
+map data.
+set "name" to "Ayush" in data.
+
+create User with data.
+
+map update_data.
+set "name" to "Minato" in update_data.
+
+update User where "name" equal to "Ayush" with update_data.
+
+list users is find User.
+show users.

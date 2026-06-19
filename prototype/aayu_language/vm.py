@@ -15,11 +15,42 @@ class VirtualMachine:
         self.globals = {}
         self.output = []
         self.instruction_count = 0
+        self.return_value = None
+        
+        # Connect to SQLite for database functions
+        import sqlite3
+        self.db_conn = sqlite3.connect("aayu_db.sqlite", check_same_thread=False)
+        self.db_conn.row_factory = sqlite3.Row
+        self.db_cursor = self.db_conn.cursor()
+        
+        # Register standard library functions
+        from runtime.stdlib import StdLib
+        self.stdlib = StdLib(self)
+        self._register_stdlib()
+        
+    def _register_stdlib(self):
+        self.globals["db_register_entity"] = self.stdlib.db_register_entity
+        self.globals["db_create"] = self.stdlib.db_create
+        self.globals["db_find"] = self.stdlib.db_find
+        self.globals["db_update"] = self.stdlib.db_update
+        self.globals["db_delete"] = self.stdlib.db_delete
+        self.globals["json_serialize"] = self.stdlib.json_serialize
+        self.globals["render_template"] = self.stdlib.render_template
 
-    def run(self, bytecode: Bytecode):
-        self.globals = {}
+    def close(self):
+        if hasattr(self, 'db_conn') and self.db_conn:
+            self.db_conn.close()
+
+    def run(self, bytecode: Bytecode, initial_globals: dict = None):
+        if initial_globals is not None:
+            self.globals = initial_globals
+        else:
+            self.globals = {}
+            self._register_stdlib()
+            
         self.output = []
         self.instruction_count = 0
+        self.return_value = None
         
         main_frame = CallFrame(bytecode, {}, "main")
         self.frames = [main_frame]
@@ -122,20 +153,23 @@ class VirtualMachine:
                     args.append(current_frame.stack.pop())
                 args.reverse()
                 
-                if not isinstance(task_obj, Bytecode):
+                if callable(task_obj):
+                    ret_val = task_obj(*args)
+                    current_frame.stack.append(ret_val)
+                elif isinstance(task_obj, Bytecode):
+                    locals_dict = {}
+                    for param, val in zip(task_obj.parameters, args):
+                        locals_dict[param] = val
+                        
+                    new_frame = CallFrame(task_obj, locals_dict, task_obj.name)
+                    
+                    # Advance caller frame IP so it resumes AFTER the CALL_TASK instruction
+                    current_frame.ip += 1
+                    
+                    self.frames.append(new_frame)
+                    continue
+                else:
                     raise AAYURuntimeError(f"Object is not callable.", 1, "")
-                    
-                locals_dict = {}
-                for param, val in zip(task_obj.parameters, args):
-                    locals_dict[param] = val
-                    
-                new_frame = CallFrame(task_obj, locals_dict, task_obj.name)
-                
-                # Advance caller frame IP so it resumes AFTER the CALL_TASK instruction
-                current_frame.ip += 1
-                
-                self.frames.append(new_frame)
-                continue
                 
             elif opcode == Opcode.RETURN:
                 if current_frame.stack:
@@ -147,6 +181,8 @@ class VirtualMachine:
                 
                 if self.frames:
                     self.frames[-1].stack.append(ret_val)
+                else:
+                    self.return_value = ret_val
                 continue
                 
             elif opcode == Opcode.BUILD_LIST:

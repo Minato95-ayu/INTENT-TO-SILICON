@@ -573,7 +573,9 @@ class Interpreter:
     def visit_EntityDeclarationNode(self, node: EntityDeclarationNode):
         table_name = node.name
         columns = ["id INTEGER PRIMARY KEY AUTOINCREMENT"]
-        for field_name, field_type in node.fields:
+        for field in node.fields:
+            field_name = field["name"]
+            field_type = field["type"]
             if field_type == "text":
                 columns.append(f"{field_name} TEXT")
             elif field_type == "number":

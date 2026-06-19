@@ -1,0 +1,11 @@
+entity User.
+    text name.
+end.
+
+map data.
+set "name" to "Ayush" in data.
+
+create User with data.
+
+list users is find User.
+show users.

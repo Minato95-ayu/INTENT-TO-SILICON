@@ -14,15 +14,18 @@ class VirtualMachine:
         self.frames = []
         self.globals = {}
         self.output = []
+        self.instruction_count = 0
 
     def run(self, bytecode: Bytecode):
         self.globals = {}
         self.output = []
+        self.instruction_count = 0
         
         main_frame = CallFrame(bytecode, {}, "main")
         self.frames = [main_frame]
         
         while self.frames:
+            self.instruction_count += 1
             current_frame = self.frames[-1]
             
             if current_frame.ip >= len(current_frame.bytecode.instructions):

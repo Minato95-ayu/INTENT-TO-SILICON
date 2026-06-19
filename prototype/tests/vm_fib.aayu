@@ -1,0 +1,15 @@
+task fib with n.
+    if n == 0.
+        return 0.
+    end.
+    if n == 1.
+        return 1.
+    end.
+    number a is n - 1.
+    number b is n - 2.
+    number f1 is run fib with a.
+    number f2 is run fib with b.
+    return f1 + f2.
+end.
+
+show run fib with 10.

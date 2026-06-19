@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issue/Return Book - AAYU Library</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 flex flex-col min-h-screen">
+    <nav class="bg-blue-600 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-2">
+                    <span class="font-bold text-xl tracking-tight">AAYU Library</span>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="/dashboard" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-500 transition-colors">Dashboard</a>
+                    <a href="/books" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-500 transition-colors">Books</a>
+                    <a href="/students" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-500 transition-colors">Students</a>
+                    <a href="/issue" class="px-3 py-2 rounded-md text-sm font-medium bg-blue-700">Issue Book</a>
+                    <a href="/logout" class="px-3 py-2 rounded-md text-sm font-medium text-blue-100 hover:text-white hover:bg-blue-800 transition-colors">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-8">Issue a Book</h1>
+        
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="bg-emerald-50 px-6 py-4 border-b border-gray-100">
+                <h2 class="text-lg font-semibold text-emerald-800">Issue Form</h2>
+            </div>
+            <form action="/issue_process" method="POST" class="p-6 space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Select Book</label>
+                    <select name="book_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white">
+                        <option value="">-- Choose an Available Book --</option>
+                        {{ for each book in books }}
+                        <option value="{{ book.id }}">{{ book.title }} (ISBN: {{ book.isbn }})</option>
+                        {{ end }}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Select Student</label>
+                    <select name="student_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white">
+                        <option value="">-- Choose a Registered Student --</option>
+                        {{ for each student in students }}
+                        <option value="{{ student.id }}">{{ student.name }} (ID: {{ student.student_id }})</option>
+                        {{ end }}
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 text-white font-medium py-3 rounded-lg hover:bg-emerald-700 transition-colors shadow-sm">
+                    Issue Book Now
+                </button>
+            </form>
+        </div>
+        
+        <!-- We can also add a Return section here or in dashboard for simplicity -->
+        <div class="mt-8 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="bg-amber-50 px-6 py-4 border-b border-gray-100">
+                <h2 class="text-lg font-semibold text-amber-800">Return a Book</h2>
+            </div>
+            <form action="/return" method="POST" class="p-6 space-y-4">
+                <p class="text-sm text-gray-500 mb-4">Enter the exact Issue ID and Book ID to mark a book as returned.</p>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Issue Record ID</label>
+                    <input type="text" name="issue_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Book ID</label>
+                    <input type="text" name="book_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
+                </div>
+                <button type="submit" class="w-full bg-amber-500 text-white font-medium py-2.5 rounded-lg hover:bg-amber-600 transition-colors">
+                    Mark as Returned
+                </button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,46 @@
+task public_home with req.
+    return "<h1>Public Home</h1><p>Anyone can see this.</p>".
+end.
+
+task register_user with req.
+    text email is form "email" from req.
+    text password is form "password" from req.
+    
+    map user_data.
+    set "email" to email in user_data.
+    set "password" to password in user_data.
+    
+    create account with user_data.
+    
+    return "<h1>Registered</h1>".
+end.
+
+task login_user with req.
+    text email is form "email" from req.
+    text password is form "password" from req.
+    
+    map creds.
+    set "email" to email in creds.
+    set "password" to password in creds.
+    
+    login creds.
+    return "<h1>Logged In</h1>".
+end.
+
+task dashboard with req.
+    guard session.
+    return "<h1>Welcome to Dashboard</h1><p>This is a protected route.</p>".
+end.
+
+task logout_user with req.
+    logout req.
+    return "<h1>Logged Out</h1>".
+end.
+
+route "/" to public_home.
+route "/register" to register_user.
+route "/login" to login_user.
+route "/dashboard" to dashboard.
+route "/logout" to logout_user.
+
+serve on 8081.

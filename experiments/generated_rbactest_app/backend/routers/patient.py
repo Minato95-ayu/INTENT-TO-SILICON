@@ -1,7 +1,7 @@
 from typing import List, Optional
 import uuid
 from datetime import datetime
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, BackgroundTasks
 from sqlalchemy.orm import Session
 from database import get_db
 from models import AuditLog
@@ -9,6 +9,7 @@ from models import Patient
 from schemas import PatientCreate, PatientUpdate, PatientResponse, PaginatedPatientResponse
 from logger import get_logger
 from auth import require_permission
+from event_bus import event_bus, Event
 
 router = APIRouter(prefix='/patient', tags=['patient'])
 logger = get_logger(__name__)
@@ -29,7 +30,7 @@ def read_patient(request: Request, item_id: str, db: Session = Depends(get_db), 
     return db_item
 
 @router.post('/', response_model=PatientResponse)
-def create_patient(request: Request, item: PatientCreate, db: Session = Depends(get_db), _=Depends(require_permission('create'))):
+def create_patient(request: Request, background_tasks: BackgroundTasks, item: PatientCreate, db: Session = Depends(get_db), _=Depends(require_permission('create'))):
     db_item = Patient(id=str(uuid.uuid4()), **item.model_dump())
     db.add(db_item)
     req_id = getattr(request.state, 'request_id', 'unknown')
@@ -38,10 +39,11 @@ def create_patient(request: Request, item: PatientCreate, db: Session = Depends(
     db.commit()
     db.refresh(db_item)
     logger.info(f'Created patient {getattr(db_item, "id", "")}', extra={'request_id': getattr(request.state, 'request_id', 'unknown'), 'entity': 'patient', 'action': 'create'})
+    event_bus.emit(background_tasks, Event(id=str(uuid.uuid4()), name='patient.created', entity='patient', action='create', payload={'id': getattr(db_item, 'id', ''), 'data': item.model_dump()}, request_id=getattr(request.state, 'request_id', 'unknown'), timestamp=datetime.utcnow()))
     return db_item
 
 @router.put('/{item_id}', response_model=PatientResponse)
-def update_patient(request: Request, item_id: str, item: PatientUpdate, db: Session = Depends(get_db), _=Depends(require_permission('update'))):
+def update_patient(request: Request, background_tasks: BackgroundTasks, item_id: str, item: PatientUpdate, db: Session = Depends(get_db), _=Depends(require_permission('update'))):
     db_item = db.query(Patient).filter(Patient.id == item_id).first()
     if db_item is None:
         raise HTTPException(status_code=404, detail='Not found')
@@ -54,10 +56,11 @@ def update_patient(request: Request, item_id: str, item: PatientUpdate, db: Sess
     db.commit()
     db.refresh(db_item)
     logger.info(f'Updated patient {item_id}', extra={'request_id': getattr(request.state, 'request_id', 'unknown'), 'entity': 'patient', 'action': 'update'})
+    event_bus.emit(background_tasks, Event(id=str(uuid.uuid4()), name='patient.updated', entity='patient', action='update', payload={'id': item_id, 'data': update_data}, request_id=getattr(request.state, 'request_id', 'unknown'), timestamp=datetime.utcnow()))
     return db_item
 
 @router.delete('/{item_id}', response_model=PatientResponse)
-def delete_patient(request: Request, item_id: str, db: Session = Depends(get_db), _=Depends(require_permission('delete'))):
+def delete_patient(request: Request, background_tasks: BackgroundTasks, item_id: str, db: Session = Depends(get_db), _=Depends(require_permission('delete'))):
     db_item = db.query(Patient).filter(Patient.id == item_id).first()
     if db_item is None:
         raise HTTPException(status_code=404, detail='Not found')
@@ -67,4 +70,5 @@ def delete_patient(request: Request, item_id: str, db: Session = Depends(get_db)
     db.add(AuditLog(id=str(uuid.uuid4()), timestamp=datetime.utcnow(), action='delete', entity_name='patient', entity_id=item_id, request_id=req_id, user_id=usr_id))
     db.commit()
     logger.info(f'Deleted patient {item_id}', extra={'request_id': getattr(request.state, 'request_id', 'unknown'), 'entity': 'patient', 'action': 'delete'})
+    event_bus.emit(background_tasks, Event(id=str(uuid.uuid4()), name='patient.deleted', entity='patient', action='delete', payload={'id': item_id}, request_id=getattr(request.state, 'request_id', 'unknown'), timestamp=datetime.utcnow()))
     return db_item

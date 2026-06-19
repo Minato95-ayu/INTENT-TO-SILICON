@@ -1,0 +1,5 @@
+use student2.
+use book.
+
+run student2.create.
+run book.create.

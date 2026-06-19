@@ -197,3 +197,33 @@ def test_audit_log_created(client: TestClient, db_session):
     audit_rec = db_session.query(AuditLog).filter_by(action='create', entity_name='course').first()
     assert audit_rec is not None
     assert audit_rec.request_id is not None
+
+def test_event_dispatch(client: TestClient):
+    from event_bus import event_bus, Event
+    received_events = []
+    def handler(evt: Event):
+        received_events.append(evt)
+    event_bus.subscribe('course.created', handler)
+    test_create_course(client)
+    import time
+    time.sleep(0.1)  # wait for background task
+    assert len(received_events) >= 1
+    assert received_events[-1].entity == 'course'
+    assert received_events[-1].action == 'create'
+
+def test_multiple_subscribers(client: TestClient):
+    from event_bus import event_bus, Event
+    counters = {'h1': 0, 'h2': 0, 'h3': 0}
+    def h1(e: Event): counters['h1'] += 1
+    def h2(e: Event): counters['h2'] += 1
+    def h3(e: Event): counters['h3'] += 1
+    event_bus.subscribe('course.deleted', h1)
+    event_bus.subscribe('course.deleted', h2)
+    event_bus.subscribe('course.deleted', h3)
+    item = test_create_course(client)
+    client.delete(f'/course/{item["id"]}')
+    import time
+    time.sleep(0.1)
+    assert counters['h1'] >= 1
+    assert counters['h2'] >= 1
+    assert counters['h3'] >= 1

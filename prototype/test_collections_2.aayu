@@ -1,0 +1,5 @@
+list students is.
+text name is "Ayush".
+
+add name to students.
+show students.

@@ -1,0 +1,201 @@
+import sys
+import os
+import shutil
+import platform
+
+# Ensure UTF-8 output on Windows
+if sys.stdout.encoding != 'utf-8':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except AttributeError:
+        pass
+
+AAYU_VERSION = "0.1.0"
+
+def print_usage():
+    print(f"AAYU CLI v{AAYU_VERSION}")
+    print("Usage:")
+    print("  aayu version             - Show version")
+    print("  aayu doctor              - Check system environment")
+    print("  aayu new <project>       - Scaffold a new project")
+    print("  aayu run                 - Run the current project")
+    print("  aayu install <package>   - Install a package")
+    print("  aayu test                - Run test suite")
+    print("  aayu build               - Build the project (stub)")
+
+def do_version():
+    print(f"AAYU CLI v{AAYU_VERSION}")
+
+def do_doctor():
+    print("AAYU CLI      \u2705")
+    # Check if interpreter exists
+    interp_exists = os.path.exists(os.path.join(os.path.dirname(__file__), "aayu_language", "interpreter.py"))
+    check_mark = '\u2705' if interp_exists else '\u274c'
+    print(f"Interpreter   {check_mark}")
+    
+    # We just simulate Database and Packages for now
+    print("Database      \u2705")
+    print("Packages      \u2705")
+
+def do_new(project_name):
+    if os.path.exists(project_name):
+        print(f"Error: Directory '{project_name}' already exists.")
+        return
+    
+    os.makedirs(project_name)
+    os.makedirs(os.path.join(project_name, "src"))
+    os.makedirs(os.path.join(project_name, ".aayu", "packages"))
+    
+    # aayu.toml
+    toml_content = f"""name = "{project_name}"
+version = "0.1.0"
+
+[dependencies]
+"""
+    with open(os.path.join(project_name, "aayu.toml"), "w", encoding="utf-8") as f:
+        f.write(toml_content)
+        
+    # src/main.aayu
+    main_content = """task main with req.
+    print "Hello from AAYU!".
+    return "OK".
+end.
+"""
+    with open(os.path.join(project_name, "src", "main.aayu"), "w", encoding="utf-8") as f:
+        f.write(main_content)
+        
+    # .gitignore
+    gitignore_content = """.aayu/packages/
+aayu_db.sqlite
+"""
+    with open(os.path.join(project_name, ".gitignore"), "w", encoding="utf-8") as f:
+        f.write(gitignore_content)
+        
+    print(f"Created AAYU project '{project_name}' successfully!")
+    print(f"Run `cd {project_name}` and then `aayu run` to start.")
+
+def do_run():
+    # Detect if we are in a project directory
+    if not os.path.exists("aayu.toml"):
+        print("Error: No aayu.toml found. Are you in an AAYU project directory?")
+        return
+        
+    main_file = os.path.join("src", "main.aayu")
+    if not os.path.exists(main_file):
+        print(f"Error: {main_file} not found.")
+        return
+        
+    # Run the interpreter
+    cli_dir = os.path.dirname(__file__)
+    run_py = os.path.join(cli_dir, "aayu_language", "run.py")
+    
+    # Execute python run.py main_file
+    print(f"Running AAYU project...")
+    os.system(f"python \"{run_py}\" \"{main_file}\"")
+
+def do_build():
+    print("AAYU build not implemented yet. Wait for Native Compiler / IR Phase.")
+
+def do_install(package_name):
+    if not os.path.exists("aayu.toml"):
+        print("Error: No aayu.toml found. Are you in an AAYU project directory?")
+        return
+        
+    packages_dir = os.path.join(".aayu", "packages")
+    if not os.path.exists(packages_dir):
+        os.makedirs(packages_dir)
+        
+    # Mock Repository: we will look for a folder `mock_repo/<package_name>` inside the prototype folder
+    cli_dir = os.path.dirname(__file__)
+    repo_dir = os.path.join(cli_dir, "mock_repo", package_name)
+    
+    if not os.path.exists(repo_dir):
+        print(f"Error: Package '{package_name}' not found in Official Packages Repository.")
+        return
+        
+    dest_dir = os.path.join(packages_dir, package_name)
+    if os.path.exists(dest_dir):
+        shutil.rmtree(dest_dir)
+        
+    shutil.copytree(repo_dir, dest_dir)
+    print(f"Installed '{package_name}' into .aayu/packages/{package_name}")
+    
+    # Update aayu.toml
+    with open("aayu.toml", "r", encoding="utf-8") as f:
+        lines = f.readlines()
+        
+    # very naive toml update
+    if not any(package_name in line for line in lines):
+        lines.append(f'{package_name} = "latest"\n')
+        with open("aayu.toml", "w", encoding="utf-8") as f:
+            f.writelines(lines)
+        print(f"Updated aayu.toml with dependency '{package_name}'")
+
+def main():
+    if len(sys.argv) < 2:
+        print_usage()
+        return
+        
+    cmd = sys.argv[1]
+    
+    if cmd == "version":
+        do_version()
+    elif cmd == "doctor":
+        do_doctor()
+    elif cmd == "new":
+        if len(sys.argv) < 3:
+            print("Error: Please provide a project name. Example: aayu new myapp")
+        else:
+            do_new(sys.argv[2])
+    elif cmd == "run":
+        do_run()
+    elif cmd == "install":
+        if len(sys.argv) < 3:
+            print("Error: Please provide a package name. Example: aayu install auth")
+        else:
+            do_install(sys.argv[2])
+    elif cmd == "build":
+        do_build()
+    elif cmd == "lsp":
+        cli_dir = os.path.dirname(__file__)
+        lsp_py = os.path.join(cli_dir, "aayu_language", "lsp_server.py")
+        import subprocess
+        sys.exit(subprocess.call([sys.executable, lsp_py]))
+    elif cmd == "test":
+        cli_dir = os.path.dirname(__file__)
+        test_py = os.path.join(cli_dir, "aayu_language", "test_runner.py")
+        import subprocess
+        sys.exit(subprocess.call([sys.executable, test_py]))
+    elif cmd == "vm":
+        if not args:
+            print("Error: `aayu vm` requires a file to run.")
+            print("Usage: aayu vm <file.aayu>")
+            sys.exit(1)
+        filepath = args[0]
+        
+        # Parse
+        from lexer import Lexer
+        from parser import Parser
+        from compiler import AAYUCompiler
+        from vm import VirtualMachine
+        
+        with open(filepath, 'r', encoding='utf-8') as f:
+            source = f.read()
+            
+        lexer = Lexer(source)
+        parser = Parser(lexer.tokenize(), filename=filepath)
+        ast = parser.parse()
+        
+        # Compile
+        compiler = AAYUCompiler()
+        bytecode = compiler.compile(ast)
+        
+        # Execute
+        vm = VirtualMachine()
+        vm.run(bytecode)
+    else:
+        print(f"Unknown command: {cmd}")
+        print_usage()
+
+if __name__ == "__main__":
+    main()

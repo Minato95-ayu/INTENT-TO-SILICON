@@ -1,0 +1,58 @@
+{
+  "name": "aayu-language",
+  "displayName": "AAYU Language",
+  "description": "Official VS Code extension for the AAYU programming language.",
+  "version": "0.1.0",
+  "publisher": "AAYU",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onLanguage:aayu"
+  ],
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "aayu",
+        "aliases": [
+          "AAYU",
+          "aayu"
+        ],
+        "extensions": [
+          ".aayu"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "aayu",
+        "scopeName": "source.aayu",
+        "path": "./syntaxes/aayu.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "aayu",
+        "path": "./snippets/snippets.json"
+      }
+    ]
+  },
+  "dependencies": {
+    "vscode-languageclient": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.74.0",
+    "typescript": "^6.0.3"
+  }
+}

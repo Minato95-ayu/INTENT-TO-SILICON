@@ -1,0 +1,30 @@
+entity Todo.
+    text title.
+end.
+
+task home with req.
+    list todos is find Todo.
+    map context.
+    set "todos" to todos in context.
+    return render "views/todo.html" with context.
+end.
+
+task add_todo with req.
+    text title is form "title" from req.
+    map todo_data.
+    set "title" to title in todo_data.
+    create Todo with todo_data.
+    return render "views/todo_redirect.html".
+end.
+
+task delete_todo with req.
+    text id is form "id" from req.
+    delete Todo where "id" equal to id.
+    return render "views/todo_redirect.html".
+end.
+
+route "/" to home.
+route "/add" to add_todo.
+route "/delete" to delete_todo.
+
+serve on 8080.

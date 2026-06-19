@@ -1,7 +1,7 @@
 from typing import List, Optional
 import uuid
 from datetime import datetime
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, BackgroundTasks
 from sqlalchemy.orm import Session
 from database import get_db
 from models import AuditLog
@@ -9,6 +9,7 @@ from models import Role
 from schemas import RoleCreate, RoleUpdate, RoleResponse, PaginatedRoleResponse
 from logger import get_logger
 from auth import require_permission
+from event_bus import event_bus, Event
 
 router = APIRouter(prefix='/role', tags=['role'])
 logger = get_logger(__name__)
@@ -31,7 +32,7 @@ def read_role(request: Request, item_id: str, db: Session = Depends(get_db), _=D
     return db_item
 
 @router.post('/', response_model=RoleResponse)
-def create_role(request: Request, item: RoleCreate, db: Session = Depends(get_db), _=Depends(require_permission('create'))):
+def create_role(request: Request, background_tasks: BackgroundTasks, item: RoleCreate, db: Session = Depends(get_db), _=Depends(require_permission('create'))):
     if getattr(item, 'name', None):
         existing = db.query(Role).filter(Role.name == item.name).first()
         if existing:
@@ -44,10 +45,11 @@ def create_role(request: Request, item: RoleCreate, db: Session = Depends(get_db
     db.commit()
     db.refresh(db_item)
     logger.info(f'Created role {getattr(db_item, "id", "")}', extra={'request_id': getattr(request.state, 'request_id', 'unknown'), 'entity': 'role', 'action': 'create'})
+    event_bus.emit(background_tasks, Event(id=str(uuid.uuid4()), name='role.created', entity='role', action='create', payload={'id': getattr(db_item, 'id', ''), 'data': item.model_dump()}, request_id=getattr(request.state, 'request_id', 'unknown'), timestamp=datetime.utcnow()))
     return db_item
 
 @router.put('/{item_id}', response_model=RoleResponse)
-def update_role(request: Request, item_id: str, item: RoleUpdate, db: Session = Depends(get_db), _=Depends(require_permission('update'))):
+def update_role(request: Request, background_tasks: BackgroundTasks, item_id: str, item: RoleUpdate, db: Session = Depends(get_db), _=Depends(require_permission('update'))):
     db_item = db.query(Role).filter(Role.id == item_id).first()
     if db_item is None:
         raise HTTPException(status_code=404, detail='Not found')
@@ -60,10 +62,11 @@ def update_role(request: Request, item_id: str, item: RoleUpdate, db: Session = 
     db.commit()
     db.refresh(db_item)
     logger.info(f'Updated role {item_id}', extra={'request_id': getattr(request.state, 'request_id', 'unknown'), 'entity': 'role', 'action': 'update'})
+    event_bus.emit(background_tasks, Event(id=str(uuid.uuid4()), name='role.updated', entity='role', action='update', payload={'id': item_id, 'data': update_data}, request_id=getattr(request.state, 'request_id', 'unknown'), timestamp=datetime.utcnow()))
     return db_item
 
 @router.delete('/{item_id}', response_model=RoleResponse)
-def delete_role(request: Request, item_id: str, db: Session = Depends(get_db), _=Depends(require_permission('delete'))):
+def delete_role(request: Request, background_tasks: BackgroundTasks, item_id: str, db: Session = Depends(get_db), _=Depends(require_permission('delete'))):
     db_item = db.query(Role).filter(Role.id == item_id).first()
     if db_item is None:
         raise HTTPException(status_code=404, detail='Not found')
@@ -73,4 +76,5 @@ def delete_role(request: Request, item_id: str, db: Session = Depends(get_db), _
     db.add(AuditLog(id=str(uuid.uuid4()), timestamp=datetime.utcnow(), action='delete', entity_name='role', entity_id=item_id, request_id=req_id, user_id=usr_id))
     db.commit()
     logger.info(f'Deleted role {item_id}', extra={'request_id': getattr(request.state, 'request_id', 'unknown'), 'entity': 'role', 'action': 'delete'})
+    event_bus.emit(background_tasks, Event(id=str(uuid.uuid4()), name='role.deleted', entity='role', action='delete', payload={'id': item_id}, request_id=getattr(request.state, 'request_id', 'unknown'), timestamp=datetime.utcnow()))
     return db_item

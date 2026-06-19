@@ -1,0 +1,35 @@
+---
+title: Package Manager
+description: Understanding the AAYU Package Manager.
+---
+
+# Package Manager
+
+AAYU comes with an integrated package manager that resolves dependencies locally.
+
+## Installing Packages
+
+When you run:
+```bash
+aayu install auth
+```
+
+AAYU will:
+1. Locate the `auth` module from its repository.
+2. Download and place the module inside `.aayu/packages/auth/`.
+3. Update your project to recognise the newly installed package.
+
+## Using Packages
+
+To use an installed package in your code, simply use the `use` keyword:
+
+```aayu
+use auth.
+
+task my_secure_task with req.
+    guard req with auth_guard.
+    return "You are authenticated!".
+end.
+```
+
+The AAYU interpreter will automatically resolve `auth` by first checking the current directory, and then traversing up to find the `.aayu/packages/` folder.

@@ -1,0 +1,68 @@
+---
+title: Library Management System
+description: Build a complex authenticated system using AAYU.
+---
+
+# Build a Library Management System
+
+This tutorial showcases AAYU's advanced capabilities including the Package Manager, Authentication guards, and JSON API endpoints.
+
+## 1. Scaffold and Install Packages
+
+```bash
+aayu new library-system
+cd library-system
+aayu install auth
+```
+
+## 2. Setup the Entities
+
+```aayu
+use auth.
+
+entity Book.
+    text title.
+    text author.
+    text status.
+end.
+
+entity Student.
+    text name.
+    text student_id.
+end.
+```
+
+## 3. Secure Routes with Guards
+
+AAYU handles authentication naturally using `guard`.
+
+```aayu
+task dashboard with req.
+    guard req with auth_guard.
+    
+    books is find all from Book.
+    students is find all from Student.
+    
+    show "dashboard.html" with books and students.
+end.
+
+route "/dashboard" to dashboard.
+```
+
+## 4. Build JSON APIs
+
+```aayu
+task api_books with req.
+    books is find all from Book.
+    return books.
+end.
+
+route "/api/books" to api_books.
+```
+
+## 5. Run
+
+```bash
+aayu run
+```
+You now have a secure, robust library management system built with minimal code!

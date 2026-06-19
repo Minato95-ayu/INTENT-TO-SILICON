@@ -1,0 +1,6 @@
+export task authenticate with username and password.
+    if username equal to "admin".
+        return "true".
+    end.
+    return "false".
+end.

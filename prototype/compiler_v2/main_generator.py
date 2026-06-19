@@ -19,6 +19,7 @@ class MainGenerator:
             "from database import engine",
             "from logger import get_logger",
             "import models",
+            "import events",
             ""
         ]
         

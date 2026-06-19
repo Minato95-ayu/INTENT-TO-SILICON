@@ -1,0 +1,6 @@
+task add_numbers with a and b.
+    return a + b.
+end.
+
+number result is run add_numbers with 10 and 20.
+show result.

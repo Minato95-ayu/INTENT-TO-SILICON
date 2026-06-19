@@ -1,13 +1,14 @@
 from typing import List, Optional
 import uuid
 from datetime import datetime
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, BackgroundTasks
 from sqlalchemy.orm import Session
 from database import get_db
 from models import AuditLog
 from models import User
 from schemas import UserCreate, UserUpdate, UserResponse, PaginatedUserResponse
 from logger import get_logger
+from event_bus import event_bus, Event
 
 router = APIRouter(prefix='/user', tags=['user'])
 logger = get_logger(__name__)
@@ -30,7 +31,7 @@ def read_user(request: Request, item_id: str, db: Session = Depends(get_db)):
     return db_item
 
 @router.post('/', response_model=UserResponse)
-def create_user(request: Request, item: UserCreate, db: Session = Depends(get_db)):
+def create_user(request: Request, background_tasks: BackgroundTasks, item: UserCreate, db: Session = Depends(get_db)):
     if getattr(item, 'email', None):
         existing = db.query(User).filter(User.email == item.email).first()
         if existing:
@@ -43,10 +44,11 @@ def create_user(request: Request, item: UserCreate, db: Session = Depends(get_db
     db.commit()
     db.refresh(db_item)
     logger.info(f'Created user {getattr(db_item, "id", "")}', extra={'request_id': getattr(request.state, 'request_id', 'unknown'), 'entity': 'user', 'action': 'create'})
+    event_bus.emit(background_tasks, Event(id=str(uuid.uuid4()), name='user.created', entity='user', action='create', payload={'id': getattr(db_item, 'id', ''), 'data': item.model_dump()}, request_id=getattr(request.state, 'request_id', 'unknown'), timestamp=datetime.utcnow()))
     return db_item
 
 @router.put('/{item_id}', response_model=UserResponse)
-def update_user(request: Request, item_id: str, item: UserUpdate, db: Session = Depends(get_db)):
+def update_user(request: Request, background_tasks: BackgroundTasks, item_id: str, item: UserUpdate, db: Session = Depends(get_db)):
     db_item = db.query(User).filter(User.id == item_id).first()
     if db_item is None:
         raise HTTPException(status_code=404, detail='Not found')
@@ -59,10 +61,11 @@ def update_user(request: Request, item_id: str, item: UserUpdate, db: Session = 
     db.commit()
     db.refresh(db_item)
     logger.info(f'Updated user {item_id}', extra={'request_id': getattr(request.state, 'request_id', 'unknown'), 'entity': 'user', 'action': 'update'})
+    event_bus.emit(background_tasks, Event(id=str(uuid.uuid4()), name='user.updated', entity='user', action='update', payload={'id': item_id, 'data': update_data}, request_id=getattr(request.state, 'request_id', 'unknown'), timestamp=datetime.utcnow()))
     return db_item
 
 @router.delete('/{item_id}', response_model=UserResponse)
-def delete_user(request: Request, item_id: str, db: Session = Depends(get_db)):
+def delete_user(request: Request, background_tasks: BackgroundTasks, item_id: str, db: Session = Depends(get_db)):
     db_item = db.query(User).filter(User.id == item_id).first()
     if db_item is None:
         raise HTTPException(status_code=404, detail='Not found')
@@ -72,4 +75,5 @@ def delete_user(request: Request, item_id: str, db: Session = Depends(get_db)):
     db.add(AuditLog(id=str(uuid.uuid4()), timestamp=datetime.utcnow(), action='delete', entity_name='user', entity_id=item_id, request_id=req_id, user_id=usr_id))
     db.commit()
     logger.info(f'Deleted user {item_id}', extra={'request_id': getattr(request.state, 'request_id', 'unknown'), 'entity': 'user', 'action': 'delete'})
+    event_bus.emit(background_tasks, Event(id=str(uuid.uuid4()), name='user.deleted', entity='user', action='delete', payload={'id': item_id}, request_id=getattr(request.state, 'request_id', 'unknown'), timestamp=datetime.utcnow()))
     return db_item

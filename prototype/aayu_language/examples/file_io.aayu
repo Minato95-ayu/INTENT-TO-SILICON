@@ -1,0 +1,3 @@
+write "Ayush Kaushik" to "student.txt".
+text memory is read "student.txt".
+show memory.

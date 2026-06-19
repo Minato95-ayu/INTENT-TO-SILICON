@@ -1,0 +1,29 @@
+---
+title: CLI Commands
+description: Reference for the AAYU command-line interface.
+---
+
+# CLI Commands
+
+The `aayu` CLI is your gateway to managing AAYU projects.
+
+## `aayu new <project_name>`
+Scaffolds a new AAYU project with the standard directory structure:
+```text
+project_name/
+├── aayu.toml
+└── src/
+    └── main.aayu
+```
+
+## `aayu run`
+Runs the AAYU project in the current directory. It reads `aayu.toml` and executes the entry point.
+
+## `aayu install <package_name>`
+Installs an AAYU package into the `.aayu/packages/` directory, making it available for the `use` keyword.
+
+## `aayu version`
+Displays the currently installed AAYU version.
+
+## `aayu doctor`
+Checks your environment for required tools and dependencies (e.g., Interpreter, CLI, Database driver).

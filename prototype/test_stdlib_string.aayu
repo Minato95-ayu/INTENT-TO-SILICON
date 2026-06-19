@@ -1,0 +1,3 @@
+show upper("ayush").
+show lower("AYUSH").
+show length("ayush").

@@ -1,0 +1,6 @@
+try.
+    text memory is read "missing.txt".
+    show "This should not print".
+catch.
+    show "File not found. Catch block executed.".
+end.

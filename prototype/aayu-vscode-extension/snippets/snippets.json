@@ -1,0 +1,28 @@
+{
+  "Task Declaration": {
+    "prefix": "task",
+    "body": [
+      "task ${1:name} with ${2:req}.",
+      "    $0",
+      "end."
+    ],
+    "description": "Scaffolds a complete AAYU task declaration."
+  },
+  "Entity Declaration": {
+    "prefix": "entity",
+    "body": [
+      "entity ${1:ModelName}.",
+      "    text ${2:property}.",
+      "    $0",
+      "end."
+    ],
+    "description": "Scaffolds an AAYU database entity."
+  },
+  "Route Declaration": {
+    "prefix": "route",
+    "body": [
+      "route \"${1:/path}\" to ${2:handler_task}."
+    ],
+    "description": "Scaffolds an HTTP route definition."
+  }
+}

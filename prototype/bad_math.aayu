@@ -1,0 +1,5 @@
+number x is 10.
+number y is 0.
+
+number z is x / y.
+show z.

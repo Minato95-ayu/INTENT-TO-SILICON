@@ -1,0 +1,8 @@
+list students is.
+
+add "Ayush" to students.
+add "Rahul" to students.
+
+for each student in students.
+    show student.
+end.

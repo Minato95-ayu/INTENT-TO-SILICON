@@ -168,6 +168,36 @@ def test_audit_log_created(admin_client: TestClient, db_session):
     assert audit_rec is not None
     assert audit_rec.request_id is not None
 
+def test_event_dispatch(admin_client: TestClient):
+    from event_bus import event_bus, Event
+    received_events = []
+    def handler(evt: Event):
+        received_events.append(evt)
+    event_bus.subscribe('patient.created', handler)
+    test_create_patient(admin_client)
+    import time
+    time.sleep(0.1)  # wait for background task
+    assert len(received_events) >= 1
+    assert received_events[-1].entity == 'patient'
+    assert received_events[-1].action == 'create'
+
+def test_multiple_subscribers(admin_client: TestClient):
+    from event_bus import event_bus, Event
+    counters = {'h1': 0, 'h2': 0, 'h3': 0}
+    def h1(e: Event): counters['h1'] += 1
+    def h2(e: Event): counters['h2'] += 1
+    def h3(e: Event): counters['h3'] += 1
+    event_bus.subscribe('patient.deleted', h1)
+    event_bus.subscribe('patient.deleted', h2)
+    event_bus.subscribe('patient.deleted', h3)
+    item = test_create_patient(admin_client)
+    admin_client.delete(f'/patient/{item["id"]}')
+    import time
+    time.sleep(0.1)
+    assert counters['h1'] >= 1
+    assert counters['h2'] >= 1
+    assert counters['h3'] >= 1
+
 def test_rbac_unauthorized(client: TestClient):
     response = client.delete('/patient/123')
     assert response.status_code == 401

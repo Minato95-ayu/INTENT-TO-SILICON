@@ -1,0 +1,5 @@
+task broken.
+    return unknown_variable.
+end.
+
+run broken.

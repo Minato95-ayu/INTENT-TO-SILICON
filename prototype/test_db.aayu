@@ -1,0 +1,23 @@
+entity User.
+    text name.
+    text email.
+end.
+
+task create_user with req.
+    map user.
+    set "name" to "Ayush" in user.
+    set "email" to "ayush@gmail.com" in user.
+    
+    create User with user.
+    return "User Created!".
+end.
+
+task api_users with req.
+    list users is find User.
+    return json users.
+end.
+
+route "/create" to create_user.
+route "/api/users" to api_users.
+
+serve on 8080.

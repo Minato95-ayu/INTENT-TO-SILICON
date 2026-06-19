@@ -18,6 +18,7 @@ from .deployment_generator import DeploymentGenerator
 from .auth_generator import AuthGenerator
 from .test_generator import TestGenerator
 from .logger_generator import LoggerGenerator
+from .event_bus_generator import EventBusGenerator
 
 class AppPackager:
     def __init__(self, output_dir: str):
@@ -64,6 +65,11 @@ class AppPackager:
             f.write(SQLAlchemyGenerator().generate(schema))
             
         LoggerGenerator(schema, backend_dir).generate()
+        
+        event_files = EventBusGenerator().generate(schema)
+        for filepath, content in event_files.items():
+            with open(os.path.join(backend_dir, filepath), "w", encoding="utf-8") as f:
+                f.write(content)
             
         with open(os.path.join(backend_dir, "schemas.py"), "w") as f:
             f.write(PydanticGenerator().generate(schema))

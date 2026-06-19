@@ -1,0 +1,4 @@
+text x is 5.
+text y is 10.
+
+show x + y.

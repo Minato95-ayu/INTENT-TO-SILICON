@@ -1,0 +1,9 @@
+record Student.
+    name
+    age
+end.
+
+record Library.
+    owner
+    books
+end.

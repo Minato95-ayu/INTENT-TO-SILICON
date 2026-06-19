@@ -1,0 +1,223 @@
+entity Book.
+    text title.
+    text author.
+    text isbn.
+    text status.
+end.
+
+entity Student.
+    text name.
+    text email.
+    text student_id.
+end.
+
+entity IssueRecord.
+    text book_id.
+    text student_id.
+    text issue_date.
+    text return_date.
+    text status.
+end.
+
+task index with req.
+    return render "library_demo/login.html".
+end.
+
+task login_page with req.
+    return render "library_demo/login.html".
+end.
+
+task login_process with req.
+    text email is form "email" from req.
+    text password is form "password" from req.
+    
+    map creds.
+    set "email" to email in creds.
+    set "password" to password in creds.
+    
+    login creds.
+    
+    return "<script>window.location.href='/dashboard';</script>".
+end.
+
+task setup_admin with req.
+    map new_admin.
+    set "email" to "admin@library.com" in new_admin.
+    set "password" to "admin" in new_admin.
+    create account with new_admin.
+    return "Admin created.".
+end.
+
+task logout_process with req.
+    logout req.
+    return "<script>window.location.href='/login';</script>".
+end.
+
+task dashboard with req.
+    guard session.
+    
+    list books is find Book.
+    list students is find Student.
+    list issues is find IssueRecord.
+    
+    number total_books is 0.
+    number total_students is 0.
+    number books_issued is 0.
+    number books_available is 0.
+    
+    for each b in books.
+        total_books is total_books + 1.
+        text status is get "status" from b.
+        if status equal to "Available".
+            books_available is books_available + 1.
+        else.
+            books_issued is books_issued + 1.
+        end.
+    end.
+    
+    for each s in students.
+        total_students is total_students + 1.
+    end.
+    
+    map context.
+    set "total_books" to total_books in context.
+    set "total_students" to total_students in context.
+    set "books_issued" to books_issued in context.
+    set "books_available" to books_available in context.
+    
+    return render "library_demo/dashboard.html" with context.
+end.
+
+task books_page with req.
+    guard session.
+    list books is find Book.
+    
+    map context.
+    set "books" to books in context.
+    return render "library_demo/books.html" with context.
+end.
+
+task add_book with req.
+    guard session.
+    text title is form "title" from req.
+    text author is form "author" from req.
+    text isbn is form "isbn" from req.
+    
+    map new_book.
+    set "title" to title in new_book.
+    set "author" to author in new_book.
+    set "isbn" to isbn in new_book.
+    set "status" to "Available" in new_book.
+    
+    create Book with new_book.
+    return "<script>window.location.href='/books';</script>".
+end.
+
+task students_page with req.
+    guard session.
+    list students is find Student.
+    
+    map context.
+    set "students" to students in context.
+    return render "library_demo/students.html" with context.
+end.
+
+task add_student with req.
+    guard session.
+    text name is form "name" from req.
+    text email is form "email" from req.
+    text student_id is form "student_id" from req.
+    
+    map new_student.
+    set "name" to name in new_student.
+    set "email" to email in new_student.
+    set "student_id" to student_id in new_student.
+    
+    create Student with new_student.
+    return "<script>window.location.href='/students';</script>".
+end.
+
+task issue_page with req.
+    guard session.
+    list books is find Book.
+    list students is find Student.
+    
+    list available_books.
+    for each b in books.
+        text status is get "status" from b.
+        if status equal to "Available".
+            add b to available_books.
+        end.
+    end.
+    
+    map context.
+    set "books" to available_books in context.
+    set "students" to students in context.
+    return render "library_demo/issue.html" with context.
+end.
+
+task issue_process with req.
+    guard session.
+    text book_id is form "book_id" from req.
+    text student_id is form "student_id" from req.
+    
+    map issue_data.
+    set "book_id" to book_id in issue_data.
+    set "student_id" to student_id in issue_data.
+    set "issue_date" to "Today" in issue_data.
+    set "return_date" to "-" in issue_data.
+    set "status" to "Issued" in issue_data.
+    
+    create IssueRecord with issue_data.
+    
+    map book_update.
+    set "status" to "Issued" in book_update.
+    update Book where "id" equal to book_id with book_update.
+    
+    return "<script>window.location.href='/dashboard';</script>".
+end.
+
+task return_process with req.
+    guard session.
+    text issue_id is form "issue_id" from req.
+    text book_id is form "book_id" from req.
+    
+    map issue_update.
+    set "return_date" to "Today" in issue_update.
+    set "status" to "Returned" in issue_update.
+    update IssueRecord where "id" equal to issue_id with issue_update.
+    
+    map book_update.
+    set "status" to "Available" in book_update.
+    update Book where "id" equal to book_id with book_update.
+    
+    return "<script>window.location.href='/dashboard';</script>".
+end.
+
+task api_books with req.
+    list books is find Book.
+    return json books.
+end.
+
+task api_students with req.
+    list students is find Student.
+    return json students.
+end.
+
+route "/" to index.
+route "/login" to login_page.
+route "/login_process" to login_process.
+route "/logout" to logout_process.
+route "/dashboard" to dashboard.
+route "/books" to books_page.
+route "/books/add" to add_book.
+route "/students" to students_page.
+route "/students/add" to add_student.
+route "/setup" to setup_admin.
+route "/issue" to issue_page.
+route "/issue_process" to issue_process.
+route "/return" to return_process.
+route "/api/books" to api_books.
+route "/api/students" to api_students.
+
+serve on 8082.

@@ -6,6 +6,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from database import engine
 from logger import get_logger
 import models
+import events
 
 from routers import course
 from routers import room_allocation

@@ -1,0 +1,9 @@
+use auth.
+
+task main.
+    text res is run authenticate with "admin" and "password".
+    show res.
+    return "OK".
+end.
+
+run main.

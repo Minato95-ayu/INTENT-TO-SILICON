@@ -280,6 +280,43 @@ def test_health_endpoint(client: TestClient):
                     ""
                 ])
 
+            # Event tests
+            target_table = next(t for t in schema.tables if t.name == test_target)
+            target_id_field = 'id' if any(c.name == 'id' for c in target_table.columns) else target_table.columns[0].name
+            
+            lines.extend([
+                f"def test_event_dispatch({client_fixture}: TestClient):",
+                "    from event_bus import event_bus, Event",
+                "    received_events = []",
+                "    def handler(evt: Event):",
+                "        received_events.append(evt)",
+                f"    event_bus.subscribe('{test_target}.created', handler)",
+                f"    test_create_{test_target}({client_fixture})",
+                "    import time",
+                "    time.sleep(0.1)  # wait for background task",
+                "    assert len(received_events) >= 1",
+                f"    assert received_events[-1].entity == '{test_target}'",
+                "    assert received_events[-1].action == 'create'",
+                "",
+                f"def test_multiple_subscribers({client_fixture}: TestClient):",
+                "    from event_bus import event_bus, Event",
+                "    counters = {'h1': 0, 'h2': 0, 'h3': 0}",
+                "    def h1(e: Event): counters['h1'] += 1",
+                "    def h2(e: Event): counters['h2'] += 1",
+                "    def h3(e: Event): counters['h3'] += 1",
+                f"    event_bus.subscribe('{test_target}.deleted', h1)",
+                f"    event_bus.subscribe('{test_target}.deleted', h2)",
+                f"    event_bus.subscribe('{test_target}.deleted', h3)",
+                f"    item = test_create_{test_target}({client_fixture})",
+                f"    {client_fixture}.delete(f'/{test_target}/{{item[\"{target_id_field}\"]}}')",
+                "    import time",
+                "    time.sleep(0.1)",
+                "    assert counters['h1'] >= 1",
+                "    assert counters['h2'] >= 1",
+                "    assert counters['h3'] >= 1",
+                ""
+            ])
+
         if getattr(schema, 'has_rbac', False) and test_target:
             lines.extend([
                 "def test_rbac_unauthorized(client: TestClient):",

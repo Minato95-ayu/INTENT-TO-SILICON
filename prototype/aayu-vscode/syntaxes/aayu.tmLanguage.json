@@ -1,0 +1,60 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "aayu",
+  "patterns": [
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#builtins"
+    }
+  ],
+  "repository": {
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.aayu",
+          "match": "\\b(if|else|while|end|repeat|times|task|run|with|and|for|each|in|return|use|export|serve|on|route|render|form)\\b"
+        },
+        {
+          "name": "storage.type.aayu",
+          "match": "\\b(number|text|list|map|record)\\b"
+        },
+        {
+          "name": "keyword.operator.aayu",
+          "match": "\\b(is|greater|less|equal|than|to|add|set|get|from)\\b"
+        },
+        {
+          "name": "support.function.aayu",
+          "match": "\\b(show|read|write)\\b"
+        }
+      ]
+    },
+    "strings": {
+      "name": "string.quoted.double.aayu",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "name": "constant.character.escape.aayu",
+          "match": "\\\\."
+        }
+      ]
+    },
+    "numbers": {
+      "name": "constant.numeric.aayu",
+      "match": "\\b\\d+(\\.\\d+)?\\b"
+    },
+    "builtins": {
+      "name": "support.function.builtin.aayu",
+      "match": "\\b(upper|lower|length|sqrt|abs|round|random_number)\\b"
+    }
+  },
+  "scopeName": "source.aayu"
+}

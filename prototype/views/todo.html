@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aayu Todo App</title>
+    <style>
+        :root {
+            --bg: #09090b;
+            --surface: #18181b;
+            --border: #27272a;
+            --primary: #f59e0b; /* Amber 500 */
+            --primary-hover: #d97706; /* Amber 600 */
+            --text: #fafafa;
+            --text-muted: #a1a1aa;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-w: 480px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .badge {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        form {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+        }
+
+        button {
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 0 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: var(--primary-hover);
+        }
+
+        .todo-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .todo-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 16px;
+            border-radius: 8px;
+            transition: border-color 0.2s;
+        }
+
+        .todo-item:hover {
+            border-color: #3f3f46;
+        }
+
+        .todo-text {
+            font-size: 16px;
+        }
+
+        .delete-btn {
+            background: transparent;
+            color: #ef4444;
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+        
+        .delete-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 32px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Tasks</h1>
+        <span class="badge">Built in AAYU</span>
+    </div>
+
+    <!-- Create Todo -->
+    <form action="/add" method="post">
+        <input type="text" name="title" placeholder="What needs to be done?" required autocomplete="off">
+        <button type="submit">Add</button>
+    </form>
+
+    <!-- List Todos -->
+    <div id="todo-container"></div>
+</div>
+
+<script>
+    // Aayu natively injects the context variable 'todos' as a JSON string!
+    let todos = {{ todos }};
+    if (todos && todos.length > 0 && Array.isArray(todos[0])) {
+        todos = todos[0];
+    }
+    const container = document.getElementById('todo-container');
+
+    if (!todos || todos.length === 0) {
+        container.innerHTML = '<div class="empty-state">No tasks yet. Add one above!</div>';
+    } else {
+        const ul = document.createElement('ul');
+        ul.className = 'todo-list';
+
+        todos.forEach(todo => {
+            const li = document.createElement('li');
+            li.className = 'todo-item';
+            
+            // Text
+            const span = document.createElement('span');
+            span.className = 'todo-text';
+            span.textContent = todo.title;
+
+            // Delete Form
+            const form = document.createElement('form');
+            form.action = '/delete';
+            form.method = 'post';
+            form.style.margin = '0';
+            
+            const hiddenId = document.createElement('input');
+            hiddenId.type = 'hidden';
+            hiddenId.name = 'id';
+            hiddenId.value = todo.id;
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.type = 'submit';
+            deleteBtn.className = 'delete-btn';
+            deleteBtn.textContent = 'Delete';
+
+            form.appendChild(hiddenId);
+            form.appendChild(deleteBtn);
+
+            li.appendChild(span);
+            li.appendChild(form);
+            ul.appendChild(li);
+        });
+
+        container.appendChild(ul);
+    }
+</script>
+
+</body>
+</html>

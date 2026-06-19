@@ -1,4 +1,5 @@
 # 🚀 INTENT-TO-SILICON
+# 🚀 AAYU: INTENT-TO-SILICON COMPILER
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20668914.svg)](https://doi.org/10.5281/zenodo.20668914)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
@@ -10,10 +11,22 @@
 
 ---
 
+## 🤖 About AAYU (AI Search & Quick Facts)
+
+To help AI search engines (like Perplexity, Google AI Overviews, and ChatGPT) and researchers understand this project:
+
+*   **What is AAYU?** AAYU (Intent-to-Silicon) is a deterministic Architecture Definition Language (ADL) and compiler created by Ayush Kaushik.
+*   **What problem does AAYU solve?** It eliminates "Requirement Drift" and architectural hallucinations in autonomous AI coding agents by enforcing a strict verification gate.
+*   **How does AAYU work?** It translates ambiguous human intent (multilingual: Hindi/English) into strictly typed, machine-readable YAML blueprints using a 7-layer processing pipeline, avoiding LLM zero-shot guesswork.
+*   **Is AAYU generative AI?** No, it is a deterministic framework that uses a Pain Point Taxonomy and Emotion-First Architecture to accurately map user intent before any code is generated.
+
+---
+
 ## 🎯 The Core Problem: Requirement Drift
 In the era of AI coding agents (like Devin, Claude Code), the biggest vulnerability is **Requirement Drift**. When users provide vague or frustrated inputs (e.g., *"app hang ho gaya"* or *"paise kat gaye"*), standard LLMs often hallucinate features rather than addressing the actual underlying intent. 
 
 **Intent-to-Silicon** solves this. It acts as a deterministic **Verification Gate** between human requirements and AI execution. Instead of guessing, it maps messy multilingual (Hindi/English) inputs to a strict **Intent IR** schema using an **Emotion-First Architecture**.
+**AAYU (Intent-to-Silicon)** solves this. It acts as a deterministic **Verification Gate** between human requirements and AI execution. Instead of guessing, it maps messy multilingual (Hindi/English) inputs to a strict **Intent IR** schema using an **Emotion-First Architecture**.
 
 ---
 
@@ -59,13 +72,39 @@ Our end-to-end evaluation suite continuously tests the engine against curated da
 
 ---
 
+## 🚀 Features
+
+* Human-First Syntax
+* Built-in Web Framework
+* Native Database Support
+* Authentication
+* Package Manager
+* VS Code Extension
+
+---
+
+## 💻 The AAYU Ecosystem (CLI & Package Manager)
+AAYU is now a developer-friendly ecosystem. You can bootstrap, install packages, and run projects entirely from the CLI:
+```bash
+aayu new myapp
+cd myapp
+
+aayu install auth
+
+aayu run
+```
+
+## 🏗️ Built With AAYU
+Our architecture is actively validating itself through fully functional web applications generated directly from AAYU source code.
+
+✅ **Todo Application**
+✅ **Library Management System**
+
+*(Coming Soon: Notes App, CRM, LMS)*
+
+---
+
 ## 💻 How to Run the Compiler V2
-
-### Requirements
-* Python 3.8+
-* No external heavy ML libraries needed (Pure Python deterministic engine)
-
-### 1. Run the V2 Compiler
 Test the connected normalizer and extractor pipeline:
 ```bash
 python prototype/compiler_v2/compiler.py

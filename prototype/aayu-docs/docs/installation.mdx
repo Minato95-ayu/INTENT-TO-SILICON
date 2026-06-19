@@ -1,0 +1,38 @@
+---
+title: Installation
+description: Install the AAYU CLI and VS Code Extension.
+---
+
+# Installation
+
+To start building with AAYU, you need the AAYU CLI and the official VS Code Extension.
+
+## 1. Install the CLI
+
+AAYU requires Python 3.8+ to run. Currently, AAYU is distributed as a source package.
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/INTENT-TO-SILICON.git
+   ```
+2. Add the `prototype` directory to your system's `PATH`. This allows you to run the `aayu` command globally.
+
+Verify the installation:
+```bash
+aayu version
+```
+
+## 2. Install the VS Code Extension
+
+AAYU provides syntax highlighting and intelligent code snippets out of the box.
+
+1. Navigate to the extension folder:
+   ```bash
+   cd INTENT-TO-SILICON/prototype/aayu-vscode-extension
+   ```
+2. Install the packaged VSIX extension:
+   ```bash
+   code --install-extension aayu-language-0.1.0.vsix
+   ```
+
+You are now ready to build your [First App](/docs/first-app)!

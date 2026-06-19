@@ -1,0 +1,7 @@
+number marks is 30.
+
+if marks greater than 40.
+    show "Pass".
+else.
+    show "Fail".
+end.

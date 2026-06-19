@@ -24,12 +24,13 @@ class RouterGenerator:
                 "from typing import List, Optional",
                 "import uuid",
                 "from datetime import datetime",
-                "from fastapi import APIRouter, Depends, HTTPException, Query, Request",
+                "from fastapi import APIRouter, Depends, HTTPException, Query, Request, BackgroundTasks",
                 "from sqlalchemy.orm import Session",
                 "from database import get_db",
                 f"from models import {pascal_name}",
                 f"from schemas import {pascal_name}Create, {pascal_name}Update, {pascal_name}Response, Paginated{pascal_name}Response",
                 "from logger import get_logger",
+                "from event_bus import event_bus, Event",
                 "",
                 f"router = APIRouter(prefix='/{route_name}', tags=['{route_name}'])",
                 "logger = get_logger(__name__)",
@@ -85,7 +86,7 @@ class RouterGenerator:
             
             # POST
             lines.append(f"@router.post('/', response_model={pascal_name}Response)")
-            lines.append(f"def create_{route_name}(request: Request, item: {pascal_name}Create, db: Session = Depends(get_db){dep_create}):")
+            lines.append(f"def create_{route_name}(request: Request, background_tasks: BackgroundTasks, item: {pascal_name}Create, db: Session = Depends(get_db){dep_create}):")
             for col in table.columns:
                 if col.is_unique:
                     lines.append(f"    if getattr(item, '{col.name}', None):")
@@ -108,11 +109,12 @@ class RouterGenerator:
             lines.append(f"    db.commit()")
             lines.append(f"    db.refresh(db_item)")
             lines.append(f"    logger.info(f'Created {route_name} {{getattr(db_item, \"{id_field}\", \"\")}}', extra={{'request_id': getattr(request.state, 'request_id', 'unknown'), 'entity': '{route_name}', 'action': 'create'}})")
+            lines.append(f"    event_bus.emit(background_tasks, Event(id=str(uuid.uuid4()), name='{table.name}.created', entity='{table.name}', action='create', payload={{'id': getattr(db_item, '{id_field}', ''), 'data': item.model_dump()}}, request_id=getattr(request.state, 'request_id', 'unknown'), timestamp=datetime.utcnow()))")
             lines.append(f"    return db_item\n")
             
             # PUT
             lines.append(f"@router.put('/{{item_id}}', response_model={pascal_name}Response)")
-            lines.append(f"def update_{route_name}(request: Request, item_id: str, item: {pascal_name}Update, db: Session = Depends(get_db){dep_update}):")
+            lines.append(f"def update_{route_name}(request: Request, background_tasks: BackgroundTasks, item_id: str, item: {pascal_name}Update, db: Session = Depends(get_db){dep_update}):")
             lines.append(f"    db_item = db.query({pascal_name}).filter({pascal_name}.{id_field} == item_id).first()")
             lines.append(f"    if db_item is None:")
             lines.append(f"        raise HTTPException(status_code=404, detail='Not found')")
@@ -129,11 +131,12 @@ class RouterGenerator:
             lines.append(f"    db.commit()")
             lines.append(f"    db.refresh(db_item)")
             lines.append(f"    logger.info(f'Updated {route_name} {{item_id}}', extra={{'request_id': getattr(request.state, 'request_id', 'unknown'), 'entity': '{route_name}', 'action': 'update'}})")
+            lines.append(f"    event_bus.emit(background_tasks, Event(id=str(uuid.uuid4()), name='{table.name}.updated', entity='{table.name}', action='update', payload={{'id': item_id, 'data': update_data}}, request_id=getattr(request.state, 'request_id', 'unknown'), timestamp=datetime.utcnow()))")
             lines.append(f"    return db_item\n")
             
             # DELETE
             lines.append(f"@router.delete('/{{item_id}}', response_model={pascal_name}Response)")
-            lines.append(f"def delete_{route_name}(request: Request, item_id: str, db: Session = Depends(get_db){dep_delete}):")
+            lines.append(f"def delete_{route_name}(request: Request, background_tasks: BackgroundTasks, item_id: str, db: Session = Depends(get_db){dep_delete}):")
             lines.append(f"    db_item = db.query({pascal_name}).filter({pascal_name}.{id_field} == item_id).first()")
             lines.append(f"    if db_item is None:")
             lines.append(f"        raise HTTPException(status_code=404, detail='Not found')")
@@ -147,6 +150,7 @@ class RouterGenerator:
                     lines.append(f"    db.add(AuditLog(id=str(uuid.uuid4()), timestamp=datetime.utcnow(), action='delete', entity_name='{table.name}', entity_id=item_id, request_id=req_id))")
             lines.append(f"    db.commit()")
             lines.append(f"    logger.info(f'Deleted {route_name} {{item_id}}', extra={{'request_id': getattr(request.state, 'request_id', 'unknown'), 'entity': '{route_name}', 'action': 'delete'}})")
+            lines.append(f"    event_bus.emit(background_tasks, Event(id=str(uuid.uuid4()), name='{table.name}.deleted', entity='{table.name}', action='delete', payload={{'id': item_id}}, request_id=getattr(request.state, 'request_id', 'unknown'), timestamp=datetime.utcnow()))")
             lines.append(f"    return db_item\n")
             
             routers[f"{route_name}.py"] = "\n".join(lines)

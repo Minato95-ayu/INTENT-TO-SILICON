@@ -1,0 +1,46 @@
+---
+title: Your First App
+description: Build a simple web server using AAYU.
+---
+
+# Your First App
+
+Let's build a simple HTTP web server that prints "Hello, AAYU!".
+
+## 1. Create a New Project
+
+Use the CLI to scaffold a new project:
+
+```bash
+aayu new hello-world
+cd hello-world
+```
+
+## 2. Write the Code
+
+Open `src/main.aayu` and replace the contents with:
+
+```aayu
+task home with req.
+    return "Hello, AAYU!".
+end.
+
+route "/" to home.
+
+serve on 8080.
+```
+
+## 3. Run It
+
+Run the project using the CLI:
+
+```bash
+aayu run
+```
+
+You will see:
+```text
+AAYU Web Server running on port 8080...
+```
+
+Open your browser to `http://localhost:8080` and you will see your first AAYU application running!

@@ -1,13 +1,14 @@
 from typing import List, Optional
 import uuid
 from datetime import datetime
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, BackgroundTasks
 from sqlalchemy.orm import Session
 from database import get_db
 from models import AuditLog
 from models import StudentCourse
 from schemas import StudentCourseCreate, StudentCourseUpdate, StudentCourseResponse, PaginatedStudentCourseResponse
 from logger import get_logger
+from event_bus import event_bus, Event
 
 router = APIRouter(prefix='/student_course', tags=['student_course'])
 logger = get_logger(__name__)
@@ -28,7 +29,7 @@ def read_student_course(request: Request, item_id: str, db: Session = Depends(ge
     return db_item
 
 @router.post('/', response_model=StudentCourseResponse)
-def create_student_course(request: Request, item: StudentCourseCreate, db: Session = Depends(get_db)):
+def create_student_course(request: Request, background_tasks: BackgroundTasks, item: StudentCourseCreate, db: Session = Depends(get_db)):
     db_item = StudentCourse(**item.model_dump())
     db.add(db_item)
     req_id = getattr(request.state, 'request_id', 'unknown')
@@ -36,10 +37,11 @@ def create_student_course(request: Request, item: StudentCourseCreate, db: Sessi
     db.commit()
     db.refresh(db_item)
     logger.info(f'Created student_course {getattr(db_item, "student_id", "")}', extra={'request_id': getattr(request.state, 'request_id', 'unknown'), 'entity': 'student_course', 'action': 'create'})
+    event_bus.emit(background_tasks, Event(id=str(uuid.uuid4()), name='student_course.created', entity='student_course', action='create', payload={'id': getattr(db_item, 'student_id', ''), 'data': item.model_dump()}, request_id=getattr(request.state, 'request_id', 'unknown'), timestamp=datetime.utcnow()))
     return db_item
 
 @router.put('/{item_id}', response_model=StudentCourseResponse)
-def update_student_course(request: Request, item_id: str, item: StudentCourseUpdate, db: Session = Depends(get_db)):
+def update_student_course(request: Request, background_tasks: BackgroundTasks, item_id: str, item: StudentCourseUpdate, db: Session = Depends(get_db)):
     db_item = db.query(StudentCourse).filter(StudentCourse.student_id == item_id).first()
     if db_item is None:
         raise HTTPException(status_code=404, detail='Not found')
@@ -51,10 +53,11 @@ def update_student_course(request: Request, item_id: str, item: StudentCourseUpd
     db.commit()
     db.refresh(db_item)
     logger.info(f'Updated student_course {item_id}', extra={'request_id': getattr(request.state, 'request_id', 'unknown'), 'entity': 'student_course', 'action': 'update'})
+    event_bus.emit(background_tasks, Event(id=str(uuid.uuid4()), name='student_course.updated', entity='student_course', action='update', payload={'id': item_id, 'data': update_data}, request_id=getattr(request.state, 'request_id', 'unknown'), timestamp=datetime.utcnow()))
     return db_item
 
 @router.delete('/{item_id}', response_model=StudentCourseResponse)
-def delete_student_course(request: Request, item_id: str, db: Session = Depends(get_db)):
+def delete_student_course(request: Request, background_tasks: BackgroundTasks, item_id: str, db: Session = Depends(get_db)):
     db_item = db.query(StudentCourse).filter(StudentCourse.student_id == item_id).first()
     if db_item is None:
         raise HTTPException(status_code=404, detail='Not found')
@@ -63,4 +66,5 @@ def delete_student_course(request: Request, item_id: str, db: Session = Depends(
     db.add(AuditLog(id=str(uuid.uuid4()), timestamp=datetime.utcnow(), action='delete', entity_name='student_course', entity_id=item_id, request_id=req_id))
     db.commit()
     logger.info(f'Deleted student_course {item_id}', extra={'request_id': getattr(request.state, 'request_id', 'unknown'), 'entity': 'student_course', 'action': 'delete'})
+    event_bus.emit(background_tasks, Event(id=str(uuid.uuid4()), name='student_course.deleted', entity='student_course', action='delete', payload={'id': item_id}, request_id=getattr(request.state, 'request_id', 'unknown'), timestamp=datetime.utcnow()))
     return db_item

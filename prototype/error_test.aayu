@@ -1,0 +1,8 @@
+number a is 10.
+number b is 20.
+show a + b.
+
+show undefined_variable.
+
+task my_task.
+end.

@@ -1,0 +1,71 @@
+def parse_entity_declaration(self):
+        name = self.consume("IDENTIFIER", "Expect entity name.").value
+        self.consume("DOT", "Expect '.' after entity name.")
+        
+        fields = []
+        while not self.check("KEYWORD") or self.peek().value not in ["end"]:
+            ftype = self.consume("KEYWORD", "Expect field type.").value
+            fname = self.consume("IDENTIFIER", "Expect field name.").value
+            self.consume("DOT", "Expect '.' after field declaration.")
+            fields.append({"type": ftype, "name": fname})
+            
+        self.consume("KEYWORD", "Expect 'end' after entity fields.", "end")
+        self.consume("DOT", "Expect '.' after end.")
+        return EntityDeclarationNode(name=name, fields=fields)
+
+    def parse_create(self):
+        name = self.consume("IDENTIFIER", "Expect entity or account.").value
+        self.consume("KEYWORD", "Expect 'with'.", "with")
+        data_map = self.parse_expression()
+        self.consume("DOT", "Expect '.' after create.")
+        
+        if name == "account":
+            return CreateAccountNode(data_map=data_map)
+        return CreateEntityNode(entity_name=name, data_map=data_map)
+
+    def parse_find(self):
+        name = self.consume("IDENTIFIER", "Expect entity name.").value
+        if self.match("KEYWORD", "where"):
+            field = self.consume("STRING", "Expect field string.").value
+            self.consume("KEYWORD", "Expect 'equal'.", "equal")
+            self.consume("KEYWORD", "Expect 'to'.", "to")
+            val = self.parse_expression()
+            return FindEntityNode(entity_name=name, condition_field=field, condition_value=val)
+        return FindEntityNode(entity_name=name, condition_field=None, condition_value=None)
+
+    def parse_update(self):
+        name = self.consume("IDENTIFIER", "Expect entity name.").value
+        self.consume("KEYWORD", "Expect 'where'.", "where")
+        field = self.consume("STRING", "Expect field string.").value
+        self.consume("KEYWORD", "Expect 'equal'.", "equal")
+        self.consume("KEYWORD", "Expect 'to'.", "to")
+        cond_val = self.parse_expression()
+        self.consume("KEYWORD", "Expect 'with'.", "with")
+        data_map = self.parse_expression()
+        self.consume("DOT", "Expect '.' after update.")
+        return UpdateEntityNode(entity_name=name, condition_field=field, condition_value=cond_val, data_map=data_map)
+
+    def parse_delete(self):
+        name = self.consume("IDENTIFIER", "Expect entity name.").value
+        self.consume("KEYWORD", "Expect 'where'.", "where")
+        field = self.consume("STRING", "Expect field string.").value
+        self.consume("KEYWORD", "Expect 'equal'.", "equal")
+        self.consume("KEYWORD", "Expect 'to'.", "to")
+        cond_val = self.parse_expression()
+        self.consume("DOT", "Expect '.' after delete.")
+        return DeleteEntityNode(entity_name=name, condition_field=field, condition_value=cond_val)
+
+    def parse_login(self):
+        creds = self.parse_expression()
+        self.consume("DOT", "Expect '.' after login.")
+        return LoginNode(credentials=creds)
+
+    def parse_logout(self):
+        req = self.parse_expression()
+        self.consume("DOT", "Expect '.' after logout.")
+        return LogoutNode(request=req)
+
+    def parse_guard(self):
+        self.consume("IDENTIFIER", "Expect 'session'.")
+        self.consume("DOT", "Expect '.' after guard session.")
+        return GuardSessionNode()

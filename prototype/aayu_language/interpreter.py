@@ -91,9 +91,18 @@ class Interpreter:
         self.routes = {}
         self.test_mode = test_mode
         # Connect to SQLite for W-6 Database feature
-        self.db_conn = sqlite3.connect("aayu_db.sqlite", check_same_thread=False)
+        self.db_conn = sqlite3.connect("aayu_db.sqlite", check_same_thread=False, timeout=30.0)
         self.db_conn.row_factory = sqlite3.Row
         self.db_cursor = self.db_conn.cursor()
+        
+        import threading
+        self.db_lock = threading.RLock()
+        
+        try:
+            self.db_cursor.execute("PRAGMA journal_mode=WAL;")
+            self.db_cursor.execute("PRAGMA synchronous=NORMAL;")
+        except Exception:
+            pass
         
         # Bootstrap Auth Tables
         self.db_cursor.execute('''CREATE TABLE IF NOT EXISTS Account (
@@ -571,25 +580,26 @@ class Interpreter:
             self.throw_error("Cannot serialize data to JSON.")
 
     def visit_EntityDeclarationNode(self, node: EntityDeclarationNode):
-        table_name = node.name
-        columns = ["id INTEGER PRIMARY KEY AUTOINCREMENT"]
-        for field in node.fields:
-            field_name = field["name"]
-            field_type = field["type"]
-            if field_type == "text":
-                columns.append(f"{field_name} TEXT")
-            elif field_type == "number":
-                columns.append(f"{field_name} REAL")
-            else:
-                columns.append(f"{field_name} TEXT")
-                
-        # Auto-add timestamps
-        columns.append("created_at TEXT")
-        columns.append("updated_at TEXT")
-        
-        sql = f"CREATE TABLE IF NOT EXISTS {table_name} ({', '.join(columns)})"
-        self.db_cursor.execute(sql)
-        self.db_conn.commit()
+        with self.db_lock:
+            table_name = node.name
+            columns = ["id INTEGER PRIMARY KEY AUTOINCREMENT"]
+            for field in node.fields:
+                field_name = field["name"]
+                field_type = field["type"]
+                if field_type == "text":
+                    columns.append(f"{field_name} TEXT")
+                elif field_type == "number":
+                    columns.append(f"{field_name} REAL")
+                else:
+                    columns.append(f"{field_name} TEXT")
+                    
+            # Auto-add timestamps
+            columns.append("created_at TEXT")
+            columns.append("updated_at TEXT")
+            
+            sql = f"CREATE TABLE IF NOT EXISTS {table_name} ({', '.join(columns)})"
+            self.db_cursor.execute(sql)
+            self.db_conn.commit()
 
     def visit_CreateEntityNode(self, node: CreateEntityNode):
         table_name = node.entity_name
@@ -609,12 +619,13 @@ class Interpreter:
         values = list(insert_data.values())
         
         sql = f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({', '.join(placeholders)})"
-        try:
-            self.db_cursor.execute(sql, values)
-            self.db_conn.commit()
-        except sqlite3.OperationalError as e:
-            line = getattr(self.current_node, 'line', 1) if self.current_node else 1
-            raise AAYUDatabaseError(f"Database error during create: {e}", line)
+        with self.db_lock:
+            try:
+                self.db_cursor.execute(sql, values)
+                self.db_conn.commit()
+            except sqlite3.OperationalError as e:
+                line = getattr(self.current_node, 'line', 1) if self.current_node else 1
+                raise AAYUDatabaseError(f"Database error during create: {e}", line)
 
     def visit_UpdateEntityNode(self, node: UpdateEntityNode):
         table_name = node.entity_name
@@ -632,24 +643,26 @@ class Interpreter:
         values.append(cond_val)
         
         sql = f"UPDATE {table_name} SET {', '.join(set_clauses)} WHERE {node.condition_field} = ?"
-        try:
-            self.db_cursor.execute(sql, values)
-            self.db_conn.commit()
-        except sqlite3.OperationalError as e:
-            line = getattr(self.current_node, 'line', 1) if self.current_node else 1
-            raise AAYUDatabaseError(f"Database error during update: {e}", line)
+        with self.db_lock:
+            try:
+                self.db_cursor.execute(sql, values)
+                self.db_conn.commit()
+            except sqlite3.OperationalError as e:
+                line = getattr(self.current_node, 'line', 1) if self.current_node else 1
+                raise AAYUDatabaseError(f"Database error during update: {e}", line)
 
     def visit_DeleteEntityNode(self, node: DeleteEntityNode):
         table_name = node.entity_name
         cond_val = self.evaluate(node.condition_value)
         
         sql = f"DELETE FROM {table_name} WHERE {node.condition_field} = ?"
-        try:
-            self.db_cursor.execute(sql, [cond_val])
-            self.db_conn.commit()
-        except sqlite3.OperationalError as e:
-            line = getattr(self.current_node, 'line', 1) if self.current_node else 1
-            raise AAYUDatabaseError(f"Database error during delete: {e}", line)
+        with self.db_lock:
+            try:
+                self.db_cursor.execute(sql, [cond_val])
+                self.db_conn.commit()
+            except sqlite3.OperationalError as e:
+                line = getattr(self.current_node, 'line', 1) if self.current_node else 1
+                raise AAYUDatabaseError(f"Database error during delete: {e}", line)
 
     def visit_CreateAccountNode(self, node: CreateAccountNode):
         data = self.environment.get(node.data_map_name, self)
@@ -664,14 +677,15 @@ class Interpreter:
         hashed = hashlib.sha256((password + salt).encode()).hexdigest()
         
         now = datetime.datetime.utcnow().isoformat()
-        try:
-            self.db_cursor.execute(
-                "INSERT INTO Account (email, password_hash, created_at, updated_at) VALUES (?, ?, ?, ?)",
-                (email, hashed, now, now)
-            )
-            self.db_conn.commit()
-        except sqlite3.IntegrityError:
-            self.throw_error(f"Account with email {email} already exists.")
+        with self.db_lock:
+            try:
+                self.db_cursor.execute(
+                    "INSERT INTO Account (email, password_hash, created_at, updated_at) VALUES (?, ?, ?, ?)",
+                    (email, hashed, now, now)
+                )
+                self.db_conn.commit()
+            except sqlite3.IntegrityError:
+                self.throw_error(f"Account with email {email} already exists.")
 
     def visit_LoginNode(self, node: LoginNode):
         data = self.environment.get(node.user_map_name, self)
@@ -681,21 +695,22 @@ class Interpreter:
         salt = "aayu_salty"
         hashed = hashlib.sha256((password + salt).encode()).hexdigest()
         
-        self.db_cursor.execute("SELECT id FROM Account WHERE email = ? AND password_hash = ?", (email, hashed))
-        row = self.db_cursor.fetchone()
-        
-        if not row:
-            raise ReturnException(AayuHTMLResponse("<h1>401 Unauthorized</h1><p>Invalid email or password.</p>"))
+        with self.db_lock:
+            self.db_cursor.execute("SELECT id FROM Account WHERE email = ? AND password_hash = ?", (email, hashed))
+            row = self.db_cursor.fetchone()
             
-        account_id = row['id']
-        token = str(uuid.uuid4())
-        now = datetime.datetime.utcnow().isoformat()
-        
-        self.db_cursor.execute(
-            "INSERT INTO Session (account_id, token, expires_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
-            (account_id, token, now, now, now)
-        )
-        self.db_conn.commit()
+            if not row:
+                raise ReturnException(AayuHTMLResponse("<h1>401 Unauthorized</h1><p>Invalid email or password.</p>"))
+                
+            account_id = row['id']
+            token = str(uuid.uuid4())
+            now = datetime.datetime.utcnow().isoformat()
+            
+            self.db_cursor.execute(
+                "INSERT INTO Session (account_id, token, expires_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+                (account_id, token, now, now, now)
+            )
+            self.db_conn.commit()
         
         if hasattr(self, 'current_request') and self.current_request:
             if not hasattr(self, 'cookies_to_set'):
@@ -711,8 +726,9 @@ class Interpreter:
             C = cookies.SimpleCookie(cookie_header)
             if 'AAYU_SESSION' in C:
                 token = C['AAYU_SESSION'].value
-                self.db_cursor.execute("DELETE FROM Session WHERE token = ?", (token,))
-                self.db_conn.commit()
+                with self.db_lock:
+                    self.db_cursor.execute("DELETE FROM Session WHERE token = ?", (token,))
+                    self.db_conn.commit()
                 
         if not hasattr(self, 'cookies_to_set'):
             self.cookies_to_set = []
@@ -731,41 +747,46 @@ class Interpreter:
             raise ReturnException(AayuHTMLResponse("<h1>401 Unauthorized</h1><p>Session required.</p>"))
             
         token = C['AAYU_SESSION'].value
-        self.db_cursor.execute("SELECT * FROM Session WHERE token = ?", (token,))
-        row = self.db_cursor.fetchone()
+        with self.db_lock:
+            self.db_cursor.execute("SELECT * FROM Session WHERE token = ?", (token,))
+            row = self.db_cursor.fetchone()
         
         if not row:
             raise ReturnException(AayuHTMLResponse("<h1>401 Unauthorized</h1><p>Invalid session.</p>"))
 
     def visit_FindEntityNode(self, node: FindEntityNode):
         table_name = node.entity_name
-        if node.condition_field:
-            cond_val = self.evaluate(node.condition_value)
-            sql = f"SELECT * FROM {table_name} WHERE {node.condition_field} = ?"
-            try:
-                self.db_cursor.execute(sql, [cond_val])
-            except sqlite3.OperationalError as e:
-                line = getattr(self.current_node, 'line', 1) if self.current_node else 1
-                raise AAYUDatabaseError(f"Database error during find: {e}", line)
-        else:
-            sql = f"SELECT * FROM {table_name}"
-            try:
-                self.db_cursor.execute(sql)
-            except sqlite3.OperationalError as e:
-                line = getattr(self.current_node, 'line', 1) if self.current_node else 1
-                raise AAYUDatabaseError(f"Database error during find: {e}", line)
-                
-        rows = self.db_cursor.fetchall()
-        result = []
-        for row in rows:
-            result.append(dict(row))
-        return result
+        with self.db_lock:
+            if node.condition_field:
+                cond_val = self.evaluate(node.condition_value)
+                sql = f"SELECT * FROM {table_name} WHERE {node.condition_field} = ?"
+                try:
+                    self.db_cursor.execute(sql, [cond_val])
+                except sqlite3.OperationalError as e:
+                    line = getattr(self.current_node, 'line', 1) if self.current_node else 1
+                    raise AAYUDatabaseError(f"Database error during find: {e}", line)
+            else:
+                sql = f"SELECT * FROM {table_name}"
+                try:
+                    self.db_cursor.execute(sql)
+                except sqlite3.OperationalError as e:
+                    line = getattr(self.current_node, 'line', 1) if self.current_node else 1
+                    raise AAYUDatabaseError(f"Database error during find: {e}", line)
+                    
+            rows = self.db_cursor.fetchall()
+            result = []
+            for row in rows:
+                result.append(dict(row))
+            return result
 
     def visit_RouteNode(self, node: RouteNode):
         path = self.evaluate(node.path)
         if not isinstance(path, str):
             self.throw_error("Route path must evaluate to text.")
-        self.routes[path] = node.handler_name
+        self.routes[path] = {
+            "handler": node.handler_name,
+            "method": node.method
+        }
 
     def visit_ServeNode(self, node: ServeNode):
         port_val = self.evaluate(node.port)
@@ -812,7 +833,20 @@ class Interpreter:
                     # Strip query params for routing match
                     route_path = self.path.split('?')[0]
                     if route_path in interp_instance.routes:
-                        task_name_to_run = interp_instance.routes[route_path]
+                        route_info = interp_instance.routes[route_path]
+                        if isinstance(route_info, dict):
+                            allowed_method = route_info.get("method", "GET")
+                            if self.command.upper() == allowed_method.upper():
+                                task_name_to_run = route_info.get("handler")
+                            else:
+                                self.send_response(405)
+                                self.send_header("Content-type", "text/html; charset=utf-8")
+                                self.end_headers()
+                                self.wfile.write(bytes(f"<h1>405 Method Not Allowed</h1><p>Method '{self.command}' not allowed for route '{route_path}'.</p>", "utf8"))
+                                return
+                        else:
+                            # Backwards-compatibility
+                            task_name_to_run = route_info
                 
                 print(f"Matched task: {task_name_to_run}")
                 if task_name_to_run is None:
@@ -902,12 +936,20 @@ class Interpreter:
             def do_POST(self):
                 self.handle_request()
 
+            def do_DELETE(self):
+                self.handle_request()
+
         if node.handler_name:
             print(f"Starting Aayu Web Server on port {port} using handler '{node.handler_name}'...")
         else:
             print(f"Starting Aayu Web Router on port {port}...")
 
-        server = HTTPServer(("", port), AayuHTTPRequestHandler)
+        try:
+            from http.server import ThreadingHTTPServer as HTTPServerClass
+        except ImportError:
+            from http.server import HTTPServer as HTTPServerClass
+        HTTPServerClass.request_queue_size = 256
+        server = HTTPServerClass(("", port), AayuHTTPRequestHandler)
         try:
             server.serve_forever()
         except KeyboardInterrupt:

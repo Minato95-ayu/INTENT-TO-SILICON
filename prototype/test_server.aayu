@@ -15,8 +15,8 @@ task api_users with req.
     return json users.
 end.
 
-route "/" to home.
-route "/submit" to submit.
-route "/api/users" to api_users.
+get "/" to home.
+post "/submit" to submit.
+get "/api/users" to api_users.
 
 serve on 8080.

@@ -165,6 +165,7 @@ class ServeNode(Node):
 class RouteNode(Node):
     path: Node
     handler_name: str
+    method: str = "GET"
 
 @dataclass
 class RenderExpressionNode(Node):

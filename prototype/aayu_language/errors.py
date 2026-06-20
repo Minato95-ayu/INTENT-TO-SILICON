@@ -36,8 +36,28 @@ class AAYUSyntaxError(AAYUError):
         super().__init__("Syntax Error", message, line, hint)
 
 class AAYURuntimeError(AAYUError):
+    def __init__(self, message, line, hint="", type_name="Runtime Error"):
+        super().__init__(type_name, message, line, hint)
+
+class UndefinedVariableError(AAYURuntimeError):
     def __init__(self, message, line, hint=""):
-        super().__init__("Runtime Error", message, line, hint)
+        super().__init__(message, line, hint, type_name="Undefined Variable Error")
+
+class DivisionByZeroError(AAYURuntimeError):
+    def __init__(self, message, line, hint=""):
+        super().__init__(message, line, hint, type_name="Division By Zero Error")
+
+class IndexOutOfBoundsError(AAYURuntimeError):
+    def __init__(self, message, line, hint=""):
+        super().__init__(message, line, hint, type_name="Index Out Of Bounds Error")
+
+class InvalidCallError(AAYURuntimeError):
+    def __init__(self, message, line, hint=""):
+        super().__init__(message, line, hint, type_name="Invalid Call Error")
+
+class DatabaseError(AAYURuntimeError):
+    def __init__(self, message, line, hint=""):
+        super().__init__(message, line, hint, type_name="Database Error")
 
 class AAYUDatabaseError(AAYUError):
     def __init__(self, message, line, hint=""):

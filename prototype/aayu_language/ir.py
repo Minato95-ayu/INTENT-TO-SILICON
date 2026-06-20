@@ -38,11 +38,16 @@ class Opcode(Enum):
 class Instruction:
     opcode: Opcode
     operand: int = None
+    line: int = None
+    file: str = ""
     
     def __repr__(self):
+        parts = [self.opcode.name]
         if self.operand is not None:
-            return f"{self.opcode.name} {self.operand}"
-        return self.opcode.name
+            parts.append(str(self.operand))
+        if self.line is not None:
+            parts.append(f"(line {self.line})")
+        return " ".join(parts)
 
 @dataclass
 class Bytecode:
@@ -51,6 +56,7 @@ class Bytecode:
     names: List[str] = field(default_factory=list)
     parameters: List[str] = field(default_factory=list)
     name: str = ""
+    file: str = ""
     
     def format(self) -> str:
         res = []

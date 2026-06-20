@@ -23,8 +23,8 @@ task delete_todo with req.
     return render "views/todo_redirect.html".
 end.
 
-route "/" to home.
-route "/add" to add_todo.
-route "/delete" to delete_todo.
+get "/" to home.
+post "/add" to add_todo.
+post "/delete" to delete_todo.
 
 serve on 8080.

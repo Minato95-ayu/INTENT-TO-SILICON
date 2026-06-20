@@ -22,7 +22,7 @@ class Lexer:
         self.token_specs = [
             ("NUMBER", r'\d+(\.\d+)?'),
             ("STRING", r'"[^"]*"'),
-            ("KEYWORD", r'\b(number|text|is|show|if|else|while|end|greater|less|equal|not|than|to|repeat|times|task|run|with|and|list|for|each|in|return|use|record|of|read|write|try|catch|add|map|set|get|from|export|serve|on|route|render|form|json|entity|create|find|where|update|delete|login|logout|guard|session|account|test|expect|equals)\b'),
+            ("KEYWORD", r'\b(number|text|is|show|if|else|while|end|greater|less|equal|not|than|to|repeat|times|task|run|with|and|list|for|each|in|return|use|record|of|read|write|try|catch|add|map|set|get|post|from|export|serve|on|route|render|form|json|entity|create|find|where|update|delete|login|logout|guard|session|account|test|expect|equals)\b'),
             ("IDENTIFIER", r'[A-Za-z_][A-Za-z0-9_]*'),
             ("PLUS", r'\+'),
             ("MINUS", r'-'),

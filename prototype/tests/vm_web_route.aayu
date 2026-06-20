@@ -1,0 +1,26 @@
+entity Book.
+    text title.
+end.
+
+task list_books with req.
+    list books is find Book.
+    return json books.
+end.
+
+task add_book with req.
+    text title is form "title" from req.
+    map data.
+    set "title" to title in data.
+    create Book with data.
+    return "Book Added".
+end.
+
+get "/books" to list_books.
+post "/add" to add_book.
+
+task delete_book with req.
+    delete Book where "title" equal to "AAYU".
+    return "Book Deleted".
+end.
+
+delete "/remove" to delete_book.

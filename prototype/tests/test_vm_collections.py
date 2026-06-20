@@ -58,6 +58,7 @@ class TestVMCollections(unittest.TestCase):
         with contextlib.redirect_stdout(f_direct):
             vm.run(bytecode)
         direct_out = f_direct.getvalue().strip().replace('\r\n', '\n')
+        vm.close()
         
         # 2. Serialize -> Deserialize -> Run VM
         serialized = serialize(bytecode)
@@ -68,10 +69,12 @@ class TestVMCollections(unittest.TestCase):
         with contextlib.redirect_stdout(f_serialized):
             vm_deserialized.run(deserialized)
         serialized_out = f_serialized.getvalue().strip().replace('\r\n', '\n')
+        vm_deserialized.close()
         
         # Assert correctness
         self.assertEqual(direct_out, expected_output.strip().replace('\r\n', '\n'))
         self.assertEqual(serialized_out, expected_output.strip().replace('\r\n', '\n'))
+
 
     def test_vm_list(self):
         expected = """['Learn VM', 'Build Runtime']

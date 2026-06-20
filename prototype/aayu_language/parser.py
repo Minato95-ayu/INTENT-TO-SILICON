@@ -68,15 +68,28 @@ class Parser:
         elif self.match("KEYWORD", "serve"):
             node = self.parse_serve()
         elif self.match("KEYWORD", "route"):
-            node = self.parse_route()
+            node = self.parse_route("GET")
         elif self.match("KEYWORD", "entity"):
             node = self.parse_entity_declaration()
         elif self.match("KEYWORD", "create"):
             node = self.parse_create()
         elif self.match("KEYWORD", "update"):
             node = self.parse_update()
-        elif self.match("KEYWORD", "delete"):
-            node = self.parse_delete()
+        elif self.check("KEYWORD", "get"):
+            self.advance()
+            node = self.parse_route("GET")
+        elif self.check("KEYWORD", "post"):
+            self.advance()
+            node = self.parse_route("POST")
+        elif self.check("KEYWORD", "delete"):
+            # Route delete is followed by a STRING token (the path, e.g. delete "/books/delete" to delete_book.)
+            # Database delete is followed by an IDENTIFIER token (the entity name, e.g. delete Book where id is 1.)
+            if self.peek_next().type == "STRING":
+                self.advance()
+                node = self.parse_route("DELETE")
+            else:
+                self.advance()
+                node = self.parse_delete()
         elif self.match("KEYWORD", "login"):
             node = self.parse_login()
         elif self.match("KEYWORD", "logout"):
@@ -219,12 +232,12 @@ class Parser:
         self.consume("DOT", "Expect '.' after serve statement.")
         return ServeNode(handler_name=handler_name, port=port)
 
-    def parse_route(self) -> RouteNode:
+    def parse_route(self, method: str = "GET") -> RouteNode:
         path = self.parse_expression()
         self.consume("KEYWORD", "Expect 'to' after route path.", "to")
         handler_name = self.consume("IDENTIFIER", "Expect handler task name after 'to'.").value
         self.consume("DOT", "Expect '.' after route statement.")
-        return RouteNode(path=path, handler_name=handler_name)
+        return RouteNode(path=path, handler_name=handler_name, method=method)
 
     def _parse_run_core(self) -> RunNode:
         # Check for qualified access: IDENTIFIER.IDENTIFIER
@@ -602,11 +615,16 @@ class Parser:
 
     def peek(self) -> Token:
         return self.tokens[self.current]
-        
+
     def peek_next(self) -> Token:
-        if self.current + 1 >= len(self.tokens):
-            return self.tokens[-1]
-        return self.tokens[self.current + 1]
+        if self.current + 1 < len(self.tokens):
+            return self.tokens[self.current + 1]
+        return Token("EOF", "", self.peek().line)
+
+    def peek_next_next(self) -> Token:
+        if self.current + 2 < len(self.tokens):
+            return self.tokens[self.current + 2]
+        return Token("EOF", "", self.peek().line)
 
     def previous(self) -> Token:
         return self.tokens[self.current - 1]

@@ -1,0 +1,13 @@
+list todos.
+add "Learn VM" to todos.
+add "Build Runtime" to todos.
+show todos.
+show get 0 from todos.
+show get 1 from todos.
+
+map user.
+set "name" to "Ayush" in user.
+set "age" to 20 in user.
+show user.
+show get "name" from user.
+show get "age" from user.

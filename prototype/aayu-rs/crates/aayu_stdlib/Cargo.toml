@@ -1,0 +1,6 @@
+[package]
+name = "aayu_stdlib"
+version = "0.6.0"
+edition = "2021"
+
+[dependencies]

@@ -68,7 +68,7 @@ task dashboard with req.
     for each b in books.
         total_books is total_books + 1.
         text status is get "status" from b.
-        if status equal to "Available".
+        if status is equal to "Available".
             books_available is books_available + 1.
         else.
             books_issued is books_issued + 1.
@@ -145,7 +145,7 @@ task issue_page with req.
     list available_books.
     for each b in books.
         text status is get "status" from b.
-        if status equal to "Available".
+        if status is equal to "Available".
             add b to available_books.
         end.
     end.
@@ -204,20 +204,20 @@ task api_students with req.
     return json students.
 end.
 
-route "/" to index.
-route "/login" to login_page.
-route "/login_process" to login_process.
-route "/logout" to logout_process.
-route "/dashboard" to dashboard.
-route "/books" to books_page.
-route "/books/add" to add_book.
-route "/students" to students_page.
-route "/students/add" to add_student.
-route "/setup" to setup_admin.
-route "/issue" to issue_page.
-route "/issue_process" to issue_process.
-route "/return" to return_process.
-route "/api/books" to api_books.
-route "/api/students" to api_students.
+get "/" to index.
+get "/login" to login_page.
+post "/login_process" to login_process.
+post "/logout" to logout_process.
+get "/dashboard" to dashboard.
+get "/books" to books_page.
+post "/books/add" to add_book.
+get "/students" to students_page.
+post "/students/add" to add_student.
+get "/setup" to setup_admin.
+get "/issue" to issue_page.
+post "/issue_process" to issue_process.
+post "/return" to return_process.
+get "/api/books" to api_books.
+get "/api/students" to api_students.
 
 serve on 8082.

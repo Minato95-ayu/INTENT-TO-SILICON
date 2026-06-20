@@ -2,8 +2,11 @@ from ast_nodes import *
 from ir import Opcode, Instruction, Bytecode
 
 class AAYUCompiler:
-    def __init__(self):
+    def __init__(self, filename: str = ""):
         self.bytecode = Bytecode()
+        self.loop_counter = 0
+        self.filename = filename
+        self.current_line = None
         
     def _add_constant(self, value) -> int:
         if value in self.bytecode.constants:
@@ -18,16 +21,26 @@ class AAYUCompiler:
         return len(self.bytecode.names) - 1
         
     def _emit(self, opcode: Opcode, operand: int = None):
-        self.bytecode.instructions.append(Instruction(opcode, operand))
+        self.bytecode.instructions.append(
+            Instruction(opcode, operand, line=self.current_line, file=self.filename)
+        )
         
     def compile(self, node: Node) -> Bytecode:
+        self.bytecode.file = self.filename
         self.visit(node)
         return self.bytecode
         
     def visit(self, node: Node):
+        old_line = self.current_line
+        if hasattr(node, 'line') and node.line is not None:
+            self.current_line = node.line
+            
         method_name = f'visit_{type(node).__name__}'
         visitor = getattr(self, method_name, self.generic_visit)
-        return visitor(node)
+        try:
+            return visitor(node)
+        finally:
+            self.current_line = old_line
         
     def generic_visit(self, node: Node):
         raise NotImplementedError(f"No visit_{type(node).__name__} method defined in compiler")
@@ -121,7 +134,7 @@ class AAYUCompiler:
         
     def visit_TaskNode(self, node: TaskNode):
         # Compile task body in a new compiler context
-        task_compiler = AAYUCompiler()
+        task_compiler = AAYUCompiler(filename=self.filename)
         task_bytecode = task_compiler.compile(ProgramNode(node.body))
         
         # Ensure the bytecode ends with a RETURN
@@ -299,6 +312,127 @@ class AAYUCompiler:
         self._emit(Opcode.LOAD_NAME, fn_idx)
         
         self._emit(Opcode.CALL_TASK, 2)
+
+    def visit_RouteNode(self, node: RouteNode):
+        self.visit(node.path)
+        method_idx = self._add_constant(node.method)
+        self._emit(Opcode.LOAD_CONST, method_idx)
+        handler_idx = self._add_constant(node.handler_name)
+        self._emit(Opcode.LOAD_CONST, handler_idx)
+        fn_idx = self._add_name("http_route")
+        self._emit(Opcode.LOAD_NAME, fn_idx)
+        self._emit(Opcode.CALL_TASK, 3)
+        self._emit(Opcode.POP)
+
+    def visit_FormGetNode(self, node: FormGetNode):
+        self.visit(node.key)
+        idx = self._add_name(node.req_name)
+        self._emit(Opcode.LOAD_NAME, idx)
+        fn_idx = self._add_name("http_form_get")
+        self._emit(Opcode.LOAD_NAME, fn_idx)
+        self._emit(Opcode.CALL_TASK, 2)
+
+    def visit_ServeNode(self, node: ServeNode):
+        self.visit(node.port)
+        if node.handler_name:
+            idx = self._add_constant(node.handler_name)
+            self._emit(Opcode.LOAD_CONST, idx)
+        else:
+            self._emit(Opcode.LOAD_CONST, self._add_constant(None))
+            
+        fn_idx = self._add_name("http_serve")
+        self._emit(Opcode.LOAD_NAME, fn_idx)
+        self._emit(Opcode.CALL_TASK, 2)
+        self._emit(Opcode.POP)
+
+    def visit_ForEachNode(self, node: ForEachNode):
+        loop_id = self.loop_counter
+        self.loop_counter += 1
+        
+        coll_name = f"_coll_{loop_id}"
+        idx_name = f"_idx_{loop_id}"
+        
+        # 1. Evaluate collection and store it in _coll_{id}
+        self.visit(node.collection)
+        coll_idx = self._add_name(coll_name)
+        self._emit(Opcode.STORE_NAME, coll_idx)
+        
+        # 2. Store 0.0 in _idx_{id}
+        self._emit(Opcode.LOAD_CONST, self._add_constant(0.0))
+        idx_idx = self._add_name(idx_name)
+        self._emit(Opcode.STORE_NAME, idx_idx)
+        
+        # 3. Mark condition check index
+        cond_ip = len(self.bytecode.instructions)
+        
+        # 4. Check index < len(collection)
+        self._emit(Opcode.LOAD_NAME, idx_idx)
+        self._emit(Opcode.LOAD_NAME, coll_idx)
+        len_fn_idx = self._add_name("collection_len")
+        self._emit(Opcode.LOAD_NAME, len_fn_idx)
+        self._emit(Opcode.CALL_TASK, 1)
+        self._emit(Opcode.LESS)
+        
+        # 5. Jump if false placeholder
+        jump_if_false_idx = len(self.bytecode.instructions)
+        self._emit(Opcode.JUMP_IF_FALSE, 0)
+        
+        # 6. Fetch b = collection[index] and store in node.iterator
+        self._emit(Opcode.LOAD_NAME, idx_idx)
+        self._emit(Opcode.LOAD_NAME, coll_idx)
+        self._emit(Opcode.GET_ITEM)
+        iterator_idx = self._add_name(node.iterator)
+        self._emit(Opcode.STORE_NAME, iterator_idx)
+        
+        # 7. Compile loop body
+        for stmt in node.body:
+            self.visit(stmt)
+            
+        # 8. Increment index: index = index + 1
+        self._emit(Opcode.LOAD_NAME, idx_idx)
+        self._emit(Opcode.LOAD_CONST, self._add_constant(1.0))
+        self._emit(Opcode.ADD)
+        self._emit(Opcode.STORE_NAME, idx_idx)
+        
+        # 9. Jump backward to cond_ip
+        offset = len(self.bytecode.instructions) - cond_ip
+        self._emit(Opcode.JUMP_BACKWARD, offset)
+        
+        # 10. Patch condition check jump
+        self.bytecode.instructions[jump_if_false_idx].operand = len(self.bytecode.instructions) - jump_if_false_idx
+
+    def visit_CreateAccountNode(self, node: CreateAccountNode):
+        map_idx = self._add_name(node.data_map_name)
+        self._emit(Opcode.LOAD_NAME, map_idx)
+        fn_idx = self._add_name("auth_create_account")
+        self._emit(Opcode.LOAD_NAME, fn_idx)
+        self._emit(Opcode.CALL_TASK, 1)
+        self._emit(Opcode.POP)
+
+    def visit_LoginNode(self, node: LoginNode):
+        map_idx = self._add_name(node.user_map_name)
+        self._emit(Opcode.LOAD_NAME, map_idx)
+        fn_idx = self._add_name("auth_login")
+        self._emit(Opcode.LOAD_NAME, fn_idx)
+        self._emit(Opcode.CALL_TASK, 1)
+        self._emit(Opcode.POP)
+
+    def visit_LogoutNode(self, node: LogoutNode):
+        req_idx = self._add_name(node.req_name)
+        self._emit(Opcode.LOAD_NAME, req_idx)
+        fn_idx = self._add_name("auth_logout")
+        self._emit(Opcode.LOAD_NAME, fn_idx)
+        self._emit(Opcode.CALL_TASK, 1)
+        self._emit(Opcode.POP)
+
+    def visit_GuardSessionNode(self, node: GuardSessionNode):
+        fn_idx = self._add_name("auth_guard_session")
+        self._emit(Opcode.LOAD_NAME, fn_idx)
+        self._emit(Opcode.CALL_TASK, 0)
+        self._emit(Opcode.POP)
+
+
+
 
 if __name__ == "__main__":
     from lexer import Lexer

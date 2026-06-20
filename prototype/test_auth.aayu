@@ -37,10 +37,10 @@ task logout_user with req.
     return "<h1>Logged Out</h1>".
 end.
 
-route "/" to public_home.
-route "/register" to register_user.
-route "/login" to login_user.
-route "/dashboard" to dashboard.
-route "/logout" to logout_user.
+get "/" to public_home.
+post "/register" to register_user.
+post "/login" to login_user.
+get "/dashboard" to dashboard.
+post "/logout" to logout_user.
 
 serve on 8081.

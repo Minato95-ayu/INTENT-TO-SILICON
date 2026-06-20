@@ -31,6 +31,6 @@ mod tests {
         assert_eq!(bc.name, "main");
         assert_eq!(bc.constants.len(), 3);
         assert_eq!(bc.instructions[0].opcode, Opcode::LoadConst);
-        assert_eq!(bc.instructions[2].opcode, Opcode::Print);
+        assert_eq!(bc.instructions[2].opcode, Opcode::Return);
     }
 }

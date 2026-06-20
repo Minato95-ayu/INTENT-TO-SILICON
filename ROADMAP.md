@@ -35,8 +35,32 @@ Transitioning from AST-walking to a compiled stack-based Virtual Machine archite
 - [x] **Phase 3C: Control Flow**: Comparison opcodes (`EQUAL`, `GREATER`, `LESS`, `NOT`) and relative jumps for `if`/`else` and `while` loops
 - [x] **Phase 3D: Call Frames**: Stack frame framing (`CallFrame` contexts) enabling local scope isolation and recursive task execution
 - [x] **Phase 3E: Bytecode Serialization**: Recursive JSON serializer/deserializer to output `.ayc` files and execute compiled programs
-- [ ] **Phase 3F: Collection VM Support**: VM opcodes/stdlib support for Lists (`BUILD_LIST`, `ADD_TO_LIST`) and Maps (`MAP_GET`, `MAP_SET`)
-- [ ] **Phase 3G: Web Runtime Bridge**: Integrate database operations and HTTP servers into the VM
+- [x] **Phase 3F: Collection VM Support**: VM opcodes/stdlib support for Lists (`BUILD_LIST`, `ADD_TO_LIST`) and Maps (`MAP_GET`, `MAP_SET`)
+- [x] **Phase 3G-A: Database, JSON & Templates Bridge**: SQLite database CRUD, JSON response formatting, and template rendering on VM
+- [x] **Phase 3G-B1: HTTP Route Registration & VM Dispatch**: `http_route`, `http_form_get`, VM `dispatch` execution, and compiler visitors
+- [x] **Phase 3G-B2: HTTP Socket Server**: Standard library `http_serve` and real socket request handling on VM
+- [ ] **Phase 3G-C: Cookies, Sessions & Auth Guards**: Web authentication ecosystem, secure sessions, cookie headers, and VM guards
+
+## VM AST Compatibility Score
+To track VM completeness against the original AST Interpreter:
+```text
+Core Language / Math:    100% ✅
+Functions & Call Frames: 100% ✅
+Control Flow:            100% ✅
+Collections:             100% ✅
+Serialization:           100% ✅
+Database CRUD (SQLite):  100% ✅
+JSON Response:           100% ✅
+Templates Rendering:     100% ✅
+HTTP Routing & Dispatch: 100% ✅ (Sprint 3G-B1 Complete)
+HTTP Socket Server:      100% ✅ (Sprint 3G-B2 Complete)
+Auth, Sessions, Cookies:   0% 🔮 (Target for Phase 3G-C)
+```
+
+> [!NOTE]
+> **Auto HTTP Method Detection:** 
+> Route method association in `http_route()` is currently determined implicitly by parsing handler/path keywords (e.g. matching "add"/"delete" to `POST`, others to `GET`). This is a temporary validation bridge and will be replaced by explicit AAYU compiler method annotations (e.g. `route GET "/books" ...`) in future compiler iterations.
+
 
 ## Phase 4: Native Runtime (Rust/C++) 🔮
 Replacing the Python VM engine with a standalone native runtime.

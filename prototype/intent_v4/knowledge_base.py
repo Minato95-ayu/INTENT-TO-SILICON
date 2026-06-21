@@ -68,7 +68,7 @@ KNOWLEDGE_BASE = {
         }
     },
     "E-Commerce": {
-        "keywords": ["ecommerce", "shop", "store", "cart", "product", "order", "buy"],
+        "keywords": ["ecommerce", "e-commerce", "shop", "store", "cart", "product", "order", "buy"],
         "roles": ["Admin", "Vendor", "Customer", "Support"],
         "entities": ["Customer", "Product", "Category", "Order", "OrderItem", "Payment", "Review"],
         "relations": [

@@ -20,11 +20,7 @@ class AayuEmitter:
             rel_type = rel.get("type", "one_to_many")
             _from = rel.get("from")
             _to = rel.get("to")
-            if rel_type == "many_to_many":
-                junc = rel.get("junction")
-                lines.append(f"relation {_from} {rel_type} {_to} through {junc}.")
-            else:
-                lines.append(f"relation {_from} {rel_type} {_to}.")
+            lines.append(f"relation {_from} {rel_type} {_to}.")
         lines.append("")
         
         # 3. Roles

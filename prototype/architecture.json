@@ -1,54 +1,56 @@
 {
-  "domain": "Police",
+  "domain": "HRMS",
   "roles": [
     "Admin",
-    "Officer",
-    "Citizen"
+    "HRManager",
+    "Manager",
+    "Employee"
   ],
   "entities": [
-    "Complaint",
-    "Officer",
-    "Citizen",
-    "Evidence",
-    "Investigation",
-    "Report"
+    "Employee",
+    "Department",
+    "Attendance",
+    "LeaveRequest",
+    "Payroll",
+    "Review"
   ],
   "relations": [
     {
-      "from": "Citizen",
-      "to": "Complaint",
+      "from": "Department",
+      "to": "Employee",
       "type": "one_to_many"
     },
     {
-      "from": "Officer",
-      "to": "Investigation",
+      "from": "Employee",
+      "to": "Attendance",
       "type": "one_to_many"
     },
     {
-      "from": "Complaint",
-      "to": "Investigation",
-      "type": "one_to_one"
-    },
-    {
-      "from": "Complaint",
-      "to": "Evidence",
+      "from": "Employee",
+      "to": "LeaveRequest",
       "type": "one_to_many"
     },
     {
-      "from": "Investigation",
-      "to": "Report",
-      "type": "one_to_one"
+      "from": "Employee",
+      "to": "Payroll",
+      "type": "one_to_many"
+    },
+    {
+      "from": "Employee",
+      "to": "Review",
+      "type": "one_to_many"
     }
   ],
   "workflow": {
-    "name": "ComplaintWorkflow",
-    "entity": "Complaint",
+    "name": "LeaveWorkflow",
+    "entity": "LeaveRequest",
     "steps": [
-      "Filed",
-      "Verified",
-      "Investigated",
-      "Action",
-      "Closed"
+      "Draft",
+      "Requested",
+      "ManagerReview",
+      "HRReview",
+      "Approved",
+      "Rejected"
     ]
   }
 }

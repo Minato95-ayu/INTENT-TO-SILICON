@@ -1,0 +1,42 @@
+{
+  "name": "aayu",
+  "displayName": "AAYU",
+  "description": "AAYU Programming Language Support for VS Code",
+  "version": "1.0.0",
+  "publisher": "AyushKaushik",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "aayu",
+        "aliases": [
+          "AAYU",
+          "aayu"
+        ],
+        "extensions": [
+          ".aayu"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "aayu",
+        "scopeName": "source.aayu",
+        "path": "./syntaxes/aayu.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "aayu",
+        "path": "./snippets/aayu.code-snippets"
+      }
+    ]
+  }
+}

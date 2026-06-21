@@ -1,0 +1,52 @@
+{
+  "AAYU Task": {
+    "prefix": "task",
+    "body": [
+      "task ${1:name} with req.",
+      "    $0",
+      "end."
+    ],
+    "description": "Scaffold an AAYU task"
+  },
+  "AAYU Entity": {
+    "prefix": "entity",
+    "body": [
+      "entity ${1:EntityName}.",
+      "    text ${2:name}.",
+      "end."
+    ],
+    "description": "Scaffold an AAYU entity"
+  },
+  "AAYU Route (GET)": {
+    "prefix": "get",
+    "body": [
+      "get \"${1:/}\" to ${2:handler}."
+    ],
+    "description": "Define a GET route"
+  },
+  "AAYU Serve": {
+    "prefix": "serve",
+    "body": [
+      "serve on ${1:8080}."
+    ],
+    "description": "Start the AAYU web server"
+  },
+  "AAYU If": {
+    "prefix": "if",
+    "body": [
+      "if ${1:condition}.",
+      "    $0",
+      "end."
+    ],
+    "description": "AAYU If statement"
+  },
+  "AAYU While": {
+    "prefix": "while",
+    "body": [
+      "while ${1:condition}.",
+      "    $0",
+      "end."
+    ],
+    "description": "AAYU While loop"
+  }
+}

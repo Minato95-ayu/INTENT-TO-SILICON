@@ -1,0 +1,68 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "aayu",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#keywords"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.aayu",
+          "match": "#.*$"
+        }
+      ]
+    },
+    "strings": {
+      "name": "string.quoted.double.aayu",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "name": "constant.character.escape.aayu",
+          "match": "\\\\."
+        }
+      ]
+    },
+    "numbers": {
+      "name": "constant.numeric.aayu",
+      "match": "\\b[0-9]+(?:\\.[0-9]+)?\\b"
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.aayu",
+          "match": "\\b(if|else|while|end|return|run)\\b"
+        },
+        {
+          "name": "storage.type.aayu",
+          "match": "\\b(task|entity|map|list|text|number|boolean)\\b"
+        },
+        {
+          "name": "keyword.operator.aayu",
+          "match": "\\b(equal|greater|less|is|to|with|from|set)\\b"
+        },
+        {
+          "name": "keyword.other.aayu",
+          "match": "\\b(create|find|update|delete|get|post|serve|login|logout|guard|render|json)\\b"
+        },
+        {
+          "name": "variable.language.aayu",
+          "match": "\\b(session|req|cookies|form)\\b"
+        }
+      ]
+    }
+  },
+  "scopeName": "source.aayu"
+}

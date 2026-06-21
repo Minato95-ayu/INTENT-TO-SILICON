@@ -100,7 +100,7 @@ AAYU is open source and welcomes contributions in:
 - **Testing**: Report bugs and write test cases
 - **Tooling**: Contribute to VS Code extension, LSP, or build tools
 
-See our GitHub repository for contribution guidelines.
+See [Contribution Guidelines](https://github.com/Minato95-ayu/INTENT-TO-SILICON) for details.
 
 ---
 

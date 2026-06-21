@@ -100,7 +100,7 @@ AAYU is open source and welcomes contributions in:
 - **Testing**: Report bugs and write test cases
 - **Tooling**: Contribute to VS Code extension, LSP, or build tools
 
-See [Contributing Guide](/CONTRIBUTING.md) for details.
+See our GitHub repository for contribution guidelines.
 
 ---
 

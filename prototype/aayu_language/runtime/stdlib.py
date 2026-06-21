@@ -246,6 +246,11 @@ class StdLib:
                     "_form_data": {},
                     "cookies": {}
                 }
+
+                # Parse URL query parameters if present
+                if '?' in self.path:
+                    query_str = self.path.split('?', 1)[1]
+                    req_map["_form_data"] = urllib.parse.parse_qs(query_str)
                 
                 # Parse request cookies
                 cookie_header = self.headers.get('Cookie')
@@ -263,7 +268,8 @@ class StdLib:
                     content_length = int(self.headers.get('Content-Length', 0))
                     if content_length > 0:
                         post_data = self.rfile.read(content_length).decode('utf-8')
-                        req_map["_form_data"] = urllib.parse.parse_qs(post_data)
+                        post_params = urllib.parse.parse_qs(post_data)
+                        req_map["_form_data"].update(post_params)
 
                 # Match route
                 target_handler_name = handler_name
@@ -406,6 +412,11 @@ class StdLib:
         if not isinstance(coll, (list, dict)):
             raise Exception("Cannot get length of a non-collection object.")
         return len(coll)
+
+    def string_contains(self, s: str, sub: str) -> float:
+        if not isinstance(s, str) or not isinstance(sub, str):
+            return 0.0
+        return 1.0 if sub.lower() in s.lower() else 0.0
 
     def auth_create_account(self, data):
         if not isinstance(data, dict):

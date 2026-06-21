@@ -450,8 +450,13 @@ class Parser:
         return GuardSessionNode()
     def parse_map_declaration(self) -> Node:
         name = self.consume("IDENTIFIER", "Expect map name.").value
-        self.consume("DOT", "Expect '.' after map declaration.")
-        return MapDeclarationNode(name=name)
+        if self.match("KEYWORD", "is"):
+            value = self.parse_expression()
+            self.consume("DOT", "Expect '.' after map declaration.")
+            return DeclarationNode(var_type="map", name=name, value=value)
+        else:
+            self.consume("DOT", "Expect '.' after map declaration.")
+            return MapDeclarationNode(name=name)
 
     def parse_set_statement(self) -> SetInMapNode:
         key = self.parse_expression()

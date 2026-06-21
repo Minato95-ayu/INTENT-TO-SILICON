@@ -20,6 +20,7 @@ class Lexer:
         
         # Token specification
         self.token_specs = [
+            ("COMMENT", r'#.*'),
             ("NUMBER", r'\d+(\.\d+)?'),
             ("STRING", r'"[^"]*"'),
             ("KEYWORD", r'\b(number|text|is|show|if|else|while|end|greater|less|equal|not|than|to|repeat|times|task|run|with|and|list|for|each|in|return|use|record|of|read|write|try|catch|add|map|set|get|post|from|export|serve|on|route|render|form|json|entity|create|find|where|update|delete|login|logout|guard|session|account|test|expect|equals)\b'),
@@ -47,7 +48,7 @@ class Lexer:
             kind = match.lastgroup
             value = match.group()
             
-            if kind == "WHITESPACE":
+            if kind in ("WHITESPACE", "COMMENT"):
                 self.column += len(value)
                 continue
             elif kind == "NEWLINE":

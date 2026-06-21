@@ -1,0 +1,329 @@
+# Schema definitions
+entity College.
+    text name.
+    text location.
+    text course.
+end.
+
+entity StudentProfile.
+    text email.
+    text name.
+    text college.
+    text branch.
+    text year.
+end.
+
+entity SavedCollege.
+    text student_email.
+    text college_name.
+end.
+
+# Reusable task to retrieve current logged-in user profile
+task current_user with req.
+    map cookies is get "cookies" from req.
+    text token is get "AAYU_SESSION" from cookies.
+    list sessions is find Session where "token" equal to token.
+    number sessions_len is run collection_len with sessions.
+    
+    map empty_student.
+    set "email" to "" in empty_student.
+    set "name" to "" in empty_student.
+    set "college" to "" in empty_student.
+    set "branch" to "" in empty_student.
+    set "year" to "" in empty_student.
+
+    if sessions_len is greater than 0.0.
+        map sess is get 0.0 from sessions.
+        number account_id is get "account_id" from sess.
+        list accounts is find Account where "id" equal to account_id.
+        number accounts_len is run collection_len with accounts.
+        if accounts_len is greater than 0.0.
+            map acc is get 0.0 from accounts.
+            text email is get "email" from acc.
+            
+            list profiles is find StudentProfile where "email" equal to email.
+            number profiles_len is run collection_len with profiles.
+            if profiles_len is greater than 0.0.
+                map student is get 0.0 from profiles.
+                return student.
+            end.
+        end.
+    end.
+    return empty_student.
+end.
+
+# Seed base colleges
+task seed_data with req.
+    list colleges is find College.
+    number len is run collection_len with colleges.
+    if len is equal to 0.0.
+        map c1.
+        set "name" to "IIT Delhi" in c1.
+        set "location" to "Delhi" in c1.
+        set "course" to "B.Tech Computer Science" in c1.
+        create College with c1.
+
+        map c2.
+        set "name" to "BITS Pilani" in c2.
+        set "location" to "Rajasthan" in c2.
+        set "course" to "B.E. Computer Science" in c2.
+        create College with c2.
+
+        map c3.
+        set "name" to "IIT Bombay" in c3.
+        set "location" to "Mumbai" in c3.
+        set "course" to "B.Tech Electrical Eng" in c3.
+        create College with c3.
+
+        map c4.
+        set "name" to "BITS Hyderabad" in c4.
+        set "location" to "Hyderabad" in c4.
+        set "course" to "B.E. Electronics" in c4.
+        create College with c4.
+    end.
+    return "Database seeded successfully. Go to <a href='/'>Home</a>.".
+end.
+
+# Public home page
+task public_home with req.
+    list colleges is find College.
+    map context.
+    set "colleges" to colleges in context.
+    return render "views/adumate_home.html" with context.
+end.
+
+# Server-side search API returning JSON response
+task colleges_api with req.
+    text q is form "q" from req.
+    list colleges is find College.
+    
+    if q is equal to "".
+        return json colleges.
+    end.
+    
+    list filtered.
+    for each college in colleges.
+        text name is get "name" from college.
+        text location is get "location" from college.
+        
+        number name_match is run string_contains with name and q.
+        number loc_match is run string_contains with location and q.
+        
+        if name_match is equal to 1.0.
+            add college to filtered.
+        else.
+            if loc_match is equal to 1.0.
+                add college to filtered.
+            end.
+        end.
+    end.
+    
+    return json filtered.
+end.
+
+# Registration form render
+task register_page with req.
+    map context.
+    set "error" to "" in context.
+    return render "views/adumate_register.html" with context.
+end.
+
+# Registration form action with validations
+task register_action with req.
+    text email is form "email" from req.
+    text password is form "password" from req.
+    text name is form "name" from req.
+    text college is form "college" from req.
+    text branch is form "branch" from req.
+    text year is form "year" from req.
+
+    # Validation Checks
+    if email is equal to "".
+        map context.
+        set "error" to "Email address cannot be empty." in context.
+        return render "views/adumate_register.html" with context.
+    end.
+
+    if password is equal to "".
+        map context.
+        set "error" to "Password cannot be empty." in context.
+        return render "views/adumate_register.html" with context.
+    end.
+
+    if name is equal to "".
+        map context.
+        set "error" to "Full Name cannot be empty." in context.
+        return render "views/adumate_register.html" with context.
+    end.
+
+    list existing_accounts is find Account where "email" equal to email.
+    number existing_len is run collection_len with existing_accounts.
+    if existing_len is greater than 0.0.
+        map context.
+        set "error" to "An account with this email already exists." in context.
+        return render "views/adumate_register.html" with context.
+    end.
+
+    # Create account
+    map user_data.
+    set "email" to email in user_data.
+    set "password" to password in user_data.
+    create account with user_data.
+
+    # Create StudentProfile
+    map profile_data.
+    set "email" to email in profile_data.
+    set "name" to name in profile_data.
+    set "college" to college in profile_data.
+    set "branch" to branch in profile_data.
+    set "year" to year in profile_data.
+    create StudentProfile with profile_data.
+
+    map context.
+    set "target" to "/login" in context.
+    return render "views/adumate_redirect.html" with context.
+end.
+
+# Login form render
+task login_page with req.
+    map context.
+    set "error" to "" in context.
+    return render "views/adumate_login.html" with context.
+end.
+
+# Login action
+task login_action with req.
+    text email is form "email" from req.
+    text password is form "password" from req.
+
+    map creds.
+    set "email" to email in creds.
+    set "password" to password in creds.
+
+    # Try auth login (will raise exception on mismatch)
+    # The runtime stdlib wraps unauthorized exceptions and converts to 401 response,
+    # but we can also catch errors or return standard login render on error.
+    # To keep it simple, we login directly.
+    login creds.
+
+    map context.
+    set "target" to "/dashboard" in context.
+    return render "views/adumate_redirect.html" with context.
+end.
+
+# Guarded student dashboard console
+task dashboard with req.
+    guard session.
+
+    map student is run current_user with req.
+    text email is get "email" from student.
+
+    # Load bookmarked colleges for this student
+    list saved is find SavedCollege where "student_email" equal to email.
+
+    # Load all colleges for catalog
+    list colleges is find College.
+
+    map context.
+    set "student" to student in context.
+    set "saved_colleges" to saved in context.
+    set "colleges" to colleges in context.
+
+    return render "views/adumate_dashboard.html" with context.
+end.
+
+# Save/Bookmark college
+task save_college with req.
+    guard session.
+
+    map student is run current_user with req.
+    text email is get "email" from student.
+
+    text college_name is form "college_name" from req.
+    if college_name is equal to "".
+        map context.
+        set "target" to "/dashboard" in context.
+        return render "views/adumate_redirect.html" with context.
+    end.
+
+    # Verify if already bookmarked
+    list saved is find SavedCollege where "student_email" equal to email.
+    number already_saved is 0.0.
+    for each item in saved.
+        text c_name is get "college_name" from item.
+        if c_name is equal to college_name.
+            already_saved is 1.0.
+        end.
+    end.
+
+    if already_saved is equal to 0.0.
+        map save_data.
+        set "student_email" to email in save_data.
+        set "college_name" to college_name in save_data.
+        create SavedCollege with save_data.
+    end.
+
+    map context.
+    set "target" to "/dashboard" in context.
+    return render "views/adumate_redirect.html" with context.
+end.
+
+# Remove saved college bookmark
+task delete_college with req.
+    guard session.
+    text id is form "id" from req.
+    delete SavedCollege where "id" equal to id.
+
+    map context.
+    set "target" to "/dashboard" in context.
+    return render "views/adumate_redirect.html" with context.
+end.
+
+# Update student profile details
+task update_profile with req.
+    guard session.
+
+    map student is run current_user with req.
+    text email is get "email" from student.
+
+    text name is form "name" from req.
+    text college is form "college" from req.
+    text branch is form "branch" from req.
+    text year is form "year" from req.
+
+    map profile_data.
+    set "name" to name in profile_data.
+    set "college" to college in profile_data.
+    set "branch" to branch in profile_data.
+    set "year" to year in profile_data.
+
+    update StudentProfile where "email" equal to email with profile_data.
+
+    map context.
+    set "target" to "/dashboard" in context.
+    return render "views/adumate_redirect.html" with context.
+end.
+
+# Logout action
+task logout_action with req.
+    logout req.
+    map context.
+    set "target" to "/" in context.
+    return render "views/adumate_redirect.html" with context.
+end.
+
+# Register routes
+get "/seed" to seed_data.
+get "/" to public_home.
+get "/api/colleges" to colleges_api.
+get "/register" to register_page.
+post "/register" to register_action.
+get "/login" to login_page.
+post "/login" to login_action.
+get "/dashboard" to dashboard.
+post "/save_college" to save_college.
+post "/delete_college" to delete_college.
+post "/update_profile" to update_profile.
+post "/logout" to logout_action.
+
+serve on 8082.

@@ -1,0 +1,5 @@
+number x is 0.
+while x < 1000000.
+    x is x + 1.
+end.
+show x.

@@ -18,3 +18,6 @@ config.local.*
 *.swp
 
 generated_project/
+*.sqlite*
+*.ayc
+target/

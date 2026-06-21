@@ -1,0 +1,8 @@
+task test_query with req.
+    list sessions is find Session.
+    show sessions.
+    return "OK".
+end.
+
+get "/test" to test_query.
+serve on 8099.

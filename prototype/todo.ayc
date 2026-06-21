@@ -1,5 +1,6 @@
 {
   "name": "",
+  "file": "",
   "parameters": [],
   "names": [
     "db_register_entity",
@@ -21,6 +22,7 @@
       "__type__": "Bytecode",
       "value": {
         "name": "home",
+        "file": "",
         "parameters": [
           "req"
         ],
@@ -39,71 +41,105 @@
         "instructions": [
           [
             "LOAD_CONST",
-            0
+            0,
+            6,
+            ""
           ],
           [
             "LOAD_CONST",
-            1
+            1,
+            6,
+            ""
           ],
           [
             "LOAD_CONST",
-            1
+            1,
+            6,
+            ""
           ],
           [
             "LOAD_NAME",
-            0
+            0,
+            6,
+            ""
           ],
           [
             "CALL_TASK",
-            3
+            3,
+            6,
+            ""
           ],
           [
             "STORE_NAME",
-            1
+            1,
+            6,
+            ""
           ],
           [
             "BUILD_MAP",
-            0
+            0,
+            7,
+            ""
           ],
           [
             "STORE_NAME",
-            2
+            2,
+            7,
+            ""
           ],
           [
             "LOAD_NAME",
-            1
+            1,
+            8,
+            ""
           ],
           [
             "LOAD_CONST",
-            2
+            2,
+            8,
+            ""
           ],
           [
             "LOAD_NAME",
-            2
+            2,
+            8,
+            ""
           ],
           [
             "MAP_SET",
-            null
+            null,
+            8,
+            ""
           ],
           [
             "LOAD_CONST",
-            3
+            3,
+            9,
+            ""
           ],
           [
             "LOAD_NAME",
-            2
+            2,
+            9,
+            ""
           ],
           [
             "LOAD_NAME",
-            3
+            3,
+            9,
+            ""
           ],
           [
             "CALL_TASK",
-            2
+            2,
+            9,
+            ""
           ],
           [
             "RETURN",
-            null
+            null,
+            9,
+            ""
           ]
         ]
       }
@@ -112,6 +148,7 @@
       "__type__": "Bytecode",
       "value": {
         "name": "add_todo",
+        "file": "",
         "parameters": [
           "req"
         ],
@@ -132,87 +169,129 @@
         "instructions": [
           [
             "LOAD_CONST",
-            0
+            0,
+            13,
+            ""
           ],
           [
             "LOAD_NAME",
-            0
+            0,
+            13,
+            ""
           ],
           [
             "LOAD_NAME",
-            1
+            1,
+            13,
+            ""
           ],
           [
             "CALL_TASK",
-            2
+            2,
+            13,
+            ""
           ],
           [
             "STORE_NAME",
-            2
+            2,
+            13,
+            ""
           ],
           [
             "BUILD_MAP",
-            0
+            0,
+            14,
+            ""
           ],
           [
             "STORE_NAME",
-            3
+            3,
+            14,
+            ""
           ],
           [
             "LOAD_NAME",
-            2
+            2,
+            15,
+            ""
           ],
           [
             "LOAD_CONST",
-            0
+            0,
+            15,
+            ""
           ],
           [
             "LOAD_NAME",
-            3
+            3,
+            15,
+            ""
           ],
           [
             "MAP_SET",
-            null
+            null,
+            15,
+            ""
           ],
           [
             "LOAD_CONST",
-            1
+            1,
+            16,
+            ""
           ],
           [
             "LOAD_NAME",
-            3
+            3,
+            16,
+            ""
           ],
           [
             "LOAD_NAME",
-            4
+            4,
+            16,
+            ""
           ],
           [
             "CALL_TASK",
-            2
+            2,
+            16,
+            ""
           ],
           [
             "POP",
-            null
+            null,
+            16,
+            ""
           ],
           [
             "LOAD_CONST",
-            2
+            2,
+            17,
+            ""
           ],
           [
             "LOAD_CONST",
-            3
+            3,
+            17,
+            ""
           ],
           [
             "LOAD_NAME",
-            5
+            5,
+            17,
+            ""
           ],
           [
             "CALL_TASK",
-            2
+            2,
+            17,
+            ""
           ],
           [
             "RETURN",
-            null
+            null,
+            17,
+            ""
           ]
         ]
       }
@@ -221,6 +300,7 @@
       "__type__": "Bytecode",
       "value": {
         "name": "delete_todo",
+        "file": "",
         "parameters": [
           "req"
         ],
@@ -241,74 +321,108 @@
         "instructions": [
           [
             "LOAD_CONST",
-            0
+            0,
+            21,
+            ""
           ],
           [
             "LOAD_NAME",
-            0
+            0,
+            21,
+            ""
           ],
           [
             "LOAD_NAME",
-            1
+            1,
+            21,
+            ""
           ],
           [
             "CALL_TASK",
-            2
+            2,
+            21,
+            ""
           ],
           [
             "STORE_NAME",
-            2
+            2,
+            21,
+            ""
           ],
           [
             "LOAD_CONST",
-            1
+            1,
+            22,
+            ""
           ],
           [
             "LOAD_CONST",
-            2
+            2,
+            22,
+            ""
           ],
           [
             "LOAD_NAME",
-            2
+            2,
+            22,
+            ""
           ],
           [
             "LOAD_NAME",
-            3
+            3,
+            22,
+            ""
           ],
           [
             "CALL_TASK",
-            3
+            3,
+            22,
+            ""
           ],
           [
             "POP",
-            null
+            null,
+            22,
+            ""
           ],
           [
             "LOAD_CONST",
-            3
+            3,
+            23,
+            ""
           ],
           [
             "LOAD_CONST",
-            4
+            4,
+            23,
+            ""
           ],
           [
             "LOAD_NAME",
-            4
+            4,
+            23,
+            ""
           ],
           [
             "CALL_TASK",
-            2
+            2,
+            23,
+            ""
           ],
           [
             "RETURN",
-            null
+            null,
+            23,
+            ""
           ]
         ]
       }
     },
     "/",
+    "GET",
     "home",
     "/add",
+    "POST",
     "add_todo",
     "/delete",
     "delete_todo",
@@ -318,127 +432,207 @@
   "instructions": [
     [
       "LOAD_CONST",
-      0
+      0,
+      1,
+      ""
     ],
     [
       "LOAD_CONST",
-      1
+      1,
+      1,
+      ""
     ],
     [
       "LOAD_NAME",
-      0
+      0,
+      1,
+      ""
     ],
     [
       "CALL_TASK",
-      2
+      2,
+      1,
+      ""
     ],
     [
       "POP",
-      null
+      null,
+      1,
+      ""
     ],
     [
       "LOAD_CONST",
-      2
+      2,
+      5,
+      ""
     ],
     [
       "STORE_NAME",
-      1
+      1,
+      5,
+      ""
     ],
     [
       "LOAD_CONST",
-      3
+      3,
+      12,
+      ""
     ],
     [
       "STORE_NAME",
-      2
+      2,
+      12,
+      ""
     ],
     [
       "LOAD_CONST",
-      4
+      4,
+      20,
+      ""
     ],
     [
       "STORE_NAME",
-      3
+      3,
+      20,
+      ""
     ],
     [
       "LOAD_CONST",
-      5
+      5,
+      26,
+      ""
     ],
     [
       "LOAD_CONST",
-      6
+      6,
+      26,
+      ""
+    ],
+    [
+      "LOAD_CONST",
+      7,
+      26,
+      ""
     ],
     [
       "LOAD_NAME",
-      4
+      4,
+      26,
+      ""
     ],
     [
       "CALL_TASK",
-      2
+      3,
+      26,
+      ""
     ],
     [
       "POP",
-      null
+      null,
+      26,
+      ""
     ],
     [
       "LOAD_CONST",
-      7
+      8,
+      27,
+      ""
     ],
     [
       "LOAD_CONST",
-      8
+      9,
+      27,
+      ""
+    ],
+    [
+      "LOAD_CONST",
+      10,
+      27,
+      ""
     ],
     [
       "LOAD_NAME",
-      4
+      4,
+      27,
+      ""
     ],
     [
       "CALL_TASK",
-      2
+      3,
+      27,
+      ""
     ],
     [
       "POP",
-      null
+      null,
+      27,
+      ""
     ],
     [
       "LOAD_CONST",
-      9
+      11,
+      28,
+      ""
     ],
     [
       "LOAD_CONST",
-      10
+      9,
+      28,
+      ""
+    ],
+    [
+      "LOAD_CONST",
+      12,
+      28,
+      ""
     ],
     [
       "LOAD_NAME",
-      4
+      4,
+      28,
+      ""
     ],
     [
       "CALL_TASK",
-      2
+      3,
+      28,
+      ""
     ],
     [
       "POP",
-      null
+      null,
+      28,
+      ""
     ],
     [
       "LOAD_CONST",
-      11
+      13,
+      30,
+      ""
     ],
     [
       "LOAD_CONST",
-      12
+      14,
+      30,
+      ""
     ],
     [
       "LOAD_NAME",
-      5
+      5,
+      30,
+      ""
     ],
     [
       "CALL_TASK",
-      2
+      2,
+      30,
+      ""
     ],
     [
       "POP",
-      null
+      null,
+      30,
+      ""
     ]
   ]
 }

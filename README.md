@@ -94,13 +94,23 @@ aayu install auth
 aayu run
 ```
 
-## 🏗️ Built With AAYU
-Our architecture is actively validating itself through fully functional web applications generated directly from AAYU source code.
+## 🏗️ Built With AAYU (Platform Verification)
+Our architecture is actively validating itself through fully functional web applications generated and executed natively on the AAYU Web Runtime.
 
-✅ **Todo Application**
-✅ **Library Management System**
+✅ **[Adumate Student Module](prototype/examples/adumate-student-module/)**: The first production-ready full-stack application built entirely with AAYU. Showcases SQLite session-based auth, secure templates, and dynamic APIs.
+✅ **Todo Application**: A complete CRUD web app running on the AAYU VM.
+✅ **Library Management System**: A multi-entity relational application showcasing data loops and conditionals.
 
-*(Coming Soon: Notes App, CRM, LMS)*
+*(Coming Soon: Developer Tooling, VS Code Extension, Package Ecosystem)*
+
+---
+
+## ⚡ The AAYU Web Runtime Architecture
+AAYU is no longer just a compiler. It ships with a multi-threaded virtual machine written in Python and a native prototype in Rust (v0.6.0 with 95x speedup), featuring:
+1. **Opcode Execution Engine**: A deterministic `.ayc` bytecode interpreter handling scopes, math, and nested call frames.
+2. **Native SQLite Sub-VMs**: Built-in thread-safe Database Serialization lock (`RLock` + `WAL`) resolving thread limitations securely.
+3. **HTTP Socket Dispatch**: Embedded Web Server handling HTTP Method parsing (`GET`/`POST`/`DELETE`), Cookie management (`AAYU_SESSION`), and URL extraction.
+4. **HTML Template Rendering**: Injecting AAYU variable maps securely into Glassmorphism UI components without external JS frameworks.
 
 ---
 
@@ -130,24 +140,15 @@ python tests/test_v2_regression.py
 INTENT-TO-SILICON/
 ├── README.md                          ← You are here
 ├── prototype/
-│   ├── compiler_v2/                   ← V2 Deterministic Compiler pipeline
-│   │   ├── normalizer.py
-│   │   ├── pain_point_extractor.py
-│   │   └── compiler.py
-│   └── nlp_engine.py                  ← Legacy Zero-Hallucination NLP Engine
-├── experiments/
-│   ├── intent_ir_coverage.py          ← Coverage Benchmark
-│   └── verify_ir_semantics.py         ← Semantic Test Suite
-├── tests/
-│   └── test_v2_regression.py          ← V2 Regression validation
-├── data/
-│   ├── intent_ir_examples_50.json     ← 50 Gold Examples Dataset
-│   ├── unseen_examples_20.json        ← 20 Unseen Test Examples
-│   └── intent_ir_expected_outputs.json
-├── schemas/
-│   └── intent_ir_schema.json          ← Frozen Schema definition
-└── scripts/
-    └── generate_50_examples.py
+│   ├── aayu_language/                 ← AAYU Grammar, Lexer, Parser, Compiler
+│   │   └── runtime/                   ← AAYU VM (Python) & Stdlib Web Server
+│   ├── cli.py                         ← CLI tool (compile, vm, format)
+│   ├── examples/                      
+│   │   └── adumate-student-module/    ← Reference Full-Stack App (Phase 5A)
+│   └── tests/                         ← Comprehensive Parity & End-to-End Tests
+├── aayu-rs/                           ← Native Rust VM Runtime (v0.6.0 Prototype)
+├── paper/                             ← Intent-to-Silicon Research Paper
+└── schemas/                           ← Core IR Schemas
 ```
 
 ---

@@ -104,6 +104,7 @@ class VirtualMachine:
         self.globals["http_form_get"] = self.stdlib.http_form_get
         self.globals["http_serve"] = self.stdlib.http_serve
         self.globals["collection_len"] = self.stdlib.collection_len
+        self.globals["string_contains"] = self.stdlib.string_contains
         self.globals["auth_create_account"] = self.stdlib.auth_create_account
         self.globals["auth_login"] = self.stdlib.auth_login
         self.globals["auth_logout"] = self.stdlib.auth_logout

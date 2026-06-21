@@ -1,28 +1,51 @@
 # Installation
 
-AAYU is designed to run everywhere Python runs. You can use the raw AAYU Interpreter scripts, or install the compiled CLI globally.
+Getting started with AAYU is extremely fast. Since AAYU's compiler and CLI are distributed via PyPI, you can install it globally using `pip`.
 
-## Prerequisites
-- Python 3.10+
-- SQLite3 (Included in Python)
+## 1. Install via Pip
 
-## Option 1: Global Installation (Recommended)
-You can install AAYU directly via npm (Node.js) or Pip:
-```bash
-npm install -g aayu-cli
-AAYU 1.0 is now officially available on PyPI! You can install the global CLI using pip.
-
-### Global Installation (Recommended)
+Open your terminal and run:
 
 ```bash
 pip install aayu-lang
 ```
 
-Verify your installation by checking the version:
+Verify that AAYU is installed by checking its version:
 
 ```bash
-aayu version
+aayu --version
 ```
 
-## Next Steps
-Now that you have AAYU installed, let's write your first program! Head over to the [Hello World](/guide/hello-world) guide.
+## 2. Generate a New Application
+
+You can use AAYU's Native Intent Engine to scaffold a completely functioning enterprise architecture by just describing your intent in English.
+
+```bash
+aayu build "Build a Hospital Management System"
+```
+
+This command will output:
+- `main.aayu` (The full logic, relations, and RBAC definitions)
+- `views/` (Auto-generated UI screens)
+
+## 3. Run the Server
+
+To start the server and interact with your new application:
+
+```bash
+aayu run main.aayu
+```
+
+Navigate to `http://localhost:8080` to see your running web application.
+
+---
+
+## Downloads (Coming Soon)
+
+In the upcoming weeks, AAYU will provide pre-compiled, standalone binaries built using our Rust VM runtime (`aayu-rs`).
+
+- Windows Installer (`.exe`) - **Coming Soon**
+- macOS Installer (`.dmg`) - **Coming Soon**
+- Linux Installer (`.deb` / `.rpm`) - **Coming Soon**
+
+Until then, the recommended installation method is via `pip`.

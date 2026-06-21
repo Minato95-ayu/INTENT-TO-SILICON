@@ -2,61 +2,56 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   title: "AAYU",
-  description: "Human Readable Programming Language",
+  description: "The Intent Operating System",
   themeConfig: {
+    logo: '/logo.png',
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Get Started', link: '/guide/installation' }
+      { text: 'Install', link: '/guide/installation' },
+      { text: 'Documentation', link: '/guide/syntax' },
+      { text: 'Intent Engine', link: '/platform/intent-engine' },
+      { text: 'Examples', link: '/examples/' }
     ],
     sidebar: [
       {
-        text: 'Get Started',
+        text: 'Getting Started',
         items: [
           { text: 'Installation', link: '/guide/installation' },
-          { text: 'Language Basics', link: '/guide/basics' }
+          { text: 'Downloads', link: '/guide/downloads' }
         ]
       },
       {
-        text: 'Web Development',
+        text: 'Language Guide',
         items: [
-          { text: 'Routing & Views', link: '/web/routing' },
-          { text: 'Database Models', link: '/web/database' }
+          { text: 'Syntax Basics', link: '/guide/syntax' }
         ]
       },
       {
-        text: 'Standard Library',
+        text: 'Framework',
         items: [
-          { text: 'Overview', link: '/packages/index' },
-          { text: 'aayu-auth', link: '/packages/auth' },
-          { text: 'aayu-http', link: '/packages/http' },
-          { text: 'aayu-fs', link: '/packages/fs' },
-          { text: 'aayu-json', link: '/packages/json' },
-          { text: 'aayu-math', link: '/packages/math' },
-          { text: 'aayu-datetime', link: '/packages/datetime' },
-          { text: 'aayu-crypto', link: '/packages/crypto' }
+          { text: 'Web Development', link: '/web/' },
+          { text: 'Database', link: '/web/database' },
+          { text: 'Relations', link: '/web/relations' },
+          { text: 'RBAC', link: '/web/rbac' },
+          { text: 'Workflow', link: '/web/workflow' },
+          { text: 'UI DSL', link: '/web/ui-dsl' }
         ]
       },
       {
-        text: 'AI & Data Ecosystem',
+        text: 'Platform',
         items: [
-          { text: 'aayu-gemini', link: '/packages/gemini' },
-          { text: 'aayu-ml', link: '/packages/ml' },
-          { text: 'aayu-vision', link: '/packages/vision' }
+          { text: 'Intent Engine', link: '/platform/intent-engine' }
         ]
       },
       {
         text: 'Examples',
         items: [
-          { text: 'Todo App', link: '/examples/todo-app' },
-          { text: 'LMS System', link: '/examples/lms' }
-        ]
-      },
-      {
-        text: 'Showcase',
-        items: [
-          { text: 'Built with AAYU', link: '/showcase' }
+          { text: 'Showcase', link: '/examples/' }
         ]
       }
+    ],
+    socialLinks: [
+      { icon: 'github', link: 'https://github.com/Minato95-ayu/INTENT-TO-SILICON' }
     ]
   }
 })

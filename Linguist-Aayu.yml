@@ -1,0 +1,87 @@
+# This file is for GitHub Linguist submission
+# Location: github.com/github-linguist/linguist/blob/master/lib/linguist/languages/Aayu.yml
+
+name: AAYU
+type: programming
+color: '#cc0000'
+aliases:
+  - aayu
+extensions:
+  - .aayu
+filenames: []
+interpreters:
+  - aayu
+ace_mode: text
+codemirror_mode: null
+codemirror_mime_type: null
+tm_scope: source.aayu
+wrap: false
+escape_char: '\'
+searchable: true
+
+keywords:
+  - create
+  - find
+  - find_all
+  - update
+  - delete
+  - serve
+  - on
+  - use
+  - get
+  - post
+  - put
+  - delete
+  - render
+  - form
+  - guard
+  - session
+  - workflow
+  - step
+  - allow
+  - with
+  - from
+  - to
+  - and
+  - or
+  - not
+  - if
+  - else
+  - for
+  - while
+  - return
+  - break
+  - continue
+  - function
+  - class
+  - import
+  - export
+
+built_ins:
+  - db
+  - http
+  - auth
+  - rbac
+  - workflow
+  - json
+  - crypto
+  - upload
+  - vision
+  - dataframe
+  - datetime
+  - email
+  - fs
+  - math
+  - rag
+  - gemini
+  - openai
+
+description: |
+  AAYU is an Intent-to-Silicon Programming Language featuring a Native Intent Engine,
+  built-in web framework, native SQLite support, RBAC, Workflows, and a virtual machine.
+  Designed to bridge the gap between human intent and machine execution.
+
+documentation: https://aayu-lang.github.io
+
+homepage: https://aayu.org
+repository: https://github.com/Minato95-ayu/INTENT-TO-SILICON

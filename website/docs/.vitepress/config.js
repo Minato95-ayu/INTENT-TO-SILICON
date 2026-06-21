@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
+  base: '/INTENT-TO-SILICON/',
   title: "AAYU",
   description: "The Intent Operating System",
   themeConfig: {

@@ -1,0 +1,104 @@
+[build-system]
+requires = ["setuptools>=65.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aayu-lang"
+version = "1.0.0"
+description = "AAYU: The Intent-to-Silicon Programming Language"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "AAYU Team", email = "support@aayu.org"}
+]
+keywords = [
+    "programming-language",
+    "intent-driven",
+    "web-framework",
+    "database",
+    "rbac",
+    "workflow",
+    "compiler",
+    "intent-engine"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Compilers",
+    "Topic :: Software Development :: Interpreters",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
+]
+
+[project.urls]
+Homepage = "https://aayu.org"
+Repository = "https://github.com/Minato95-ayu/INTENT-TO-SILICON"
+Documentation = "https://aayu-lang.github.io"
+Issues = "https://github.com/Minato95-ayu/INTENT-TO-SILICON/issues"
+Changelog = "https://github.com/Minato95-ayu/INTENT-TO-SILICON/blob/main/CHANGELOG.md"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black>=23.0",
+    "flake8>=6.0",
+    "mypy>=1.0",
+    "ruff>=0.1.0",
+]
+docs = [
+    "vitepress>=1.0",
+    "vue>=3.0",
+]
+
+[project.scripts]
+aayu = "cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "prototype"}
+
+[tool.setuptools.packages.find]
+where = ["prototype"]
+include = ["aayu_language*", "intent_engine*"]
+
+[tool.black]
+line-length = 100
+target-version = ['py38']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false

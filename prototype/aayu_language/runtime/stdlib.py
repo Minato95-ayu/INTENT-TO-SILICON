@@ -96,6 +96,96 @@ class StdLib:
 
         self._profiled_db(_exec)
 
+    def db_register_relation(self, entity1: str, rel_type: str, entity2: str):
+        """Creates relationship schema (join tables or foreign keys)"""
+        def _exec():
+            if rel_type == "many_to_many":
+                table_name = f"{entity1}_{entity2}"
+                sql = f"""CREATE TABLE IF NOT EXISTS {table_name} (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    {entity1.lower()}_id INTEGER NOT NULL,
+                    {entity2.lower()}_id INTEGER NOT NULL,
+                    created_at TEXT,
+                    updated_at TEXT
+                )"""
+                self.vm.db_cursor.execute(sql)
+            elif rel_type == "one_to_many":
+                fk_col = f"{entity1.lower()}_id"
+                try:
+                    self.vm.db_cursor.execute(f"ALTER TABLE {entity2} ADD COLUMN {fk_col} INTEGER")
+                except Exception:
+                    pass
+            elif rel_type == "many_to_one":
+                fk_col = f"{entity2.lower()}_id"
+                try:
+                    self.vm.db_cursor.execute(f"ALTER TABLE {entity1} ADD COLUMN {fk_col} INTEGER")
+                except Exception:
+                    pass
+            elif rel_type == "one_to_one":
+                fk_col = f"{entity1.lower()}_id"
+                try:
+                    self.vm.db_cursor.execute(f"ALTER TABLE {entity2} ADD COLUMN {fk_col} INTEGER")
+                    self.vm.db_cursor.execute(f"CREATE UNIQUE INDEX IF NOT EXISTS idx_{entity2}_{fk_col} ON {entity2}({fk_col})")
+                except Exception:
+                    pass
+                    
+            self.vm.db_conn.commit()
+        self._profiled_db(_exec)
+    def db_register_role(self, role_name: str):
+        """Registers a role in the database."""
+        def _exec():
+            try:
+                self.vm.db_cursor.execute("INSERT OR IGNORE INTO Role (name) VALUES (?)", (role_name,))
+                self.vm.db_conn.commit()
+            except Exception:
+                pass
+        self._profiled_db(_exec)
+
+    def db_register_permission(self, role_name: str, action: str, target_entity: str):
+        """Registers a permission for a role in the database."""
+        def _exec():
+            try:
+                # Resolve role ID
+                self.vm.db_cursor.execute("SELECT id FROM Role WHERE name = ?", (role_name,))
+                row = self.vm.db_cursor.fetchone()
+                if row:
+                    role_id = row['id']
+                    # Insert permission
+                    self.vm.db_cursor.execute(
+                        "INSERT INTO Permission (role_id, action, resource_name) VALUES (?, ?, ?)",
+                        (role_id, action, target_entity)
+                    )
+                    self.vm.db_conn.commit()
+            except Exception:
+                pass
+        self._profiled_db(_exec)
+
+    def db_register_workflow(self, name: str, entity_name: str, steps_str: str):
+        """Registers a workflow and its sequential steps."""
+        def _exec():
+            try:
+                # Insert Workflow
+                self.vm.db_cursor.execute(
+                    "INSERT OR IGNORE INTO Workflow (name, entity_name) VALUES (?, ?)", 
+                    (name, entity_name)
+                )
+                self.vm.db_cursor.execute("SELECT id FROM Workflow WHERE name = ?", (name,))
+                row = self.vm.db_cursor.fetchone()
+                if not row:
+                    return
+                workflow_id = row['id']
+                
+                # Insert Steps
+                steps = [s.strip() for s in steps_str.split(",") if s.strip()]
+                for idx, step_name in enumerate(steps):
+                    self.vm.db_cursor.execute(
+                        "INSERT INTO WorkflowStep (workflow_id, name, order_index) VALUES (?, ?, ?)",
+                        (workflow_id, step_name, idx)
+                    )
+                self.vm.db_conn.commit()
+            except Exception:
+                pass
+        self._profiled_db(_exec)
 
     def db_create(self, entity_name: str, data_map: dict):
         """Inserts a new record into the database table."""
@@ -176,8 +266,14 @@ class StdLib:
         import time
         t_start = time.perf_counter()
         try:
+            print("RENDER TEMPLATE:", template_path, "CWD:", os.getcwd(), flush=True)
             if not os.path.exists(template_path):
-                if template_path.startswith("library_demo/"):
+                # Fallback to views directory
+                views_path = os.path.join("views", template_path)
+                print("VIEWS PATH:", views_path, "EXISTS:", os.path.exists(views_path), flush=True)
+                if os.path.exists(views_path):
+                    template_path = views_path
+                elif template_path.startswith("library_demo/"):
                     fallback_path = template_path.replace("library_demo/", "examples/library-system/")
                     if os.path.exists(fallback_path):
                         template_path = fallback_path
@@ -189,12 +285,34 @@ class StdLib:
                 template_str = f.read()
                 
             if context_map and isinstance(context_map, dict):
+                # Handle loops: {% for item in list_var %} ... {% endfor %}
+                def loop_replacer(match):
+                    item_name = match.group(1)
+                    list_var_name = match.group(2)
+                    inner_content = match.group(3)
+                    
+                    if list_var_name in context_map and isinstance(context_map[list_var_name], list):
+                        items = context_map[list_var_name]
+                        result = ""
+                        for item in items:
+                            if isinstance(item, dict):
+                                curr_str = inner_content
+                                for k, v in item.items():
+                                    pattern = r'\{\{\s*' + re.escape(item_name) + r'\.' + re.escape(k) + r'\s*\}\}'
+                                    curr_str = re.sub(pattern, str(v), curr_str)
+                                result += curr_str
+                        return result
+                    return ""
+                
+                template_str = re.sub(r'\{%\s*for\s+(\w+)\s+in\s+(\w+)\s*%\}(.*?)\{%\s*endfor\s*%\}', loop_replacer, template_str, flags=re.DOTALL)
+                
+                # Handle simple variables
                 for key, val in context_map.items():
                     pattern = r'\{\{\s*' + re.escape(key) + r'\s*\}\}'
                     template_str = re.sub(pattern, str(val), template_str)
                     
             # Strip missing variables placeholders
-            template_str = re.sub(r'\{\{\s*[\w_]+\s*\}\}', '', template_str)
+            template_str = re.sub(r'\{\{\s*[\w_\.]+\s*\}\}', '', template_str)
             return template_str
         finally:
             self.vm.telemetry["template_render_time"] += (time.perf_counter() - t_start)
@@ -262,8 +380,8 @@ class StdLib:
                     except Exception:
                         pass
                 
-                # Parse POST form data
-                if self.command == "POST":
+                # Parse form data for POST, PUT, DELETE
+                if self.command in ("POST", "PUT", "DELETE"):
                     content_length = int(self.headers.get('Content-Length', 0))
                     if content_length > 0:
                         post_data = self.rfile.read(content_length).decode('utf-8')
@@ -383,6 +501,9 @@ class StdLib:
                 self.handle_request()
 
             def do_POST(self):
+                self.handle_request()
+
+            def do_PUT(self):
                 self.handle_request()
 
             def do_DELETE(self):

@@ -1,0 +1,13 @@
+component Hero.
+heading "ABC Public School".
+text "Empowering Students For The Future".
+button "Admissions".
+end.
+
+page Home.
+navbar.
+Hero.
+card.
+text "Modern Classrooms".
+end.
+end.

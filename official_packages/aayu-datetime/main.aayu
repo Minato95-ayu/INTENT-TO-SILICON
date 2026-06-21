@@ -1,0 +1,11 @@
+// AAYU Official Package: datetime
+// Date and time utilities
+
+fn now() {
+    // Native implementation hooked in VM
+}
+
+fn format() {
+    // Native implementation hooked in VM
+}
+

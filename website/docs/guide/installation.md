@@ -10,21 +10,18 @@ AAYU is designed to run everywhere Python runs. You can use the raw AAYU Interpr
 You can install AAYU directly via npm (Node.js) or Pip:
 ```bash
 npm install -g aayu-cli
-# or
+AAYU 1.0 is now officially available on PyPI! You can install the global CLI using pip.
+
+### Global Installation (Recommended)
+
+```bash
 pip install aayu-lang
 ```
 
-Once installed, verify the CLI:
-```bash
-aayu --version
-```
+Verify your installation by checking the version:
 
-## Option 2: Clone the Repository
-If you want to contribute to the language internals, or build the core yourself:
 ```bash
-git clone https://github.com/aayu-lang/aayu.git
-cd aayu/prototype
-python cli.py run myapp.aayu
+aayu version
 ```
 
 ## Next Steps

@@ -198,6 +198,42 @@ class FindEntityNode(Node):
     condition_value: Node = None
 
 @dataclass
+class RelationDefNode(Node):
+    def __init__(self, entity1: str, rel_type: str, entity2: str):
+        self.entity1 = entity1
+        self.rel_type = rel_type
+        self.entity2 = entity2
+
+@dataclass
+class CreateRelationNode(Node):
+    def __init__(self, entity1: str, rel_type: str, entity2: str):
+        self.entity1 = entity1
+        self.rel_type = rel_type
+        self.entity2 = entity2
+
+@dataclass
+class RoleDefNode(Node):
+    name: str
+
+@dataclass
+class AllowDefNode(Node):
+    role: str
+    action: str
+    target_entity: str
+
+@dataclass
+class StepDefNode(Node):
+    name: str
+    requires_role: str = None
+    after_step: str = None
+
+@dataclass
+class WorkflowDefNode(Node):
+    name: str
+    entity_name: str
+    steps: list[StepDefNode]
+
+@dataclass
 class UpdateEntityNode(Node):
     entity_name: str
     condition_field: str
@@ -236,3 +272,23 @@ class LogoutNode(Node):
 @dataclass
 class GuardSessionNode(Node):
     pass
+
+@dataclass
+class UIPageNode(Node):
+    name: str
+    elements: List[Node]
+
+@dataclass
+class UIComponentNode(Node):
+    name: str
+    elements: List[Node]
+
+@dataclass
+class UIElementNode(Node):
+    element_type: str
+    value: Node = None
+    children: List[Node] = None
+
+@dataclass
+class CrudNode(Node):
+    entity_name: str

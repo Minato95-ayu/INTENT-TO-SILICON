@@ -79,6 +79,45 @@ class VirtualMachine:
                     created_at TEXT,
                     updated_at TEXT
                 )''')
+                self.db_cursor.execute('''CREATE TABLE IF NOT EXISTS Role (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT UNIQUE
+                )''')
+                self.db_cursor.execute('''CREATE TABLE IF NOT EXISTS Permission (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    role_id INTEGER,
+                    action TEXT,
+                    resource_name TEXT
+                )''')
+                self.db_cursor.execute('''CREATE TABLE IF NOT EXISTS AccountRole (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    account_id INTEGER,
+                    role_id INTEGER
+                )''')
+                self.db_cursor.execute('''CREATE TABLE IF NOT EXISTS Workflow (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT UNIQUE,
+                    entity_name TEXT,
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+                )''')
+                self.db_cursor.execute('''CREATE TABLE IF NOT EXISTS WorkflowStep (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    workflow_id INTEGER,
+                    name TEXT,
+                    order_index INTEGER,
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+                )''')
+                self.db_cursor.execute('''CREATE TABLE IF NOT EXISTS WorkflowState (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    workflow_id INTEGER,
+                    entity_id INTEGER,
+                    current_step_id INTEGER,
+                    status TEXT,
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+                )''')
                 self.db_conn.commit()
             except Exception:
                 pass
@@ -94,6 +133,10 @@ class VirtualMachine:
         
     def _register_stdlib(self):
         self.globals["db_register_entity"] = self.stdlib.db_register_entity
+        self.globals["db_register_relation"] = self.stdlib.db_register_relation
+        self.globals["db_register_role"] = self.stdlib.db_register_role
+        self.globals["db_register_permission"] = self.stdlib.db_register_permission
+        self.globals["db_register_workflow"] = self.stdlib.db_register_workflow
         self.globals["db_create"] = self.stdlib.db_create
         self.globals["db_find"] = self.stdlib.db_find
         self.globals["db_update"] = self.stdlib.db_update
@@ -233,15 +276,14 @@ class VirtualMachine:
                 elif opcode == Opcode.LOAD_NAME:
                     name = current_frame.bytecode.names[operand]
                     if name in current_frame.locals:
-                        current_frame.stack.append(current_frame.locals[name])
+                        val = current_frame.locals[name]
                     elif name in self.globals:
-                        current_frame.stack.append(self.globals[name])
+                        val = self.globals[name]
+                    elif name in self.environment:
+                        val = self.environment[name]
                     else:
-                        self._raise_runtime_error(
-                            f"Variable '{name}' not found.",
-                            hint=f"Did you forget to declare '{name}'?",
-                            cls=UndefinedVariableError
-                        )
+                        val = None
+                    current_frame.stack.append(val)
                         
                 elif opcode == Opcode.POP:
                     current_frame.stack.pop()

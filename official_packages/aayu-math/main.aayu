@@ -1,0 +1,23 @@
+// AAYU Official Package: math
+// Standard mathematical functions
+
+fn sin() {
+    // Native implementation hooked in VM
+}
+
+fn cos() {
+    // Native implementation hooked in VM
+}
+
+fn floor() {
+    // Native implementation hooked in VM
+}
+
+fn ceil() {
+    // Native implementation hooked in VM
+}
+
+fn random() {
+    // Native implementation hooked in VM
+}
+

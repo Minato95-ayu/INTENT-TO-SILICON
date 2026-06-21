@@ -3,133 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRMApp - Dashboard</title>
-    
-        <style>
-            :root { --primary: #4f46e5; --bg: #f9fafb; --text: #111827; --card: #ffffff; --border: #e5e7eb; }
-            body { font-family: 'Inter', system-ui, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; }
-            header { background-color: var(--primary); color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-            header h1 { margin: 0; font-size: 1.5rem; }
-            nav a { color: white; text-decoration: none; margin-left: 1rem; font-weight: 500; }
-            .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
-            .card { background: var(--card); border: 1px solid var(--border); border-radius: 0.5rem; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-            .card h2 { margin-top: 0; color: var(--primary); }
-            table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-            th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
-            th { background-color: #f3f4f6; font-weight: 600; }
-            .btn { display: inline-block; background: var(--primary); color: white; padding: 0.5rem 1rem; border-radius: 0.25rem; text-decoration: none; border: none; cursor: pointer; }
-            .btn:hover { opacity: 0.9; }
-        </style>
-        
+    <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
 </head>
-<body>
-    
-        <header>
-            <h1>CRMApp</h1>
-            <nav><a href='/login'>Login</a><a href='/'>Home</a></nav>
-        </header>
-        
-    <main class="container">
-        <div class='card'><h2>Welcome to CRMApp</h2><p>This is your Dashboard.</p></div>
-                <div class='card'>
-                    <h3>Recent Customers</h3>
-                    <table>
-                        <thead><tr><th>ID</th><th>Name</th><th>Created At</th><th>Actions</th></tr></thead>
-                        <tbody>
-                            <tr><td>1</td><td>Sample Customer</td><td>2026-01-01</td><td><button class='btn'>View</button></td></tr>
-                            <tr><td>2</td><td>Another Customer</td><td>2026-01-02</td><td><button class='btn'>View</button></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class='card'>
-                    <h3>Recent Leads</h3>
-                    <table>
-                        <thead><tr><th>ID</th><th>Name</th><th>Created At</th><th>Actions</th></tr></thead>
-                        <tbody>
-                            <tr><td>1</td><td>Sample Lead</td><td>2026-01-01</td><td><button class='btn'>View</button></td></tr>
-                            <tr><td>2</td><td>Another Lead</td><td>2026-01-02</td><td><button class='btn'>View</button></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class='card'>
-                    <h3>Recent Deals</h3>
-                    <table>
-                        <thead><tr><th>ID</th><th>Name</th><th>Created At</th><th>Actions</th></tr></thead>
-                        <tbody>
-                            <tr><td>1</td><td>Sample Deal</td><td>2026-01-01</td><td><button class='btn'>View</button></td></tr>
-                            <tr><td>2</td><td>Another Deal</td><td>2026-01-02</td><td><button class='btn'>View</button></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class='card'>
-                    <h3>Recent Employees</h3>
-                    <table>
-                        <thead><tr><th>ID</th><th>Name</th><th>Created At</th><th>Actions</th></tr></thead>
-                        <tbody>
-                            <tr><td>1</td><td>Sample Employee</td><td>2026-01-01</td><td><button class='btn'>View</button></td></tr>
-                            <tr><td>2</td><td>Another Employee</td><td>2026-01-02</td><td><button class='btn'>View</button></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class='card'>
-                    <h3>Recent Invoices</h3>
-                    <table>
-                        <thead><tr><th>ID</th><th>Name</th><th>Created At</th><th>Actions</th></tr></thead>
-                        <tbody>
-                            <tr><td>1</td><td>Sample Invoice</td><td>2026-01-01</td><td><button class='btn'>View</button></td></tr>
-                            <tr><td>2</td><td>Another Invoice</td><td>2026-01-02</td><td><button class='btn'>View</button></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class='card'>
-                    <h3>Recent Quotes</h3>
-                    <table>
-                        <thead><tr><th>ID</th><th>Name</th><th>Created At</th><th>Actions</th></tr></thead>
-                        <tbody>
-                            <tr><td>1</td><td>Sample Quote</td><td>2026-01-01</td><td><button class='btn'>View</button></td></tr>
-                            <tr><td>2</td><td>Another Quote</td><td>2026-01-02</td><td><button class='btn'>View</button></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class='card'>
-                    <h3>Recent EmailTemplates</h3>
-                    <table>
-                        <thead><tr><th>ID</th><th>Name</th><th>Created At</th><th>Actions</th></tr></thead>
-                        <tbody>
-                            <tr><td>1</td><td>Sample EmailTemplate</td><td>2026-01-01</td><td><button class='btn'>View</button></td></tr>
-                            <tr><td>2</td><td>Another EmailTemplate</td><td>2026-01-02</td><td><button class='btn'>View</button></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class='card'>
-                    <h3>Recent Tasks</h3>
-                    <table>
-                        <thead><tr><th>ID</th><th>Name</th><th>Created At</th><th>Actions</th></tr></thead>
-                        <tbody>
-                            <tr><td>1</td><td>Sample Task</td><td>2026-01-01</td><td><button class='btn'>View</button></td></tr>
-                            <tr><td>2</td><td>Another Task</td><td>2026-01-02</td><td><button class='btn'>View</button></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class='card'>
-                    <h3>Recent Boards</h3>
-                    <table>
-                        <thead><tr><th>ID</th><th>Name</th><th>Created At</th><th>Actions</th></tr></thead>
-                        <tbody>
-                            <tr><td>1</td><td>Sample Board</td><td>2026-01-01</td><td><button class='btn'>View</button></td></tr>
-                            <tr><td>2</td><td>Another Board</td><td>2026-01-02</td><td><button class='btn'>View</button></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                
-    </main>
+<body class="bg-gray-50 text-gray-900 min-h-screen">
+    <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-6">Police System Dashboard</h1>
+        <div class="flex flex-row flex-wrap gap-6 mb-6">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6 hover:shadow-md transition">
+                <h1 class="text-4xl font-bold text-gray-900 mb-6">Complaints</h1>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6 hover:shadow-md transition">
+                <h1 class="text-4xl font-bold text-gray-900 mb-6">Officers</h1>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6 hover:shadow-md transition">
+                <h1 class="text-4xl font-bold text-gray-900 mb-6">Citizens</h1>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6 hover:shadow-md transition">
+                <h1 class="text-4xl font-bold text-gray-900 mb-6">Evidences</h1>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

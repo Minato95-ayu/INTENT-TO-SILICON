@@ -1,0 +1,8 @@
+entity Doctor.
+    text name.
+    text specialization.
+    text availability.
+end.
+
+crud Doctor.
+serve on 8080.

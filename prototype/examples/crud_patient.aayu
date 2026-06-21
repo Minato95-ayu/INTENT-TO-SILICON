@@ -1,0 +1,7 @@
+entity Patient.
+    text name.
+    text phone.
+end.
+
+crud Patient.
+serve on 8080.

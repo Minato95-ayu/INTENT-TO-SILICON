@@ -1,0 +1,15 @@
+// AAYU Official Package: fs
+// File system operations
+
+fn read_file() {
+    // Native implementation hooked in VM
+}
+
+fn write_file() {
+    // Native implementation hooked in VM
+}
+
+fn list_dir() {
+    // Native implementation hooked in VM
+}
+

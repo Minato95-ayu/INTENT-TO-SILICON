@@ -1,0 +1,97 @@
+# ----------------------------------------------------
+# Hospital Management System - AAYU Golden Demo
+# ----------------------------------------------------
+
+# 1. Entities
+entity Patient.
+    text name.
+    text phone.
+end.
+
+entity Doctor.
+    text name.
+    text specialization.
+end.
+
+entity Appointment.
+    text date.
+    text status.
+end.
+
+entity Prescription.
+    text medicines.
+end.
+
+entity Invoice.
+    number amount.
+end.
+
+entity Payment.
+    number amount.
+    text method.
+end.
+
+# 2. Relations
+relation Patient one_to_many Appointment.
+relation Doctor one_to_many Appointment.
+relation Appointment one_to_one Prescription.
+relation Appointment one_to_one Invoice.
+relation Invoice one_to_one Payment.
+
+# 3. RBAC (Roles & Permissions)
+role Admin.
+role Doctor.
+role Receptionist.
+role Patient.
+
+allow Doctor create Prescription.
+allow Doctor view Patient.
+allow Receptionist create Appointment.
+allow Receptionist view Doctor.
+allow Patient view Appointment.
+
+# 4. Workflows
+workflow AppointmentWorkflow for Appointment.
+    step BookAppointment.
+    step DoctorReview.
+    step Prescription.
+    step Billing.
+    step Payment.
+end.
+
+# 5. CRUD Endpoints
+crud Patient.
+crud Doctor.
+crud Appointment.
+crud Prescription.
+crud Invoice.
+crud Payment.
+
+# 6. UI DSL
+page Dashboard.
+    heading "Hospital Management System".
+    row.
+        card.
+            heading "Patients".
+        end.
+        card.
+            heading "Doctors".
+        end.
+        card.
+            heading "Appointments".
+        end.
+        card.
+            heading "Billing".
+        end.
+    end.
+end.
+
+task dashboardRoute with req.
+    map context.
+    return render "Dashboard.html" with context.
+end.
+
+get "/dashboard" to dashboardRoute.
+
+# 7. Web Server
+serve on 8080.

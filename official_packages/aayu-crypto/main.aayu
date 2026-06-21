@@ -1,0 +1,11 @@
+// AAYU Official Package: crypto
+// Cryptographic functions
+
+fn sha256() {
+    // Native implementation hooked in VM
+}
+
+fn uuid() {
+    // Native implementation hooked in VM
+}
+

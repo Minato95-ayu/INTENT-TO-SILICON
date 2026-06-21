@@ -1,0 +1,33 @@
+use http.
+use db.
+
+entity Student.
+    text name.
+    text email.
+    text course.
+    text created_at.
+end.
+
+page Dashboard.
+    dashboard.
+        sidebar.
+            text "Dashboard".
+        end.
+        column.
+            navbar.
+            row.
+                table Student.
+                end.
+                form Student.
+                end.
+            end.
+        end.
+    end.
+end.
+
+task handle_dashboard with req.
+    return render "Dashboard.html".
+end.
+
+route "/" to handle_dashboard.
+serve on 8080.

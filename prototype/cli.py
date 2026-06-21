@@ -233,8 +233,30 @@ def do_install(package_name):
         print(f"'{package_folder}' is already in aayu.toml")
 
 def do_build(intent_prompt):
-    from intent_engine import builder
-    builder.build_app(intent_prompt)
+    import json
+    from intent_v4.architecture_builder import ArchitectureBuilder
+    from intent_v4.aayu_emitter import AayuEmitter
+    
+    print("--- AAYU Intent Engine v4 ---")
+    print(f"Intent: {intent_prompt}")
+    
+    try:
+        builder = ArchitectureBuilder()
+        arch = builder.build(intent_prompt)
+        
+        with open("architecture.json", "w") as f:
+            json.dump(arch, f, indent=2)
+            
+        emitter = AayuEmitter()
+        code = emitter.emit(arch)
+        
+        with open("main.aayu", "w", encoding="utf-8") as f:
+            f.write(code)
+            
+        print("\n[SUCCESS] Generated main.aayu!")
+        print("Run `aayu run` to compile and start the server.")
+    except Exception as e:
+        print(f"\n[FAIL] {e}")
 
 def main():
     if len(sys.argv) < 2:

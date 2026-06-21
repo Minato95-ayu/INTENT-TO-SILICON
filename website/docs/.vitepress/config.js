@@ -24,19 +24,24 @@ export default defineConfig({
         ]
       },
       {
-        text: 'Packages',
+        text: 'Standard Library',
         items: [
           { text: 'Overview', link: '/packages/index' },
-          { text: 'Auth', link: '/packages/auth' },
-          { text: 'HTTP', link: '/packages/http' }
+          { text: 'aayu-auth', link: '/packages/auth' },
+          { text: 'aayu-http', link: '/packages/http' },
+          { text: 'aayu-fs', link: '/packages/fs' },
+          { text: 'aayu-json', link: '/packages/json' },
+          { text: 'aayu-math', link: '/packages/math' },
+          { text: 'aayu-datetime', link: '/packages/datetime' },
+          { text: 'aayu-crypto', link: '/packages/crypto' }
         ]
       },
       {
-        text: 'AI & ML',
+        text: 'AI & Data Ecosystem',
         items: [
-          { text: 'Gemini LLM', link: '/packages/gemini' },
-          { text: 'Data Science (ML)', link: '/packages/ml' },
-          { text: 'Vision processing', link: '/packages/vision' }
+          { text: 'aayu-gemini', link: '/packages/gemini' },
+          { text: 'aayu-ml', link: '/packages/ml' },
+          { text: 'aayu-vision', link: '/packages/vision' }
         ]
       },
       {

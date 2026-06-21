@@ -1,0 +1,7 @@
+[package]
+name = "crypto"
+version = "1.0.0"
+description = "Cryptographic functions"
+author = "AAYU Official"
+
+[dependencies]

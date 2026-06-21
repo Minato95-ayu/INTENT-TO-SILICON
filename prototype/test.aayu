@@ -1,0 +1,1 @@
+﻿entity Student. end. entity Course. end. relation Student many_to_many Course.

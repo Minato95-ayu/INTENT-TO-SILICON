@@ -1,0 +1,9 @@
+task home with req.
+    return render "views/home.html".
+end.
+
+# Define a route
+get "/" to home.
+
+# Start the server
+serve on 8080.

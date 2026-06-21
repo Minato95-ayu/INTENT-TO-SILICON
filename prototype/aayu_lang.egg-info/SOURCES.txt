@@ -1,0 +1,10 @@
+LICENSE
+README.md
+setup.py
+prototype/cli.py
+prototype/aayu_lang.egg-info/PKG-INFO
+prototype/aayu_lang.egg-info/SOURCES.txt
+prototype/aayu_lang.egg-info/dependency_links.txt
+prototype/aayu_lang.egg-info/entry_points.txt
+prototype/aayu_lang.egg-info/top_level.txt
+tests/test_v2_regression.py

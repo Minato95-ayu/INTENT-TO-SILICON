@@ -10,12 +10,16 @@ hero:
       text: Get Started
       link: /guide/installation
     - theme: alt
-      text: View Documentation
-      link: /guide/basics
+      text: Explore Ecosystem
+      link: /packages/index
 
 features:
-  - title: Intent Engine
-    details: Build entire full-stack applications instantly from natural language using 'aayu build'.
+  - title: Install AAYU Globally
+    details: pip install aayu-lang
+  - title: Generate Full-Stack App
+    details: aayu build "Job Portal"
+  - title: Run Locally
+    details: aayu run
   - title: Natural Syntax
     details: Code that reads like a natural sentence. Zero boilerplate, zero confusing symbols.
   - title: Built-in Ecosystem

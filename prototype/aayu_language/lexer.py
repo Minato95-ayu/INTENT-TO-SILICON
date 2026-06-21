@@ -23,7 +23,7 @@ class Lexer:
             ("COMMENT", r'#.*'),
             ("NUMBER", r'\d+(\.\d+)?'),
             ("STRING", r'"[^"]*"'),
-            ("KEYWORD", r'\b(number|text|is|show|if|else|while|end|greater|less|equal|not|than|to|repeat|times|task|run|with|and|list|for|each|in|return|use|record|of|read|write|try|catch|add|map|set|get|post|from|export|serve|on|route|render|form|json|entity|create|find|where|update|delete|login|logout|guard|session|account|test|expect|equals)\b'),
+            ("KEYWORD", r'\b(number|text|is|show|if|else|while|end|greater|less|equal|not|than|to|repeat|times|task|run|with|and|list|for|each|in|return|use|record|of|read|write|try|catch|add|map|set|get|post|from|export|serve|on|route|render|form|json|entity|create|find|where|update|delete|login|logout|guard|session|account|test|expect|equals|page|component|heading|button|card|row|column|input|navbar|image|table|modal|sidebar|dashboard|chart|tabs|badge|alert|crud|relation|one_to_one|one_to_many|many_to_one|many_to_many|role|allow|workflow|step)\b'),
             ("IDENTIFIER", r'[A-Za-z_][A-Za-z0-9_]*'),
             ("PLUS", r'\+'),
             ("MINUS", r'-'),

@@ -1,45 +1,54 @@
 {
-  "project_name": "CRMApp",
-  "domain": "CRM",
-  "auth": true,
-  "database": "sqlite",
+  "domain": "Police",
+  "roles": [
+    "Admin",
+    "Officer",
+    "Citizen"
+  ],
   "entities": [
-    "Customer",
-    "Lead",
-    "Deal",
-    "Employee",
-    "Invoice",
-    "Quote",
-    "EmailTemplate",
-    "Task",
-    "Board",
-    "User",
-    "Role",
-    "Permission",
-    "UserRole"
+    "Complaint",
+    "Officer",
+    "Citizen",
+    "Evidence",
+    "Investigation",
+    "Report"
   ],
   "relations": [
     {
-      "from": "Employee",
-      "to": "Deal",
-      "type": "1:N"
+      "from": "Citizen",
+      "to": "Complaint",
+      "type": "one_to_many"
     },
     {
-      "from": "User",
-      "to": "Role",
-      "type": "M:N",
-      "junction": "UserRole"
+      "from": "Officer",
+      "to": "Investigation",
+      "type": "one_to_many"
+    },
+    {
+      "from": "Complaint",
+      "to": "Investigation",
+      "type": "one_to_one"
+    },
+    {
+      "from": "Complaint",
+      "to": "Evidence",
+      "type": "one_to_many"
+    },
+    {
+      "from": "Investigation",
+      "to": "Report",
+      "type": "one_to_one"
     }
   ],
-  "routes": [
-    "/login",
-    "/dashboard",
-    "/customers",
-    "/leads"
-  ],
-  "active_features": [
-    "invoicing",
-    "email_integration",
-    "task_management"
-  ]
+  "workflow": {
+    "name": "ComplaintWorkflow",
+    "entity": "Complaint",
+    "steps": [
+      "Filed",
+      "Verified",
+      "Investigated",
+      "Action",
+      "Closed"
+    ]
+  }
 }

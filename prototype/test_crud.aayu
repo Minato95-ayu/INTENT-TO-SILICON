@@ -1,0 +1,12 @@
+use http.
+use db.
+
+entity Patient.
+    text name.
+    text phone.
+    text address.
+end.
+
+crud Patient.
+
+serve on 8080.

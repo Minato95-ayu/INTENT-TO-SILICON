@@ -7,6 +7,8 @@ class AAYUCompiler:
         self.loop_counter = 0
         self.filename = filename
         self.current_line = None
+        self.ui_generator = None
+        self.entity_registry = {}
         
     def _add_constant(self, value) -> int:
         if value in self.bytecode.constants:
@@ -246,6 +248,8 @@ class AAYUCompiler:
         self._emit(Opcode.GET_ITEM)
 
     def visit_EntityDeclarationNode(self, node: EntityDeclarationNode):
+        self.entity_registry[node.name] = node.fields
+
         name_idx = self._add_constant(node.name)
         self._emit(Opcode.LOAD_CONST, name_idx)
 
@@ -340,7 +344,6 @@ class AAYUCompiler:
             
         fn_idx = self._add_name("render_template")
         self._emit(Opcode.LOAD_NAME, fn_idx)
-        
         self._emit(Opcode.CALL_TASK, 2)
 
     def visit_RouteNode(self, node: RouteNode):
@@ -467,8 +470,175 @@ class AAYUCompiler:
         self._emit(Opcode.LOAD_NAME, fn_idx)
         self._emit(Opcode.CALL_TASK, len(node.arguments))
 
+    def visit_UIComponentNode(self, node: UIComponentNode):
+        if not self.ui_generator:
+            from ui_generator import UIGenerator
+            self.ui_generator = UIGenerator(entity_registry=self.entity_registry)
+        else:
+            self.ui_generator.entity_registry = self.entity_registry
+        self.ui_generator.register_component(node)
 
+    def visit_UIPageNode(self, node: UIPageNode):
+        if not self.ui_generator:
+            from ui_generator import UIGenerator
+            self.ui_generator = UIGenerator(entity_registry=self.entity_registry)
+        else:
+            self.ui_generator.entity_registry = self.entity_registry
+        self.ui_generator.generate_page(node)
 
+    def visit_RoleDefNode(self, node):
+        name_idx = self._add_constant(node.name)
+        self._emit(Opcode.LOAD_CONST, name_idx)
+        
+        fn_idx = self._add_name("db_register_role")
+        self._emit(Opcode.LOAD_NAME, fn_idx)
+        self._emit(Opcode.CALL_TASK, 1)
+        self._emit(Opcode.POP)
+
+    def visit_AllowDefNode(self, node):
+        role_idx = self._add_constant(node.role)
+        self._emit(Opcode.LOAD_CONST, role_idx)
+        
+        action_idx = self._add_constant(node.action)
+        self._emit(Opcode.LOAD_CONST, action_idx)
+        
+        entity_idx = self._add_constant(node.target_entity)
+        self._emit(Opcode.LOAD_CONST, entity_idx)
+        
+        fn_idx = self._add_name("db_register_permission")
+        self._emit(Opcode.LOAD_NAME, fn_idx)
+        self._emit(Opcode.CALL_TASK, 3)
+        self._emit(Opcode.POP)
+
+    def visit_WorkflowDefNode(self, node):
+        name_idx = self._add_constant(node.name)
+        self._emit(Opcode.LOAD_CONST, name_idx)
+        
+        entity_idx = self._add_constant(node.entity_name)
+        self._emit(Opcode.LOAD_CONST, entity_idx)
+        
+        # Serialize steps as comma-separated string for MVP
+        steps_str = ",".join([s.name for s in node.steps])
+        steps_idx = self._add_constant(steps_str)
+        self._emit(Opcode.LOAD_CONST, steps_idx)
+        
+        fn_idx = self._add_name("db_register_workflow")
+        self._emit(Opcode.LOAD_NAME, fn_idx)
+        self._emit(Opcode.CALL_TASK, 3)
+        self._emit(Opcode.POP)
+
+    def visit_RelationDefNode(self, node):
+        e1_idx = self._add_constant(node.entity1)
+        self._emit(Opcode.LOAD_CONST, e1_idx)
+        
+        rel_type_idx = self._add_constant(node.rel_type)
+        self._emit(Opcode.LOAD_CONST, rel_type_idx)
+        
+        e2_idx = self._add_constant(node.entity2)
+        self._emit(Opcode.LOAD_CONST, e2_idx)
+        
+        fn_idx = self._add_name("db_register_relation")
+        self._emit(Opcode.LOAD_NAME, fn_idx)
+        self._emit(Opcode.CALL_TASK, 3)
+        self._emit(Opcode.POP)
+
+    def visit_CrudNode(self, node):
+        from ast_nodes import (
+            UIPageNode, UIElementNode, TextNode, VariableNode, 
+            TaskNode, MapDeclarationNode, DeclarationNode, FindEntityNode, SetInMapNode, 
+            ReturnNode, RenderExpressionNode, RouteNode, FormGetNode, CreateEntityNode
+        )
+        entity_name = node.entity_name
+        page_name = f"{entity_name}Admin"
+        
+        # 1. UI Page
+        page_node = UIPageNode(name=page_name, elements=[
+            UIElementNode(element_type="dashboard", children=[
+                UIElementNode(element_type="sidebar", children=[
+                    UIElementNode(element_type="text", value=TextNode(f"{entity_name} Management"))
+                ]),
+                UIElementNode(element_type="column", children=[
+                    UIElementNode(element_type="navbar"),
+                    UIElementNode(element_type="row", children=[
+                        UIElementNode(element_type="table", value=VariableNode(name=entity_name)),
+                        UIElementNode(element_type="form", value=VariableNode(name=entity_name))
+                    ])
+                ])
+            ])
+        ])
+        self.visit(page_node)
+        
+        # 2. GET Route Task
+        get_task_name = f"__crud_get_{entity_name.lower()}"
+        get_body = [
+            MapDeclarationNode(name="context"),
+            DeclarationNode(var_type="any", name="records", value=FindEntityNode(entity_name=entity_name)),
+            SetInMapNode(key=TextNode(entity_name), value=VariableNode("records"), map_name="context"),
+            ReturnNode(value=RenderExpressionNode(template_path=TextNode(page_name + ".html"), context_map_name="context"))
+        ]
+        self.visit(TaskNode(name=get_task_name, parameters=["req"], body=get_body))
+        self.visit(RouteNode(path=TextNode(f"/{entity_name.lower()}s"), handler_name=get_task_name, method="GET"))
+        
+        # 3. POST Route Task
+        post_task_name = f"__crud_post_{entity_name.lower()}"
+        post_body = [
+            MapDeclarationNode(name="data")
+        ]
+        
+        if entity_name in self.entity_registry:
+            for field in self.entity_registry[entity_name]:
+                fname = field['name']
+                if fname in ['created_at', 'updated_at', 'id']: continue
+                post_body.append(DeclarationNode(var_type="any", name=f"val_{fname}", value=FormGetNode(key=TextNode(fname), req_name="req")))
+                post_body.append(SetInMapNode(key=TextNode(fname), value=VariableNode(f"val_{fname}"), map_name="data"))
+                
+        post_body.append(CreateEntityNode(entity_name=entity_name, data_map="data"))
+        
+        # Re-render
+        post_body.append(MapDeclarationNode(name="context"))
+        post_body.append(DeclarationNode(var_type="any", name="records", value=FindEntityNode(entity_name=entity_name)))
+        post_body.append(SetInMapNode(key=TextNode(entity_name), value=VariableNode("records"), map_name="context"))
+        post_body.append(ReturnNode(value=RenderExpressionNode(template_path=TextNode(page_name + ".html"), context_map_name="context")))
+        
+        self.visit(TaskNode(name=post_task_name, parameters=["req"], body=post_body))
+        self.visit(RouteNode(path=TextNode(f"/{entity_name.lower()}s/create"), handler_name=post_task_name, method="POST"))
+
+        # 4. PUT Route Task
+        put_task_name = f"__crud_put_{entity_name.lower()}"
+        put_body = [
+            MapDeclarationNode(name="data")
+        ]
+        if entity_name in self.entity_registry:
+            for field in self.entity_registry[entity_name]:
+                fname = field['name']
+                if fname in ['created_at', 'updated_at', 'id']: continue
+                put_body.append(DeclarationNode(var_type="any", name=f"val_{fname}", value=FormGetNode(key=TextNode(fname), req_name="req")))
+                put_body.append(SetInMapNode(key=TextNode(fname), value=VariableNode(f"val_{fname}"), map_name="data"))
+        
+        put_body.append(DeclarationNode(var_type="any", name="id_val", value=FormGetNode(key=TextNode("id"), req_name="req")))
+        put_body.append(UpdateEntityNode(entity_name=entity_name, condition_field="id", condition_value=VariableNode("id_val"), data_map="data"))
+        
+        put_body.append(MapDeclarationNode(name="context"))
+        put_body.append(DeclarationNode(var_type="any", name="records", value=FindEntityNode(entity_name=entity_name)))
+        put_body.append(SetInMapNode(key=TextNode(entity_name), value=VariableNode("records"), map_name="context"))
+        put_body.append(ReturnNode(value=RenderExpressionNode(template_path=TextNode(page_name + ".html"), context_map_name="context")))
+        
+        self.visit(TaskNode(name=put_task_name, parameters=["req"], body=put_body))
+        self.visit(RouteNode(path=TextNode(f"/{entity_name.lower()}s/update"), handler_name=put_task_name, method="PUT"))
+
+        # 5. DELETE Route Task
+        del_task_name = f"__crud_delete_{entity_name.lower()}"
+        del_body = []
+        del_body.append(DeclarationNode(var_type="any", name="id_val", value=FormGetNode(key=TextNode("id"), req_name="req")))
+        del_body.append(DeleteEntityNode(entity_name=entity_name, condition_field="id", condition_value=VariableNode("id_val")))
+        
+        del_body.append(MapDeclarationNode(name="context"))
+        del_body.append(DeclarationNode(var_type="any", name="records", value=FindEntityNode(entity_name=entity_name)))
+        del_body.append(SetInMapNode(key=TextNode(entity_name), value=VariableNode("records"), map_name="context"))
+        del_body.append(ReturnNode(value=RenderExpressionNode(template_path=TextNode(page_name + ".html"), context_map_name="context")))
+        
+        self.visit(TaskNode(name=del_task_name, parameters=["req"], body=del_body))
+        self.visit(RouteNode(path=TextNode(f"/{entity_name.lower()}s/delete"), handler_name=del_task_name, method="DELETE"))
 
 
 if __name__ == "__main__":

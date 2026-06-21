@@ -1,0 +1,11 @@
+// AAYU Official Package: json
+// JSON parsing and stringification
+
+fn parse() {
+    // Native implementation hooked in VM
+}
+
+fn stringify() {
+    // Native implementation hooked in VM
+}
+

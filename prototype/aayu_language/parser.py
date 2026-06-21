@@ -4,7 +4,7 @@ from ast_nodes import (
     ProgramNode, DeclarationNode, ShowNode, BinaryExpressionNode,
     VariableNode, NumberNode, TextNode, IfNode, WhileNode, TryCatchNode, RepeatNode, ForEachNode, TaskNode, RunNode, ListDeclarationNode, ListInitializationNode, ReturnNode, UseNode, RecordDeclarationNode, InstanceDeclarationNode, PropertyAccessNode, AssignmentNode, ReadExpressionNode, WriteStatementNode, AddToListNode, MapDeclarationNode, SetInMapNode, GetFromMapNode, BuiltinFunctionNode, ExportNode, ServeNode, RouteNode, RenderExpressionNode, FormGetNode, JsonSerializeNode, Node,
     EntityDeclarationNode, CreateEntityNode, FindEntityNode, UpdateEntityNode, DeleteEntityNode, CreateAccountNode,
-    LoginNode, LogoutNode, GuardSessionNode, TestNode, ExpectNode
+    LoginNode, LogoutNode, GuardSessionNode, TestNode, ExpectNode, UIPageNode, UIComponentNode, UIElementNode, CrudNode, RelationDefNode, RoleDefNode, AllowDefNode, WorkflowDefNode, StepDefNode
 )
 from errors import AAYUSyntaxError
 
@@ -96,6 +96,20 @@ class Parser:
             node = self.parse_logout()
         elif self.match("KEYWORD", "guard"):
             node = self.parse_guard()
+        elif self.match("KEYWORD", "page"):
+            node = self.parse_ui_block(is_page=True)
+        elif self.match("KEYWORD", "component"):
+            node = self.parse_ui_block(is_page=False)
+        elif self.match("KEYWORD", "crud"):
+            node = self.parse_crud()
+        elif self.match("KEYWORD", "relation"):
+            node = self.parse_relation()
+        elif self.match("KEYWORD", "role"):
+            node = self.parse_role()
+        elif self.match("KEYWORD", "allow"):
+            node = self.parse_allow()
+        elif self.match("KEYWORD", "workflow"):
+            node = self.parse_workflow()
         elif self.check("IDENTIFIER"):
             if self.current + 2 < len(self.tokens) and \
                self.tokens[self.current + 1].type == "IDENTIFIER" and \
@@ -387,6 +401,90 @@ class Parser:
             self.consume("DOT", "Expect '.' after end.")
             return EntityDeclarationNode(name=name, fields=fields)
 
+    def parse_crud(self) -> CrudNode:
+        entity_name = self.consume("IDENTIFIER", "Expect entity name after 'crud'.").value
+        self.consume("DOT", "Expect '.' after crud statement.")
+        return CrudNode(entity_name=entity_name)
+
+    def parse_relation(self) -> RelationDefNode:
+        entity1 = self.consume("IDENTIFIER", "Expect first entity name after 'relation'.").value
+        
+        # Check for relationship type
+        if self.match("KEYWORD", "one_to_one"):
+            rel_type = "one_to_one"
+        elif self.match("KEYWORD", "one_to_many"):
+            rel_type = "one_to_many"
+        elif self.match("KEYWORD", "many_to_one"):
+            rel_type = "many_to_one"
+        elif self.match("KEYWORD", "many_to_many"):
+            rel_type = "many_to_many"
+        else:
+            raise AAYUSyntaxError("Expect relationship type (one_to_one, one_to_many, many_to_one, many_to_many)", self.peek().line, self.peek().column)
+            
+        entity2 = self.consume("IDENTIFIER", f"Expect second entity name after '{rel_type}'.").value
+        self.consume("DOT", "Expect '.' after relation statement.")
+        
+        return RelationDefNode(entity1=entity1, rel_type=rel_type, entity2=entity2)
+
+    def parse_role(self) -> RoleDefNode:
+        role_name = self.consume("IDENTIFIER", "Expect role name after 'role'.").value
+        self.consume("DOT", "Expect '.' after role statement.")
+        return RoleDefNode(name=role_name)
+
+    def parse_allow(self) -> AllowDefNode:
+        role_name = self.consume("IDENTIFIER", "Expect role name after 'allow'.").value
+        
+        # Action could be an identifier like 'create', 'read', 'update', 'delete', 'view', 'manage'
+        action_token = self.peek()
+        if action_token.type in ["IDENTIFIER", "KEYWORD"]:
+            action = action_token.value
+            self.advance()
+        else:
+            raise AAYUSyntaxError("Expect action (e.g. create, read, update, delete, view, manage) after role name in allow statement.", action_token.line, action_token.column)
+            
+        target_entity = self.consume("IDENTIFIER", "Expect target entity name after action in allow statement.").value
+        self.consume("DOT", "Expect '.' after allow statement.")
+        return AllowDefNode(role=role_name, action=action, target_entity=target_entity)
+
+    def parse_workflow(self) -> WorkflowDefNode:
+        name = self.consume("IDENTIFIER", "Expect workflow name.").value
+        
+        # Check for optional 'for <Entity>'
+        entity_name = name
+        if self.match("KEYWORD", "for"):
+            entity_name = self.consume("IDENTIFIER", "Expect entity name after 'for' in workflow.").value
+            
+        self.consume("DOT", "Expect '.' after workflow declaration.")
+        
+        steps = []
+        while not self.check("KEYWORD") or self.peek().value != "end":
+            if self.is_at_end():
+                raise AAYUSyntaxError("Unterminated workflow block, expect 'end.'", self.peek().line, self.peek().column)
+                
+            if self.match("KEYWORD", "step"):
+                step_name = self.consume("IDENTIFIER", "Expect step name.").value
+                
+                # Check for optional 'requires <Role>' and 'after <Step>'
+                requires_role = None
+                after_step = None
+                
+                # Simple parsing for MVP, expecting DOT
+                # Loop until DOT
+                while not self.check("DOT") and not self.is_at_end():
+                    # For future extensions like 'requires Role' or 'after Step'
+                    self.advance() # Skip tokens for now if any
+                    
+                self.consume("DOT", "Expect '.' after step declaration.")
+                steps.append(StepDefNode(name=step_name, requires_role=requires_role, after_step=after_step))
+            else:
+                # Ignore other statements in workflow block for now or raise error
+                raise AAYUSyntaxError("Expect 'step' statement inside workflow block.", self.peek().line, self.peek().column)
+                
+        self.consume("KEYWORD", "Expect 'end'.")
+        self.consume("DOT", "Expect '.' after end.")
+        
+        return WorkflowDefNode(name=name, entity_name=entity_name, steps=steps)
+
     def parse_create(self):
         token = self.peek()
         if token.type == "KEYWORD" and token.value == "account":
@@ -592,6 +690,70 @@ class Parser:
             return self._parse_run_core()
 
         raise AAYUSyntaxError(f"Expect expression. Found '{self.peek().value}'.", self.peek().line, column=self.peek().column, hint="Provide a valid value or variable.")
+
+    def parse_ui_block(self, is_page: bool) -> Node:
+        start_token = self.tokens[self.current - 1]
+        name = self.consume("IDENTIFIER", "Expect name for UI block.").value
+        self.consume("DOT", "Expect '.' after UI block name.")
+        
+        elements = []
+        while not self.is_at_end() and not (self.peek().type == "KEYWORD" and self.peek().value == "end"):
+            elements.append(self.parse_ui_element())
+            
+        self.consume("KEYWORD", "Expect 'end' at the end of UI block.", "end")
+        self.consume("DOT", "Expect '.' after 'end'.")
+        
+        if is_page:
+            node = UIPageNode(name, elements)
+        else:
+            node = UIComponentNode(name, elements)
+        node.line = start_token.line
+        return node
+
+    def parse_ui_element(self) -> Node:
+        token = self.peek()
+        # A custom component reference starts with an IDENTIFIER
+        if token.type == "IDENTIFIER":
+            self.advance()
+            self.consume("DOT", "Expect '.' after custom component reference.")
+            return UIElementNode(element_type="component_ref", value=TextNode(token.value), children=None)
+            
+        if token.type != "KEYWORD":
+            raise AAYUSyntaxError("Expect UI element keyword or component name.", token.line, column=token.column)
+            
+        element_type = self.advance().value
+        ui_keywords = [
+            "heading", "text", "button", "card", "row", "column", "input", "navbar", "image", "form",
+            "table", "modal", "sidebar", "dashboard", "chart", "tabs", "badge", "alert"
+        ]
+        
+        if element_type not in ui_keywords:
+            raise AAYUSyntaxError(f"'{element_type}' is not a valid UI element.", token.line, column=token.column)
+            
+        value_node = None
+        # if next token is string, it's the inner text/value
+        if self.check("STRING"):
+            val_str = self.advance().value[1:-1]
+            value_node = TextNode(val_str)
+            if self.match("KEYWORD", "to"):
+                var_name = self.consume("IDENTIFIER", "Expect variable name after 'to'.").value
+                value_node.name = var_name
+        elif self.check("IDENTIFIER"):
+            val_name = self.advance().value
+            value_node = VariableNode(name=val_name)
+            
+        self.consume("DOT", "Expect '.' after UI element.")
+        
+        is_block = element_type in ["row", "column", "card", "form", "table", "modal", "sidebar", "dashboard", "tabs"]
+        children = None
+        if is_block:
+            children = []
+            while not self.is_at_end() and not (self.peek().type == "KEYWORD" and self.peek().value == "end"):
+                children.append(self.parse_ui_element())
+            self.consume("KEYWORD", f"Expect 'end' for {element_type} block.", "end")
+            self.consume("DOT", "Expect '.' after 'end'.")
+            
+        return UIElementNode(element_type=element_type, value=value_node, children=children)
 
     # --- Helper Methods ---
 

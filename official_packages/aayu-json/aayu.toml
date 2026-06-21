@@ -1,0 +1,7 @@
+[package]
+name = "json"
+version = "1.0.0"
+description = "JSON parsing and stringification"
+author = "AAYU Official"
+
+[dependencies]

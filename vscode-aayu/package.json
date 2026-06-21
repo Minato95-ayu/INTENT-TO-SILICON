@@ -2,7 +2,7 @@
   "name": "aayu",
   "displayName": "AAYU",
   "description": "AAYU Programming Language Support for VS Code",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "publisher": "AyushKaushik",
   "engines": {
     "vscode": "^1.125.0"
@@ -44,21 +44,7 @@
       }
     ]
   },
-  "activationEvents": [
-    "onLanguage:aayu"
-  ],
-  "main": "./out/extension.js",
-  "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./"
-  },
-  "dependencies": {
-    "vscode-languageclient": "^10.0.0"
-  },
   "devDependencies": {
-    "@types/node": "^26.0.0",
-    "@types/vscode": "^1.125.0",
-    "typescript": "^6.0.3"
+    "@vscode/vsce": "^3.9.2"
   }
 }

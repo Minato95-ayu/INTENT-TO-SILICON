@@ -48,5 +48,41 @@
       "end."
     ],
     "description": "AAYU While loop"
+  },
+  "AAYU Workflow": {
+    "prefix": "aayu-workflow",
+    "body": [
+      "workflow ${1:WorkflowName} for ${2:EntityName}.",
+      "    step ${3:Step1}.",
+      "    step ${4:Step2}.",
+      "    step ${5:Step3}.",
+      "end."
+    ],
+    "description": "Scaffold an AAYU Workflow State Machine"
+  },
+  "AAYU RBAC": {
+    "prefix": "aayu-rbac",
+    "body": [
+      "role ${1:RoleName}.",
+      "allow ${1:RoleName} ${2|create,read,update,delete|} ${3:EntityName}."
+    ],
+    "description": "Scaffold an AAYU Role and Permission"
+  },
+  "AAYU Page": {
+    "prefix": "aayu-page",
+    "body": [
+      "page ${1:PageName}.",
+      "    heading \"${1:PageName}\".",
+      "    $0",
+      "end."
+    ],
+    "description": "Scaffold an AAYU UI Page"
+  },
+  "AAYU Relation": {
+    "prefix": "aayu-relation",
+    "body": [
+      "relation ${1:Entity1} ${2|one_to_one,one_to_many,many_to_one,many_to_many|} ${3:Entity2}."
+    ],
+    "description": "Scaffold an AAYU Relation Binding"
   }
 }

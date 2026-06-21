@@ -47,7 +47,7 @@
         },
         {
           "name": "storage.type.aayu",
-          "match": "\\b(task|entity|map|list|text|number|boolean)\\b"
+          "match": "\\b(task|entity|map|list|text|number|boolean|role|workflow|page|step)\\b"
         },
         {
           "name": "keyword.operator.aayu",
@@ -55,7 +55,15 @@
         },
         {
           "name": "keyword.other.aayu",
-          "match": "\\b(create|find|update|delete|get|post|serve|login|logout|guard|render|json)\\b"
+          "match": "\\b(create|find|update|delete|get|post|serve|login|logout|guard|render|json|crud|relation|allow|use)\\b"
+        },
+        {
+          "name": "support.function.ui.aayu",
+          "match": "\\b(card|heading|button|table|sidebar|dashboard)\\b"
+        },
+        {
+          "name": "constant.language.aayu",
+          "match": "\\b(one_to_one|one_to_many|many_to_one|many_to_many)\\b"
         },
         {
           "name": "variable.language.aayu",

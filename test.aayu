@@ -1,0 +1,16 @@
+entity Patient.
+    text name.
+end.
+
+relation Patient one_to_many Appointment.
+
+role Doctor.
+allow Doctor create Prescription.
+
+workflow AppointmentWorkflow for Appointment.
+    step BookAppointment.
+end.
+
+page Dashboard.
+    heading "Hospital".
+end.

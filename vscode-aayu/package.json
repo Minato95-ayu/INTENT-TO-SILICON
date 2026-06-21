@@ -2,7 +2,7 @@
   "name": "aayu",
   "displayName": "AAYU",
   "description": "AAYU Programming Language Support for VS Code",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "publisher": "AyushKaushik",
   "engines": {
     "vscode": "^1.125.0"
@@ -27,7 +27,11 @@
         "extensions": [
           ".aayu"
         ],
-        "configuration": "./language-configuration.json"
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./icons/aayu-light.png",
+          "dark": "./icons/aayu-dark.png"
+        }
       }
     ],
     "grammars": [

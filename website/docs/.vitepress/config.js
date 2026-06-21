@@ -41,7 +41,8 @@ export default defineConfig({
       {
         text: 'Platform',
         items: [
-          { text: 'Intent Engine', link: '/platform/intent-engine' }
+          { text: 'Intent Engine', link: '/platform/intent-engine' },
+          { text: 'Roadmap', link: '/platform/roadmap' }
         ]
       },
       {

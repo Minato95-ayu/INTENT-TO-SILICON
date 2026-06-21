@@ -1,0 +1,2 @@
+# Treat AAYU source files as AAYU language for GitHub Linguist
+*.aayu linguist-language=Aayu

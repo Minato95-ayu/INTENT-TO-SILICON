@@ -11,9 +11,9 @@ setup(
     description="AAYU: The Intent-to-Silicon Programming Language - Intent-Driven, Full-Stack Development Platform",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    author="AAYU Team",
-    author_email="support@aayu.org",
-    url="https://aayu.org",
+    author="Ayush Kaushik",
+    author_email="ayushkaushi1441@gmail.com",
+    url="https://github.com/Minato95-ayu/INTENT-TO-SILICON",
     project_urls={
         "Repository": "https://github.com/Minato95-ayu/INTENT-TO-SILICON",
         "Documentation": "https://aayu-lang.github.io",

@@ -12,6 +12,12 @@
   </p>
 </div>
 
+## 💡 Get AAYU
+
+- Install the CLI: `pip install aayu-lang`
+- Install the VS Code extension from the Marketplace once published
+- Follow the docs at `website/docs`
+
 ---
 
 ## 🤖 What is AAYU?

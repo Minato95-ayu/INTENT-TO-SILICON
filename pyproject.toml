@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
 authors = [
-    {name = "AAYU Team", email = "support@aayu.org"}
+    {name = "AYUSH KAUSHIK", email = "ayushkaushik1441@gmail.com"}
 ]
 keywords = [
     "programming-language",

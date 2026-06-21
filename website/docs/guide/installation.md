@@ -16,7 +16,16 @@ Verify that AAYU is installed by checking its version:
 aayu --version
 ```
 
-## 2. Generate a New Application
+## 2. Install the VS Code Extension
+
+For the best AAYU editing experience, install the AAYU VS Code extension from the Visual Studio Marketplace once it is published.
+
+- Search for **AAYU** in the Extensions view
+- Install the extension with the purple AAYU icon
+
+If you want to install locally before publication, use the `.vsix` package in `vscode-aayu/`.
+
+## 3. Generate a New Application
 
 You can use AAYU's Native Intent Engine to scaffold a completely functioning enterprise architecture by just describing your intent in English.
 

@@ -45,7 +45,7 @@ def do_new(project_name):
         return
     
     os.makedirs(project_name)
-    os.makedirs(os.path.join(project_name, "src"))
+    os.makedirs(os.path.join(project_name, "views"))
     os.makedirs(os.path.join(project_name, ".aayu", "packages"))
     
     # aayu.toml
@@ -57,18 +57,49 @@ version = "0.1.0"
     with open(os.path.join(project_name, "aayu.toml"), "w", encoding="utf-8") as f:
         f.write(toml_content)
         
-    # src/main.aayu
-    main_content = """task main with req.
-    print "Hello from AAYU!".
-    return "OK".
+    # main.aayu
+    main_content = """# Start the server
+serve on 8080.
+
+task home with req.
+    return render "views/home.html".
 end.
+
+get "/" to home.
 """
-    with open(os.path.join(project_name, "src", "main.aayu"), "w", encoding="utf-8") as f:
+    with open(os.path.join(project_name, "main.aayu"), "w", encoding="utf-8") as f:
         f.write(main_content)
+        
+    # views/home.html
+    html_content = """<!DOCTYPE html>
+<html>
+<head>
+    <title>AAYU App</title>
+</head>
+<body style="font-family: sans-serif; text-align: center; margin-top: 50px;">
+    <h1>Welcome to AAYU</h1>
+    <p>Your project is running successfully!</p>
+</body>
+</html>
+"""
+    with open(os.path.join(project_name, "views", "home.html"), "w", encoding="utf-8") as f:
+        f.write(html_content)
+
+    # README.md
+    readme_content = f"""# {project_name}
+
+To run this project:
+```bash
+aayu run
+```
+"""
+    with open(os.path.join(project_name, "README.md"), "w", encoding="utf-8") as f:
+        f.write(readme_content)
         
     # .gitignore
     gitignore_content = """.aayu/packages/
 aayu_db.sqlite
+*.ayc
 """
     with open(os.path.join(project_name, ".gitignore"), "w", encoding="utf-8") as f:
         f.write(gitignore_content)
@@ -82,18 +113,40 @@ def do_run():
         print("Error: No aayu.toml found. Are you in an AAYU project directory?")
         return
         
-    main_file = os.path.join("src", "main.aayu")
+    main_file = "main.aayu"
     if not os.path.exists(main_file):
         print(f"Error: {main_file} not found.")
         return
         
-    # Run the interpreter
-    cli_dir = os.path.dirname(__file__)
-    run_py = os.path.join(cli_dir, "aayu_language", "run.py")
+    print(f"Compiling {main_file}...")
     
-    # Execute python run.py main_file
-    print(f"Running AAYU project...")
-    os.system(f"python \"{run_py}\" \"{main_file}\"")
+    cli_dir = os.path.dirname(__file__)
+    sys.path.append(os.path.join(cli_dir, "aayu_language"))
+    
+    from lexer import Lexer
+    from parser import Parser
+    from compiler import AAYUCompiler
+    from serializer import serialize
+    from vm import VirtualMachine
+    
+    with open(main_file, 'r', encoding='utf-8') as f:
+        source = f.read()
+        
+    lexer = Lexer(source)
+    parser = Parser(lexer.tokenize(), filename=main_file)
+    ast = parser.parse()
+    
+    compiler = AAYUCompiler()
+    bytecode = compiler.compile(ast)
+    
+    out_path = main_file[:-5] + '.ayc'
+    serialized = serialize(bytecode)
+    with open(out_path, 'w', encoding='utf-8') as f:
+        f.write(serialized)
+        
+    print("Compiled successfully! Starting VM...")
+    vm = VirtualMachine()
+    vm.run(bytecode)
 
 def do_build():
     print("AAYU build not implemented yet. Wait for Native Compiler / IR Phase.")

@@ -1,193 +1,80 @@
+from pygls.lsp.server import LanguageServer
+from lsprotocol.types import (
+    TEXT_DOCUMENT_DID_OPEN,
+    TEXT_DOCUMENT_DID_CHANGE,
+    DidOpenTextDocumentParams,
+    DidChangeTextDocumentParams,
+    Diagnostic,
+    DiagnosticSeverity,
+    Position,
+    Range,
+)
+
 import sys
-import json
-import logging
-from lexer import Lexer
-from parser import Parser
-from errors import AAYUError
+import os
+# Add prototype to sys.path so we can import aayu_language modules
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
-# We log to a file so it doesn't corrupt stdout which is used for LSP
-logging.basicConfig(filename="aayu_lsp.log", level=logging.DEBUG, 
-                    format='%(asctime)s - %(levelname)s - %(message)s')
+from prototype.aayu_language.lexer import Lexer
+from prototype.aayu_language.parser import Parser
+from prototype.aayu_language.errors import AAYUError
 
-def read_message():
-    content_length = 0
-    while True:
-        line = sys.stdin.readline()
-        if not line:
-            return None
-        line = line.strip()
-        if not line:
-            break
-        if line.startswith("Content-Length:"):
-            content_length = int(line.split(":")[1].strip())
-    
-    if content_length == 0:
-        return None
-        
-    content = sys.stdin.read(content_length)
-    return json.loads(content)
+server = LanguageServer("aayu-lsp", "v1.0")
 
-def write_message(msg_dict):
-    msg_str = json.dumps(msg_dict)
-    content_length = len(msg_str.encode("utf-8"))
-    sys.stdout.write(f"Content-Length: {content_length}\r\n\r\n{msg_str}")
-    sys.stdout.flush()
-
-def handle_did_change(params):
-    uri = params["textDocument"]["uri"]
-    text = params["contentChanges"][0]["text"]
-    diagnostics = run_diagnostics(text)
-    
-    write_message({
-        "jsonrpc": "2.0",
-        "method": "textDocument/publishDiagnostics",
-        "params": {
-            "uri": uri,
-            "diagnostics": diagnostics
-        }
-    })
-
-def handle_did_open(params):
-    uri = params["textDocument"]["uri"]
-    text = params["textDocument"]["text"]
-    diagnostics = run_diagnostics(text)
-    
-    write_message({
-        "jsonrpc": "2.0",
-        "method": "textDocument/publishDiagnostics",
-        "params": {
-            "uri": uri,
-            "diagnostics": diagnostics
-        }
-    })
-
-def run_diagnostics(code):
+def validate_aayu_document(ls: LanguageServer, uri: str, text: str):
     diagnostics = []
+
     try:
-        lexer = Lexer(code)
+        lexer = Lexer(text)
         tokens = lexer.tokenize()
         parser = Parser(tokens)
-        ast = parser.parse()
-        # For now, we only catch Syntax Errors in live editor since full semantic checks require running
+        parser.parse()
     except AAYUError as e:
-        error_data = e.to_dict()
-        line_idx = error_data["line"] - 1
-        diagnostics.append({
-            "range": {
-                "start": {"line": line_idx, "character": 0},
-                "end": {"line": line_idx, "character": 100}
-            },
-            "severity": 1, # Error
-            "source": "aayu",
-            "message": f"{error_data['message']}\nHint: {error_data['hint']}"
-        })
+        # line and column are 1-indexed in our errors, but 0-indexed in LSP Position
+        line = max(0, e.line - 1)
+        col = max(0, e.column - 1)
+
+        msg = e.message
+        if e.hint:
+            msg += f"\nHint: {e.hint}"
+
+        diagnostics.append(
+            Diagnostic(
+                range=Range(
+                    start=Position(line=line, character=col),
+                    end=Position(line=line, character=col + 5), # highlight next 5 chars
+                ),
+                message=msg,
+                severity=DiagnosticSeverity.Error,
+                source="AAYU Parser"
+            )
+        )
     except Exception as e:
-        pass # Ignore generic python crashes for diagnostics
-    return diagnostics
+        # Fallback for unexpected compiler crashes
+        diagnostics.append(
+            Diagnostic(
+                range=Range(
+                    start=Position(line=0, character=0),
+                    end=Position(line=0, character=5),
+                ),
+                message=f"Internal Compiler Error: {str(e)}",
+                severity=DiagnosticSeverity.Error,
+                source="AAYU Compiler"
+            )
+        )
 
-def handle_completion(msg_id, params):
-    # Snippet completion and keyword completion
-    items = [
-        {
-            "label": "task",
-            "kind": 14, # Snippet
-            "insertText": "task ${1:name} with ${2:req}.\n\t$0\nend.",
-            "insertTextFormat": 2 # Snippet
-        },
-        {
-            "label": "entity",
-            "kind": 14,
-            "insertText": "entity ${1:Name}.\n\ttext ${2:field}.\nend.",
-            "insertTextFormat": 2
-        },
-        {
-            "label": "route",
-            "kind": 14,
-            "insertText": "route \"${1:/path}\" to ${2:task_name}.",
-            "insertTextFormat": 2
-        },
-        {
-            "label": "show",
-            "kind": 14,
-            "insertText": "show ${1:value}.",
-            "insertTextFormat": 2
-        },
-        {
-            "label": "test",
-            "kind": 14,
-            "insertText": "test \"${1:Test Name}\".\n\t$0\nend.",
-            "insertTextFormat": 2
-        },
-        {
-            "label": "expect",
-            "kind": 14,
-            "insertText": "expect ${1:actual} equals ${2:expected}.",
-            "insertTextFormat": 2
-        },
-        {
-            "label": "use",
-            "kind": 14,
-            "insertText": "use ${1:module}.",
-            "insertTextFormat": 2
-        }
-    ]
-    
-    keywords = ["number", "text", "is", "if", "else", "end", "greater", "less", "equal", "than", "to", "repeat", "times", "run", "with", "and", "list", "for", "each", "in", "return", "record", "of", "read", "write", "try", "catch", "add", "map", "set", "get", "from", "export", "serve", "on", "render", "form", "json", "create", "find", "where", "update", "delete", "login", "logout", "guard", "session", "account"]
-    
-    for kw in keywords:
-        items.append({
-            "label": kw,
-            "kind": 14, # Keyword
-        })
-        
-    write_message({
-        "jsonrpc": "2.0",
-        "id": msg_id,
-        "result": items
-    })
+    ls.publish_diagnostics(uri, diagnostics)
 
-def main():
-    logging.info("AAYU LSP Server started.")
-    while True:
-        try:
-            msg = read_message()
-            if not msg:
-                break
-                
-            logging.debug(f"Received: {msg}")
-            
-            if msg.get("method") == "initialize":
-                write_message({
-                    "jsonrpc": "2.0",
-                    "id": msg.get("id"),
-                    "result": {
-                        "capabilities": {
-                            "textDocumentSync": 1, # Full sync
-                            "completionProvider": {
-                                "resolveProvider": False
-                            }
-                        }
-                    }
-                })
-            elif msg.get("method") == "initialized":
-                pass
-            elif msg.get("method") == "textDocument/didOpen":
-                handle_did_open(msg.get("params"))
-            elif msg.get("method") == "textDocument/didChange":
-                handle_did_change(msg.get("params"))
-            elif msg.get("method") == "textDocument/completion":
-                handle_completion(msg.get("id"), msg.get("params"))
-            elif msg.get("method") == "shutdown":
-                write_message({
-                    "jsonrpc": "2.0",
-                    "id": msg.get("id"),
-                    "result": None
-                })
-            elif msg.get("method") == "exit":
-                break
-                
-        except Exception as e:
-            logging.error(f"Error in LSP loop: {e}")
+@server.feature(TEXT_DOCUMENT_DID_OPEN)
+def did_open(ls: LanguageServer, params: DidOpenTextDocumentParams):
+    validate_aayu_document(ls, params.text_document.uri, params.text_document.text)
+
+@server.feature(TEXT_DOCUMENT_DID_CHANGE)
+def did_change(ls: LanguageServer, params: DidChangeTextDocumentParams):
+    # In full implementation, we might apply incremental text edits,
+    # but for prototype, we just grab the full document from workspace
+    doc = ls.workspace.get_document(params.text_document.uri)
+    validate_aayu_document(ls, params.text_document.uri, doc.source)
 
 if __name__ == "__main__":
-    main()
+    server.start_io()

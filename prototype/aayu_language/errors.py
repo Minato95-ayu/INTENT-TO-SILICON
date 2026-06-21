@@ -1,10 +1,11 @@
 import json
 
 class AAYUError(Exception):
-    def __init__(self, type_name, message, line, hint=""):
+    def __init__(self, type_name, message, line, hint="", column=1):
         self.type_name = type_name
         self.message = message
         self.line = line
+        self.column = column
         self.hint = hint
         super().__init__(self.message)
 
@@ -12,6 +13,7 @@ class AAYUError(Exception):
         return {
             "type": self.type_name,
             "line": self.line,
+            "column": self.column,
             "message": self.message,
             "hint": self.hint
         }
@@ -32,12 +34,12 @@ class AAYUError(Exception):
         return f"\n{err_type}\n\n{line_info}\n{self.message}\n{hint_info}\n"
 
 class AAYUSyntaxError(AAYUError):
-    def __init__(self, message, line, hint=""):
-        super().__init__("Syntax Error", message, line, hint)
+    def __init__(self, message, line, hint="", column=1):
+        super().__init__("Syntax Error", message, line, hint, column)
 
 class AAYURuntimeError(AAYUError):
-    def __init__(self, message, line, hint="", type_name="Runtime Error"):
-        super().__init__(type_name, message, line, hint)
+    def __init__(self, message, line, hint="", type_name="Runtime Error", column=1):
+        super().__init__(type_name, message, line, hint, column)
 
 class UndefinedVariableError(AAYURuntimeError):
     def __init__(self, message, line, hint=""):

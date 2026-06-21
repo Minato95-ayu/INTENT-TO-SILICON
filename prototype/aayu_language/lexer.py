@@ -56,7 +56,7 @@ class Lexer:
                 self.column = 1
                 continue
             elif kind == "MISMATCH":
-                raise AAYUSyntaxError(f"Unexpected character '{value}'", self.line)
+                raise AAYUSyntaxError(f"Unexpected character '{value}'", self.line, column=self.column)
             
             self.tokens.append(Token(kind, value, self.line, self.column))
             self.column += len(value)

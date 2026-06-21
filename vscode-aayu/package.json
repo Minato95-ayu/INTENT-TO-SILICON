@@ -38,5 +38,22 @@
         "path": "./snippets/aayu.code-snippets"
       }
     ]
+  },
+  "activationEvents": [
+    "onLanguage:aayu"
+  ],
+  "main": "./out/extension.js",
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.0.0",
+    "@types/vscode": "^1.125.0",
+    "typescript": "^6.0.3"
   }
 }

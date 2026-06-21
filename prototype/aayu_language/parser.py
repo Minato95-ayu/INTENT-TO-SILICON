@@ -104,7 +104,7 @@ class Parser:
             else:
                 node = self.parse_assignment_statement()
         else:
-            raise AAYUSyntaxError(f"Unexpected token '{self.peek().value}'", self.peek().line, hint="Check for typos or missing keywords.")
+            raise AAYUSyntaxError(f"Unexpected token '{self.peek().value}'", self.peek().line, column=self.peek().column, hint="Check for typos or missing keywords.")
             
         if node:
             node.line = start_token.line
@@ -220,7 +220,7 @@ class Parser:
             decl = self.parse_task()
             return ExportNode(declaration=decl)
         # Note: Currently scope locked to Tasks only
-        raise AAYUSyntaxError(f"Can only export tasks. Found '{self.peek().value}'", self.peek().line, hint="Use 'export task <name>'.")
+        raise AAYUSyntaxError(f"Can only export tasks. Found '{self.peek().value}'", self.peek().line, column=self.peek().column, hint="Use 'export task <name>'.")
 
     def parse_serve(self) -> ServeNode:
         handler_name = None
@@ -293,7 +293,7 @@ class Parser:
 
     def parse_return_statement(self) -> ReturnNode:
         if self.in_task_depth == 0:
-            raise AAYUSyntaxError("Return can only be used inside a task.", self.peek().line, hint="Move the 'return' statement inside a 'task' block.")
+            raise AAYUSyntaxError("Return can only be used inside a task.", self.peek().line, column=self.peek().column, hint="Move the 'return' statement inside a 'task' block.")
             
         value = self.parse_expression()
         self.consume("DOT", "Expect '.' after return statement.")
@@ -504,7 +504,7 @@ class Parser:
                 self.consume("KEYWORD", "Expect 'to' after 'equal'.", "to")
                 operator = "=="
             else:
-                raise AAYUSyntaxError("Expect comparator after 'is'", self.peek().line, hint="Example: 'is greater than', 'is less than', 'is equal to'.")
+                raise AAYUSyntaxError("Expect comparator after 'is'", self.peek().line, column=self.peek().column, hint="Example: 'is greater than', 'is less than', 'is equal to'.")
         elif self.match("EQ_EQ"):
             operator = "=="
         elif self.match("GREATER"):
@@ -591,7 +591,7 @@ class Parser:
         if self.match("KEYWORD", "run"):
             return self._parse_run_core()
 
-        raise AAYUSyntaxError(f"Expect expression. Found '{self.peek().value}'.", self.peek().line, hint="Provide a valid value or variable.")
+        raise AAYUSyntaxError(f"Expect expression. Found '{self.peek().value}'.", self.peek().line, column=self.peek().column, hint="Provide a valid value or variable.")
 
     # --- Helper Methods ---
 
@@ -624,12 +624,12 @@ class Parser:
     def peek_next(self) -> Token:
         if self.current + 1 < len(self.tokens):
             return self.tokens[self.current + 1]
-        return Token("EOF", "", self.peek().line)
+        return Token("EOF", "", self.peek().line, column=self.peek().column)
 
     def peek_next_next(self) -> Token:
         if self.current + 2 < len(self.tokens):
             return self.tokens[self.current + 2]
-        return Token("EOF", "", self.peek().line)
+        return Token("EOF", "", self.peek().line, column=self.peek().column)
 
     def previous(self) -> Token:
         return self.tokens[self.current - 1]
@@ -637,7 +637,7 @@ class Parser:
     def consume(self, token_type: str, message: str, token_value: str = None) -> Token:
         if self.check(token_type, token_value):
             return self.advance()
-        raise AAYUSyntaxError(f"{message} Found '{self.peek().value}'", self.peek().line)
+        raise AAYUSyntaxError(f"{message} Found '{self.peek().value}'", self.peek().line, column=self.peek().column)
 
 if __name__ == "__main__":
     def parse_entity_declaration(self):

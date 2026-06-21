@@ -48,6 +48,36 @@ class AAYUCompiler:
     def visit_ProgramNode(self, node: ProgramNode):
         for stmt in node.statements:
             self.visit(stmt)
+
+    def visit_UseNode(self, node: UseNode):
+        import os
+        from errors import AAYUError
+        from lexer import Lexer
+        from parser import Parser
+        
+        module_name = node.module
+        
+        # Check standard package directory
+        package_dir = os.path.join(".aayu", "packages", module_name)
+        module_file = os.path.join(package_dir, "main.aayu")
+        
+        if not os.path.exists(module_file):
+            # Fallback to single file import if user wants to import a local file
+            if os.path.exists(f"{module_name}.aayu"):
+                module_file = f"{module_name}.aayu"
+            else:
+                line = node.line if hasattr(node, 'line') else 1
+                raise AAYUError("Import Error", f"Module '{module_name}' not found.", line, f"Did you forget to run 'aayu install {module_name}'?")
+                
+        with open(module_file, "r", encoding="utf-8") as f:
+            source = f.read()
+            
+        lexer = Lexer(source)
+        parser = Parser(lexer.tokenize(), filename=module_file)
+        ast = parser.parse()
+        
+        # Compile the included AST inline
+        self.visit(ast)
             
     def visit_NumberNode(self, node: NumberNode):
         idx = self._add_constant(node.value)
@@ -430,6 +460,13 @@ class AAYUCompiler:
         self._emit(Opcode.LOAD_NAME, fn_idx)
         self._emit(Opcode.CALL_TASK, 0)
         self._emit(Opcode.POP)
+    def visit_BuiltinFunctionNode(self, node):
+        for arg in node.arguments:
+            self.visit(arg)
+        fn_idx = self._add_name(node.name)
+        self._emit(Opcode.LOAD_NAME, fn_idx)
+        self._emit(Opcode.CALL_TASK, len(node.arguments))
+
 
 
 

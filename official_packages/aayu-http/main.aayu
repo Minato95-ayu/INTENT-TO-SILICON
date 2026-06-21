@@ -1,0 +1,31 @@
+# aayu-http main module
+
+task get_request with url.
+    map options.
+    set "url" to url in options.
+    set "method" to "GET" in options.
+    return http_request(options).
+end.
+
+task post_request with url and data.
+    map options.
+    set "url" to url in options.
+    set "method" to "POST" in options.
+    set "body" to data in options.
+    return http_request(options).
+end.
+
+task put_request with url and data.
+    map options.
+    set "url" to url in options.
+    set "method" to "PUT" in options.
+    set "body" to data in options.
+    return http_request(options).
+end.
+
+task delete_request with url.
+    map options.
+    set "url" to url in options.
+    set "method" to "DELETE" in options.
+    return http_request(options).
+end.

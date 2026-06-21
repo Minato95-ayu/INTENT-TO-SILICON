@@ -1,0 +1,10 @@
+# aayu-rag main module
+# Provides native Retrieval-Augmented Generation capabilities
+
+task add_document with doc_text.
+    return rag_add_document(doc_text).
+end.
+
+task search with query.
+    return rag_search(query).
+end.

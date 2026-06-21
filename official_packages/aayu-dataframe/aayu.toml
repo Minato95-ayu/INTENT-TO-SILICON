@@ -1,0 +1,5 @@
+[package]
+name = "dataframe"
+version = "1.0.0"
+description = "Official Dataframe package for AAYU"
+author = "AAYU Language"

@@ -1,0 +1,21 @@
+# aayu-vision main module
+
+task load_image with path.
+    return vision_load_image(path).
+end.
+
+task save_image with img and path.
+    return vision_save_image(img, path).
+end.
+
+task resize with img and width and height.
+    return vision_resize(img, width, height).
+end.
+
+task crop with img and left and top and right and bottom.
+    return vision_crop(img, left, top, right, bottom).
+end.
+
+task grayscale with img.
+    return vision_grayscale(img).
+end.

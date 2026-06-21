@@ -1,0 +1,43 @@
+# aayu-openai main module
+# Provides AI text generation using OpenAI API
+
+task gpt_generate with prompt and api_key.
+    map options.
+    set "url" to "https://api.openai.com/v1/chat/completions" in options.
+    set "method" to "POST" in options.
+    
+    map headers.
+    auth_header is "Bearer ".
+    auth_header is auth_header + api_key.
+    set "Authorization" to auth_header in headers.
+    set "Content-Type" to "application/json" in headers.
+    
+    set "headers" to headers in options.
+    
+    map message.
+    set "role" to "user" in message.
+    set "content" to prompt in message.
+    
+    list messages.
+    add message to messages.
+    
+    map payload.
+    set "model" to "gpt-3.5-turbo" in payload.
+    set "messages" to messages in payload.
+    
+    set "body" to payload in options.
+    
+    response is http_request(options).
+    status is get "status" from response.
+    body is get "body" from response.
+    
+    if status == 200:
+        choices is get "choices" from body.
+        first_choice is get 0 from choices.
+        res_message is get "message" from first_choice.
+        content is get "content" from res_message.
+        return content.
+    end.
+    
+    return json_serialize(response).
+end.

@@ -1,0 +1,25 @@
+# aayu-ml main module
+
+task mean with data.
+    return ml_mean(data).
+end.
+
+task median with data.
+    return ml_median(data).
+end.
+
+task std with data.
+    return ml_std(data).
+end.
+
+task matrix_add with mat_a and mat_b.
+    return ml_matrix_add(mat_a, mat_b).
+end.
+
+task matrix_multiply with mat_a and mat_b.
+    return ml_matrix_multiply(mat_a, mat_b).
+end.
+
+task linear_regression with x and y.
+    return ml_linear_regression(x, y).
+end.

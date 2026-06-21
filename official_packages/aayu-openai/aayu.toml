@@ -1,0 +1,5 @@
+[package]
+name = "openai"
+version = "1.0.0"
+description = "Official OpenAI package for AAYU"
+author = "AAYU Language"

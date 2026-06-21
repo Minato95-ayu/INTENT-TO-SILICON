@@ -1,0 +1,37 @@
+use http.
+
+task gemini_generate with prompt and api_key.
+    url is "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=".
+    url is url + api_key.
+    
+    map text_part.
+    set "text" to prompt in text_part.
+    
+    list parts_list.
+    add text_part to parts_list.
+    
+    map content_obj.
+    set "parts" to parts_list in content_obj.
+    
+    list contents_list.
+    add content_obj to contents_list.
+    
+    map payload.
+    set "contents" to contents_list in payload.
+    
+    response is post_request(url, payload).
+    status is get "status" from response.
+    body is get "body" from response.
+    
+    if status == 200:
+        candidates is get "candidates" from body.
+        first_candidate is get 0 from candidates.
+        content is get "content" from first_candidate.
+        parts is get "parts" from content.
+        first_part is get 0 from parts.
+        text is get "text" from first_part.
+        return text.
+    end.
+    
+    return json_serialize(response).
+end.

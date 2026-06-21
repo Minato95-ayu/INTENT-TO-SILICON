@@ -1,45 +1,31 @@
 # Installation
 
-AAYU is designed to be installed in seconds. You don't need to manually configure PATH variables or install complex toolchains.
+AAYU is designed to run everywhere Python runs. You can use the raw AAYU Interpreter scripts, or install the compiled CLI globally.
 
-## Windows
+## Prerequisites
+- Python 3.10+
+- SQLite3 (Included in Python)
 
-Open PowerShell and run the following command:
-
-```powershell
-# Coming soon: The official aayu Windows installer
-# aayu install
-```
-
-## Linux / macOS
-
-Open your terminal and run the following command:
-
+## Option 1: Global Installation (Recommended)
+You can install AAYU directly via npm (Node.js) or Pip:
 ```bash
-curl -fsSL https://aayu.org/install.sh | bash
+npm install -g aayu-cli
+# or
+pip install aayu-lang
 ```
 
-## Verify Installation
-
-Once installed, verify that the `aayu` command is available:
-
+Once installed, verify the CLI:
 ```bash
 aayu --version
 ```
 
-You should see output similar to:
-```text
-AAYU Compiler v0.1.0 (Python VM Edition)
-```
-
-## Creating Your First Project
-
-Now that AAYU is installed, you can generate a new project in one command:
-
+## Option 2: Clone the Repository
+If you want to contribute to the language internals, or build the core yourself:
 ```bash
-aayu new my-first-app
+git clone https://github.com/aayu-lang/aayu.git
+cd aayu/prototype
+python cli.py run myapp.aayu
 ```
 
-This will create a folder called `my-first-app` with a ready-to-run web server.
-
-[Go to Hello World &rarr;](/guide/hello-world)
+## Next Steps
+Now that you have AAYU installed, let's write your first program! Head over to the [Hello World](/guide/hello-world) guide.

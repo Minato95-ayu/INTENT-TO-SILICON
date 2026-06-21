@@ -58,14 +58,15 @@ version = "0.1.0"
         f.write(toml_content)
         
     # main.aayu
-    main_content = """# Start the server
-serve on 8080.
-
-task home with req.
+    main_content = """task home with req.
     return render "views/home.html".
 end.
 
+# Define a route
 get "/" to home.
+
+# Start the server
+serve on 8080.
 """
     with open(os.path.join(project_name, "main.aayu"), "w", encoding="utf-8") as f:
         f.write(main_content)
@@ -160,31 +161,80 @@ def do_install(package_name):
     if not os.path.exists(packages_dir):
         os.makedirs(packages_dir)
         
-    # Mock Repository: we will look for a folder `mock_repo/<package_name>` inside the prototype folder
-    cli_dir = os.path.dirname(__file__)
-    repo_dir = os.path.join(cli_dir, "mock_repo", package_name)
+    # Determine repo URL
+    if "/" in package_name:
+        repo_url = f"https://github.com/{package_name}.git"
+        package_folder = package_name.split("/")[-1]
+        if package_folder.startswith("aayu-"):
+            package_folder = package_folder[5:]
+    else:
+        # Default to Minato95-ayu organization
+        repo_url = f"https://github.com/Minato95-ayu/aayu-{package_name}.git"
+        package_folder = package_name
+
+    dest_dir = os.path.join(packages_dir, package_folder)
+    if os.path.exists(dest_dir):
+        print(f"Removing existing package '{package_folder}'...")
+        import shutil
+        shutil.rmtree(dest_dir, ignore_errors=True)
+        
+    print(f"Installing '{package_folder}' from {repo_url}...")
+    import subprocess
+    result = subprocess.run(["git", "clone", "--depth", "1", repo_url, dest_dir], capture_output=True, text=True)
     
-    if not os.path.exists(repo_dir):
-        print(f"Error: Package '{package_name}' not found in Official Packages Repository.")
+    if result.returncode != 0:
+        print(f"Error: Failed to install package '{package_name}'.")
+        print("Is it a valid AAYU package? Does it exist on GitHub?")
+        # print(result.stderr)
         return
         
-    dest_dir = os.path.join(packages_dir, package_name)
-    if os.path.exists(dest_dir):
-        shutil.rmtree(dest_dir)
+    # Clean up .git folder to save space and avoid nested repos
+    git_dir = os.path.join(dest_dir, ".git")
+    if os.path.exists(git_dir):
+        import stat
+        def remove_readonly(func, path, excinfo):
+            os.chmod(path, stat.S_IWRITE)
+            func(path)
+        import shutil
+        shutil.rmtree(git_dir, onerror=remove_readonly)
         
-    shutil.copytree(repo_dir, dest_dir)
-    print(f"Installed '{package_name}' into .aayu/packages/{package_name}")
+    print(f"Installed '{package_folder}' successfully!")
     
     # Update aayu.toml
     with open("aayu.toml", "r", encoding="utf-8") as f:
         lines = f.readlines()
         
-    # very naive toml update
-    if not any(package_name in line for line in lines):
-        lines.append(f'{package_name} = "latest"\n')
+    # Check if already in dependencies
+    in_deps = False
+    pkg_line = f'{package_folder} = "latest"\n'
+    for line in lines:
+        if line.strip().startswith(package_folder) and "=" in line:
+            in_deps = True
+            break
+            
+    if not in_deps:
+        # We need to find [dependencies] block
+        deps_idx = -1
+        for i, line in enumerate(lines):
+            if line.strip() == "[dependencies]":
+                deps_idx = i
+                break
+        
+        if deps_idx != -1:
+            lines.insert(deps_idx + 1, pkg_line)
+        else:
+            lines.append("\n[dependencies]\n")
+            lines.append(pkg_line)
+            
         with open("aayu.toml", "w", encoding="utf-8") as f:
             f.writelines(lines)
-        print(f"Updated aayu.toml with dependency '{package_name}'")
+        print(f"Added '{package_folder}' to aayu.toml")
+    else:
+        print(f"'{package_folder}' is already in aayu.toml")
+
+def do_build(intent_prompt):
+    from intent_engine import builder
+    builder.build_app(intent_prompt)
 
 def main():
     if len(sys.argv) < 2:
@@ -202,6 +252,11 @@ def main():
             print("Error: Please provide a project name. Example: aayu new myapp")
         else:
             do_new(sys.argv[2])
+    elif cmd == "build":
+        if len(sys.argv) < 3:
+            print("Error: Please provide an intent prompt. Example: aayu build \"Build a CRM\"")
+        else:
+            do_build(sys.argv[2])
     elif cmd == "run":
         do_run()
     elif cmd == "install":

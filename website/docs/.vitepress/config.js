@@ -2,58 +2,56 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   title: "AAYU",
-  description: "Human Readable Programming Language for Web Applications and AI Agents",
+  description: "Human Readable Programming Language",
   themeConfig: {
-    logo: '/logo.png', // Assuming we'll add a logo later
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Guide', link: '/guide/why-aayu' },
-      { text: 'Examples', link: '/examples/adumate' },
-      { text: 'GitHub', link: 'https://github.com/Minato95-ayu/INTENT-TO-SILICON' }
+      { text: 'Get Started', link: '/guide/installation' }
     ],
     sidebar: [
       {
-        text: 'Introduction',
+        text: 'Get Started',
         items: [
-          { text: 'Why AAYU?', link: '/guide/why-aayu' },
           { text: 'Installation', link: '/guide/installation' },
-          { text: 'Getting Started', link: '/guide/hello-world' },
+          { text: 'Language Basics', link: '/guide/basics' }
         ]
       },
       {
-        text: 'Core Concepts',
+        text: 'Web Development',
         items: [
-          { text: 'Variables & Types', link: '/guide/variables' },
-          { text: 'Tasks (Functions)', link: '/guide/tasks' },
-          { text: 'Control Flow', link: '/guide/control-flow' },
+          { text: 'Routing & Views', link: '/web/routing' },
+          { text: 'Database Models', link: '/web/database' }
         ]
       },
       {
-        text: 'Web & Database',
+        text: 'Packages',
         items: [
-          { text: 'Routing & Views', link: '/guide/routing' },
-          { text: 'Database & Entities', link: '/guide/database' },
-          { text: 'Authentication', link: '/guide/authentication' },
+          { text: 'Overview', link: '/packages/index' },
+          { text: 'Auth', link: '/packages/auth' },
+          { text: 'HTTP', link: '/packages/http' }
         ]
       },
       {
-        text: 'AI Integration',
+        text: 'AI & ML',
         items: [
-          { text: 'Building with AI Agents', link: '/guide/ai-agents' },
+          { text: 'Gemini LLM', link: '/packages/gemini' },
+          { text: 'Data Science (ML)', link: '/packages/ml' },
+          { text: 'Vision processing', link: '/packages/vision' }
         ]
       },
       {
         text: 'Examples',
         items: [
-          { text: 'Adumate', link: '/examples/adumate' },
+          { text: 'Todo App', link: '/examples/todo-app' },
+          { text: 'LMS System', link: '/examples/lms' }
+        ]
+      },
+      {
+        text: 'Showcase',
+        items: [
+          { text: 'Built with AAYU', link: '/showcase' }
         ]
       }
-    ],
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com/Minato95-ayu/INTENT-TO-SILICON' }
-    ],
-    search: {
-      provider: 'local'
-    }
+    ]
   }
 })

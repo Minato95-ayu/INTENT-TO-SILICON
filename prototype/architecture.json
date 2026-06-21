@@ -1,0 +1,45 @@
+{
+  "project_name": "CRMApp",
+  "domain": "CRM",
+  "auth": true,
+  "database": "sqlite",
+  "entities": [
+    "Customer",
+    "Lead",
+    "Deal",
+    "Employee",
+    "Invoice",
+    "Quote",
+    "EmailTemplate",
+    "Task",
+    "Board",
+    "User",
+    "Role",
+    "Permission",
+    "UserRole"
+  ],
+  "relations": [
+    {
+      "from": "Employee",
+      "to": "Deal",
+      "type": "1:N"
+    },
+    {
+      "from": "User",
+      "to": "Role",
+      "type": "M:N",
+      "junction": "UserRole"
+    }
+  ],
+  "routes": [
+    "/login",
+    "/dashboard",
+    "/customers",
+    "/leads"
+  ],
+  "active_features": [
+    "invoicing",
+    "email_integration",
+    "task_management"
+  ]
+}

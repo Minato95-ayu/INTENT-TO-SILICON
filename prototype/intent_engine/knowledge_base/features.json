@@ -1,0 +1,92 @@
+{
+  "online_exams": {
+    "aliases": ["exams", "quizzes", "testing", "assessments"],
+    "cross_question": "Do you need a module for online exams and quizzes?",
+    "entities": ["Exam", "Question", "Submission"]
+  },
+  "certificates": {
+    "aliases": ["certificates", "awards", "diplomas"],
+    "cross_question": "Should the system automatically generate certificates?",
+    "entities": ["Certificate"]
+  },
+  "attendance": {
+    "aliases": ["attendance", "presence", "roll call"],
+    "cross_question": "Do you want to track attendance?",
+    "entities": ["AttendanceRecord"]
+  },
+  "payments": {
+    "aliases": ["payments", "stripe", "billing", "subscriptions", "checkout"],
+    "cross_question": "Will you process online payments or subscriptions?",
+    "entities": ["Payment", "Subscription", "Invoice"]
+  },
+  "invoicing": {
+    "aliases": ["invoicing", "bills", "receipts", "quotes"],
+    "cross_question": "Do you need an automated invoicing system?",
+    "entities": ["Invoice", "Quote"]
+  },
+  "email_integration": {
+    "aliases": ["email", "smtp", "mailchimp", "notifications"],
+    "cross_question": "Will the system send automated email notifications?",
+    "entities": ["EmailTemplate"]
+  },
+  "task_management": {
+    "aliases": ["tasks", "kanban", "todos", "tickets"],
+    "cross_question": "Do you need a task or ticket management system?",
+    "entities": ["Task", "Board"]
+  },
+  "inventory": {
+    "aliases": ["inventory", "stock", "warehouse"],
+    "cross_question": "Do you need to track product inventory and stock levels?",
+    "entities": ["InventoryItem"]
+  },
+  "shipping": {
+    "aliases": ["shipping", "delivery", "logistics", "tracking"],
+    "cross_question": "Will you handle physical shipping and tracking?",
+    "entities": ["Shipment"]
+  },
+  "reviews": {
+    "aliases": ["reviews", "ratings", "feedback"],
+    "cross_question": "Should users be able to leave reviews or ratings?",
+    "entities": ["Review"]
+  },
+  "late_fees": {
+    "aliases": ["late fees", "fines", "penalties"],
+    "cross_question": "Do you need a system to calculate and track late fees?",
+    "entities": ["Fine"]
+  },
+  "reservations": {
+    "aliases": ["reservations", "holds"],
+    "cross_question": "Can members place holds or reservations?",
+    "entities": ["Reservation"]
+  },
+  "prescriptions": {
+    "aliases": ["prescriptions", "medication", "rx"],
+    "cross_question": "Do doctors need to issue digital prescriptions?",
+    "entities": ["Prescription"]
+  },
+  "bed_management": {
+    "aliases": ["beds", "wards", "rooms"],
+    "cross_question": "Do you need to track hospital bed and ward availability?",
+    "entities": ["Ward", "Bed"]
+  },
+  "blog": {
+    "aliases": ["blog", "news", "articles"],
+    "cross_question": "Do you want to include a blog section?",
+    "entities": ["Post", "Comment"]
+  },
+  "newsletter": {
+    "aliases": ["newsletter", "subscribers", "mailing list"],
+    "cross_question": "Should there be a newsletter signup and mailing list?",
+    "entities": ["Subscriber", "Campaign"]
+  },
+  "seo_metadata": {
+    "aliases": ["seo", "meta tags", "sitemap"],
+    "cross_question": "Do you need advanced SEO metadata management?",
+    "entities": ["SeoTag"]
+  },
+  "social_sharing": {
+    "aliases": ["social sharing", "share buttons", "twitter", "facebook"],
+    "cross_question": "Do you want social media sharing integration?",
+    "entities": []
+  }
+}

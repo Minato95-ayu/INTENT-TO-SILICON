@@ -5,7 +5,12 @@
   "version": "1.0.0",
   "publisher": "AyushKaushik",
   "engines": {
-    "vscode": "^1.80.0"
+    "vscode": "^1.125.0"
+  },
+  "icon": "icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AAYU-Lang/vscode-aayu.git"
   },
   "categories": [
     "Programming Languages",

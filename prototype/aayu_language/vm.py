@@ -109,6 +109,26 @@ class VirtualMachine:
         self.globals["auth_login"] = self.stdlib.auth_login
         self.globals["auth_logout"] = self.stdlib.auth_logout
         self.globals["auth_guard_session"] = self.stdlib.auth_guard_session
+        self.globals["http_request"] = self.stdlib.http_request
+        self.globals["dataframe_read_csv"] = self.stdlib.dataframe_read_csv
+        self.globals["rag_add_document"] = self.stdlib.rag_add_document
+        self.globals["rag_search"] = self.stdlib.rag_search
+        
+        # Load ML Module
+        try:
+            from runtime.ml_lib import ML_MODULE
+            for k, v in ML_MODULE.items():
+                self.globals[f"ml_{k}"] = v
+        except ImportError:
+            pass
+            
+        # Load Vision Module
+        try:
+            from runtime.vision_lib import VISION_MODULE
+            for k, v in VISION_MODULE.items():
+                self.globals[f"vision_{k}"] = v
+        except ImportError:
+            pass
 
     def _get_line_and_file(self, frame, ip):
         if ip < len(frame.bytecode.instructions):

@@ -1,0 +1,7 @@
+[package]
+name = "aayu-ml"
+version = "0.1.0"
+description = "AAYU Official Data Science & Machine Learning Package"
+author = "AAYU Core Team"
+
+[dependencies]

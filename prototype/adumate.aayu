@@ -326,4 +326,12 @@ post "/delete_college" to delete_college.
 post "/update_profile" to update_profile.
 post "/logout" to logout_action.
 
-serve on 8082.
+serve on 8085.
+
+
+task test_page with req.
+return "GET Route Working!".
+end.
+
+get "/test" to test_page.
+

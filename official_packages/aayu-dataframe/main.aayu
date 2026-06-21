@@ -1,0 +1,6 @@
+# aayu-dataframe main module
+# Provides native CSV and dataframe operations
+
+task read_csv with file_path.
+    return dataframe_read_csv(file_path).
+end.

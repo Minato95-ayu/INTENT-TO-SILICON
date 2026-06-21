@@ -1,0 +1,13 @@
+use ml.
+
+task main.
+    list data.
+    append 10 to data.
+    append 20 to data.
+    append 30 to data.
+    
+    set "m" to ml.mean(data).
+    show "Mean is " + m.
+end.
+
+run main.

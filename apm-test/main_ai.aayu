@@ -1,0 +1,16 @@
+use dataframe.
+use rag.
+
+task main.
+    # Test Dataframe
+    data is read_csv("students.csv").
+    first_row is get 0 from data.
+    name is get "name" from first_row.
+
+    # Test RAG
+    run add_document with "AAYU is a new language.".
+    run add_document with "Python is an old language.".
+    ans is search("What is AAYU?").
+    
+    return ans.
+end.

@@ -1,47 +1,44 @@
 # Hello World
 
-Let's build your first web server in AAYU.
+Writing code in AAYU is just like writing a natural sentence.
 
-## Step 1: Create a Project
+## Your First Program
 
-If you haven't already, use the AAYU CLI to scaffold a new project:
-
-```bash
-aayu new hello-app
-cd hello-app
-```
-
-This generates a standard project structure with a `main.aayu` file.
-
-## Step 2: Write the Code
-
-Open `main.aayu` in your favorite editor (we recommend VS Code with the AAYU extension for syntax highlighting).
+Create a file named `hello.aayu` and add the following code:
 
 ```aayu
-# Start the server on port 8080
-serve on 8080.
+show "Hello World!".
+```
 
-# Define a GET route
-get "/" to home.
-    render text "Hello World from AAYU!".
+Now, run it from your terminal:
+```bash
+aayu run hello.aayu
+```
+
+### Variables and Logic
+
+Variables are declared simply using the `set` keyword, and compared using natural `if` statements.
+
+```aayu
+set "age" to 20.
+
+if age > 18 then.
+    show "You are an adult.".
+else.
+    show "You are a minor.".
 end.
 ```
 
-## Step 3: Run the App
+### Functions (Tasks)
 
-From your terminal, run:
+In AAYU, functions are called `tasks`.
 
-```bash
-aayu run
+```aayu
+task greet with name.
+    show "Hello, " + name.
+end.
+
+greet("Developer").
 ```
 
-AAYU will compile your code and start the Virtual Machine.
-Open your browser and navigate to `http://localhost:8080`.
-
-**Congratulations! You've just written your first AAYU web application.**
-
-## What just happened?
-
-1. `serve on 8080.` instructed the VM to start a multi-threaded web server.
-2. `get "/" to home.` defined a route handler mapped to the root URL.
-3. `render text` sent a plain-text HTTP response back to the browser.
+That's it! You've learned the core basics of AAYU. Now, let's look at building something real, like a [Web Server](/examples/todo-app).

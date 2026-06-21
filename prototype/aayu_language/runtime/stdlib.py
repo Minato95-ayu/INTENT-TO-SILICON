@@ -207,10 +207,9 @@ class StdLib:
         else:
             method = arg2
             handler_name = arg3
-        self.vm.routes[path] = {
-            "handler": handler_name,
-            "method": method
-        }
+        if path not in self.vm.routes:
+            self.vm.routes[path] = {}
+        self.vm.routes[path][method] = handler_name
 
     def http_form_get(self, key: str, req: dict) -> str:
         if not isinstance(req, dict):
@@ -272,17 +271,18 @@ class StdLib:
                         req_map["_form_data"].update(post_params)
 
                 # Match route
+                print(f"[DEBUG] self.vm.routes: {vm_instance.routes}")
                 target_handler_name = handler_name
                 if target_handler_name is None:
                     if clean_path in vm_instance.routes:
                         route_info = vm_instance.routes[clean_path]
-                        if route_info["method"] != self.command:
+                        if self.command not in route_info:
                             self.send_response(405)
                             self.send_header("Content-type", "text/html; charset=utf-8")
                             self.end_headers()
                             self.wfile.write(bytes(f"<h1>405 Method Not Allowed</h1><p>Method '{self.command}' not allowed for route '{clean_path}'.</p>", "utf8"))
                             return
-                        target_handler_name = route_info["handler"]
+                        target_handler_name = route_info[self.command]
 
                 if target_handler_name is None:
                     self.send_response(404)
@@ -530,4 +530,102 @@ class StdLib:
         return account_id
 
 
+
+
+    def http_request(self, options: dict) -> dict:
+        import urllib.request
+        import urllib.error
+        import json
+        
+        url = options.get("url")
+        method = options.get("method", "GET").upper()
+        headers = options.get("headers", {})
+        body = options.get("body")
+        
+        if not url:
+            raise Exception("http_request requires a 'url'")
+            
+        req_data = None
+        if body is not None:
+            if isinstance(body, dict) or isinstance(body, list):
+                req_data = json.dumps(body).encode("utf-8")
+                if "Content-Type" not in headers:
+                    headers["Content-Type"] = "application/json"
+            else:
+                req_data = str(body).encode("utf-8")
+                
+        req = urllib.request.Request(url, data=req_data, headers=headers, method=method)
+        
+        status_code = 500
+        res_body = ""
+        
+        try:
+            with urllib.request.urlopen(req) as response:
+                status_code = response.getcode()
+                res_body = response.read().decode("utf-8")
+        except urllib.error.HTTPError as e:
+            status_code = e.code
+            res_body = e.read().decode("utf-8")
+        except Exception as e:
+            raise Exception(f"HTTP Request failed: {e}")
+            
+        # Try parse JSON
+        parsed_body = res_body
+        try:
+            parsed_body = json.loads(res_body)
+        except:
+            pass
+            
+        return {
+            "status": status_code,
+            "body": parsed_body
+        }
+
+    def dataframe_read_csv(self, file_path: str) -> list:
+        import csv
+        import os
+        if not os.path.exists(file_path):
+            raise Exception(f"File not found: {file_path}")
+        data = []
+        try:
+            with open(file_path, mode='r', encoding='utf-8') as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    data.append(dict(row))
+            return data
+        except Exception as e:
+            raise Exception(f"Failed to read CSV: {str(e)}")
+
+
+    def rag_add_document(self, text: str):
+        if not hasattr(self, 'rag_docs'):
+            self.rag_docs = []
+        self.rag_docs.append(text)
+        return text
+
+    def rag_search(self, query: str) -> str:
+        if not hasattr(self, 'rag_docs') or not self.rag_docs:
+            return ""
+        import math
+        from collections import Counter
+        
+        def get_words(s):
+            return s.lower().split()
+        
+        query_words = get_words(query)
+        best_doc = ""
+        best_score = -1
+        
+        for doc in self.rag_docs:
+            doc_words = get_words(doc)
+            doc_counts = Counter(doc_words)
+            score = 0
+            for w in query_words:
+                if w in doc_counts:
+                    score += doc_counts[w]
+            if score > best_score:
+                best_score = score
+                best_doc = doc
+        
+        return best_doc
 

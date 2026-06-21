@@ -1,0 +1,11 @@
+use http.
+
+task main with req.
+    res is get_request("https://jsonplaceholder.typicode.com/todos/1").
+    body is get "body" from res.
+    title is get "title" from body.
+    return title.
+end.
+
+get "/" to main.
+serve on 8082.

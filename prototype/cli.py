@@ -507,6 +507,14 @@ def main():
             print("  pip install -r requirements.txt")
             print("  uvicorn main:app --reload")
             
+        if "postgresql-generator" in generators or "postgres-generator" in generators:
+            from generators.postgres.generator import PostgresGenerator
+            # Put output in generated/database relative to cwd
+            out_dir = os.path.join(os.getcwd(), "generated", "database")
+            pg_gen = PostgresGenerator(ir_data, out_dir)
+            pg_gen.generate()
+            print(f"\nSuccess! PostgreSQL schema generated at: {out_dir}")
+            
     else:
         print(f"Unknown command: {cmd}")
         print_usage()

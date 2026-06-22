@@ -23,6 +23,7 @@ def print_usage():
     print("  aayu test                - Run test suite")
     print("  aayu compile <file.aayu> - Compile AAYU file to bytecode (.ayc)")
     print("  aayu vm <file.aayu/.ayc> - Run AAYU file/bytecode on the stack VM")
+    print("  aayu inspect <file>      - Generate AAYU IR from source file")
     print("  aayu build               - Build the project (stub)")
 
 def do_version():
@@ -370,6 +371,40 @@ def main():
             
         vm = VirtualMachine()
         vm.run(bytecode)
+    elif cmd == "inspect":
+        args = sys.argv[2:]
+        if not args:
+            print("Error: `aayu inspect` requires a file to inspect.")
+            print("Usage: aayu inspect <file.aayu> [--pretty]")
+            sys.exit(1)
+        filepath = args[0]
+        pretty = "--pretty" in args
+        
+        cli_dir = os.path.dirname(__file__)
+        sys.path.append(os.path.join(cli_dir, "aayu_language"))
+        
+        from lexer import Lexer
+        from parser import Parser
+        from ir_generator import generate_ir
+        
+        with open(filepath, 'r', encoding='utf-8') as f:
+            source = f.read()
+            
+        lexer = Lexer(source)
+        parser = Parser(lexer.tokenize(), filename=filepath)
+        ast = parser.parse()
+        
+        ir_json = generate_ir(ast)
+        
+        if pretty:
+            print("Generated IR:")
+            print(ir_json)
+        
+        out_path = filepath.replace('.aayu', '.ir.json') if filepath.endswith('.aayu') else filepath + '.ir.json'
+        with open(out_path, 'w', encoding='utf-8') as f:
+            f.write(ir_json)
+            
+        print(f"Generated: {out_path}")
     else:
         print(f"Unknown command: {cmd}")
         print_usage()

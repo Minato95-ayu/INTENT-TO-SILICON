@@ -12,7 +12,7 @@ The AAYU parser reads `.aayu` source code and constructs an Abstract Syntax Tree
 ### 2. Intermediate Representation (AAYU IR)
 The AST is transformed into the **AAYU IR**, a language-agnostic JSON structure. This IR represents the pure architectural intent of the software—entities, routes, workflows, and RBAC rules—stripped of syntactic sugar.
 
-*Note: The formalization of the AAYU IR is the focus of Sprint 23.*
+[Read the full AAYU IR Specification →](/specification/ir)
 
 ### 3. Target Selection Engine
 This is a unique layer in the AAYU architecture. A rules-engine analyzes the AAYU IR and determines the optimal technology stack required to execute the intent.

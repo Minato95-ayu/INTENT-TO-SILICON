@@ -54,7 +54,8 @@ page HospitalDashboard.
     end.
     column.
         heading "Hospital Management System".
-        table "Today's Appointments" from Appointment where "date" equal to "2023-10-25".
+        table "Today's Appointments".
+        end.
     end.
 end.
 

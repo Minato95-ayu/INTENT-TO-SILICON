@@ -40,6 +40,7 @@ export default defineConfig({
           { text: 'Workflows', link: '/specification/workflows' },
           { text: 'Modules', link: '/specification/modules' },
           { text: 'Compiler & Targets', link: '/specification/compiler' },
+          { text: 'AAYU IR', link: '/specification/ir' },
           { text: 'Runtime VM', link: '/specification/runtime' },
           { text: 'Standard Library', link: '/specification/stdlib' }
         ]

@@ -43,8 +43,10 @@ page CRM_Dashboard.
     end.
     column.
         heading "CRM Dashboard".
-        table "Customers" from Customer.
-        table "Active Leads" from Lead where "status" not_equal to "Converted".
+        table "Customers".
+        end.
+        table "Active Leads".
+        end.
     end.
 end.
 

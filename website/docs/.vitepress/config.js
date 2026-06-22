@@ -3,14 +3,19 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   base: '/INTENT-TO-SILICON/',
   title: "AAYU",
-  description: "The Intent Operating System",
+  description: "Architecture-First Software Factory",
+  head: [
+    ['link', { rel: 'icon', type: 'image/png', href: '/INTENT-TO-SILICON/aayu-logo.png' }],
+    ['link', { rel: 'apple-touch-icon', href: '/INTENT-TO-SILICON/aayu-logo.png' }]
+  ],
   themeConfig: {
-    logo: '/logo.png',
+    logo: '/aayu-logo.png',
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Install', link: '/guide/installation' },
-      { text: 'Documentation', link: '/guide/syntax' },
-      { text: 'Intent Engine', link: '/platform/intent-engine' },
+      { text: 'Language Guide', link: '/guide/syntax' },
+      { text: 'Architecture', link: '/specification/compiler' },
+      { text: 'Runtime', link: '/specification/runtime' },
       { text: 'Examples', link: '/examples/' }
     ],
     sidebar: [
@@ -19,6 +24,7 @@ export default defineConfig({
         items: [
           { text: 'What is AAYU?', link: '/guide/what-is-aayu' },
           { text: 'Installation', link: '/guide/installation' },
+          { text: 'CLI Commands', link: '/guide/cli-commands' },
           { text: 'Downloads', link: '/guide/downloads' }
         ]
       },
@@ -41,7 +47,8 @@ export default defineConfig({
           { text: 'Modules', link: '/specification/modules' },
           { text: 'Compiler & Targets', link: '/specification/compiler' },
           { text: 'AAYU IR', link: '/specification/ir' },
-          { text: 'Runtime VM', link: '/specification/runtime' },
+          { text: 'Target Engine', link: '/specification/target_engine' },
+          { text: 'Runtime VM (Experimental)', link: '/specification/runtime' },
           { text: 'Standard Library', link: '/specification/stdlib' }
         ]
       },

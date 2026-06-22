@@ -1,25 +1,40 @@
 # What is AAYU?
 
-**AAYU is an Intent-Aware Programming Language and Software Generation Platform.**
+**AAYU is an Architecture-First Software Factory with an experimental runtime track.**
 
-Unlike traditional AI code assistants that sit on top of other languages (like Python or JS) and try to guess what you want, AAYU is an entirely new language stack built specifically for the age of AI.
+AAYU turns business intent or direct `.aayu` source into a structured software architecture, then generates the application stack around it. The verified capability today is generation: entities, relations, workflows, pages, backend, frontend, database, and deployment structure.
 
-At its core, AAYU understands that the goal of software development is not writing code—it's executing human intent.
+Sprint 35 also proves the beginning of Track B: AAYU can execute its own bytecode path through the prototype VM.
+
+```text
+AAYU Source
+down
+Parser
+down
+Compiler
+down
+AYC
+down
+VM
+down
+Execution
+```
+
+The current runtime is experimental. It supports variables, print, and if execution in the verified Sprint 35 path. Functions, loops, modules, collections, packages, and runtime libraries remain roadmap work.
 
 ## The AAYU Philosophy
 
 **Write Intent. Or Write Code. Both become Software.**
 
-AAYU offers two first-class interfaces to build software:
+AAYU offers two interfaces:
 
-1. **Intent Mode (For speed and accessibility):**
-   Describe what you want (e.g., "I need a CRM with Customers, Leads, and a Sales Dashboard"). The AAYU Intent Engine will generate the architecture and write the AAYU code for you.
+1. **Intent Mode**
+   Describe the application, such as "I need a CRM with customers, leads, and a sales dashboard." The Intent Engine converts that into AAYU architecture.
 
-2. **Developer Mode (For precision and control):**
-   Write `.aayu` code directly. The syntax is clean, domain-specific, and declarative. No AI required. You maintain absolute control over the logic.
+2. **Developer Mode**
+   Write `.aayu` code directly. The syntax is clean, domain-specific, and declarative, so the architecture stays readable.
 
 ```aayu
-# Example: Direct AAYU Code
 system CRM
 
 entity Customer.
@@ -41,47 +56,58 @@ page Dashboard.
 end.
 ```
 
-## The AAYU Architecture
-
-AAYU is not just a syntax; it is a complete platform designed to eliminate the friction between an idea and running software.
+## The Current Architecture
 
 ```text
-Human Intent
+Business Intent
         OR
-Developer Code
+AAYU Code
 
-        ↓
+        down
 
-    AAYU Language
+AAYU Language
 
-        ↓
+        down
 
-    AAYU Compiler
+AAYU Compiler
 
-        ↓
+        down
+
+AAYU IR
+
+        down
 
 Target Selection Engine
 
-        ↓
+        down
 
-    AAYU Runtime
-   (HTML/CSS/JS)
-   (React / Vue)
-   (Python / Rust)
-   (Go / Java)
-   (Flutter / Swift)
+React + FastAPI + PostgreSQL
 
-        ↓
+        down
 
-  Running Software
+Production-Ready Software
 ```
 
-### Why a New Language?
-If AI simply generates Python or React, the developer still has to manually debug complex generated code when it inevitably fails or hallucinates.
+## Runtime Roadmap
 
-By compiling to a high-level, domain-specific language (AAYU) first, we ensure:
-- **Zero Hallucination:** The AAYU compiler strictly enforces business logic, RBAC, and database constraints.
-- **Human Readability:** If the AI generates an AAYU file, a human can easily read it, verify it, and modify it.
-- **Portability:** AAYU code represents the *architecture*. The compiler can then target whatever native runtime or stack is needed.
+```text
+AAYU Code
+down
+AYC Bytecode
+down
+AAYU Runtime (Rust)
+down
+Execution
+```
 
-AAYU doesn't replace Python, React, or Rust. It sits *above* them, turning software definition into a direct, predictable, and scalable process.
+## Why AAYU Exists
+
+If AI directly generates Python, React, or SQL, the developer still has to debug a large amount of framework-specific glue. AAYU keeps the software definition in a smaller, architecture-first language before generating target code.
+
+That gives AAYU three practical goals:
+
+- **Readable architecture:** Humans can inspect the `.aayu` source.
+- **Deterministic generation:** The compiler owns the structural output.
+- **Portable intent:** The same architecture can target different stacks over time.
+
+AAYU does not replace Python, React, Rust, or databases. It sits above them and generates the boring parts of software structure.

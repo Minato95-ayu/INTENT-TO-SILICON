@@ -1,14 +1,14 @@
 # AAYU Language Specification
 
-Welcome to the official specification for **AAYU**, the Intent-Aware Programming Language.
+Welcome to the official specification for **AAYU**, the architecture-first language used by the AAYU Software Factory.
 
-This document formally defines the lexical structure, grammar, built-in types, compilation pipeline, and execution environment of the AAYU language.
+This document formally defines the lexical structure, grammar, built-in types, compilation pipeline, intermediate representation, target engine, and experimental runtime path.
 
 ## Design Philosophy
 
 AAYU is designed with a singular focus: **bridging the gap between human intent and machine execution.** 
 
-Traditional programming languages require developers to translate business requirements into deeply technical implementation details. AAYU allows developers (or AI Intent Engines) to write architectural declarations (like `entity`, `workflow`, `page`) which the AAYU Compiler then translates into executable software.
+Traditional programming requires developers to translate business requirements into deeply technical implementation details. AAYU allows developers or intent engines to write architectural declarations like `entity`, `workflow`, and `page`, which the compiler turns into generated software.
 
 ## Table of Contents
 

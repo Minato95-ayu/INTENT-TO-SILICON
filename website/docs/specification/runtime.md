@@ -1,28 +1,90 @@
 # Runtime Environment
 
-The AAYU Runtime is the execution environment for AAYU Bytecode (`.ayc` files). While AAYU is primarily designed as a generation platform (compiling down to target languages like Rust, Python, or React), it also includes a high-performance native runtime for immediate execution, testing, and edge deployments.
+The AAYU Runtime is the experimental execution path for AAYU Bytecode (`.ayc` files).
+
+AAYU's primary verified capability is still the Architecture-First Software Factory: compile AAYU architecture into production-ready application stacks. The runtime is Track B: a growing VM layer that lets AAYU execute its own logic directly.
+
+## Sprint 35 Verification
+
+The current milestone verifies the complete prototype path:
+
+```text
+AAYU Source
+down
+Parser
+down
+Compiler
+down
+AYC
+down
+VM
+down
+Execution
+```
+
+Command:
+
+```bash
+python -m prototype.cli vm prototype/tests/demo_sprint35.aayu
+```
+
+Output:
+
+```text
+Founder
+```
+
+This is important because it proves AAYU is not only generating software; it can now execute AAYU logic through its own VM path.
+
+## Current Runtime Support
+
+The verified runtime surface is intentionally small:
+
+- Variables
+- Print
+- If
+
+The following features are still roadmap work:
+
+- Functions
+- Loops
+- Modules
+- Collections
+- Packages
+- Runtime libraries
 
 ## The AAYU Virtual Machine
 
-The current iteration of the AAYU Runtime is a stack-based Virtual Machine.
+The current VM is a prototype stack-based execution engine. It consumes bytecode produced by the compiler and executes instructions by maintaining an evaluation stack and runtime scope.
 
-When a developer runs `aayu run file.aayu`:
-1. The compiler generates bytecode instructions (e.g., `LOAD_CONST`, `STORE_FAST`, `CALL_FUNCTION`).
-2. The VM executes these instructions sequentially, manipulating an evaluation stack and an environment (scope) map.
+This page should be read as runtime documentation for the experimental track, not as a promise that AAYU is already a fully mature programming platform.
 
-## Core Runtime Components
+## Next Runtime Milestones
 
-### Native Memory Management
-The AAYU runtime handles variable scoping, garbage collection, and memory allocation automatically. Variables are strictly scoped to the blocks (like `task` or `if`) in which they are defined.
+### Sprint 36: Functions
 
-### Database Engine Integration
-AAYU is unique in that its runtime natively embeds a database engine (currently SQLite in the prototype). The runtime intercepts bytecode instructions related to database operations (`create`, `find`, `update`, `delete`) and automatically translates them into optimal SQL queries against the local data store.
+```aayu
+function greet(name)
+    print(name)
+end.
 
-There is no need to set up ORMs, connection pools, or database drivers.
+greet("Ayush")
+```
 
-### Built-in HTTP Server
-Similarly, the runtime embeds an HTTP server. When the `serve on` instruction is reached, the VM binds to the specified port and begins listening for requests, routing them automatically to the appropriate AAYU `task` blocks in memory.
+### Sprint 37: Loops
 
-## Future: The Rust Runtime (Sprint 24)
+```aayu
+for i in 1..5
+    print(i)
+end.
+```
 
-To maximize performance, security, and portability, the production version of the AAYU Native Runtime will be written entirely in Rust (`aayu-rs`). This will provide a lightweight, incredibly fast execution environment for `.ayc` binaries, suitable for cloud deployments and embedded systems.
+### Sprint 38: Modules
+
+```aayu
+import users.
+```
+
+## Future Rust Runtime
+
+The long-term runtime target is a Rust implementation (`aayu-rs`) that can execute `.ayc` bytecode efficiently and portably. That work should mature only after the Python prototype proves the core execution model.

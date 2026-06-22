@@ -58,4 +58,4 @@ AAYU automatically writes all of this into a pristine, ready-to-run `main.aayu` 
 
 You go from a single English sentence directly to a full-stack, secure, role-based application in **less than 10 seconds.**
 
-Welcome to the Intent Operating System.
+This is the core of AAYU's Architecture-First Software Factory workflow.

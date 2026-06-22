@@ -1,0 +1,14 @@
+{
+  "target_plan_version": "1.0",
+  "confidence": 59,
+  "stack": {
+    "frontend": "React",
+    "backend": "Spring",
+    "database": "PostgreSQL",
+    "special": []
+  },
+  "generators": [
+    "react-generator",
+    "spring-generator"
+  ]
+}

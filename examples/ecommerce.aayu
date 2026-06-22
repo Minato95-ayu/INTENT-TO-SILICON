@@ -1,4 +1,3 @@
-# AAYU E-Commerce Example
 use http.
 use db.
 use auth.
@@ -7,42 +6,28 @@ entity Product.
     text name.
     text description.
     number price.
-    number stock_quantity.
-end.
-
-entity Customer.
-    text name.
-    text email.
+    number stock.
 end.
 
 entity Order.
+    text order_number.
     text order_date.
     text status.
     number total_amount.
 end.
 
-entity OrderItem.
-    number quantity.
-    number price_at_purchase.
+entity Category.
+    text name.
 end.
 
-relation Customer one_to_many Order.
-relation Order one_to_many OrderItem.
-relation Product one_to_many OrderItem.
+relation Category one_to_many Product.
+relation Order many_to_many Product.
 
-workflow OrderFulfillment for Order.
-    step Pending.
-    step Processing.
-    step Shipped.
-    step Delivered.
-    step Cancelled.
+task checkout with req.
+    return "Checkout completed".
 end.
 
-task create_order with req.
-    # Logic to create an order
-    return json { "status": "Order created" }.
+post "/api/checkout" to checkout.
+
+page Dashboard.
 end.
-
-post "/api/orders" to create_order.
-
-serve on 8000.

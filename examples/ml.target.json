@@ -1,0 +1,14 @@
+{
+  "target_plan_version": "1.0",
+  "confidence": 55,
+  "stack": {
+    "frontend": "HTML/CSS/JS",
+    "backend": "FastAPI",
+    "database": "PostgreSQL",
+    "special": []
+  },
+  "generators": [
+    "html-generator",
+    "fastapi-generator"
+  ]
+}

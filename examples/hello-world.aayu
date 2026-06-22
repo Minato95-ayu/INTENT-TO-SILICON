@@ -1,6 +1,3 @@
-# Hello World Example
-task main.
-    show "Hello, AAYU World!".
-end.
 
-run main.
+page Dashboard.
+end.

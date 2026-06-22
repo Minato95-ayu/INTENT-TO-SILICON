@@ -29,6 +29,22 @@ export default defineConfig({
         ]
       },
       {
+        text: 'Specification v1',
+        items: [
+          { text: 'Overview', link: '/specification/' },
+          { text: 'Syntax', link: '/specification/syntax' },
+          { text: 'Data Types', link: '/specification/types' },
+          { text: 'Entities & Models', link: '/specification/entities' },
+          { text: 'Relations', link: '/specification/relations' },
+          { text: 'Pages & UI DSL', link: '/specification/pages' },
+          { text: 'Workflows', link: '/specification/workflows' },
+          { text: 'Modules', link: '/specification/modules' },
+          { text: 'Compiler & Targets', link: '/specification/compiler' },
+          { text: 'Runtime VM', link: '/specification/runtime' },
+          { text: 'Standard Library', link: '/specification/stdlib' }
+        ]
+      },
+      {
         text: 'Framework',
         items: [
           { text: 'Web Development', link: '/web/' },

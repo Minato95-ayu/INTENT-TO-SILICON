@@ -24,6 +24,8 @@ def print_usage():
     print("  aayu compile <file.aayu> - Compile AAYU file to bytecode (.ayc)")
     print("  aayu vm <file.aayu/.ayc> - Run AAYU file/bytecode on the stack VM")
     print("  aayu inspect <file>      - Generate AAYU IR from source file")
+    print("  aayu target <file>       - Run Target Selection Engine on source/IR")
+    print("  aayu generate <file>     - Generate output project based on Target Plan")
     print("  aayu build               - Build the project (stub)")
 
 def do_version():
@@ -405,6 +407,94 @@ def main():
             f.write(ir_json)
             
         print(f"Generated: {out_path}")
+    elif cmd == "target":
+        args = sys.argv[2:]
+        if not args:
+            print("Error: `aayu target` requires a file to process.")
+            print("Usage: aayu target <file.aayu> [--pretty]")
+            sys.exit(1)
+        filepath = args[0]
+        pretty = "--pretty" in args
+        
+        cli_dir = os.path.dirname(__file__)
+        sys.path.append(os.path.join(cli_dir, "aayu_language"))
+        sys.path.append(cli_dir) # For target_engine
+        
+        import json
+        from aayu_language.lexer import Lexer
+        from aayu_language.parser import Parser
+        from aayu_language.ir_generator import generate_ir
+        from target_engine.scorer import select_target
+        
+        # 1. Generate IR
+        with open(filepath, 'r', encoding='utf-8') as f:
+            source = f.read()
+            
+        lexer = Lexer(source)
+        parser = Parser(lexer.tokenize(), filename=filepath)
+        ast = parser.parse()
+        ir_json_str = generate_ir(ast)
+        ir_data = json.loads(ir_json_str)
+        
+        # 2. Run Target Selection
+        target_plan_json = select_target(ir_data)
+        
+        if pretty:
+            print("Target Plan:")
+            print(target_plan_json)
+            
+        out_path = filepath.replace('.aayu', '.target.json') if filepath.endswith('.aayu') else filepath + '.target.json'
+        with open(out_path, 'w', encoding='utf-8') as f:
+            f.write(target_plan_json)
+            
+        print(f"Generated: {out_path}")
+    elif cmd == "generate":
+        args = sys.argv[2:]
+        if not args:
+            print("Error: `aayu generate` requires a file to process.")
+            print("Usage: aayu generate <file.aayu>")
+            sys.exit(1)
+        filepath = args[0]
+        
+        cli_dir = os.path.dirname(__file__)
+        sys.path.append(os.path.join(cli_dir, "aayu_language"))
+        sys.path.append(cli_dir) # For target_engine & generators
+        
+        import json
+        from aayu_language.lexer import Lexer
+        from aayu_language.parser import Parser
+        from aayu_language.ir_generator import generate_ir
+        from target_engine.scorer import select_target
+        
+        # 1. Generate IR
+        with open(filepath, 'r', encoding='utf-8') as f:
+            source = f.read()
+            
+        lexer = Lexer(source)
+        parser = Parser(lexer.tokenize(), filename=filepath)
+        ast = parser.parse()
+        ir_json_str = generate_ir(ast)
+        ir_data = json.loads(ir_json_str)
+        
+        # 2. Run Target Selection
+        target_plan_json = select_target(ir_data)
+        target_plan = json.loads(target_plan_json)
+        
+        # 3. Generate Code
+        generators = target_plan.get("generators", [])
+        
+        if "react-generator" in generators:
+            from generators.react.generator import ReactGenerator
+            # Put output in generated/frontend relative to cwd
+            out_dir = os.path.join(os.getcwd(), "generated", "frontend")
+            react_gen = ReactGenerator(ir_data, out_dir)
+            react_gen.generate()
+            print(f"\nSuccess! React project generated at: {out_dir}")
+            print("To run:")
+            print(f"  cd {out_dir}")
+            print("  npm install")
+            print("  npm run dev")
+            
     else:
         print(f"Unknown command: {cmd}")
         print_usage()

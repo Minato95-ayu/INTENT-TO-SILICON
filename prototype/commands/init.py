@@ -18,12 +18,13 @@ def run_init(project_name: str):
 use http.
 use db.
 
-entity User.
+entity Patient.
     text name.
-    text email.
+    text phone.
 end.
 
-page Dashboard.
+entity Doctor.
+    text name.
 end.
 """
     with open(os.path.join(src_dir, "main.aayu"), "w", encoding="utf-8") as f:

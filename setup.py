@@ -21,7 +21,7 @@ setup(
         "Changelog": "https://github.com/Minato95-ayu/INTENT-TO-SILICON/blob/main/CHANGELOG.md",
     },
     package_dir={"": "prototype"},
-    packages=find_packages(where="prototype", include=["aayu_language*", "intent_engine*"]),
+    packages=find_packages(where="prototype"),
     py_modules=["cli"],
     include_package_data=True,
     entry_points={

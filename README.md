@@ -54,27 +54,31 @@ Run `aayu generate` and AAYU deterministically creates:
 ## Quick Start
 
 ### 1. Installation
-Clone the repository and verify your system:
+Clone the repository and install AAYU globally using pip:
 ```bash
 git clone https://github.com/Minato95-ayu/INTENT-TO-SILICON.git
 cd INTENT-TO-SILICON
 
-# Check if you have Node, Python, and Docker installed
-python prototype/cli.py doctor
+# Install the aayu package globally
+pip install .
+
+# Verify installation
+aayu --version
+aayu doctor
 ```
 
 ### 2. Initialize a Project
 Create a new AAYU project scaffolding:
 ```bash
-python prototype/cli.py init my_hospital
+aayu init my_hospital
 cd my_hospital
 ```
-*(This will generate a `src/main.aayu` file. Need help writing syntax? Check out the [Language Guide](docs/LANGUAGE_GUIDE.md).)*
+*(This will generate a `src/main.aayu` file with a default Hospital template. Need help writing syntax? Check out the [Language Guide](docs/LANGUAGE_GUIDE.md).)*
 
 ### 3. Generate Your App
 Once your `main.aayu` is ready, compile your intent into silicon:
 ```bash
-python ../prototype/cli.py generate src/main.aayu
+aayu generate src/main.aayu
 ```
 
 ### 4. Run the Generated Output

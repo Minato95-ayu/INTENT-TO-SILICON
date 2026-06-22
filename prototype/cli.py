@@ -13,8 +13,8 @@ if sys.stdout.encoding != 'utf-8':
 AAYU_VERSION = "0.1.0"
 
 def print_usage():
-    print("AAYU Prototype CLI")
-    print("Usage: python cli.py <command> [options]")
+    print("AAYU CLI")
+    print("Usage: aayu <command> [options]")
     print("\nCommands:")
     print("  init <name>      Initialize a new AAYU project")
     print("  doctor           Check environment dependencies (Node, Python, Docker)")
@@ -272,8 +272,9 @@ def main():
         
     cmd = sys.argv[1]
     
-    if cmd == "version":
+    if cmd in ["version", "--version", "-v"]:
         do_version()
+        sys.exit(0)
     elif cmd == "doctor":
         do_doctor()
     elif cmd == "new":

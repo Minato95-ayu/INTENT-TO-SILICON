@@ -522,11 +522,6 @@ def main():
             out_dir = os.path.join(os.getcwd(), "generated", "frontend")
             react_gen = ReactGenerator(ir_data, out_dir)
             react_gen.generate()
-            print(f"\nSuccess! React project generated at: {out_dir}")
-            print("To run:")
-            print(f"  cd {out_dir}")
-            print("  npm install")
-            print("  npm run dev")
             
         if "fastapi-generator" in generators:
             from generators.fastapi.generator import FastAPIGenerator
@@ -534,11 +529,6 @@ def main():
             out_dir = os.path.join(os.getcwd(), "generated", "backend")
             fastapi_gen = FastAPIGenerator(ir_data, out_dir)
             fastapi_gen.generate()
-            print(f"\nSuccess! FastAPI backend generated at: {out_dir}")
-            print("To run:")
-            print(f"  cd {out_dir}")
-            print("  pip install -r requirements.txt")
-            print("  uvicorn main:app --reload")
             
         if "postgresql-generator" in generators or "postgres-generator" in generators:
             from generators.postgres.generator import PostgresGenerator
@@ -546,15 +536,27 @@ def main():
             out_dir = os.path.join(os.getcwd(), "generated", "database")
             pg_gen = PostgresGenerator(ir_data, out_dir)
             pg_gen.generate()
-            print(f"\nSuccess! PostgreSQL schema generated at: {out_dir}")
             
         # Always run orchestrator last to bundle the full stack
         from generators.orchestrator.generator import OrchestratorGenerator
         orch_dir = os.path.join(os.getcwd(), "generated")
         orch_gen = OrchestratorGenerator(ir_data, orch_dir)
         orch_gen.generate()
-        print(f"\nSuccess! Full stack generated at: {orch_dir}")
-        print("Root configuration files (docker-compose.yml, README.md, .env.example) created.")
+        print(f"\n\u2728 AAYU Generation Complete! \u2728")
+        print("="*40)
+        
+        if "react-generator" in generators:
+            print("Frontend:\n  generated/frontend\n")
+        if "fastapi-generator" in generators:
+            print("Backend:\n  generated/backend\n")
+        if "postgresql-generator" in generators or "postgres-generator" in generators:
+            print("Database:\n  generated/database/schema.sql\n")
+            
+        print("Next Steps:")
+        print("  cd generated/frontend")
+        print("  npm install")
+        print("  npm run dev")
+        print("="*40)
             
     else:
         print(f"Unknown command: {cmd}")

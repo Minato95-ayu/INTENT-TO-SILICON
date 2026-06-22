@@ -1,90 +1,92 @@
-# AAYU: Intent-to-Silicon Architecture
+<div align="center">
+  <img src="https://via.placeholder.com/1000x300?text=AAYU+Architecture" alt="AAYU Ecosystem Overview">
+</div>
 
-![AAYU Ecosystem Overview](https://via.placeholder.com/1000x300?text=AAYU+Architecture)
+# AAYU
 
-**AAYU** is an Architecture-Aware Programming Platform. 
-It bridges the gap between human intent (what you want to build) and the silicon layer (the code that executes it). AAYU allows you to declare business entities, workflows, and roles using a highly readable DSL, and deterministically generates pristine, full-stack applications.
+**AAYU is an Architecture-First Software Factory that transforms business intent into production-ready software.**
+
+Describe your business system.
+Generate a complete React + FastAPI + PostgreSQL application.
+Own the code. Modify the code. Deploy the code.
 
 ---
 
-## What is AAYU?
+## 10-Minute Onboarding: What is AAYU?
 
-AAYU is **not** an AI that writes messy, unpredictable code. It is a deterministic compiler and orchestration engine. 
+AAYU handles the heavy lifting of software architecture. Instead of spending days writing database schemas, REST APIs, and React boilerplate, you define your **Intent** in a simple `.aayu` file, and AAYU builds the factory for you.
 
-You write **Intent**:
+### Two Ways To Use AAYU
+
+**1. Describe Intent (The Natural Way)**
+You describe the core entities and relationships of your business:
+*e.g. "I need a Hospital Management System with Doctors, Patients, and Appointments."*
+AAYU maps this to a formalized schema.
+
+**2. Write AAYU (The Developer Way)**
+You write a clean `.aayu` file directly:
 ```aayu
 use db.
 use http.
 
-entity Product.
+entity Doctor.
     text name.
-    number price.
+    text specialization.
 end.
 
-relation Category one_to_many Product.
+entity Patient.
+    text name.
+end.
+
+relation Doctor one_to_many Patient.
 ```
 
-AAYU parses this intent into an Abstract Syntax Tree (AST), maps it to our Intermediate Representation (IR), and triggers Target Engines to scaffold a complete, professional repository.
+### The Output
 
----
-
-## The Dual-Track Vision
-
-AAYU operates on two parallel tracks to ensure both immediate value and future-proof scalability:
-
-### Track A: The Software Factory (v1.0 Frozen)
-Generates industry-standard codebases that you can deploy today.
-- **Frontend**: React + Vite
-- **Backend**: FastAPI (Python)
-- **Database**: PostgreSQL (with automated schema generation)
-- **Orchestrator**: Auto-generates `docker-compose.yml`, `.env`, and deployment instructions.
-
-### Track B: The Native Runtime (Research)
-The future of execution. Bypassing traditional code generation to execute AAYU directly via the `AAYU Bytecode (AYC)` format on our ultra-fast Rust Virtual Machine.
-
----
-
-## How it Works
-
-1. **Parser & Lexer**: Reads `.aayu` files and builds an AST.
-2. **IR Generator**: Extracts semantic meaning without locking into a specific framework.
-3. **Target Engine**: Uses scoring heuristics to determine the best tech stack.
-4. **Code Generators**: Scaffolds React, FastAPI, and PostgreSQL files.
-5. **Orchestrator**: Wires the frontend and backend together using Docker.
+Run `aayu generate` and AAYU deterministically creates:
+- **Frontend:** A Vite + React web app ready for UI components.
+- **Backend:** A FastAPI python server with CRUD endpoints and Pydantic models.
+- **Database:** A PostgreSQL schema with automatically injected foreign keys and many-to-many join tables.
+- **Orchestration:** A `docker-compose.yml` to spin the entire stack up in one command.
 
 ---
 
 ## Quick Start
 
 ### 1. Installation
-Clone the repository and install the prototype tools:
+Clone the repository and verify your system:
 ```bash
 git clone https://github.com/Minato95-ayu/INTENT-TO-SILICON.git
 cd INTENT-TO-SILICON
+
+# Check if you have Node, Python, and Docker installed
+python prototype/cli.py doctor
 ```
 
-### 2. Generate Your First App
-AAYU comes with examples out of the box (e.g., E-commerce, Hospital, CRM, AI Agent).
+### 2. Initialize a Project
+Create a new AAYU project scaffolding:
 ```bash
-python prototype/cli.py generate examples/ecommerce.aayu
+python prototype/cli.py init my_hospital
+cd my_hospital
+```
+*(This will generate a `src/main.aayu` file. Need help writing syntax? Check out the [Language Guide](docs/LANGUAGE_GUIDE.md).)*
+
+### 3. Generate Your App
+Once your `main.aayu` is ready, compile your intent into silicon:
+```bash
+python ../prototype/cli.py generate src/main.aayu
 ```
 
-### 3. Run the Generated Output
+### 4. Run the Generated Output
 AAYU automatically creates a `generated/` directory complete with instructions.
 ```bash
 cd generated
 docker-compose up --build
 ```
-Your full-stack application is now live!
+Your full-stack application is now live at `http://localhost:3000`!
 
 ---
 
-## Roadmap
+## Philosophy: Intent vs Code
 
-- **Sprint 32 (Complete)**: Architecture Freeze v1.0. End-to-end validation across multiple industry examples.
-- **Sprint 33 (Upcoming)**: Developer Experience Upgrade (`aayu init`, `aayu doctor`, enhanced CLI diagnostics).
-- **Sprint 34+**: Advanced Code Generators (CRUD endpoints, robust UI forms) and Runtime Variable Management.
-
-## Contributing
-
-AAYU is an open research project exploring the limits of compiler-driven architecture. We welcome contributions to our `prototype/generators` and `aayu-rs` runtime engine.
+AAYU scaffolds **90%** of the boilerplate, database wiring, and architecture. You write manual code for the remaining **10%** (custom business logic, complex UI components, third-party integrations). AAYU gives you total ownership of the generated code—it is not a black box, it is a launchpad.

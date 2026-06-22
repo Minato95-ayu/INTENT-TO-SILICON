@@ -13,13 +13,17 @@ if sys.stdout.encoding != 'utf-8':
 AAYU_VERSION = "0.1.0"
 
 def print_usage():
-    print(f"AAYU CLI v{AAYU_VERSION}")
-    print("Usage:")
-    print("  aayu version             - Show version")
-    print("  aayu doctor              - Check system environment")
-    print("  aayu new <project>       - Scaffold a new project")
-    print("  aayu run                 - Run the current project")
-    print("  aayu install <package>   - Install a package")
+    print("AAYU Prototype CLI")
+    print("Usage: python cli.py <command> [options]")
+    print("\nCommands:")
+    print("  init <name>      Initialize a new AAYU project")
+    print("  doctor           Check environment dependencies (Node, Python, Docker)")
+    print("  validate <file>  Verify syntax without generating code")
+    print("  explain <file>   Print a human-readable summary of the AAYU file")
+    print("  generate <file>  Parse .aayu and generate target code")
+    print("  ast <file>       Parse .aayu and output AST JSON")
+    print("  ir <file>        Parse .aayu and output IR JSON")
+    print("  target <file>    Parse .aayu and output Target Architecture JSON")
     print("  aayu test                - Run test suite")
     print("  aayu compile <file.aayu> - Compile AAYU file to bytecode (.ayc)")
     print("  aayu vm <file.aayu/.ayc> - Run AAYU file/bytecode on the stack VM")
@@ -448,7 +452,36 @@ def main():
             f.write(target_plan_json)
             
         print(f"Generated: {out_path}")
-    elif cmd == "generate":
+    if cmd == "init":
+        if len(sys.argv) < 3:
+            print("Usage: aayu init <project_name>")
+            sys.exit(1)
+        from commands.init import run_init
+        run_init(sys.argv[2])
+        sys.exit(0)
+        
+    if cmd == "doctor":
+        from commands.doctor import run_doctor
+        run_doctor()
+        sys.exit(0)
+        
+    if cmd == "validate":
+        if len(sys.argv) < 3:
+            print("Usage: aayu validate <file.aayu>")
+            sys.exit(1)
+        from commands.validate import run_validate
+        run_validate(sys.argv[2])
+        sys.exit(0)
+        
+    if cmd == "explain":
+        if len(sys.argv) < 3:
+            print("Usage: aayu explain <file.aayu>")
+            sys.exit(1)
+        from commands.explain import run_explain
+        run_explain(sys.argv[2])
+        sys.exit(0)
+
+    if cmd == "generate":
         args = sys.argv[2:]
         if not args:
             print("Error: `aayu generate` requires a file to process.")
@@ -514,6 +547,14 @@ def main():
             pg_gen = PostgresGenerator(ir_data, out_dir)
             pg_gen.generate()
             print(f"\nSuccess! PostgreSQL schema generated at: {out_dir}")
+            
+        # Always run orchestrator last to bundle the full stack
+        from generators.orchestrator.generator import OrchestratorGenerator
+        orch_dir = os.path.join(os.getcwd(), "generated")
+        orch_gen = OrchestratorGenerator(ir_data, orch_dir)
+        orch_gen.generate()
+        print(f"\nSuccess! Full stack generated at: {orch_dir}")
+        print("Root configuration files (docker-compose.yml, README.md, .env.example) created.")
             
     else:
         print(f"Unknown command: {cmd}")

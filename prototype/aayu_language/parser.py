@@ -392,6 +392,8 @@ class Parser:
         
             fields = []
             while not self.check("KEYWORD") or self.peek().value not in ["end"]:
+                if self.is_at_end():
+                    raise AAYUSyntaxError(f"Unterminated entity '{name}', expect 'end.'", self.peek().line, hint="You may have forgotten 'end.' to close the entity block.", column=self.peek().column)
                 ftype = self.consume("KEYWORD", "Expect field type.").value
                 fname = self.consume("IDENTIFIER", "Expect field name.").value
                 self.consume("DOT", "Expect '.' after field declaration.")
@@ -799,7 +801,18 @@ class Parser:
     def consume(self, token_type: str, message: str, token_value: str = None) -> Token:
         if self.check(token_type, token_value):
             return self.advance()
-        raise AAYUSyntaxError(f"{message} Found '{self.peek().value}'", self.peek().line, column=self.peek().column)
+            
+        hint = ""
+        if token_value == "end":
+            hint = f"You may have forgotten 'end.' to close the current block."
+        elif token_type == "DOT":
+            hint = "You may have forgotten a period '.' at the end of the statement."
+        elif token_type == "IDENTIFIER" and not token_value:
+            hint = "Expected a name or identifier here (e.g. a variable or entity name)."
+        else:
+            hint = "Check for typos or missing keywords."
+            
+        raise AAYUSyntaxError(f"{message} Found '{self.peek().value}'", self.peek().line, hint=hint, column=self.peek().column)
 
 if __name__ == "__main__":
     def parse_entity_declaration(self):
@@ -808,6 +821,9 @@ if __name__ == "__main__":
         
         fields = []
         while not self.check("KEYWORD") or self.peek().value not in ["end"]:
+            if self.is_at_end():
+                raise AAYUSyntaxError(f"Unterminated entity '{name}', expect 'end.'", self.peek().line, hint="You may have forgotten 'end.' to close the entity block.", column=self.peek().column)
+                
             ftype = self.consume("KEYWORD", "Expect field type.").value
             fname = self.consume("IDENTIFIER", "Expect field name.").value
             self.consume("DOT", "Expect '.' after field declaration.")

@@ -1,0 +1,42 @@
+# AAYU Todo App Example
+use http.
+use db.
+
+entity Todo.
+    text title.
+    boolean completed.
+end.
+
+task get_todos with req.
+    list todos is find Todo.
+    return json todos.
+end.
+
+task add_todo with req.
+    map data is json req.
+    create Todo with data.
+    return json { "status": "success", "message": "Todo added" }.
+end.
+
+task complete_todo with req.
+    text todo_id is path "id" from req.
+    map update_data.
+    set "completed" to true in update_data.
+    update Todo where "id" equal to todo_id with update_data.
+    return json { "status": "success", "message": "Todo completed" }.
+end.
+
+task delete_todo with req.
+    text todo_id is path "id" from req.
+    delete Todo where "id" equal to todo_id.
+    return json { "status": "success", "message": "Todo deleted" }.
+end.
+
+# Setup routes
+get "/todos" to get_todos.
+post "/todos" to add_todo.
+put "/todos/{id}/complete" to complete_todo.
+delete "/todos/{id}" to delete_todo.
+
+# Start the application server
+serve on 8080.

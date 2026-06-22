@@ -1,0 +1,25 @@
+# AAYU Landing Page Example
+use http.
+
+page LandingPage.
+    dashboard.
+        navbar.
+            heading "AAYU Platform".
+            button "Login".
+        end.
+        column.
+            heading "Write Intent. Or Write Code.".
+            text "Both become Software. Welcome to the Intent-Aware Programming Language.".
+            button "Get Started".
+            button "Read Docs".
+        end.
+    end.
+end.
+
+task handle_home with req.
+    return render "LandingPage.html".
+end.
+
+get "/" to handle_home.
+
+serve on 3000.

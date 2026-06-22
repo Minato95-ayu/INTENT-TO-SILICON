@@ -1,0 +1,57 @@
+# AAYU CRM Example
+use http.
+use db.
+use auth.
+use rbac.
+
+entity Customer.
+    text name.
+    text email.
+    text phone.
+    text status.
+end.
+
+entity Lead.
+    text company.
+    text contact_person.
+    number potential_value.
+end.
+
+relation Customer one_to_many Lead.
+
+role SalesRep.
+role SalesManager.
+
+allow SalesRep create Lead.
+allow SalesRep update Lead.
+allow SalesManager create Customer.
+allow SalesManager delete Customer.
+allow SalesManager delete Lead.
+
+workflow LeadConversion for Lead.
+    step New.
+    step Contacted.
+    step Qualified.
+    step Converted.
+end.
+
+page CRM_Dashboard.
+    sidebar.
+        text "Customers".
+        text "Leads".
+        text "Reports".
+    end.
+    column.
+        heading "CRM Dashboard".
+        table "Customers" from Customer.
+        table "Active Leads" from Lead where "status" not_equal to "Converted".
+    end.
+end.
+
+task dashboard_route with req.
+    return render "CRM_Dashboard.html".
+end.
+
+get "/dashboard" to dashboard_route.
+
+serve on 8080.

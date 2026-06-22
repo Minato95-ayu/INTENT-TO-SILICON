@@ -17,6 +17,7 @@ export default defineConfig({
       {
         text: 'Getting Started',
         items: [
+          { text: 'What is AAYU?', link: '/guide/what-is-aayu' },
           { text: 'Installation', link: '/guide/installation' },
           { text: 'Downloads', link: '/guide/downloads' }
         ]

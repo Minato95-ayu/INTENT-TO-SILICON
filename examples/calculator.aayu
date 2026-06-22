@@ -1,0 +1,31 @@
+# AAYU Calculator Example
+task add with a, b.
+    return a + b.
+end.
+
+task subtract with a, b.
+    return a - b.
+end.
+
+task multiply with a, b.
+    return a * b.
+end.
+
+task divide with a, b.
+    if b equal to 0.
+        return "Error: Division by zero".
+    end.
+    return a / b.
+end.
+
+task main.
+    number num1 is 100.
+    number num2 is 25.
+
+    show "Addition: " + run add with num1, num2.
+    show "Subtraction: " + run subtract with num1, num2.
+    show "Multiplication: " + run multiply with num1, num2.
+    show "Division: " + run divide with num1, num2.
+end.
+
+run main.

@@ -5,8 +5,8 @@ export default defineConfig({
   title: "AAYU",
   description: "Architecture-First Software Factory",
   head: [
-    ['link', { rel: 'icon', type: 'image/png', href: '/INTENT-TO-SILICON/aayu-logo.png' }],
-    ['link', { rel: 'apple-touch-icon', href: '/INTENT-TO-SILICON/aayu-logo.png' }]
+    ['link', { rel: 'icon', type: 'image/png', href: '/INTENT-TO-SILICON/aayu-icon.png' }],
+    ['link', { rel: 'apple-touch-icon', href: '/INTENT-TO-SILICON/aayu-icon.png' }]
   ],
   themeConfig: {
     logo: '/aayu-logo.png',

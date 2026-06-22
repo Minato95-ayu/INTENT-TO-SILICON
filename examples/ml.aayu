@@ -1,0 +1,22 @@
+use http.
+use db.
+
+entity Model.
+    text name.
+    number version.
+    text path.
+end.
+
+entity Prediction.
+    number input_value.
+    number result.
+    text timestamp.
+end.
+
+relation Model one_to_many Prediction.
+
+task predict with req.
+    return "Prediction made".
+end.
+
+post "/api/predict" to predict.

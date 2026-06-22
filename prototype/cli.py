@@ -495,6 +495,18 @@ def main():
             print("  npm install")
             print("  npm run dev")
             
+        if "fastapi-generator" in generators:
+            from generators.fastapi.generator import FastAPIGenerator
+            # Put output in generated/backend relative to cwd
+            out_dir = os.path.join(os.getcwd(), "generated", "backend")
+            fastapi_gen = FastAPIGenerator(ir_data, out_dir)
+            fastapi_gen.generate()
+            print(f"\nSuccess! FastAPI backend generated at: {out_dir}")
+            print("To run:")
+            print(f"  cd {out_dir}")
+            print("  pip install -r requirements.txt")
+            print("  uvicorn main:app --reload")
+            
     else:
         print(f"Unknown command: {cmd}")
         print_usage()

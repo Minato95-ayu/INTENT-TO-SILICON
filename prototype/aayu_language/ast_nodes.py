@@ -6,6 +6,12 @@ class Node:
     pass
 
 @dataclass
+class FunctionDeclNode(Node):
+    name: str
+    parameters: List[str]
+    body: List[Node]
+
+@dataclass
 class ProgramNode(Node):
     statements: List[Node]
 

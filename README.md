@@ -54,13 +54,15 @@ Run `aayu generate` and AAYU deterministically creates:
 ## Quick Start
 
 ### 1. Installation
-Clone the repository and install AAYU globally using pip:
+
+> **Note:** AAYU is not yet published on PyPI. Install from source using the steps below.
+
 ```bash
 git clone https://github.com/Minato95-ayu/INTENT-TO-SILICON.git
 cd INTENT-TO-SILICON
 
-# Install the aayu package globally
-pip install .
+# Install in editable/development mode
+pip install -e .
 
 # Verify installation
 aayu --version

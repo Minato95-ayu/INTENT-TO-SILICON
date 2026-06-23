@@ -3,7 +3,7 @@ from lexer import Token, Lexer
 from ast_nodes import (
     ProgramNode, DeclarationNode, ShowNode, BinaryExpressionNode,
     VariableNode, NumberNode, TextNode, IfNode, WhileNode, TryCatchNode, RepeatNode, ForEachNode, TaskNode, RunNode, ListDeclarationNode, ListInitializationNode, ReturnNode, UseNode, RecordDeclarationNode, InstanceDeclarationNode, PropertyAccessNode, AssignmentNode, ReadExpressionNode, WriteStatementNode, AddToListNode, MapDeclarationNode, SetInMapNode, GetFromMapNode, BuiltinFunctionNode, ExportNode, ServeNode, RouteNode, RenderExpressionNode, FormGetNode, JsonSerializeNode, Node,
-    EntityDeclarationNode, CreateEntityNode, FindEntityNode, UpdateEntityNode, DeleteEntityNode, CreateAccountNode,
+    EntityDeclarationNode, CreateEntityNode, FindEntityNode, UpdateEntityNode, DeleteEntityNode, CreateAccountNode, FunctionDeclNode,
     LoginNode, LogoutNode, GuardSessionNode, TestNode, ExpectNode, UIPageNode, UIComponentNode, UIElementNode, CrudNode, RelationDefNode, RoleDefNode, AllowDefNode, WorkflowDefNode, StepDefNode
 )
 from errors import AAYUSyntaxError
@@ -25,8 +25,12 @@ class Parser:
         start_token = self.peek()
         node = None
         
-        if self.match("KEYWORD", "number") or self.match("KEYWORD", "text"):
+        if self.match("KEYWORD", "number") or self.match("KEYWORD", "text") or self.match("KEYWORD", "let"):
             node = self.parse_declaration(self.previous().value)
+        elif self.match("KEYWORD", "function"):
+            node = self.parse_function_declaration()
+        elif self.match("KEYWORD", "print"):
+            node = self.parse_print()
         elif self.match("KEYWORD", "show"):
             node = self.parse_show()
         elif self.match("KEYWORD", "if"):
@@ -116,7 +120,20 @@ class Parser:
                self.tokens[self.current + 2].value == "is":
                 node = self.parse_instance_declaration()
             else:
-                node = self.parse_assignment_statement()
+                # Check if it's an assignment by looking ahead
+                is_assignment = False
+                lookahead = self.current
+                while lookahead < len(self.tokens) and self.tokens[lookahead].type != "DOT":
+                    if self.tokens[lookahead].value in ("is", "="):
+                        is_assignment = True
+                        break
+                    lookahead += 1
+                
+                if is_assignment:
+                    node = self.parse_assignment_statement()
+                else:
+                    node = self.parse_expression()
+                    self.consume("DOT", "Expect '.' after expression statement.")
         else:
             raise AAYUSyntaxError(f"Unexpected token '{self.peek().value}'", self.peek().line, column=self.peek().column, hint="Check for typos or missing keywords.")
             
@@ -128,12 +145,28 @@ class Parser:
 
     def parse_declaration(self, var_type: str) -> DeclarationNode:
         name = self.consume("IDENTIFIER", "Expect variable name.").value
-        self.consume("KEYWORD", "Expect 'is' after variable name.", "is")
+        
+        if self.match("KEYWORD", "is") or self.match("EQ", "="):
+            pass
+        else:
+            token = self.peek()
+            from errors import AAYUSyntaxError
+            raise AAYUSyntaxError("Expect 'is' or '=' after variable name.", token.line, token.column)
         
         value = self.parse_expression()
         
-        self.consume("DOT", "Expect '.' after declaration.")
+        # Make dot optional for let statements
+        self.match("DOT", ".")
         return DeclarationNode(var_type=var_type, name=name, value=value)
+
+    def parse_print(self) -> BuiltinFunctionNode:
+        self.consume("LPAREN", "Expect '(' after print.")
+        arguments = []
+        if not self.check("RPAREN", ")"):
+            arguments.append(self.parse_expression())
+        self.consume("RPAREN", "Expect ')' after print arguments.")
+        self.match("DOT", ".")
+        return BuiltinFunctionNode(name="print", arguments=arguments)
 
     def parse_show(self) -> ShowNode:
         expression = self.parse_expression()
@@ -142,7 +175,7 @@ class Parser:
 
     def parse_if(self) -> IfNode:
         condition = self.parse_expression()
-        self.consume("DOT", "Expect '.' after if condition.")
+        self.match("DOT", ".")
         
         body = []
         else_body = None
@@ -151,13 +184,13 @@ class Parser:
             body.append(self.parse_statement())
             
         if self.match("KEYWORD", "else"):
-            self.consume("DOT", "Expect '.' after 'else'.")
+            self.match("DOT", ".")
             else_body = []
             while not self.is_at_end() and not self.check("KEYWORD", "end"):
                 else_body.append(self.parse_statement())
             
-        self.consume("KEYWORD", "Expect 'end' after if block.", "end")
-        self.consume("DOT", "Expect '.' after 'end'.")
+        self.consume("KEYWORD", "Expect 'end' after if statement.", "end")
+        self.match("DOT", ".")
         
         return IfNode(condition=condition, body=body, else_body=else_body)
 

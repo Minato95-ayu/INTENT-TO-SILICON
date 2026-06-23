@@ -10,7 +10,7 @@ if sys.stdout.encoding != 'utf-8':
     except AttributeError:
         pass
 
-AAYU_VERSION = "0.1.0"
+AAYU_VERSION = "1.0.0"
 
 def print_usage():
     print("AAYU CLI")
@@ -378,6 +378,7 @@ def main():
             
         vm = VirtualMachine()
         vm.run(bytecode)
+        sys.exit(0)
     elif cmd == "inspect":
         args = sys.argv[2:]
         if not args:
@@ -547,16 +548,38 @@ def main():
         print("="*40)
         
         if "react-generator" in generators:
-            print("Frontend:\n  generated/frontend\n")
+            print("Frontend:  \u2705")
+            print("  generated/frontend\n")
+        else:
+            print("Frontend:  \u274c")
+            print("  Not Generated")
+            print("  Reason: No pages defined\n")
+        
         if "fastapi-generator" in generators:
-            print("Backend:\n  generated/backend\n")
+            print("Backend:   \u2705")
+            print("  generated/backend\n")
+        else:
+            print("Backend:   \u274c")
+            print("  Not Generated\n")
+        
         if "postgresql-generator" in generators or "postgres-generator" in generators:
-            print("Database:\n  generated/database/schema.sql\n")
-            
-        print("Next Steps:")
-        print("  cd generated/frontend")
-        print("  npm install")
-        print("  npm run dev")
+            print("Database:  \u2705")
+            print("  generated/database/schema.sql\n")
+        else:
+            print("Database:  \u274c")
+            print("  Not Generated\n")
+        
+        if "react-generator" in generators:
+            print("Next Steps:")
+            print("  cd generated/frontend")
+            print("  npm install")
+            print("  npm run dev")
+        else:
+            print("Next Steps:")
+            print("  Add a 'page' block to your .aayu file to generate frontend.")
+            print("  Example:")
+            print("    page Dashboard.")
+            print("    end.")
         print("="*40)
             
     else:

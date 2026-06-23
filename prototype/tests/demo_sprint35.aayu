@@ -1,0 +1,5 @@
+let name = "Ayush"
+
+if name == "Ayush"
+    print("Founder")
+end.

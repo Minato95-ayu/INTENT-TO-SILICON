@@ -36,6 +36,7 @@ class Lexer:
             ("LPAREN", r'\('),
             ("RPAREN", r'\)'),
             ("COMMA", r','),
+            ("DOT_DOT", r'\.\.'),
             ("DOT", r'\.'),
             ("WHITESPACE", r'[ \t]+'),
             ("NEWLINE", r'\n'),

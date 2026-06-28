@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: "AAYU"
-  text: "v1.0 Developer Preview"
-  tagline: "Architecture-First Software Factory"
+  text: "Architecture-First Programming Platform"
+  tagline: "Talk. Design. Generate. Build. From conversation to production software."
   image:
     src: /aayu-logo.png
     alt: AAYU logo
@@ -13,19 +13,28 @@ hero:
       text: Get Started
       link: /guide/installation
     - theme: alt
-      text: Language Guide
-      link: /guide/syntax
+      text: Install
+      link: /guide/installation
     - theme: alt
-      text: Runtime Status
-      link: /specification/runtime
+      text: GitHub
+      link: https://github.com/Minato95-ayu/INTENT-TO-SILICON
 
 features:
-  - title: Business Intent or AAYU Code
-    details: Start from a plain business requirement or a direct .aayu source file.
-  - title: Compiler to Architecture
-    details: AAYU parses source, builds IR, selects targets, and generates full-stack software.
-  - title: Experimental Runtime
-    details: Sprint 35 verifies AAYU Source -> Parser -> Compiler -> AYC -> VM -> Execution.
+  - title: AAYU Language
+    details: Developer Preview
+    link: /platform/language
+  - title: AAYU Engine
+    details: Developer Preview
+    link: /platform/engine
+  - title: AAYU Studio
+    details: Preview
+    link: /platform/studio
+  - title: AAYU Chat
+    details: Experimental
+    link: /platform/chat
+  - title: BrainOS
+    details: Prototype
+    link: /platform/brainos
 ---
 
 <style>
@@ -39,9 +48,16 @@ features:
 }
 
 .pipeline {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 12px;
   margin: 18px 0 0;
+}
+
+.pipeline-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .pipeline-step {
@@ -50,12 +66,14 @@ features:
   padding: 14px 16px;
   background: var(--vp-c-bg-soft);
   font-weight: 650;
+  text-align: center;
+  flex: 1;
 }
 
 .pipeline-arrow {
   color: var(--vp-c-text-2);
   font-weight: 700;
-  padding-left: 16px;
+  text-align: center;
 }
 
 .terminal {
@@ -81,108 +99,86 @@ features:
   color: #9ca3af;
 }
 
-.status-grid {
-  display: grid;
-  gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-}
-
-.status-panel {
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 8px;
-  padding: 18px;
-  background: var(--vp-c-bg-soft);
-}
-
-.bar {
-  height: 12px;
-  margin: 12px 0;
-  border-radius: 999px;
-  background: var(--vp-c-divider);
-  overflow: hidden;
-}
-
-.fill-a {
-  width: 100%;
-  height: 100%;
-  background: #0f8a78;
-}
-
-.fill-b {
-  width: 40%;
-  height: 100%;
-  background: #1464f6;
+.builder-note {
+  margin-top: 10px;
+  font-style: italic;
+  color: var(--vp-c-text-2);
+  text-align: center;
 }
 </style>
 
 <section class="aayu-section">
-  <h2>Verified Generation Flow</h2>
-  <div class="pipeline">
-    <div class="pipeline-step">Business Intent OR AAYU Code</div>
-    <div class="pipeline-arrow">down</div>
-    <div class="pipeline-step">AAYU Language</div>
-    <div class="pipeline-arrow">down</div>
-    <div class="pipeline-step">AAYU Compiler</div>
-    <div class="pipeline-arrow">down</div>
-    <div class="pipeline-step">AAYU IR</div>
-    <div class="pipeline-arrow">down</div>
-    <div class="pipeline-step">Target Selection Engine</div>
-    <div class="pipeline-arrow">down</div>
-    <div class="pipeline-step">React + FastAPI + PostgreSQL</div>
-    <div class="pipeline-arrow">down</div>
-    <div class="pipeline-step">Production-Ready Software</div>
-  </div>
-</section>
-
-<section class="aayu-section">
-  <h2>Install and Generate</h2>
+  <h2 style="text-align: center;">Why AAYU? 30 Second Demo</h2>
   <div class="terminal">
-    <div><span class="prompt">$</span> pip install aayu</div>
-    <div><span class="prompt">$</span> aayu init hospital</div>
-    <div><span class="prompt">$</span> aayu generate src/main.aayu</div>
+    <div><span class="prompt">$</span> aayu chat</div>
+    <div>What do you want to build?</div>
+    <div><span class="ok">> Hospital Management System</span></div>
     <br>
-    <div class="ok">generated/</div>
-    <div class="muted">|-- frontend/</div>
-    <div class="muted">|-- backend/</div>
-    <div class="muted">|-- database/</div>
-    <div class="muted">`-- docker-compose.yml</div>
+    <div class="muted">Intent Locked</div>
+    <div class="muted">Generated: main.aayu</div>
+    <div class="muted">Validating...</div>
+    <div class="ok">[OK] Syntax Valid</div>
+    <div class="muted">Generating Architecture...</div>
+    <div class="ok">[OK] React</div>
+    <div class="ok">[OK] FastAPI</div>
+    <div class="ok">[OK] PostgreSQL</div>
+    <br>
+    <div><span class="ok">Project Ready!</span></div>
   </div>
 </section>
 
 <section class="aayu-section">
-  <h2>Runtime Roadmap</h2>
-  <div class="pipeline">
-    <div class="pipeline-step">AAYU Code</div>
-    <div class="pipeline-arrow">down</div>
-    <div class="pipeline-step">AYC Bytecode</div>
-    <div class="pipeline-arrow">down</div>
-    <div class="pipeline-step">AAYU Runtime (Rust)</div>
-    <div class="pipeline-arrow">down</div>
-    <div class="pipeline-step">Execution</div>
-  </div>
-</section>
-
-<section class="aayu-section">
-  <h2>Current Maturity</h2>
-  <div class="status-grid">
-    <div class="status-panel">
-      <strong>Track A: Software Factory</strong>
-      <div class="bar"><div class="fill-a"></div></div>
-      <span>100% developer preview capability.</span>
+  <h2>Get Started</h2>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+    <div>
+      <h3>Track 1: Developers</h3>
+      <div class="terminal" style="min-height: 250px;">
+        <div><span class="prompt">$</span> git clone https://github.com/Minato95-ayu/INTENT-TO-SILICON.git</div>
+        <div><span class="prompt">$</span> pip install -e .</div>
+        <div><span class="prompt">$</span> aayu init hospital</div>
+        <div><span class="prompt">$</span> aayu generate src/main.aayu</div>
+      </div>
     </div>
-    <div class="status-panel">
-      <strong>Track B: Experimental Runtime</strong>
-      <div class="bar"><div class="fill-b"></div></div>
-      <span>40% foundation. Variables, print, and if are verified through Sprint 35.</span>
+    <div>
+      <h3>Track 2: AI Chat</h3>
+      <div class="terminal" style="min-height: 250px;">
+        <div><span class="prompt">$</span> aayu chat</div>
+        <div class="muted">Answer a few questions</div>
+        <div><span class="prompt">></span> Generate? (Y/N) Y</div>
+        <div class="ok">Auto-generates main.aayu & Project</div>
+      </div>
     </div>
   </div>
 </section>
 
 <section class="aayu-section">
-  <h2>Sprint 35 Verification</h2>
-  <div class="terminal">
-    <div><span class="prompt">$</span> python -m prototype.cli vm prototype/tests/demo_sprint35.aayu</div>
-    <br>
-    <div class="ok">Founder</div>
+  <h2>Centralized Architecture</h2>
+  <div class="pipeline">
+    <div class="pipeline-step">Developer</div>
+    <div class="pipeline-arrow">↓</div>
+    <div class="pipeline-step" style="border-color: #3b82f6;">AAYU Chat</div>
+    <div class="pipeline-arrow">↓</div>
+    <div class="pipeline-step" style="border-color: #3b82f6;">Question Engine</div>
+    <div class="pipeline-arrow">↓</div>
+    <div class="pipeline-step" style="border-color: #3b82f6;">Intent Engine</div>
+    <div class="pipeline-arrow">↓</div>
+    <div class="pipeline-step" style="background: #1e3a8a; color: white;">Builder API</div>
+    <div class="pipeline-arrow">↓</div>
+    <div class="pipeline-step">Parser → Compiler → Generators</div>
+    <div class="pipeline-arrow">↓</div>
+    <div class="pipeline-row">
+      <div class="pipeline-step" style="border-color: #10b981;">React</div>
+      <div class="pipeline-step" style="border-color: #10b981;">FastAPI</div>
+      <div class="pipeline-step" style="border-color: #10b981;">PostgreSQL</div>
+    </div>
+  </div>
+  <p class="builder-note">
+    Builder API is the single integration point used by the CLI, Chat, VS Code Studio, and future web applications.
+  </p>
+</section>
+
+<section class="aayu-section" style="margin-bottom: 50px;">
+  <div style="text-align: center; color: var(--vp-c-text-2);">
+    Website v2.0 &mdash; Developer Preview
   </div>
 </section>

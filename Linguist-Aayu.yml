@@ -20,6 +20,12 @@ escape_char: '\'
 searchable: true
 
 keywords:
+  - system
+  - record
+  - task
+  - page
+  - entity
+  - workflow
   - create
   - find
   - find_all
@@ -36,7 +42,6 @@ keywords:
   - form
   - guard
   - session
-  - workflow
   - step
   - allow
   - with

@@ -126,35 +126,17 @@ def do_run():
         print(f"Error: {main_file} not found.")
         return
         
-    print(f"Compiling {main_file}...")
+    print(f"Compiling and Running {main_file}...")
     
     cli_dir = os.path.dirname(__file__)
-    sys.path.append(os.path.join(cli_dir, "aayu_language"))
+    sys.path.append(os.path.join(cli_dir, "engine"))
     
-    from lexer import Lexer
-    from parser import Parser
-    from compiler import AAYUCompiler
-    from serializer import serialize
-    from vm import VirtualMachine
+    from engine.api import AAYUEngine
     
-    with open(main_file, 'r', encoding='utf-8') as f:
-        source = f.read()
-        
-    lexer = Lexer(source)
-    parser = Parser(lexer.tokenize(), filename=main_file)
-    ast = parser.parse()
-    
-    compiler = AAYUCompiler()
-    bytecode = compiler.compile(ast)
-    
-    out_path = main_file[:-5] + '.ayc'
-    serialized = serialize(bytecode)
-    with open(out_path, 'w', encoding='utf-8') as f:
-        f.write(serialized)
-        
-    print("Compiled successfully! Starting VM...")
-    vm = VirtualMachine()
-    vm.run(bytecode)
+    engine = AAYUEngine()
+    project = engine.load(main_file)
+    project.run()
+    print("Execution complete.")
 
 def do_build():
     print("AAYU build not implemented yet. Wait for Native Compiler / IR Phase.")
@@ -277,6 +259,10 @@ def main():
         sys.exit(0)
     elif cmd == "doctor":
         do_doctor()
+    elif cmd == "chat":
+        from chat import run_chat
+        run_chat()
+        sys.exit(0)
     elif cmd == "new":
         if len(sys.argv) < 3:
             print("Error: Please provide a project name. Example: aayu new myapp")
@@ -315,23 +301,14 @@ def main():
         filepath = args[0]
         
         cli_dir = os.path.dirname(__file__)
-        sys.path.append(os.path.join(cli_dir, "aayu_language"))
+        sys.path.append(os.path.join(cli_dir, "engine"))
         
-        from lexer import Lexer
-        from parser import Parser
-        from compiler import AAYUCompiler
-        from serializer import serialize
+        from engine.api import AAYUEngine
+        engine = AAYUEngine()
+        project = engine.load(filepath)
         
-        with open(filepath, 'r', encoding='utf-8') as f:
-            source = f.read()
-            
-        lexer = Lexer(source)
-        parser = Parser(lexer.tokenize(), filename=filepath)
-        ast = parser.parse()
-        
-        compiler = AAYUCompiler()
-        bytecode = compiler.compile(ast)
-        
+        bytecode = project.compile()
+        from aayu_language.serializer import serialize
         serialized = serialize(bytecode)
         
         if filepath.endswith('.aayu'):
@@ -352,32 +329,21 @@ def main():
         filepath = args[0]
         
         cli_dir = os.path.dirname(__file__)
-        sys.path.append(os.path.join(cli_dir, "aayu_language"))
-        
-        from vm import VirtualMachine
+        sys.path.append(os.path.join(cli_dir, "engine"))
+        from engine.api import AAYUEngine
         
         if filepath.endswith('.ayc'):
-            from serializer import deserialize
+            from aayu_language.serializer import deserialize
+            from aayu_language.vm.vm import VM
             with open(filepath, 'r', encoding='utf-8') as f:
                 serialized = f.read()
             bytecode = deserialize(serialized)
+            vm = VM()
+            vm.run(bytecode)
         else:
-            from lexer import Lexer
-            from parser import Parser
-            from compiler import AAYUCompiler
-            
-            with open(filepath, 'r', encoding='utf-8') as f:
-                source = f.read()
-                
-            lexer = Lexer(source)
-            parser = Parser(lexer.tokenize(), filename=filepath)
-            ast = parser.parse()
-            
-            compiler = AAYUCompiler()
-            bytecode = compiler.compile(ast)
-            
-        vm = VirtualMachine()
-        vm.run(bytecode)
+            engine = AAYUEngine()
+            project = engine.load(filepath)
+            project.run()
         sys.exit(0)
     elif cmd == "inspect":
         args = sys.argv[2:]
@@ -492,94 +458,21 @@ def main():
         filepath = args[0]
         
         cli_dir = os.path.dirname(__file__)
-        sys.path.append(os.path.join(cli_dir, "aayu_language"))
-        sys.path.append(cli_dir) # For target_engine & generators
+        sys.path.append(os.path.join(cli_dir, "engine"))
         
-        import json
-        from aayu_language.lexer import Lexer
-        from aayu_language.parser import Parser
-        from aayu_language.ir_generator import generate_ir
-        from target_engine.scorer import select_target
+        from engine.api import AAYUEngine
+        engine = AAYUEngine()
+        project = engine.load(filepath)
         
-        # 1. Generate IR
-        with open(filepath, 'r', encoding='utf-8') as f:
-            source = f.read()
-            
-        lexer = Lexer(source)
-        parser = Parser(lexer.tokenize(), filename=filepath)
-        ast = parser.parse()
-        ir_json_str = generate_ir(ast)
-        ir_data = json.loads(ir_json_str)
-        
-        # 2. Run Target Selection
-        target_plan_json = select_target(ir_data)
-        target_plan = json.loads(target_plan_json)
-        
-        # 3. Generate Code
-        generators = target_plan.get("generators", [])
-        
-        if "react-generator" in generators:
-            from generators.react.generator import ReactGenerator
-            # Put output in generated/frontend relative to cwd
-            out_dir = os.path.join(os.getcwd(), "generated", "frontend")
-            react_gen = ReactGenerator(ir_data, out_dir)
-            react_gen.generate()
-            
-        if "fastapi-generator" in generators:
-            from generators.fastapi.generator import FastAPIGenerator
-            # Put output in generated/backend relative to cwd
-            out_dir = os.path.join(os.getcwd(), "generated", "backend")
-            fastapi_gen = FastAPIGenerator(ir_data, out_dir)
-            fastapi_gen.generate()
-            
-        if "postgresql-generator" in generators or "postgres-generator" in generators:
-            from generators.postgres.generator import PostgresGenerator
-            # Put output in generated/database relative to cwd
-            out_dir = os.path.join(os.getcwd(), "generated", "database")
-            pg_gen = PostgresGenerator(ir_data, out_dir)
-            pg_gen.generate()
-            
-        # Always run orchestrator last to bundle the full stack
-        from generators.orchestrator.generator import OrchestratorGenerator
-        orch_dir = os.path.join(os.getcwd(), "generated")
-        orch_gen = OrchestratorGenerator(ir_data, orch_dir)
-        orch_gen.generate()
+        out_dir = os.path.join(os.getcwd(), "generated")
+        project.generate(out_dir=out_dir)
+
         print(f"\n\u2728 AAYU Generation Complete! \u2728")
         print("="*40)
-        
-        if "react-generator" in generators:
-            print("Frontend:  \u2705")
-            print("  generated/frontend\n")
-        else:
-            print("Frontend:  \u274c")
-            print("  Not Generated")
-            print("  Reason: No pages defined\n")
-        
-        if "fastapi-generator" in generators:
-            print("Backend:   \u2705")
-            print("  generated/backend\n")
-        else:
-            print("Backend:   \u274c")
-            print("  Not Generated\n")
-        
-        if "postgresql-generator" in generators or "postgres-generator" in generators:
-            print("Database:  \u2705")
-            print("  generated/database/schema.sql\n")
-        else:
-            print("Database:  \u274c")
-            print("  Not Generated\n")
-        
-        if "react-generator" in generators:
-            print("Next Steps:")
-            print("  cd generated/frontend")
-            print("  npm install")
-            print("  npm run dev")
-        else:
-            print("Next Steps:")
-            print("  Add a 'page' block to your .aayu file to generate frontend.")
-            print("  Example:")
-            print("    page Dashboard.")
-            print("    end.")
+        print("Next Steps:")
+        print("  cd generated/frontend")
+        print("  npm install")
+        print("  npm run dev")
         print("="*40)
             
     else:

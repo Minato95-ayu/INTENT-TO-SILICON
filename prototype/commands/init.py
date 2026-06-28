@@ -28,9 +28,9 @@ entity Doctor.
 end.
 
 page Dashboard.
-    show "Welcome to {project_name}".
-    list Patient.
-    list Doctor.
+    heading "Welcome to {project_name}".
+    text "Manage Patients".
+    text "Manage Doctors".
 end.
 """
     with open(os.path.join(src_dir, "main.aayu"), "w", encoding="utf-8") as f:

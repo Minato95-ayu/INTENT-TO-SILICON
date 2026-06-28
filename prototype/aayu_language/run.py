@@ -3,7 +3,10 @@ import os
 from lexer import Lexer
 from parser import Parser
 from ast_nodes import UseNode
-from interpreter import Interpreter, Environment, AayuModule
+from interpreter import Environment, AayuModule
+from lowering import LoweringPass
+from compiler import AAYUCompiler
+from vm.vm import VirtualMachine
 from errors import AAYUError
 
 # Ensure UTF-8 output on Windows
@@ -70,19 +73,28 @@ def run_file(filepath: str, env: 'Environment' = None, loaded_modules: dict = No
                 module_exports = run_file(module_path, None, loaded_modules)
                 env.define(stmt.module, AayuModule(module_exports))
 
-        interpreter = Interpreter()
-        # If there's an active environment (like from a previous module load), don't wipe it completely,
-        # but for top-level, we initialize with a fresh one if env is None
+        # 3. Lowering Pass
+        lowering = LoweringPass()
+        normalized_ast = lowering.lower(ast)
+
+        # 4. Compilation
+        compiler = AAYUCompiler(filename=os.path.basename(filepath))
+        bytecode = compiler.compile(normalized_ast)
+
+        # 5. Virtual Machine Execution
+        vm = VirtualMachine()
         if env:
-            interpreter.environment = env
-        result = interpreter.interpret(ast)
+            for k, v in env.values.items():
+                vm.memory.globals[k] = v
+                
+        result = vm.run(bytecode)
         
-        # In a CLI run, we might want to print the final un-handled expression if any
         if result is not None:
             print("Output:", result)
         
-        loaded_modules[abs_filepath] = interpreter.exports
-        return interpreter.exports
+        exports = {k: v for k, v in vm.memory.globals.items() if not callable(v)}
+        loaded_modules[abs_filepath] = exports
+        return exports
 
     except AAYUError as e:
         # Check if terminal supports ANSI colors

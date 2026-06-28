@@ -1,88 +1,38 @@
 {
+  "AAYU System": {
+    "prefix": "system",
+    "body": [
+      "system ${1:Name}.",
+      "\t$0"
+    ],
+    "description": "Define a new system"
+  },
+  "AAYU Record": {
+    "prefix": "record",
+    "body": [
+      "record ${1:Name}.",
+      "\t${2:field_name}",
+      "end."
+    ],
+    "description": "Define a new record"
+  },
   "AAYU Task": {
     "prefix": "task",
     "body": [
-      "task ${1:name} with req.",
-      "    $0",
+      "task ${1:name}.",
+      "\t$0",
       "end."
     ],
-    "description": "Scaffold an AAYU task"
-  },
-  "AAYU Entity": {
-    "prefix": "entity",
-    "body": [
-      "entity ${1:EntityName}.",
-      "    text ${2:name}.",
-      "end."
-    ],
-    "description": "Scaffold an AAYU entity"
-  },
-  "AAYU Route (GET)": {
-    "prefix": "get",
-    "body": [
-      "get \"${1:/}\" to ${2:handler}."
-    ],
-    "description": "Define a GET route"
-  },
-  "AAYU Serve": {
-    "prefix": "serve",
-    "body": [
-      "serve on ${1:8080}."
-    ],
-    "description": "Start the AAYU web server"
-  },
-  "AAYU If": {
-    "prefix": "if",
-    "body": [
-      "if ${1:condition}.",
-      "    $0",
-      "end."
-    ],
-    "description": "AAYU If statement"
-  },
-  "AAYU While": {
-    "prefix": "while",
-    "body": [
-      "while ${1:condition}.",
-      "    $0",
-      "end."
-    ],
-    "description": "AAYU While loop"
-  },
-  "AAYU Workflow": {
-    "prefix": "aayu-workflow",
-    "body": [
-      "workflow ${1:WorkflowName} for ${2:EntityName}.",
-      "    step ${3:Step1}.",
-      "    step ${4:Step2}.",
-      "    step ${5:Step3}.",
-      "end."
-    ],
-    "description": "Scaffold an AAYU Workflow State Machine"
-  },
-  "AAYU RBAC": {
-    "prefix": "aayu-rbac",
-    "body": [
-      "role ${1:RoleName}.",
-      "allow ${1:RoleName} ${2|create,read,update,delete|} ${3:EntityName}."
-    ],
-    "description": "Scaffold an AAYU Role and Permission"
+    "description": "Define a new task"
   },
   "AAYU Page": {
-    "prefix": "aayu-page",
+    "prefix": "page",
     "body": [
-      "page ${1:PageName}.",
-      "    heading \"${1:PageName}\".",
-      "    $0",
+      "page ${1:Dashboard}.",
+      "\theading \"${2:Title}\".",
+      "\t$0",
       "end."
     ],
-    "description": "Scaffold an AAYU UI Page"
-  },
-  "AAYU Relation": {
-    "prefix": "aayu-relation",
-    "body": [
-      "relation ${1:Entity1} ${2|one_to_one,one_to_many,many_to_one,many_to_many|} ${3:Entity2}."
-    ],
-    "description": "Scaffold an AAYU Relation Binding"
+    "description": "Define a new UI page"
   }
 }

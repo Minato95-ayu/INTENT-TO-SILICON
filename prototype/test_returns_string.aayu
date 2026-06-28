@@ -1,6 +1,0 @@
-task get_name.
-    return "Ayush".
-end.
-
-text name is run get_name.
-show name.

@@ -1,8 +1,0 @@
-task create_users.
-    map users is.
-    set "admin" to "Ayush" in users.
-    return users.
-end.
-
-map data is run create_users.
-show get "admin" from data.

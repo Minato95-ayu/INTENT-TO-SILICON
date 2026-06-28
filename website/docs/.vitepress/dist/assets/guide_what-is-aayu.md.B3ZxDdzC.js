@@ -1,0 +1,61 @@
+import{_ as s,o as n,c as e,a0 as p}from"./chunks/framework.bcCluOOn.js";const u=JSON.parse('{"title":"What is AAYU?","description":"","frontmatter":{},"headers":[],"relativePath":"guide/what-is-aayu.md","filePath":"guide/what-is-aayu.md"}'),t={name:"guide/what-is-aayu.md"};function i(l,a,o,r,c,d){return n(),e("div",null,[...a[0]||(a[0]=[p(`<h1 id="what-is-aayu" tabindex="-1">What is AAYU? <a class="header-anchor" href="#what-is-aayu" aria-label="Permalink to &quot;What is AAYU?&quot;">​</a></h1><p><strong>AAYU is an Architecture-First Software Factory with an experimental runtime track.</strong></p><p>AAYU turns business intent or direct <code>.aayu</code> source into a structured software architecture, then generates the application stack around it. The verified capability today is generation: entities, relations, workflows, pages, backend, frontend, database, and deployment structure.</p><p>Sprint 35 also proves the beginning of Track B: AAYU can execute its own bytecode path through the prototype VM.</p><div class="language-text vp-adaptive-theme"><button title="Copy Code" class="copy"></button><span class="lang">text</span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>AAYU Source</span></span>
+<span class="line"><span>down</span></span>
+<span class="line"><span>Parser</span></span>
+<span class="line"><span>down</span></span>
+<span class="line"><span>Compiler</span></span>
+<span class="line"><span>down</span></span>
+<span class="line"><span>AYC</span></span>
+<span class="line"><span>down</span></span>
+<span class="line"><span>VM</span></span>
+<span class="line"><span>down</span></span>
+<span class="line"><span>Execution</span></span></code></pre></div><p>The current runtime is experimental. It supports variables, print, and if execution in the verified Sprint 35 path. Functions, loops, modules, collections, packages, and runtime libraries remain roadmap work.</p><h2 id="the-aayu-philosophy" tabindex="-1">The AAYU Philosophy <a class="header-anchor" href="#the-aayu-philosophy" aria-label="Permalink to &quot;The AAYU Philosophy&quot;">​</a></h2><p><strong>Write Intent. Or Write Code. Both become Software.</strong></p><p>AAYU offers two interfaces:</p><ol><li><p><strong>Intent Mode</strong> Describe the application, such as &quot;I need a CRM with customers, leads, and a sales dashboard.&quot; The Intent Engine converts that into AAYU architecture.</p></li><li><p><strong>Developer Mode</strong> Write <code>.aayu</code> code directly. The syntax is clean, domain-specific, and declarative, so the architecture stays readable.</p></li></ol><div class="language-aayu vp-adaptive-theme"><button title="Copy Code" class="copy"></button><span class="lang">aayu</span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>system CRM</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>entity Customer.</span></span>
+<span class="line"><span>    text name.</span></span>
+<span class="line"><span>    text email.</span></span>
+<span class="line"><span>end</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>entity Lead.</span></span>
+<span class="line"><span>    text company.</span></span>
+<span class="line"><span>end</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>relation Customer one_to_many Lead.</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>page Dashboard.</span></span>
+<span class="line"><span>    sidebar.</span></span>
+<span class="line"><span>        text &quot;Customers&quot;.</span></span>
+<span class="line"><span>        text &quot;Leads&quot;.</span></span>
+<span class="line"><span>    end.</span></span>
+<span class="line"><span>end.</span></span></code></pre></div><h2 id="the-current-architecture" tabindex="-1">The Current Architecture <a class="header-anchor" href="#the-current-architecture" aria-label="Permalink to &quot;The Current Architecture&quot;">​</a></h2><div class="language-text vp-adaptive-theme"><button title="Copy Code" class="copy"></button><span class="lang">text</span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>Business Intent</span></span>
+<span class="line"><span>        OR</span></span>
+<span class="line"><span>AAYU Code</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>        down</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>AAYU Language</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>        down</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>AAYU Compiler</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>        down</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>AAYU IR</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>        down</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>Target Selection Engine</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>        down</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>React + FastAPI + PostgreSQL</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>        down</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>Production-Ready Software</span></span></code></pre></div><h2 id="runtime-roadmap" tabindex="-1">Runtime Roadmap <a class="header-anchor" href="#runtime-roadmap" aria-label="Permalink to &quot;Runtime Roadmap&quot;">​</a></h2><div class="language-text vp-adaptive-theme"><button title="Copy Code" class="copy"></button><span class="lang">text</span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>AAYU Code</span></span>
+<span class="line"><span>down</span></span>
+<span class="line"><span>AYC Bytecode</span></span>
+<span class="line"><span>down</span></span>
+<span class="line"><span>AAYU Runtime (Rust)</span></span>
+<span class="line"><span>down</span></span>
+<span class="line"><span>Execution</span></span></code></pre></div><h2 id="why-aayu-exists" tabindex="-1">Why AAYU Exists <a class="header-anchor" href="#why-aayu-exists" aria-label="Permalink to &quot;Why AAYU Exists&quot;">​</a></h2><p>If AI directly generates Python, React, or SQL, the developer still has to debug a large amount of framework-specific glue. AAYU keeps the software definition in a smaller, architecture-first language before generating target code.</p><p>That gives AAYU three practical goals:</p><ul><li><strong>Readable architecture:</strong> Humans can inspect the <code>.aayu</code> source.</li><li><strong>Deterministic generation:</strong> The compiler owns the structural output.</li><li><strong>Portable intent:</strong> The same architecture can target different stacks over time.</li></ul><p>AAYU does not replace Python, React, Rust, or databases. It sits above them and generates the boring parts of software structure.</p>`,20)])])}const g=s(t,[["render",i]]);export{u as __pageData,g as default};

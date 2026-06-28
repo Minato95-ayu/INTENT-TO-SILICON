@@ -1,0 +1,65 @@
+{
+  "project": "BrainOS Application",
+  "target": {
+    "id": "557cd7e1-8a2f-4658-b156-b5861c2dfef6",
+    "type": "Component",
+    "name": "Compiler",
+    "data": {},
+    "created_at": "2026-06-28T09:55:03.512852"
+  },
+  "decisions": [
+    {
+      "id": "e6ae61c7-d0a9-4fb1-a26b-e19aa6acbfc7",
+      "type": "Decision",
+      "name": "ISA",
+      "data": {},
+      "created_at": "2026-06-28T09:55:04.054907"
+    }
+  ],
+  "components": [
+    {
+      "id": "695ad1f7-359f-4861-b659-4ee766bfa586",
+      "type": "Component",
+      "name": "Parser",
+      "data": {},
+      "created_at": "2026-06-28T09:55:03.710273"
+    },
+    {
+      "id": "7c8219d4-3e99-4f8a-a1f6-614e9f5ab897",
+      "type": "Component",
+      "name": "Tests",
+      "data": {},
+      "created_at": "2026-06-28T09:55:05.396380"
+    },
+    {
+      "id": "fc104910-5ed5-47b2-b552-fcf1b80892c3",
+      "type": "Component",
+      "name": "Documentation",
+      "data": {},
+      "created_at": "2026-06-28T09:55:05.569731"
+    },
+    {
+      "id": "16768d1b-0b9e-44f3-831a-3183d6dcb6b6",
+      "type": "Component",
+      "name": "Lexer",
+      "data": {},
+      "created_at": "2026-06-28T09:55:03.887349"
+    },
+    {
+      "id": "e9c3eb0f-d908-4721-a5e1-8dc5e416ec77",
+      "type": "Component",
+      "name": "Runtime",
+      "data": {},
+      "created_at": "2026-06-28T09:55:04.224376"
+    },
+    {
+      "id": "e3ef01cd-1b89-4393-903a-37aae55503a3",
+      "type": "Component",
+      "name": "VM",
+      "data": {},
+      "created_at": "2026-06-28T09:55:04.392499"
+    }
+  ],
+  "issues": [],
+  "files": []
+}

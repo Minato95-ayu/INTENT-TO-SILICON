@@ -70,6 +70,13 @@ class ForEachNode(Node):
     collection: Node
     body: List[Node]
 
+@dataclass
+class ForRangeNode(Node):
+    iterator: str
+    start: Node
+    end: Node
+    body: List[Node]
+
 
 @dataclass
 class TaskNode(Node):

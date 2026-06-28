@@ -1,96 +1,24 @@
 # Roadmap
 
-AAYU is moving on two tracks.
+AAYU is evolving from a single language into a complete Software Engineering Ecosystem.
 
-**Track A: Architecture-First Software Factory**
+## Developer Preview
 
-This is the current verified product story. AAYU accepts business intent or `.aayu` source, builds architecture, and generates full-stack software.
+The current release cycle is focused on establishing the core "Software Factory" capabilities.
 
-**Track B: Experimental Runtime**
+- [x] **CLI** - Core project generation scaffolding.
+- [x] **Builder API** - Centralized compilation pipeline.
+- [x] **Chat Engine** - Conversational Intent generation.
+- [x] **Software Factory** - Target routing (React, FastAPI, Postgres).
+- [x] **VS Code Syntax** - Native `.aayu` syntax highlighting and snippets.
+- [ ] **Language Server** - Autocomplete, hover, and diagnostics for VS Code.
+- [ ] **Debugger** - Breakpoints and stack traces for AAYU runtime.
+- [ ] **Package Manager** - Sharing and importing AAYU modules.
+- [ ] **Runtime Expansion** - Loops, functions, and advanced VM execution.
 
-This is now real, but still early. Sprint 35 verifies that AAYU can execute its own logic through the bytecode and VM path.
+## Future Ecosystem
 
-## Current Status
-
-| Track | Progress | Status |
-|------|----------|--------|
-| Track A: Software Factory | 100% | Freeze and stabilize |
-| Track B: Runtime | 40% | Mature gradually |
-
-## Sprint 35 Complete
-
-Verified command:
-
-```bash
-python -m prototype.cli vm prototype/tests/demo_sprint35.aayu
-```
-
-Output:
-
-```text
-Founder
-```
-
-This proves:
-
-```text
-AAYU Source
-down
-Parser
-down
-Compiler
-down
-AYC
-down
-VM
-down
-Execution
-```
-
-## Sprint 36
-
-**Functions**
-
-```aayu
-function greet(name)
-    print(name)
-end.
-
-greet("Ayush")
-```
-
-Goal: make the runtime feel actually useful for small reusable logic.
-
-## Sprint 37
-
-**Loops**
-
-```aayu
-for i in 1..5
-    print(i)
-end.
-```
-
-Goal: basic repeated execution in the VM.
-
-## Sprint 38
-
-**Modules and Imports**
-
-Goal: allow runtime programs to grow beyond a single file.
-
-## Distribution Roadmap
-
-- PyPI package polish for `pip install aayu`
-- VS Code Marketplace release for syntax highlighting and snippets
-- GitHub Linguist recognition for `.aayu`
-- Documentation examples for real generated apps
-
-## Long-Term Runtime Roadmap
-
-- Collections
-- Packages
-- Runtime libraries
-- Rust VM stabilization
-- Standalone binaries for Windows, macOS, and Linux
-- WebAssembly and edge deployment research
+Beyond the Developer Preview, AAYU will integrate deeply with:
+- **BrainOS**: The AI-Native operating system to track project DNA, architectural decisions, and memory.
+- **AAYU Studio (Web)**: A browser-based version of the architecture designer.
+- **Enterprise Targets**: Generators for Java, Go, and .NET.

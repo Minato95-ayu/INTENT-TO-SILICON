@@ -47,7 +47,7 @@
         },
         {
           "name": "storage.type.aayu",
-          "match": "\\b(task|entity|map|list|text|number|boolean|role|workflow|page|step)\\b"
+          "match": "\\b(system|record|task|entity|map|list|text|number|boolean|role|workflow|page|step)\\b"
         },
         {
           "name": "keyword.operator.aayu",
@@ -55,7 +55,7 @@
         },
         {
           "name": "keyword.other.aayu",
-          "match": "\\b(create|find|update|delete|get|post|serve|login|logout|guard|render|json|crud|relation|allow|use)\\b"
+          "match": "\\b(use|create|find|update|delete|get|post|serve|login|logout|guard|render|json|crud|relation|allow)\\b"
         },
         {
           "name": "support.function.ui.aayu",

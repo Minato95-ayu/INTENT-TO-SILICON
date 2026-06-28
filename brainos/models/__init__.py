@@ -1,0 +1,3 @@
+from .primitives import VALID_NODE_TYPES, VALID_EDGE_RELATIONS
+
+__all__ = ["VALID_NODE_TYPES", "VALID_EDGE_RELATIONS"]

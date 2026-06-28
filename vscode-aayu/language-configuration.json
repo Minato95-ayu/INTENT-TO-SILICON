@@ -18,5 +18,15 @@
     {"open": "[", "close": "]"},
     {"open": "(", "close": ")"},
     {"open": "\"", "close": "\""}
+  ],
+  "indentationRules": {
+    "increaseIndentPattern": "^\\s*(system|record|task|if|repeat|for|list)\\b.*\\.\\s*$",
+    "decreaseIndentPattern": "^\\s*(end\\.)\\s*$"
+  },
+  "onEnterRules": [
+    {
+      "beforeText": "^\\s*(system|record|task|if|repeat|for|list)\\b.*\\.\\s*$",
+      "action": { "indent": "indent" }
+    }
   ]
 }

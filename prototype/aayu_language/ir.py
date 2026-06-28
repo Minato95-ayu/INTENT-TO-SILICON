@@ -3,35 +3,22 @@ from dataclasses import dataclass, field
 from typing import List, Any
 
 class Opcode(Enum):
-    # Stack and Memory
     LOAD_CONST = auto()
-    LOAD_NAME = auto()
-    STORE_NAME = auto()
-    POP = auto()
+    LOAD_VAR = auto()
+    STORE_VAR = auto()
     
-    # Arithmetic and Logic
     ADD = auto()
     SUB = auto()
     MUL = auto()
     DIV = auto()
-    EQUAL = auto()
-    GREATER = auto()
-    LESS = auto()
-    NOT = auto()
     
-    # Control Flow
-    JUMP_FORWARD = auto()
+    EQ = auto()
+    LT = auto()
+    GT = auto()
+    
+    JUMP = auto()
     JUMP_IF_FALSE = auto()
-    JUMP_BACKWARD = auto()
-    
-    # Special Features
-    PRINT = auto()
-    BUILD_LIST = auto()
-    BUILD_MAP = auto()
-    ADD_TO_LIST = auto()
-    MAP_SET = auto()
-    GET_ITEM = auto()
-    CALL_TASK = auto()
+    CALL = auto()
     RETURN = auto()
 
 @dataclass
@@ -65,6 +52,11 @@ class Bytecode:
             # Print strings with quotes to be clear
             if isinstance(const, str):
                 res.append(f"{idx} -> \"{const}\"")
+            elif isinstance(const, Bytecode):
+                res.append(f"{idx} -> <FunctionBytecode {const.name}>")
+                child_res = const.format().split("\n")
+                for line in child_res:
+                    res.append("    " + line)
             else:
                 res.append(f"{idx} -> {const}")
                 

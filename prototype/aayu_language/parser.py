@@ -2,7 +2,7 @@ from typing import List
 from lexer import Token, Lexer
 from ast_nodes import (
     ProgramNode, DeclarationNode, ShowNode, BinaryExpressionNode,
-    VariableNode, NumberNode, TextNode, IfNode, WhileNode, TryCatchNode, RepeatNode, ForEachNode, TaskNode, RunNode, ListDeclarationNode, ListInitializationNode, ReturnNode, UseNode, RecordDeclarationNode, InstanceDeclarationNode, PropertyAccessNode, AssignmentNode, ReadExpressionNode, WriteStatementNode, AddToListNode, MapDeclarationNode, SetInMapNode, GetFromMapNode, BuiltinFunctionNode, ExportNode, ServeNode, RouteNode, RenderExpressionNode, FormGetNode, JsonSerializeNode, Node,
+    VariableNode, NumberNode, TextNode, IfNode, WhileNode, TryCatchNode, RepeatNode, ForEachNode, ForRangeNode, TaskNode, RunNode, ListDeclarationNode, ListInitializationNode, ReturnNode, UseNode, RecordDeclarationNode, InstanceDeclarationNode, PropertyAccessNode, AssignmentNode, ReadExpressionNode, WriteStatementNode, AddToListNode, MapDeclarationNode, SetInMapNode, GetFromMapNode, BuiltinFunctionNode, ExportNode, ServeNode, RouteNode, RenderExpressionNode, FormGetNode, JsonSerializeNode, Node,
     EntityDeclarationNode, CreateEntityNode, FindEntityNode, UpdateEntityNode, DeleteEntityNode, CreateAccountNode, FunctionDeclNode,
     LoginNode, LogoutNode, GuardSessionNode, TestNode, ExpectNode, UIPageNode, UIComponentNode, UIElementNode, CrudNode, RelationDefNode, RoleDefNode, AllowDefNode, WorkflowDefNode, StepDefNode
 )
@@ -12,7 +12,7 @@ class Parser:
     def __init__(self, tokens: List[Token], filename: str = "main.aayu"):
         self.tokens = tokens
         self.current = 0
-        self.in_task_depth = 0
+        self.execution_scope_depth = 0
         self.filename = filename
 
     def parse(self) -> ProgramNode:
@@ -252,13 +252,13 @@ class Parser:
         self.consume("DOT", "Expect '.' after task declaration.")
         
         body = []
-        self.in_task_depth += 1
+        self.execution_scope_depth += 1
         while not self.is_at_end() and not self.check("KEYWORD", "end"):
             body.append(self.parse_statement())
             
         self.consume("KEYWORD", "Expect 'end' after task block.", "end")
         self.consume("DOT", "Expect '.' after 'end'.")
-        self.in_task_depth -= 1
+        self.execution_scope_depth -= 1
         
         return TaskNode(name=name, parameters=parameters, body=body)
 
@@ -339,13 +339,39 @@ class Parser:
         return node
 
     def parse_return_statement(self) -> ReturnNode:
-        if self.in_task_depth == 0:
-            raise AAYUSyntaxError("Return can only be used inside a task.", self.peek().line, column=self.peek().column, hint="Move the 'return' statement inside a 'task' block.")
+        if self.execution_scope_depth == 0:
+            raise AAYUSyntaxError("Return can only be used inside an execution scope (task, function, etc.).", self.peek().line, column=self.peek().column, hint="Move the 'return' statement inside a 'task' or 'function' block.")
             
         value = self.parse_expression()
         self.consume("DOT", "Expect '.' after return statement.")
         
         return ReturnNode(value=value)
+
+    def parse_function_declaration(self) -> FunctionDeclNode:
+        start_token = self.previous()
+        name = self.consume("IDENTIFIER", "Expected function name").value
+        self.consume("LPAREN", "Expected '(' after function name")
+        parameters = []
+        if not self.check("RPAREN"):
+            parameters.append(self.consume("IDENTIFIER", "Expected parameter name").value)
+            while self.match("COMMA"):
+                parameters.append(self.consume("IDENTIFIER", "Expected parameter name").value)
+        self.consume("RPAREN", "Expected ')' after parameters")
+        
+        body = []
+        self.execution_scope_depth += 1
+        while not self.check("KEYWORD", "end") and not self.is_at_end():
+            body.append(self.parse_statement())
+            
+        self.execution_scope_depth -= 1
+            
+        self.consume("KEYWORD", "Expected 'end' to close function block", "end")
+        self.consume("DOT", "Expected '.' after 'end'")
+        
+        node = FunctionDeclNode(name=name, parameters=parameters, body=body)
+        node.line = start_token.line
+        node.column = start_token.column
+        return node
 
     def parse_use_statement(self) -> UseNode:
         module_name = self.consume("IDENTIFIER", "Expect module name after 'use'.").value
@@ -600,22 +626,44 @@ class Parser:
         self.consume("DOT", "Expect '.' after set statement.")
         return SetInMapNode(key=key, value=value, map_name=map_name)
 
-    def parse_for_each(self) -> ForEachNode:
-        self.consume("KEYWORD", "Expect 'each' after 'for'.", "each")
-        iterator = self.consume("IDENTIFIER", "Expect iterator name.").value
-        self.consume("KEYWORD", "Expect 'in' after iterator name.", "in")
-        
-        collection = self.parse_expression()
-        self.consume("DOT", "Expect '.' after for-each declaration.")
-        
-        body = []
-        while not self.is_at_end() and not self.check("KEYWORD", "end"):
-            body.append(self.parse_statement())
+    def parse_for_each(self) -> Node:
+        # Actually parses both 'for each' and 'for i in 1..10'
+        if self.match("KEYWORD", "each"):
+            iterator = self.consume("IDENTIFIER", "Expect iterator name.").value
+            self.consume("KEYWORD", "Expect 'in' after iterator name.", "in")
             
-        self.consume("KEYWORD", "Expect 'end' after for-each block.", "end")
-        self.consume("DOT", "Expect '.' after 'end'.")
-        
-        return ForEachNode(iterator=iterator, collection=collection, body=body)
+            collection = self.parse_expression()
+            self.consume("DOT", "Expect '.' after for-each declaration.")
+            
+            body = []
+            while not self.is_at_end() and not self.check("KEYWORD", "end"):
+                body.append(self.parse_statement())
+                
+            self.consume("KEYWORD", "Expect 'end' after for-each block.", "end")
+            self.consume("DOT", "Expect '.' after 'end'.")
+            
+            return ForEachNode(iterator=iterator, collection=collection, body=body)
+        else:
+            iterator = self.consume("IDENTIFIER", "Expect iterator name.").value
+            self.consume("KEYWORD", "Expect 'in' after iterator name.", "in")
+            
+            start = self.parse_expression()
+            self.consume("DOT_DOT", "Expect '..' after start range.")
+            end = self.parse_expression()
+            
+            # optional dot if people write 'for i in 1..10.' but it shouldn't be strictly necessary for just the range? Wait, AAYU uses DOT for statement termination. Let's consume DOT.
+            # Actually AAYU statements typically end with DOT.
+            if self.check("DOT"):
+                self.consume("DOT", "Expect '.' after for-range declaration.")
+                
+            body = []
+            while not self.is_at_end() and not self.check("KEYWORD", "end"):
+                body.append(self.parse_statement())
+                
+            self.consume("KEYWORD", "Expect 'end' after for-range block.", "end")
+            self.consume("DOT", "Expect '.' after 'end'.")
+            
+            return ForRangeNode(iterator=iterator, start=start, end=end, body=body)
 
     def parse_expression(self) -> Node:
         return self.parse_comparison()

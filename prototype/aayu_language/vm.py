@@ -265,7 +265,7 @@ class VirtualMachine:
                     val = current_frame.bytecode.constants[operand]
                     current_frame.stack.append(val)
                     
-                elif opcode == Opcode.STORE_NAME:
+                elif opcode == Opcode.STORE_VAR:
                     val = current_frame.stack.pop()
                     name = current_frame.bytecode.names[operand]
                     if len(self.frames) == 1:
@@ -273,67 +273,22 @@ class VirtualMachine:
                     else:
                         current_frame.locals[name] = val
                         
-                elif opcode == Opcode.LOAD_NAME:
+                elif opcode == Opcode.LOAD_VAR:
                     name = current_frame.bytecode.names[operand]
                     if name in current_frame.locals:
                         val = current_frame.locals[name]
                     elif name in self.globals:
                         val = self.globals[name]
-                    elif name in self.environment:
-                        val = self.environment[name]
                     else:
                         val = None
                     current_frame.stack.append(val)
-                        
-                elif opcode == Opcode.POP:
-                    current_frame.stack.pop()
-                        
-                elif opcode == Opcode.ADD:
-                    right = current_frame.stack.pop()
-                    left = current_frame.stack.pop()
-                    current_frame.stack.append(left + right)
                     
-                elif opcode == Opcode.SUB:
-                    right = current_frame.stack.pop()
-                    left = current_frame.stack.pop()
-                    current_frame.stack.append(left - right)
-                    
-                elif opcode == Opcode.MUL:
-                    right = current_frame.stack.pop()
-                    left = current_frame.stack.pop()
-                    current_frame.stack.append(left * right)
-                    
-                elif opcode == Opcode.DIV:
-                    right = current_frame.stack.pop()
-                    left = current_frame.stack.pop()
-                    if right == 0 or right == 0.0:
-                        self._raise_runtime_error(
-                            "Division by zero.",
-                            hint="Make sure the denominator is not zero.",
-                            cls=DivisionByZeroError
-                        )
-                    current_frame.stack.append(left / right)
-                    
-                elif opcode == Opcode.EQUAL:
+                elif opcode == Opcode.COMPARE_EQ:
                     right = current_frame.stack.pop()
                     left = current_frame.stack.pop()
                     current_frame.stack.append(left == right)
                     
-                elif opcode == Opcode.GREATER:
-                    right = current_frame.stack.pop()
-                    left = current_frame.stack.pop()
-                    current_frame.stack.append(left > right)
-                    
-                elif opcode == Opcode.LESS:
-                    right = current_frame.stack.pop()
-                    left = current_frame.stack.pop()
-                    current_frame.stack.append(left < right)
-                    
-                elif opcode == Opcode.NOT:
-                    val = current_frame.stack.pop()
-                    current_frame.stack.append(not val)
-                    
-                elif opcode == Opcode.JUMP_FORWARD:
+                elif opcode == Opcode.JUMP:
                     current_frame.ip += operand
                     continue
                     
@@ -343,54 +298,34 @@ class VirtualMachine:
                         current_frame.ip += operand
                         continue
                         
-                elif opcode == Opcode.JUMP_BACKWARD:
-                    current_frame.ip -= operand
-                    continue
-                    
-                elif opcode == Opcode.CALL_TASK:
+                elif opcode == Opcode.CALL:
                     n_args = operand
-                    task_obj = current_frame.stack.pop()
-                    
                     args = []
                     for _ in range(n_args):
                         args.append(current_frame.stack.pop())
                     args.reverse()
                     
-                    if callable(task_obj):
-                        try:
-                            ret_val = task_obj(*args)
-                            current_frame.stack.append(ret_val)
-                        except sqlite3.Error as se:
-                            self._raise_runtime_error(
-                                f"Database query failed: {str(se)}",
-                                cls=DatabaseError
-                            )
-                        except Exception as ce:
-                            if isinstance(ce, AAYUError):
-                                raise ce
-                            self._raise_runtime_error(
-                                str(ce),
-                                cls=InvalidCallError
-                            )
-                    elif isinstance(task_obj, Bytecode):
+                    fn_obj = current_frame.stack.pop()
+                    if isinstance(fn_obj, str) and fn_obj == "print":
+                        val = args[0] if args else ""
+                        print(val)
+                        self.output.append(str(val))
+                        current_frame.stack.append(None)
+                    elif isinstance(fn_obj, Bytecode):
                         locals_dict = {}
-                        for param, val in zip(task_obj.parameters, args):
-                            locals_dict[param] = val
-                            
-                        new_frame = CallFrame(task_obj, locals_dict, task_obj.name)
+                        for i, param in enumerate(fn_obj.parameters):
+                            locals_dict[param] = args[i] if i < len(args) else None
                         
-                        # Advance caller frame IP so it resumes AFTER the CALL_TASK instruction
-                        current_frame.ip += 1
+                        child_vm = VirtualMachine(db_conn=self.db_conn, db_cursor=self.db_cursor, db_lock=self.db_lock)
+                        child_vm.globals = self.globals
                         
-                        self.frames.append(new_frame)
-                        continue
+                        ret_val = child_vm.run(fn_obj, initial_locals=locals_dict)
+                        self.output.extend(child_vm.output)
+                        
+                        current_frame.stack.append(ret_val)
                     else:
-                        self._raise_runtime_error(
-                            "Object is not callable.",
-                            hint="You can only run or call tasks or native library functions.",
-                            cls=InvalidCallError
-                        )
-                    
+                        self._raise_runtime_error(f"Not callable: {fn_obj}")
+                        
                 elif opcode == Opcode.RETURN:
                     if current_frame.stack:
                         ret_val = current_frame.stack.pop()
@@ -404,74 +339,6 @@ class VirtualMachine:
                     else:
                         self.return_value = ret_val
                     continue
-                    
-                elif opcode == Opcode.BUILD_LIST:
-                    current_frame.stack.append([])
-                    
-                elif opcode == Opcode.BUILD_MAP:
-                    current_frame.stack.append({})
-                    
-                elif opcode == Opcode.ADD_TO_LIST:
-                    list_obj = current_frame.stack.pop()
-                    item = current_frame.stack.pop()
-                    if not isinstance(list_obj, list):
-                        self._raise_runtime_error(
-                            "Target of 'add' must be a list.",
-                            hint="Ensure the target variable is initialized as a list.",
-                            cls=InvalidCallError
-                        )
-                    list_obj.append(item)
-                    current_frame.stack.append(list_obj)
-                    
-                elif opcode == Opcode.MAP_SET:
-                    map_obj = current_frame.stack.pop()
-                    key = current_frame.stack.pop()
-                    value = current_frame.stack.pop()
-                    if not isinstance(map_obj, dict):
-                        self._raise_runtime_error(
-                            "Target of 'set' must be a map.",
-                            hint="Ensure the target variable is initialized as a map.",
-                            cls=InvalidCallError
-                        )
-                    map_obj[key] = value
-                    
-                elif opcode == Opcode.GET_ITEM:
-                    coll = current_frame.stack.pop()
-                    key = current_frame.stack.pop()
-                    if isinstance(coll, list):
-                        try:
-                            idx = int(key)
-                            current_frame.stack.append(coll[idx])
-                        except (ValueError, TypeError):
-                            self._raise_runtime_error(
-                                f"List index must be an integer, got '{key}'.",
-                                cls=IndexOutOfBoundsError
-                            )
-                        except IndexError:
-                            self._raise_runtime_error(
-                                f"List index out of range: {key}.",
-                                hint=f"List size is {len(coll)}.",
-                                cls=IndexOutOfBoundsError
-                            )
-                    elif isinstance(coll, dict):
-                        if key not in coll:
-                            self._raise_runtime_error(
-                                f"Key '{key}' not found in map.",
-                                hint=f"Available keys: {list(coll.keys())}",
-                                cls=IndexOutOfBoundsError
-                            )
-                        current_frame.stack.append(coll[key])
-                    else:
-                        self._raise_runtime_error(
-                            "Cannot read items from a non-collection object.",
-                            hint="Ensure the object is a list or a map.",
-                            cls=InvalidCallError
-                        )
-
-                elif opcode == Opcode.PRINT:
-                    val = current_frame.stack.pop()
-                    self.output.append(val)
-                    print(val)
                     
                 else:
                     raise Exception(f"VM Error: Unimplemented opcode {opcode}")

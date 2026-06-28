@@ -1,5 +1,0 @@
-number age is 21.
-
-for each item in age.
-    show item.
-end.

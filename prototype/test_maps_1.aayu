@@ -1,5 +1,0 @@
-map users is.
-
-set "admin" to "Ayush" in users.
-
-show get "admin" from users.

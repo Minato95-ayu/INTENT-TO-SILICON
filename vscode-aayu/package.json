@@ -20,6 +20,10 @@
     "Programming Languages",
     "Snippets"
   ],
+  "main": "./extension.js",
+  "activationEvents": [
+    "onLanguage:aayu"
+  ],
   "contributes": {
     "languages": [
       {
@@ -52,7 +56,11 @@
       }
     ]
   },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
+  },
   "devDependencies": {
+    "@types/vscode": "^1.80.0",
     "@vscode/vsce": "^3.9.2"
   }
 }

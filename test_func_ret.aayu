@@ -1,0 +1,4 @@
+function sum_nums(a, b)
+    return a.
+end.
+print(sum_nums("Hello", "World")).

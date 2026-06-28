@@ -2,170 +2,148 @@ Metadata-Version: 2.4
 Name: aayu-lang
 Version: 1.0.0
 Summary: AAYU: The Intent-to-Silicon Programming Language
-Home-page: https://aayu.org
-Author: AAYU Team
-Classifier: Programming Language :: Python :: 3
+Home-page: https://github.com/Minato95-ayu/INTENT-TO-SILICON
+Author: Ayush Kaushik
+Author-email: AYUSH KAUSHIK <ayushkaushik1441@gmail.com>
+License: MIT
+Project-URL: Homepage, https://aayu.org
+Project-URL: Repository, https://github.com/Minato95-ayu/INTENT-TO-SILICON
+Project-URL: Documentation, https://aayu-lang.github.io
+Project-URL: Issues, https://github.com/Minato95-ayu/INTENT-TO-SILICON/issues
+Project-URL: Changelog, https://github.com/Minato95-ayu/INTENT-TO-SILICON/blob/main/CHANGELOG.md
+Keywords: programming-language,intent-driven,web-framework,database,rbac,workflow,compiler,intent-engine
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
 Classifier: License :: OSI Approved :: MIT License
+Classifier: Natural Language :: English
 Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development
+Classifier: Topic :: Software Development :: Compilers
+Classifier: Topic :: Software Development :: Interpreters
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
+Classifier: Topic :: Internet :: WWW/HTTP :: WSGI :: Application
 Requires-Python: >=3.8
 Description-Content-Type: text/markdown
 License-File: LICENSE
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0; extra == "dev"
+Requires-Dist: black>=23.0; extra == "dev"
+Requires-Dist: flake8>=6.0; extra == "dev"
+Requires-Dist: mypy>=1.0; extra == "dev"
+Requires-Dist: ruff>=0.1.0; extra == "dev"
+Provides-Extra: docs
+Requires-Dist: vitepress>=1.0; extra == "docs"
+Requires-Dist: vue>=3.0; extra == "docs"
 Dynamic: author
-Dynamic: classifier
-Dynamic: description
-Dynamic: description-content-type
 Dynamic: home-page
 Dynamic: license-file
 Dynamic: requires-python
-Dynamic: summary
 
 <div align="center">
-  <h1>🚀 AAYU</h1>
-  <h3>The Intent-to-Silicon Full-Stack Programming Language</h3>
-
-  [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20668914.svg)](https://doi.org/10.5281/zenodo.20668914)
-  [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-  [![Status: Research Prototype](https://img.shields.io/badge/Status-Platform_Candidate-green.svg)]()
-  [![License: CC BY 4.0](https://img.shields.io/badge/License-CC_BY_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
-
-  <p align="center">
-    A deterministic, human-readable programming language with a built-in web framework, native SQLite support, and a high-performance virtual machine. Built to bridge the gap between human intent and machine execution.
-  </p>
+  <img src="https://via.placeholder.com/1000x300?text=AAYU+Architecture" alt="AAYU Ecosystem Overview">
 </div>
 
----
+# AAYU
 
-## 🤖 What is AAYU?
+**AAYU is an Architecture-First Software Factory that transforms business intent into production-ready software.**
 
-AAYU is a **deterministic Architecture Definition Language (ADL)** and complete **Web Application Platform**. 
-
-Originally conceived to eliminate "Requirement Drift" in AI-agentic software development, AAYU has evolved into a fully functional programming language. It is designed to be effortlessly readable by humans (with syntax mimicking natural English/Hinglish flow) while compiling down to a strict bytecode executed by a highly concurrent Virtual Machine.
-
-With AAYU, you don't need to glue together Express.js, Prisma, and JWT libraries. **Routing, Database CRUD, and Session Authentication are built directly into the language syntax.**
+Describe your business system.
+Generate a complete React + FastAPI + PostgreSQL application.
+Own the code. Modify the code. Deploy the code.
 
 ---
 
-## ✨ Key Features
+## 10-Minute Onboarding: What is AAYU?
 
-- **Human-First Syntax**: Read and write code that looks like pseudo-code. (`if account_len is greater than 0.0.`)
-- **Built-in Web Server**: Native HTTP server, implicit request parameters, and explicit verbs (`get`, `post`, `delete`).
-- **Native SQLite Integration**: Direct `find`, `create`, `update`, and `delete` entity operations using AAYU's internal thread-safe Database Serialization Lock (`RLock` + `WAL`).
-- **Stateful Authentication**: Built-in Session isolation, PBKDF2 password hashing, and cookie management (`guard session.`).
-- **High-Performance Rust VM Prototype**: A newly bootstrapped native Rust runtime (`aayu-rs` v0.6.0) delivering a **95x speedup** over traditional AST interpreters.
+AAYU handles the heavy lifting of software architecture. Instead of spending days writing database schemas, REST APIs, and React boilerplate, you define your **Intent** in a simple `.aayu` file, and AAYU builds the factory for you.
 
----
+### Two Ways To Use AAYU
 
-## 📖 Syntax Preview
+**1. Describe Intent (The Natural Way)**
+You describe the core entities and relationships of your business:
+*e.g. "I need a Hospital Management System with Doctors, Patients, and Appointments."*
+AAYU maps this to a formalized schema.
 
-Here is a real example of AAYU's elegant, built-in routing and database handling. This code spins up a web server, connects to a database, handles a POST request, and saves data to an entity.
-
+**2. Write AAYU (The Developer Way)**
+You write a clean `.aayu` file directly:
 ```aayu
-# Define the Data Model
-entity College with "name", "location", "course".
-entity SavedCollege with "student_email", "college_name".
+use db.
+use http.
 
-# Define a POST route to save a bookmark
-post "/save_college" to save_college.
-
-task save_college with req.
-    # Secure the route (Requires valid AAYU_SESSION cookie)
-    guard session.
-
-    # Extract form data automatically
-    text college_name is form "college_name" from req.
-    
-    # Save to the SQLite Database natively
-    map save_data.
-    set "college_name" to college_name in save_data.
-    create SavedCollege with save_data.
-    
-    # Redirect gracefully
-    map context.
-    set "target" to "/dashboard" in context.
-    return render "views/adumate_redirect.html" with context.
+entity Doctor.
+    text name.
+    text specialization.
 end.
 
-# Start the built-in HTTP Server
-serve on 8082.
+entity Patient.
+    text name.
+end.
+
+relation Doctor one_to_many Patient.
 ```
 
----
+### The Output
 
-## 🏗️ The AAYU Platform (Adumate Showcase)
-
-AAYU's architecture is actively validating itself through fully functional web applications generated and executed natively on the AAYU Web Runtime.
-
-✅ **[Adumate Student Module (Phase 5A)](prototype/examples/adumate-student-module/)**: The first production-ready full-stack application built entirely with AAYU. It showcases SQLite session-based auth, secure templates, and dynamic APIs running locally.
-✅ **Todo Application**: A complete CRUD web app with deletion, creation, and rendering running on the AAYU VM.
-✅ **Library Management System**: A multi-entity relational application showcasing complex data loops and conditional rendering.
-
-*(Coming Soon: VS Code Extension, Package Manager `aayu install`)*
+Run `aayu generate` and AAYU deterministically creates:
+- **Frontend:** A Vite + React web app ready for UI components.
+- **Backend:** A FastAPI python server with CRUD endpoints and Pydantic models.
+- **Database:** A PostgreSQL schema with automatically injected foreign keys and many-to-many join tables.
+- **Orchestration:** A `docker-compose.yml` to spin the entire stack up in one command.
 
 ---
 
-## ⚡ Architecture: The Web Runtime
+## Quick Start
 
-AAYU ships with a Decoupled Compiler Architecture and a Multi-Threaded Virtual Machine:
+### 1. Installation
 
-1. **The Lexer & Parser**: Tokenizes input source code and builds an Abstract Syntax Tree enforcing rigid grammatical boundaries.
-2. **The Compiler (`adumate.aayu` -> `adumate.ayc`)**: Emits flat bytecode instructions (e.g., `CALL_TASK`, `LOAD_CONST`, `BUILD_MAP`).
-3. **The Opcode Execution Engine**: A deterministic interpreter handling recursive call frames, variable scoping, and dynamic trait-based standard libraries.
-4. **Thread-Safe Sub-VMs**: When an HTTP request is received, a unique `sub_vm` instance is cloned, inheriting standard libraries but executing in complete thread isolation to prevent cross-contamination of local variables.
+> **Note:** AAYU is not yet published on PyPI. Install from source using the steps below.
 
----
-
-## 💻 Getting Started (CLI)
-
-You can compile and run AAYU applications entirely from the built-in CLI.
-
-### 1. Compile Source Code
-Compile your `.aayu` source code into AAYU Bytecode (`.ayc`):
 ```bash
-python prototype/cli.py compile prototype/examples/adumate-student-module/adumate.aayu
+git clone https://github.com/Minato95-ayu/INTENT-TO-SILICON.git
+cd INTENT-TO-SILICON
+
+# Install in editable/development mode
+pip install -e .
+
+# Verify installation
+aayu --version
+aayu doctor
 ```
 
-### 2. Run the Virtual Machine Server
-Boot the bytecode using the AAYU Virtual Machine. This will automatically spin up the SQLite database and start the HTTP server.
+### 2. Initialize a Project
+Create a new AAYU project scaffolding:
 ```bash
-python prototype/cli.py vm prototype/adumate.ayc
+aayu init my_hospital
+cd my_hospital
+```
+*(This will generate a `src/main.aayu` file with a default Hospital template. Need help writing syntax? Check out the [Language Guide](docs/LANGUAGE_GUIDE.md).)*
+
+### 3. Generate Your App
+Once your `main.aayu` is ready, compile your intent into silicon:
+```bash
+aayu generate src/main.aayu
 ```
 
-### 3. Run Automated Benchmark Tests
-Evaluate the VM against our extensive integration test suites (Testing routing, auth, databases, and collections parity):
+### 4. Run the Generated Output
+AAYU automatically creates a `generated/` directory complete with instructions.
 ```bash
-$env:PYTHONPATH="." 
-pytest prototype/tests
+cd generated
+docker-compose up --build
 ```
+Your full-stack application is now live at `http://localhost:3000`!
 
 ---
 
-## 📂 Repository Structure
+## Philosophy: Intent vs Code
 
-```text
-INTENT-TO-SILICON/
-├── README.md                          ← You are here
-├── prototype/
-│   ├── aayu_language/                 ← AAYU Grammar, Lexer, Parser, Compiler
-│   │   └── runtime/                   ← AAYU VM (Python) & Stdlib Web Server
-│   ├── cli.py                         ← CLI tool (compile, vm, format)
-│   ├── examples/                      
-│   │   └── adumate-student-module/    ← Reference Full-Stack App (Phase 5A)
-│   └── tests/                         ← Comprehensive Parity & End-to-End Tests
-├── aayu-rs/                           ← Native Rust VM Runtime (v0.6.0 Prototype)
-├── paper/                             ← Intent-to-Silicon Research Paper
-└── schemas/                           ← Core IR Schemas (Legacy NLP engine)
-```
-
----
-
-## 👤 Author & Research
-
-**Ayush Kumar Mishra** (Pen name: **Ayush Kaushik**)  
-*B.Sc. Mathematics Honours — Delhi, India*  
-Self-taught full-stack developer, AI builder, and Founder of [Adumate.in](https://adumate.in).
-
-* **GitHub:** [github.com/Minato95-ayu](https://github.com/Minato95-ayu)
-* **X (Twitter):** [x.com/o_Ayush_kaushik](https://x.com/o_Ayush_kaushik)
-
-**License:** [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0)  
-*First commit: June 2026 | © 2026 Ayush Kumar Mishra*
+AAYU scaffolds **90%** of the boilerplate, database wiring, and architecture. You write manual code for the remaining **10%** (custom business logic, complex UI components, third-party integrations). AAYU gives you total ownership of the generated code—it is not a black box, it is a launchpad.

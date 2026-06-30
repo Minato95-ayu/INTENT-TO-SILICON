@@ -54,7 +54,18 @@
         "language": "aayu",
         "path": "./snippets/aayu.code-snippets"
       }
-    ]
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "AAYU Configuration",
+      "properties": {
+        "aayu.languageServerPath": {
+          "type": "string",
+          "default": "",
+          "description": "Absolute path to the aayu_lsp.py script."
+        }
+      }
+    }
   },
   "dependencies": {
     "vscode-languageclient": "^9.0.1"

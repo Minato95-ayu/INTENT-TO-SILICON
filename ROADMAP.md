@@ -1,80 +1,95 @@
 # AAYU Evolution Roadmap
 
-This roadmap outlines the major milestones of AAYU's development as we transition from a deterministic intent compiler into a fully-fledged, compiled bytecode-based language ecosystem.
+This roadmap outlines the major milestones of AAYU's development. It is organized by Products, Milestones, and Technical Debt to ensure a clear distinction between feature development, platform maturation, and repository health.
 
 ---
 
-## Current Status Overview
-```text
-Language Core          100% ✅ [v0.1.0]
-Web Framework          100% ✅ [v0.2.0]
-Developer Ecosystem    100% ✅ [v0.2.5]
-Bytecode & VM          95%  🚧 [v0.3.1]
-Native Runtime         0%   🔮 [v0.4.0+]
-```
+## Overall Completion Status
+
+| Area                                    |                Status |
+| --------------------------------------- | --------------------: |
+| Language Frontend (Lexer, Parser, AST)  |                 ✅ 95% |
+| Compiler & Bytecode                     |              ✅ 90–95% |
+| Runtime & VM                            |              ✅ 90–95% |
+| Software Factory                        |                 ✅ 90% |
+| Chat & Intent Engine                    |              ✅ 85–90% |
+| BrainOS                                 | 🟡 30–40% (Prototype) |
+| IDE / Studio                            |             🟡 40–50% |
+| Complete Programming Language Ecosystem |             🟡 45–50% |
 
 ---
 
-## Phase 1: Core Language & Interpreter ✅
-- [x] Human-first declarative syntax (Keywords: `number`, `text`, `is`, `show`, `if`, etc.)
-- [x] AST-walking recursive interpreter (`interpreter.py`)
-- [x] Standard library for math, file I/O, and string operations
-- [x] Robust user-friendly compiler error and tracebacks system
+## Products
 
-## Phase 2: Developer Ecosystem ✅
-- [x] **CLI & Package Manager**: `aayu new`, `aayu run`, `aayu install` for dependency management
-- [x] **VS Code Extension**: Syntax highlighting, snippet blocks, and configurator
-- [x] **LSP Server**: Live diagnostic syntax errors and autocomplete bindings
-- [x] **Testing Framework**: Native `test "name" ... end.` discovery and execution runner (`aayu test`)
+### 1. AAYU Language
+The core declarative intent language, strictly controlled compiler, bytecode specification, and VM runtime.
 
-## Phase 3: Runtime Evolution & VM 🚧
-Transitioning from AST-walking to a compiled stack-based Virtual Machine architecture.
+### 2. AAYU Platform
+The surrounding tooling, standard libraries, and generation ecosystem (React, FastAPI, PostgreSQL).
 
-- [x] **Phase 3A: IR Design**: Design stack-based AAYU bytecode and AST -> bytecode compiler
-- [x] **Phase 3B: Basic VM**: First Stack-VM execution loop (`LOAD_CONST`, `LOAD_NAME`, `STORE_NAME`)
-- [x] **Phase 3C: Control Flow**: Comparison opcodes (`EQUAL`, `GREATER`, `LESS`, `NOT`) and relative jumps for `if`/`else` and `while` loops
-- [x] **Phase 3D: Call Frames**: Stack frame framing (`CallFrame` contexts) enabling local scope isolation and recursive task execution
-- [x] **Phase 3E: Bytecode Serialization**: Recursive JSON serializer/deserializer to output `.ayc` files and execute compiled programs
-- [x] **Phase 3F: Collection VM Support**: VM opcodes/stdlib support for Lists (`BUILD_LIST`, `ADD_TO_LIST`) and Maps (`MAP_GET`, `MAP_SET`)
-- [x] **Phase 3G-A: Database, JSON & Templates Bridge**: SQLite database CRUD, JSON response formatting, and template rendering on VM
-- [x] **Phase 3G-B1: HTTP Route Registration & VM Dispatch**: `http_route`, `http_form_get`, VM `dispatch` execution, and compiler visitors
-- [x] **Phase 3G-B2: HTTP Socket Server**: Standard library `http_serve` and real socket request handling on VM
-- [ ] **Phase 3G-C: Cookies, Sessions & Auth Guards**: Web authentication ecosystem, secure sessions, cookie headers, and VM guards
-
-## VM AST Compatibility Score
-To track VM completeness against the original AST Interpreter:
-```text
-Core Language / Math:    100% ✅
-Functions & Call Frames: 100% ✅
-Control Flow:            100% ✅
-Collections:             100% ✅
-Serialization:           100% ✅
-Database CRUD (SQLite):  100% ✅
-JSON Response:           100% ✅
-Templates Rendering:     100% ✅
-HTTP Routing & Dispatch: 100% ✅ (Sprint 3G-B1 Complete)
-HTTP Socket Server:      100% ✅ (Sprint 3G-B2 Complete)
-Auth, Sessions, Cookies:   0% 🔮 (Target for Phase 3G-C)
-```
-
-> [!NOTE]
-> **Auto HTTP Method Detection:** 
-> Route method association in `http_route()` is currently determined implicitly by parsing handler/path keywords (e.g. matching "add"/"delete" to `POST`, others to `GET`). This is a temporary validation bridge and will be replaced by explicit AAYU compiler method annotations (e.g. `route GET "/books" ...`) in future compiler iterations.
-
-
-## Phase 4: Native Runtime (Rust/C++) 🔮
-Replacing the Python VM engine with a standalone native runtime.
-- [ ] AAYU VM Rust Prototype (executing `.ayc` files directly)
-- [ ] Native standard library mappings
-- [ ] Independent cross-platform binary distribution (fully removing Python dependency)
+### 3. BrainOS
+The autonomous agent operating system that manages the repository, reads the Project State Machine, and accelerates development.
 
 ---
 
-## Key Architectural Decisions
+## Milestones
 
-### VM Scope: Language vs. Web Framework Execution
-To transition AAYU's full ecosystem (including the Todo App and Library System) to the VM, we must decide how to handle Web/DB constructs:
-- **Decision: Standard Library / Built-in Mappings (Option A)**
-  - Rather than bloating the VM ISA with monolithic database/HTTP opcodes, the compiler will translate web operations (`serve`, `route`, `find`, `create`) into `CALL_TASK` instructions targeting a built-in standard library.
-  - The VM runtime will provide these standard library functions in native code (initially Python, later Rust).
-  - This keeps the VM ISA minimal, clean, and highly portable.
+### Priority 0: Repository Health
+*Focus on stabilizing the CI pipeline and developer experience.*
+- [x] VS Code Extension
+- [x] LSP Launch
+- [x] Validation Pass
+- [ ] Broken TODOs Cleanup
+- [x] **CI (GitHub Actions)** (Auto-test, build, LSP check, and package build on every commit)
+- [ ] Documentation updates
+
+### Milestone 4: Runtime & Debugger (Current)
+*Focus on execution, error handling, and runtime insights.*
+- [x] Phase 4.1: Exception System
+- [x] Phase 4.2: Debug Metadata (Line tables, source spans)
+- [x] Phase 4.3: Runtime Diagnostics
+- [x] Phase 4.4: Debugger Runtime (Event-driven breakpoints, inspector)
+- [x] Phase 4.5: Advanced Modules (Visibility, Aliasing, Export Blocks)
+- [x] Phase 4.6: Reflection (Read-Only)
+
+### Milestone 5A: BrainOS Foundation
+*Focus on orchestration, state management, and the autonomous loop (Non-AI MVP).*
+- [ ] Planner (Parses goal into task graph)
+- [ ] Workflow Engine (Executes tasks sequentially)
+- [ ] Project State Machine (Snapshot & Roadmap tracker)
+- [ ] Architecture Guard (Protects frozen subsystems)
+- [ ] Task Queue (Manages execution state)
+- [ ] Snapshot Engine (Automates updates to project state)
+
+### Milestone 5B: AAYU Type System
+*Focus on type safety and generics, developed via dogfooding BrainOS.*
+- [x] Phase 5.1: Type AST
+- [x] Phase 5.2: Type Symbols
+- [x] Phase 5.3: Type Checker
+- [x] Phase 5.4: Inference
+- [ ] Phase 5.5: Interfaces
+- [ ] Phase 5.6: Traits
+- [ ] Phase 5.7: Generics
+
+---
+
+## 🧠 BrainOS Development Rule
+**All future AAYU milestones must be executed through the BrainOS pipeline.**
+Manual development is strictly reserved for improving BrainOS itself. BrainOS serves as the autonomous kernel managing project state, architecture guards, and regressions.
+
+### Milestone 6: Native Backend
+*Focus on performance and cross-platform native execution.*
+- [ ] LLVM Backend prototype
+- [ ] Ahead-of-Time (AOT) Compilation
+
+### Milestone 7: Self Hosting
+*Focus on dogfooding AAYU.*
+- [ ] Rewriting the AAYU compiler in AAYU.
+
+---
+
+## Technical Debt
+
+*These items must be addressed but are separate from milestone feature progression.*
+- **Legacy Tests:** Clean up deprecated test suites and unify the testing framework.
+- **CI Improvements:** Stabilize flaky tests and enhance GitHub Actions coverage.

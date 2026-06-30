@@ -15,10 +15,17 @@ function getPythonPath() {
 
 function activate(context) {
     const pythonPath = getPythonPath();
+    
     // Path to the AAYU Language Server
-    const serverModule = context.asAbsolutePath(
-        path.join('..', 'prototype', 'aayu_language', 'aayu_lsp.py')
-    );
+    const config = workspace.getConfiguration('aayu');
+    let serverModule = config.get('languageServerPath');
+    
+    if (!serverModule) {
+        // Fallback for development if not configured
+        serverModule = context.asAbsolutePath(
+            path.join('..', 'prototype', 'language', 'aayu_lsp.py')
+        );
+    }
 
     const serverOptions = {
         run: { 

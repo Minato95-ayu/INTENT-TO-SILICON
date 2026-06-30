@@ -1,0 +1,22 @@
+let a = 10.
+let b = 20.
+let t = a < b.
+let f = a > b.
+let t2 = a <= 10.
+let t3 = b >= 20.
+let eq = a == 10.
+let neq = a != 20.
+
+let and_res = t and t2.
+let or_res = f or t.
+let not_res = not t.
+
+print(t).
+print(f).
+print(t2).
+print(t3).
+print(eq).
+print(neq).
+print(and_res).
+print(or_res).
+print(not_res).

@@ -1,0 +1,4 @@
+function log(msg) {
+    print(msg)
+}
+export log

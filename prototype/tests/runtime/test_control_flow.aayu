@@ -1,0 +1,8 @@
+let counter = 0.
+while counter < 5.
+    let counter = counter + 1.
+    if counter == 3.
+        print("Three").
+    end.
+end.
+print(counter).

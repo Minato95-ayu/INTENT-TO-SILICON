@@ -1,0 +1,34 @@
+# test_auth.aayu
+
+task handle_register with req.
+    map data.
+    set "email" to form "email" from req in data.
+    set "password" to form "password" from req in data.
+    run auth_create_account with data.
+    return "Registered".
+end.
+
+task handle_login with req.
+    map data.
+    set "email" to form "email" from req in data.
+    set "password" to form "password" from req in data.
+    run auth_login with data.
+    return "Logged In".
+end.
+
+task handle_logout with req.
+    run auth_logout with req.
+    return "Logged Out".
+end.
+
+task handle_dashboard with req.
+    run auth_guard_session with req.
+    return "Welcome to Dashboard".
+end.
+
+get "/dashboard" to handle_dashboard.
+post "/register" to handle_register.
+post "/login" to handle_login.
+post "/logout" to handle_logout.
+
+serve on 8081.

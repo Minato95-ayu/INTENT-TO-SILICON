@@ -7,15 +7,15 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 prototype_dir = os.path.dirname(current_dir)
 if prototype_dir not in sys.path:
     sys.path.insert(0, prototype_dir)
-aayu_lang_dir = os.path.join(prototype_dir, "aayu_language")
+aayu_lang_dir = os.path.join(prototype_dir, "language")
 if aayu_lang_dir not in sys.path:
     sys.path.insert(0, aayu_lang_dir)
 
-from aayu_language.lexer import Lexer
-from aayu_language.parser import Parser
-from aayu_language.ir_generator import generate_ir
-from aayu_language.compiler import AAYUCompiler
-from aayu_language.vm import VirtualMachine
+from language.lexer import Lexer
+from language.parser import Parser
+from language.ir_generator import generate_ir
+from language.compiler import AAYUCompiler
+from language.vm import VirtualMachine
 
 class AAYUProject:
     def __init__(self, source: str, filepath: str = "main.aayu"):

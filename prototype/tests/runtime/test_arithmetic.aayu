@@ -1,0 +1,10 @@
+let a = 10.
+let b = 20.
+let c = a + b * 2.
+let d = (a + b) * 2.
+let e = -a.
+let f = b % 3.
+print(c).
+print(d).
+print(e).
+print(f).

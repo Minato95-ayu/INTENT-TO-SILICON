@@ -1,0 +1,21 @@
+let myList = [10, 20, 30].
+print(myList).
+print(myList.length()).
+
+myList.append(40).
+print(myList).
+
+myList.set(1, 99).
+print(myList.get(1)).
+
+let myMap = { "name": "Aayu", "version": 2 }.
+print(myMap).
+print(myMap.length()).
+
+myMap.set("status", "active").
+print(myMap.get("status")).
+print(myMap.contains("version")).
+
+let myText = "hello".
+print(myText.length()).
+print(myText.contains("ll")).

@@ -1,0 +1,6 @@
+task sum_nums with a and b.
+    return a + b.
+end.
+
+let x = sum_nums(10, 20).
+print(x).

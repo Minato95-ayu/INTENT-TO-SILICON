@@ -1,24 +1,24 @@
 # Changelog
 
-All notable changes to the AAYU (Intent-to-Silicon) project will be documented in this file.
+All notable changes to the AAYU project will be documented in this file.
 
-## [0.1.0] - Phase 2 Ecosystem Release
-
-### Added
-- **AAYU CLI**: Introduced the `aayu` command-line utility for bootstrapping (`aayu new`), managing dependencies (`aayu install`), checking environment (`aayu doctor`), and running projects (`aayu run`).
-- **Package Manager (V1)**: Mock repository integration that resolves and installs modules directly into the local `.aayu/packages/` directory.
-- **Dynamic Module Resolution**: The Interpreter now automatically resolves `use <module>.` statements via the local `.aayu/packages/` directory, removing the need for manual file linking.
-- **VS Code Extension (V1)**: Official extension packaged as `aayu-language-0.1.0.vsix` featuring TextMate Syntax Highlighting, Language Configuration, and Snippets (`task`, `entity`, `route`).
-- **Web Framework Integration**: Added full built-in HTTP server capabilities to handle JSON API endpoints and HTML template rendering.
-- **Database & Authentication Support**: Core language elements like `create`, `find`, `login`, and `guard` map natively to database operations and JWT authentication flows.
-
-### Changed
-- Standardized project directory structure (e.g., `src/`, `.aayu/packages/`, `aayu.toml`).
-- Shifted the project scope from an experimental Concept-to-Code generator (V2 Compiler) to a full-fledged independent Language Ecosystem.
-
-## [0.0.1] - Intent-to-Silicon Concept Release
+## [Unreleased]
 
 ### Added
-- **Intent IR (Intermediate Representation)**: A deterministic ADL schema defining architecture mathematically rather than using probabilistic LLM generation.
-- **V2 Deterministic Compiler**: Included `normalizer.py` and `pain_point_extractor.py` to parse Hindi/English inputs into the strict Intent IR format.
-- **Emotion-First Architecture**: Handled negations and contextual cues through a Root Word + Proximity Tagging system.
+- **Phase 5.4: Type Inference**
+  - Added local variable type inference in `TypeCheckerPass`.
+  - Added function return type inference for functions without explicit return type annotations.
+- **Phase 5.3: Type Checker**
+  - Added semantic type hierarchy (`AAYUType`, `PrimitiveType`, `AnyType`, `FunctionType`, `VoidType`).
+  - Added reserved types `UnknownType` and `ErrorType`.
+  - Added type enforcement for assignments, declarations, function returns, and binary expressions.
+  - Added `AAYUTypeError` diagnostics (range AAYU2xxx).
+- **Phase 5.2: Symbol Types**
+  - Added `declared_type` and `resolved_type` properties to `Symbol`.
+  - Bound Parser's `TypeNode` instances to symbols in `ScopeBuilderPass`.
+- **Phase 5.1: Type AST**
+  - Added `TypeNode` hierarchy (`PrimitiveTypeNode`, `NamedTypeNode`, `FunctionTypeNode`).
+  - Updated `Parser` to support type annotations.
+
+### Fixed
+- Fixed bug where `SourceSpan` was improperly accessed for line numbers in compiler errors.

@@ -29,6 +29,14 @@ The initial groundwork for the Native Runtime environment is complete:
 4. **Rust Runtime** (AAYU VM skeleton constructed)
 5. **Execution** (Mini VM tested on subset opcodes)
 
+## Reflection Contract (Phase 4.6)
+
+Reflection is implemented as a Standard Library module (`reflect`), not as core language keywords. The following contract strictly governs reflection behavior to preserve the Milestone 3 architectural freeze:
+
+1. **Read-Only Access**: Reflection may inspect runtime objects and metadata.
+2. **Immutability**: Reflection must **never** mutate runtime metadata or compiler metadata (e.g., changing visibility, modifying exported status).
+3. **VM Integrity**: The core VM and Compiler remain generic and agnostic to reflection. All reflection logic is encapsulated in the `reflect_lib` standard library.
+
 ## Moving Forward
 
 With the architecture frozen, subsequent sprints will focus on "Generator Quality Upgrades" (enhancing specific generation templates, expanding the AST capabilities, and introducing deeper runtime features like variable management), but the core sequence of operations described above will remain strictly preserved.

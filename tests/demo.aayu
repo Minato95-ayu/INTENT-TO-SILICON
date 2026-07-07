@@ -1,0 +1,6 @@
+let x: Number = 5.
+mut y: Number = 10.
+entity User
+has
+    name: Text.
+end.

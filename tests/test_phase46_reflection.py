@@ -1,3 +1,17 @@
+"""
+=============================================================================
+FILE: test_phase46_reflection.py
+PURPOSE: Test suite for AAYU components
+=============================================================================
+This file is part of the AAYU (Aayu) Intent-to-Silicon Programming Language.
+The AAYU language enables developers to write code using natural language
+intentions, which are compiled to optimized backend code.
+
+For beginners: This file handles test suite for aayu components.
+To understand the project architecture, see the ARCHITECTURE_FREEZE.md file.
+=============================================================================
+"""
+
 import sys
 import os
 
@@ -5,7 +19,7 @@ import os
 prototype_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'prototype'))
 sys.path.insert(0, prototype_dir)
 
-from engine.api import AAYUEngine
+from compiler.frontend.engine.api import AAYUEngine
 
 def test_reflection():
     engine = AAYUEngine()
@@ -24,11 +38,11 @@ def test_reflection():
     export { hello }.
     """
     
-    from language.lexer import Lexer
-    from language.parser import Parser
-    from language.passes.lowering import LoweringPass
-    from language.compiler import AAYUCompiler
-    from language.runtime.vm.vm import VirtualMachine
+    from compiler.frontend.lexer import Lexer
+    from compiler.frontend.parser import Parser
+    from compiler.frontend.passes.lowering import LoweringPass
+    from compiler.frontend.compiler import AAYUCompiler
+    from runtime.vm.vm import VirtualMachine
     
     def compile_aayu(src, name):
         lexer = Lexer(src)
@@ -73,7 +87,7 @@ def test_reflection():
     
     bytecode2 = compile_aayu(script, "test_reflect")
     
-    from language.vm import VirtualMachine
+    from runtime.vm.vm import VirtualMachine
     vm = VirtualMachine()
     try:
         vm.run(bytecode2)

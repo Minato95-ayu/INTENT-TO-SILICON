@@ -1,0 +1,11 @@
+{
+  "name": "Architecture Template 378",
+  "type": "cqrs",
+  "components": [
+    "Component0",
+    "Component1",
+    "Component2",
+    "Component3",
+    "Component4"
+  ]
+}

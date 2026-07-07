@@ -1,10 +1,24 @@
+"""
+=============================================================================
+FILE: test_v2_regression.py
+PURPOSE: Test suite for AAYU components
+=============================================================================
+This file is part of the AAYU (Aayu) Intent-to-Silicon Programming Language.
+The AAYU language enables developers to write code using natural language
+intentions, which are compiled to optimized backend code.
+
+For beginners: This file handles test suite for aayu components.
+To understand the project architecture, see the ARCHITECTURE_FREEZE.md file.
+=============================================================================
+"""
+
 import json
 import os
 import sys
 
 # Add compiler_v2 to path
 sys.path.append(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'prototype', 'compiler_v2'))
-from compiler import CompilerV2
+from compiler.frontend.v2.compiler import CompilerV2
 
 def test_regression():
     c = CompilerV2()

@@ -1,0 +1,176 @@
+{
+  "name": "Authentication",
+  "entities": [
+    "User",
+    "Session",
+    "Log",
+    "Settings",
+    "Configuration",
+    "Role",
+    "Permission",
+    "AuthenticationEntity1",
+    "AuthenticationEntity2",
+    "AuthenticationEntity3",
+    "AuthenticationEntity4",
+    "AuthenticationEntity5",
+    "AuthenticationEntity6",
+    "AuthenticationEntity7",
+    "AuthenticationEntity8",
+    "AuthenticationEntity9",
+    "AuthenticationEntity10",
+    "AuthenticationEntity11",
+    "AuthenticationEntity12",
+    "AuthenticationEntity13",
+    "AuthenticationEntity14",
+    "AuthenticationEntity15",
+    "AuthenticationEntity16",
+    "AuthenticationEntity17",
+    "AuthenticationEntity18",
+    "AuthenticationEntity19",
+    "AuthenticationEntity20",
+    "AuthenticationEntity21",
+    "AuthenticationEntity22",
+    "AuthenticationEntity23",
+    "AuthenticationEntity24",
+    "AuthenticationEntity25",
+    "AuthenticationEntity26",
+    "AuthenticationEntity27",
+    "AuthenticationEntity28",
+    "AuthenticationEntity29",
+    "AuthenticationEntity30",
+    "AuthenticationEntity31",
+    "AuthenticationEntity32",
+    "AuthenticationEntity33",
+    "AuthenticationEntity34",
+    "AuthenticationEntity35",
+    "AuthenticationEntity36",
+    "AuthenticationEntity37",
+    "AuthenticationEntity38",
+    "AuthenticationEntity39",
+    "AuthenticationEntity40",
+    "AuthenticationEntity41",
+    "AuthenticationEntity42",
+    "AuthenticationEntity43",
+    "AuthenticationEntity44",
+    "AuthenticationEntity45",
+    "AuthenticationEntity46",
+    "AuthenticationEntity47",
+    "AuthenticationEntity48",
+    "AuthenticationEntity49",
+    "AuthenticationEntity50"
+  ],
+  "relationships": [
+    {
+      "source": "AuthenticationEntity2",
+      "target": "AuthenticationEntity8",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Role",
+      "target": "AuthenticationEntity49",
+      "type": "one_to_one"
+    },
+    {
+      "source": "AuthenticationEntity1",
+      "target": "AuthenticationEntity30",
+      "type": "many_to_many"
+    },
+    {
+      "source": "AuthenticationEntity12",
+      "target": "AuthenticationEntity45",
+      "type": "one_to_many"
+    },
+    {
+      "source": "AuthenticationEntity33",
+      "target": "AuthenticationEntity32",
+      "type": "many_to_many"
+    },
+    {
+      "source": "AuthenticationEntity21",
+      "target": "AuthenticationEntity26",
+      "type": "many_to_many"
+    },
+    {
+      "source": "AuthenticationEntity8",
+      "target": "AuthenticationEntity42",
+      "type": "many_to_many"
+    },
+    {
+      "source": "AuthenticationEntity5",
+      "target": "Permission",
+      "type": "one_to_one"
+    },
+    {
+      "source": "AuthenticationEntity50",
+      "target": "AuthenticationEntity13",
+      "type": "one_to_one"
+    },
+    {
+      "source": "AuthenticationEntity47",
+      "target": "AuthenticationEntity39",
+      "type": "one_to_one"
+    },
+    {
+      "source": "AuthenticationEntity49",
+      "target": "Permission",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Role",
+      "target": "AuthenticationEntity36",
+      "type": "many_to_many"
+    },
+    {
+      "source": "AuthenticationEntity34",
+      "target": "AuthenticationEntity49",
+      "type": "many_to_many"
+    },
+    {
+      "source": "AuthenticationEntity50",
+      "target": "AuthenticationEntity3",
+      "type": "many_to_many"
+    },
+    {
+      "source": "AuthenticationEntity45",
+      "target": "AuthenticationEntity17",
+      "type": "one_to_many"
+    },
+    {
+      "source": "AuthenticationEntity2",
+      "target": "AuthenticationEntity45",
+      "type": "many_to_many"
+    },
+    {
+      "source": "AuthenticationEntity5",
+      "target": "AuthenticationEntity46",
+      "type": "many_to_many"
+    },
+    {
+      "source": "AuthenticationEntity14",
+      "target": "AuthenticationEntity31",
+      "type": "one_to_many"
+    },
+    {
+      "source": "AuthenticationEntity39",
+      "target": "AuthenticationEntity15",
+      "type": "many_to_many"
+    },
+    {
+      "source": "AuthenticationEntity25",
+      "target": "AuthenticationEntity41",
+      "type": "many_to_many"
+    }
+  ],
+  "workflows": [
+    "Authentication Workflow 1",
+    "Authentication Workflow 2",
+    "Authentication Workflow 3",
+    "Authentication Workflow 4",
+    "Authentication Workflow 5",
+    "Authentication Workflow 6",
+    "Authentication Workflow 7",
+    "Authentication Workflow 8",
+    "Authentication Workflow 9",
+    "Authentication Workflow 10"
+  ]
+}

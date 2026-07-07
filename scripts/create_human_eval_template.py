@@ -1,3 +1,17 @@
+"""
+=============================================================================
+FILE: create_human_eval_template.py
+PURPOSE: Generates project components
+=============================================================================
+This file is part of the AAYU (Aayu) Intent-to-Silicon Programming Language.
+The AAYU language enables developers to write code using natural language
+intentions, which are compiled to optimized backend code.
+
+For beginners: This file handles generates project components.
+To understand the project architecture, see the ARCHITECTURE_FREEZE.md file.
+=============================================================================
+"""
+
 import csv
 import random
 import os

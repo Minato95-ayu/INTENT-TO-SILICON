@@ -1,0 +1,72 @@
+{
+  "create": [
+    "make",
+    "build",
+    "generate",
+    "spawn",
+    "initiate",
+    "establish",
+    "setup",
+    "add",
+    "insert",
+    "new",
+    "register",
+    "open"
+  ],
+  "read": [
+    "get",
+    "fetch",
+    "retrieve",
+    "find",
+    "search",
+    "list",
+    "show",
+    "view",
+    "display",
+    "query",
+    "select"
+  ],
+  "update": [
+    "edit",
+    "modify",
+    "change",
+    "alter",
+    "adjust",
+    "patch",
+    "revise",
+    "amend",
+    "fix"
+  ],
+  "delete": [
+    "remove",
+    "destroy",
+    "drop",
+    "erase",
+    "trash",
+    "clear",
+    "terminate",
+    "cancel",
+    "kill",
+    "close"
+  ],
+  "approve": [
+    "accept",
+    "authorize",
+    "validate",
+    "verify",
+    "confirm",
+    "endorse",
+    "certify",
+    "pass"
+  ],
+  "reject": [
+    "deny",
+    "refuse",
+    "decline",
+    "veto",
+    "discard",
+    "block",
+    "ban",
+    "revoke"
+  ]
+}

@@ -1,0 +1,171 @@
+{
+  "name": "Crm",
+  "entities": [
+    "User",
+    "Session",
+    "Log",
+    "Settings",
+    "Configuration",
+    "Role",
+    "Permission",
+    "CrmEntity1",
+    "CrmEntity2",
+    "CrmEntity3",
+    "CrmEntity4",
+    "CrmEntity5",
+    "CrmEntity6",
+    "CrmEntity7",
+    "CrmEntity8",
+    "CrmEntity9",
+    "CrmEntity10",
+    "CrmEntity11",
+    "CrmEntity12",
+    "CrmEntity13",
+    "CrmEntity14",
+    "CrmEntity15",
+    "CrmEntity16",
+    "CrmEntity17",
+    "CrmEntity18",
+    "CrmEntity19",
+    "CrmEntity20",
+    "CrmEntity21",
+    "CrmEntity22",
+    "CrmEntity23",
+    "CrmEntity24",
+    "CrmEntity25",
+    "CrmEntity26",
+    "CrmEntity27",
+    "CrmEntity28",
+    "CrmEntity29",
+    "CrmEntity30",
+    "CrmEntity31",
+    "CrmEntity32",
+    "CrmEntity33",
+    "CrmEntity34",
+    "CrmEntity35",
+    "CrmEntity36",
+    "CrmEntity37",
+    "CrmEntity38",
+    "CrmEntity39",
+    "CrmEntity40",
+    "CrmEntity41",
+    "CrmEntity42",
+    "CrmEntity43",
+    "CrmEntity44",
+    "CrmEntity45",
+    "CrmEntity46",
+    "CrmEntity47",
+    "CrmEntity48",
+    "CrmEntity49",
+    "CrmEntity50"
+  ],
+  "relationships": [
+    {
+      "source": "CrmEntity10",
+      "target": "CrmEntity41",
+      "type": "many_to_many"
+    },
+    {
+      "source": "CrmEntity4",
+      "target": "CrmEntity40",
+      "type": "one_to_many"
+    },
+    {
+      "source": "CrmEntity22",
+      "target": "CrmEntity26",
+      "type": "many_to_many"
+    },
+    {
+      "source": "CrmEntity13",
+      "target": "CrmEntity41",
+      "type": "one_to_many"
+    },
+    {
+      "source": "CrmEntity36",
+      "target": "CrmEntity38",
+      "type": "one_to_one"
+    },
+    {
+      "source": "CrmEntity36",
+      "target": "CrmEntity13",
+      "type": "many_to_many"
+    },
+    {
+      "source": "CrmEntity37",
+      "target": "CrmEntity19",
+      "type": "one_to_many"
+    },
+    {
+      "source": "CrmEntity4",
+      "target": "CrmEntity19",
+      "type": "one_to_one"
+    },
+    {
+      "source": "CrmEntity16",
+      "target": "CrmEntity34",
+      "type": "many_to_many"
+    },
+    {
+      "source": "CrmEntity24",
+      "target": "CrmEntity34",
+      "type": "one_to_many"
+    },
+    {
+      "source": "CrmEntity37",
+      "target": "CrmEntity44",
+      "type": "many_to_many"
+    },
+    {
+      "source": "CrmEntity35",
+      "target": "CrmEntity21",
+      "type": "one_to_one"
+    },
+    {
+      "source": "CrmEntity46",
+      "target": "CrmEntity40",
+      "type": "one_to_one"
+    },
+    {
+      "source": "CrmEntity44",
+      "target": "CrmEntity14",
+      "type": "one_to_one"
+    },
+    {
+      "source": "CrmEntity10",
+      "target": "CrmEntity23",
+      "type": "one_to_many"
+    },
+    {
+      "source": "CrmEntity39",
+      "target": "CrmEntity2",
+      "type": "many_to_many"
+    },
+    {
+      "source": "CrmEntity12",
+      "target": "CrmEntity25",
+      "type": "many_to_many"
+    },
+    {
+      "source": "CrmEntity6",
+      "target": "CrmEntity47",
+      "type": "one_to_many"
+    },
+    {
+      "source": "CrmEntity2",
+      "target": "CrmEntity48",
+      "type": "one_to_one"
+    }
+  ],
+  "workflows": [
+    "Crm Workflow 1",
+    "Crm Workflow 2",
+    "Crm Workflow 3",
+    "Crm Workflow 4",
+    "Crm Workflow 5",
+    "Crm Workflow 6",
+    "Crm Workflow 7",
+    "Crm Workflow 8",
+    "Crm Workflow 9",
+    "Crm Workflow 10"
+  ]
+}

@@ -1,8 +1,0 @@
-[package]
-name = "aayu_cli"
-version = "0.6.0"
-edition = "2021"
-
-[dependencies]
-aayu_core = { path = "../aayu_core" }
-aayu_vm = { path = "../aayu_vm" }

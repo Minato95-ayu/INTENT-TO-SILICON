@@ -1,8 +1,0 @@
-entity Student.
-    text name.
-    text email.
-    text course.
-end.
-
-crud Student.
-serve on 8080.

@@ -1,0 +1,23 @@
+class ScalingAdvisor:
+    def advise(self, load_params: dict) -> dict:
+        req_per_sec = load_params.get("requests_per_second", 0)
+        data_size_gb = load_params.get("data_size_gb", 0)
+        
+        strategy = "monolith"
+        database = "single"
+        cache = "in-memory"
+        
+        if req_per_sec > 10000 or data_size_gb > 1000:
+            strategy = "microservices"
+            database = "sharded_cluster"
+            cache = "redis_cluster"
+        elif req_per_sec > 1000 or data_size_gb > 100:
+            strategy = "load_balanced_monolith"
+            database = "primary_replica"
+            cache = "redis"
+            
+        return {
+            "strategy": strategy,
+            "database": database,
+            "cache": cache
+        }

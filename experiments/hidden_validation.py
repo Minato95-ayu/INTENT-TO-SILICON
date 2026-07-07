@@ -1,9 +1,23 @@
+"""
+=============================================================================
+FILE: hidden_validation.py
+PURPOSE: Part of the AAYU Intent-to-Silicon project
+=============================================================================
+This file is part of the AAYU (Aayu) Intent-to-Silicon Programming Language.
+The AAYU language enables developers to write code using natural language
+intentions, which are compiled to optimized backend code.
+
+For beginners: This file handles part of the aayu intent-to-silicon project.
+To understand the project architecture, see the ARCHITECTURE_FREEZE.md file.
+=============================================================================
+"""
+
 import json
 import sys
 import os
 
 sys.path.append(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'prototype', 'compiler_v2'))
-from compiler import CompilerV2
+from compiler.frontend.compiler import CompilerV2
 
 def run_benchmark():
     c = CompilerV2()

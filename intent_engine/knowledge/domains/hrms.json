@@ -1,0 +1,176 @@
+{
+  "name": "Hrms",
+  "entities": [
+    "User",
+    "Session",
+    "Log",
+    "Settings",
+    "Configuration",
+    "Role",
+    "Permission",
+    "HrmsEntity1",
+    "HrmsEntity2",
+    "HrmsEntity3",
+    "HrmsEntity4",
+    "HrmsEntity5",
+    "HrmsEntity6",
+    "HrmsEntity7",
+    "HrmsEntity8",
+    "HrmsEntity9",
+    "HrmsEntity10",
+    "HrmsEntity11",
+    "HrmsEntity12",
+    "HrmsEntity13",
+    "HrmsEntity14",
+    "HrmsEntity15",
+    "HrmsEntity16",
+    "HrmsEntity17",
+    "HrmsEntity18",
+    "HrmsEntity19",
+    "HrmsEntity20",
+    "HrmsEntity21",
+    "HrmsEntity22",
+    "HrmsEntity23",
+    "HrmsEntity24",
+    "HrmsEntity25",
+    "HrmsEntity26",
+    "HrmsEntity27",
+    "HrmsEntity28",
+    "HrmsEntity29",
+    "HrmsEntity30",
+    "HrmsEntity31",
+    "HrmsEntity32",
+    "HrmsEntity33",
+    "HrmsEntity34",
+    "HrmsEntity35",
+    "HrmsEntity36",
+    "HrmsEntity37",
+    "HrmsEntity38",
+    "HrmsEntity39",
+    "HrmsEntity40",
+    "HrmsEntity41",
+    "HrmsEntity42",
+    "HrmsEntity43",
+    "HrmsEntity44",
+    "HrmsEntity45",
+    "HrmsEntity46",
+    "HrmsEntity47",
+    "HrmsEntity48",
+    "HrmsEntity49",
+    "HrmsEntity50"
+  ],
+  "relationships": [
+    {
+      "source": "HrmsEntity31",
+      "target": "HrmsEntity18",
+      "type": "many_to_many"
+    },
+    {
+      "source": "HrmsEntity19",
+      "target": "HrmsEntity16",
+      "type": "one_to_many"
+    },
+    {
+      "source": "HrmsEntity16",
+      "target": "HrmsEntity21",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Log",
+      "target": "HrmsEntity27",
+      "type": "many_to_many"
+    },
+    {
+      "source": "HrmsEntity36",
+      "target": "HrmsEntity3",
+      "type": "one_to_one"
+    },
+    {
+      "source": "HrmsEntity36",
+      "target": "HrmsEntity48",
+      "type": "one_to_many"
+    },
+    {
+      "source": "HrmsEntity40",
+      "target": "HrmsEntity15",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Permission",
+      "target": "Session",
+      "type": "one_to_many"
+    },
+    {
+      "source": "HrmsEntity30",
+      "target": "HrmsEntity32",
+      "type": "one_to_one"
+    },
+    {
+      "source": "HrmsEntity10",
+      "target": "Session",
+      "type": "many_to_many"
+    },
+    {
+      "source": "HrmsEntity35",
+      "target": "HrmsEntity26",
+      "type": "one_to_many"
+    },
+    {
+      "source": "HrmsEntity35",
+      "target": "HrmsEntity48",
+      "type": "one_to_one"
+    },
+    {
+      "source": "HrmsEntity14",
+      "target": "HrmsEntity17",
+      "type": "many_to_many"
+    },
+    {
+      "source": "HrmsEntity23",
+      "target": "HrmsEntity5",
+      "type": "one_to_many"
+    },
+    {
+      "source": "HrmsEntity34",
+      "target": "Role",
+      "type": "one_to_many"
+    },
+    {
+      "source": "HrmsEntity19",
+      "target": "HrmsEntity32",
+      "type": "many_to_many"
+    },
+    {
+      "source": "HrmsEntity19",
+      "target": "HrmsEntity38",
+      "type": "one_to_many"
+    },
+    {
+      "source": "HrmsEntity26",
+      "target": "HrmsEntity39",
+      "type": "one_to_many"
+    },
+    {
+      "source": "HrmsEntity20",
+      "target": "HrmsEntity7",
+      "type": "one_to_many"
+    },
+    {
+      "source": "HrmsEntity27",
+      "target": "Permission",
+      "type": "one_to_one"
+    }
+  ],
+  "workflows": [
+    "Hrms Workflow 1",
+    "Hrms Workflow 2",
+    "Hrms Workflow 3",
+    "Hrms Workflow 4",
+    "Hrms Workflow 5",
+    "Hrms Workflow 6",
+    "Hrms Workflow 7",
+    "Hrms Workflow 8",
+    "Hrms Workflow 9",
+    "Hrms Workflow 10"
+  ]
+}

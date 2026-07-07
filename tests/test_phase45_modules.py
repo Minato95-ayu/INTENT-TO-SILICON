@@ -1,3 +1,17 @@
+"""
+=============================================================================
+FILE: test_phase45_modules.py
+PURPOSE: Test suite for AAYU components
+=============================================================================
+This file is part of the AAYU (Aayu) Intent-to-Silicon Programming Language.
+The AAYU language enables developers to write code using natural language
+intentions, which are compiled to optimized backend code.
+
+For beginners: This file handles test suite for aayu components.
+To understand the project architecture, see the ARCHITECTURE_FREEZE.md file.
+=============================================================================
+"""
+
 import sys
 import os
 
@@ -6,15 +20,15 @@ prototype_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'p
 sys.path.insert(0, prototype_dir)
 sys.path.insert(0, os.path.join(prototype_dir, 'language'))
 
-from language.lexer import Lexer
-from language.parser import Parser
-from language.passes.manager import PassManager
-from language.passes.semantic.scope_builder import ScopeBuilderPass
-from language.passes.semantic.import_binding import ImportBindingPass
-from language.passes.semantic.symbol_binding import SymbolBindingPass
-from language.passes.semantic.validation import ExportValidationPass
-from language.compiler_context import CompilerContext
-from language.resolver.symbols import SymbolTable, ScopeType
+from compiler.frontend.lexer import Lexer
+from compiler.frontend.parser import Parser
+from compiler.frontend.passes.manager import PassManager
+from compiler.frontend.passes.semantic.scope_builder import ScopeBuilderPass
+from compiler.frontend.passes.semantic.import_binding import ImportBindingPass
+from compiler.frontend.passes.semantic.symbol_binding import SymbolBindingPass
+from compiler.frontend.passes.semantic.export_validation import ExportValidationPass
+from compiler.frontend.compiler_context import CompilerContext
+from compiler.frontend.resolver.symbols import SymbolTable, ScopeType
 
 def validate_sources(sources):
     context = CompilerContext()

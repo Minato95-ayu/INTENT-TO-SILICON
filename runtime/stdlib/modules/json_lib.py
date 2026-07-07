@@ -8,19 +8,18 @@ from ...values.number import NumberValue
 from ...values.boolean import BooleanValue
 
 def create_string(vm, text):
-    obj = vm.heap.allocate("string", text)
-    return StringValue(obj.id, vm.heap)
+    obj = vm.memory.heap.allocate("string", text)
+    return StringValue(obj.id, vm.memory.heap)
 
 def py_to_aayu(py_val, vm):
     if isinstance(py_val, dict):
         d = {k: py_to_aayu(v, vm) for k, v in py_val.items()}
-        # For simplicity, returning a mock MapValue here without heap (actual MapValue requires heap)
-        obj = vm.heap.allocate("map", d)
-        return MapValue(obj.id, vm.heap)
+        obj = vm.memory.heap.allocate("map", d)
+        return MapValue(obj.id, vm.memory.heap)
     elif isinstance(py_val, list):
         l = [py_to_aayu(x, vm) for x in py_val]
-        obj = vm.heap.allocate("list", l)
-        return ListValue(obj.id, vm.heap)
+        obj = vm.memory.heap.allocate("list", l)
+        return ListValue(obj.id, vm.memory.heap)
     elif isinstance(py_val, str):
         return create_string(vm, py_val)
     elif isinstance(py_val, (int, float)):

@@ -13,10 +13,28 @@ from ...values.map import MapValue
 from ...values.number import NumberValue
 from ...values.boolean import BooleanValue
 
+import math
+
 def register_math_lib(registry: StdLibRegistry):
-    def fn_mock(args, vm):
-        return StringValue("Mock implementation for math")
+    def fn_sin(args, vm):
+        return NumberValue(math.sin(args[0].to_python()))
+    def fn_cos(args, vm):
+        return NumberValue(math.cos(args[0].to_python()))
+    def fn_tan(args, vm):
+        return NumberValue(math.tan(args[0].to_python()))
+    def fn_sqrt(args, vm):
+        return NumberValue(math.sqrt(args[0].to_python()))
+    def fn_pow(args, vm):
+        return NumberValue(math.pow(args[0].to_python(), args[1].to_python()))
+    def fn_abs(args, vm):
+        return NumberValue(abs(args[0].to_python()))
+    def fn_round(args, vm):
+        return NumberValue(round(args[0].to_python()))
         
-    # Register basic API methods
-    for method in ['sin', 'cos', 'tan', 'sqrt', 'pow', 'abs', 'round']:
-        registry.register(f"math::{method}", fn_mock)
+    registry.register("math::sin", fn_sin)
+    registry.register("math::cos", fn_cos)
+    registry.register("math::tan", fn_tan)
+    registry.register("math::sqrt", fn_sqrt)
+    registry.register("math::pow", fn_pow)
+    registry.register("math::abs", fn_abs)
+    registry.register("math::round", fn_round)

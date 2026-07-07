@@ -1,0 +1,11 @@
+let pow = math::pow(2, 3).
+show pow.
+
+let root = math::sqrt(16).
+show root.
+
+let file_exists = fs::exists("src/test_stdlib.aayu").
+show file_exists.
+
+let content = fs::read("src/test_stdlib.aayu").
+show content.

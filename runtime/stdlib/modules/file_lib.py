@@ -6,15 +6,16 @@ from ...values.null import NullValue
 from ...values.boolean import BooleanValue
 
 def create_string(vm, text):
-    obj = vm.heap.allocate("string", text)
-    return StringValue(obj.id, vm.heap)
+    obj = vm.memory.heap.allocate("string", text)
+    return StringValue(obj.id, vm.memory.heap)
 
 def register_file_lib(registry: StdLibRegistry):
     def fn_read(args, vm):
         try:
-            with open(args[0].to_python(), 'r') as f:
+            with open(args[0].to_python(), 'r', encoding='utf-8') as f:
                 return create_string(vm, f.read())
-        except Exception:
+        except Exception as e:
+            print(f"File Read Error: {e}")
             return NullValue()
             
     def fn_write(args, vm):

@@ -14,7 +14,10 @@ class AAYUCLI:
         init_parser.add_argument("name", type=str, help="Project name")
         
         run_parser = subparsers.add_parser("run", help="Run an AAYU file")
-        run_parser.add_argument("file", type=str, help="Path to .aayu file")
+        run_parser.add_argument("file", type=str, nargs='?', default='src/main.aayu', help="Path to .aayu file (default: src/main.aayu)")
+        
+        build_parser = subparsers.add_parser("build", help="Compile an AAYU file to bytecode")
+        build_parser.add_argument("file", type=str, nargs='?', default='src/main.aayu', help="Path to .aayu file (default: src/main.aayu)")
         
         fmt_parser = subparsers.add_parser("fmt", help="Format an AAYU file")
         fmt_parser.add_argument("file", type=str, help="Path to .aayu file")
@@ -69,6 +72,10 @@ class AAYUCLI:
                 sys.exit(1)
             else:
                 print(f"[OK] No linting issues found in {args.file}")
+        elif args.command == "run":
+            handle_run(args)
+        elif args.command == "build":
+            handle_build(args)
         elif args.command == "auto":
             handle_auto(args.prompt)
         elif args.command == "architect":
@@ -93,6 +100,76 @@ class AAYUCLI:
             handle_publish(args)
         else:
             self.parser.print_help()
+
+def handle_run(args):
+    file_path = args.file
+    if not os.path.exists(file_path):
+        print(f"Error: File '{file_path}' not found.")
+        sys.exit(1)
+        
+    print(f"[AAYU] Running {file_path}...")
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from compiler.frontend.lexer import Lexer
+    from compiler.frontend.parser import Parser
+    from compiler.frontend.compiler import AAYUCompiler
+    from runtime.vm.vm import VirtualMachine
+    
+    with open(file_path, "r") as f:
+        source_code = f.read()
+        
+    try:
+        lexer = Lexer(source_code)
+        tokens = lexer.tokenize()
+        
+        parser = Parser(tokens, filename=file_path)
+        ast = parser.parse()
+        
+        compiler = AAYUCompiler(filename=file_path)
+        bytecode = compiler.compile(ast)
+        
+        vm = VirtualMachine()
+        vm.run(bytecode)
+    except Exception as e:
+        print(f"Execution Error: {e}")
+        sys.exit(1)
+
+def handle_build(args):
+    file_path = args.file
+    if not os.path.exists(file_path):
+        print(f"Error: File '{file_path}' not found.")
+        sys.exit(1)
+        
+    print(f"[AAYU] Building {file_path}...")
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from compiler.frontend.lexer import Lexer
+    from compiler.frontend.parser import Parser
+    from compiler.frontend.compiler import AAYUCompiler
+    import pickle
+    
+    with open(file_path, "r") as f:
+        source_code = f.read()
+        
+    try:
+        lexer = Lexer(source_code)
+        tokens = lexer.tokenize()
+        
+        parser = Parser(tokens, filename=file_path)
+        ast = parser.parse()
+        
+        compiler = AAYUCompiler(filename=file_path)
+        bytecode = compiler.compile(ast)
+        
+        out_file = file_path.replace(".aayu", ".ayc")
+        if out_file == file_path:
+            out_file += ".ayc"
+            
+        with open(out_file, "wb") as f:
+            pickle.dump(bytecode, f)
+            
+        print(f"[DONE] Successfully compiled {file_path} to {out_file}")
+    except Exception as e:
+        print(f"Compilation Error: {e}")
+        sys.exit(1)
 
 def handle_auto(args):
     prompt = " ".join(args)

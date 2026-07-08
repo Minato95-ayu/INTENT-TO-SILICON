@@ -1,0 +1,28 @@
+page CoachingPage.
+    dashboard.
+        row.
+            column.
+                heading "AAYU Code Academy".
+                text "Unlock the future of programming. Learn compilers, virtual machines, and AI agents.".
+                button "Start Learning".
+            end.
+        end.
+        row.
+            card "Foundation Batch".
+                badge "Beginner".
+                text "Learn AAYU syntax and memory management from zero.".
+                button "Enroll".
+            end.
+            card "BrainOS Masterclass".
+                badge "Advanced".
+                text "Build autonomous agents and intent-to-silicon pipelines.".
+                button "Enroll".
+            end.
+            card "System Design".
+                badge "Expert".
+                text "Design scalable VMs and distributed systems.".
+                button "Enroll".
+            end.
+        end.
+    end.
+end.

@@ -1,4 +1,5 @@
- 
+/* eslint-disable */
+
 import Link from "next/link";
 import Image from "next/image";
 
@@ -13,10 +14,10 @@ export function Footer() {
               <span className="font-bold text-xl tracking-tight text-white">AAYU</span>
             </Link>
             <p className="text-zinc-400 max-w-xs leading-relaxed mb-6">
-              The Programming Language Built for Human Intent. Write ideas, compile production software.
+              The Application Language. Write apps, not configurations.
             </p>
             <div className="flex gap-4">
-              <Link href="https://github.com/Minato95-ayu/AAYU" className="text-zinc-400 hover:text-white transition-colors">GitHub</Link>
+              <Link href="https://github.com/Minato95-ayu/INTENT-TO-SILICON" target="_blank" rel="noopener noreferrer" className="text-zinc-400 hover:text-white transition-colors">GitHub</Link>
               <Link href="#" className="text-zinc-400 hover:text-white transition-colors">Discord</Link>
               <Link href="#" className="text-zinc-400 hover:text-white transition-colors">Twitter</Link>
             </div>
@@ -25,8 +26,8 @@ export function Footer() {
             <h3 className="mb-4 text-sm font-semibold text-white tracking-wider uppercase">Platform</h3>
             <ul className="space-y-3 text-sm text-zinc-400">
               <li><Link href="/language" className="hover:text-blue-400 transition-colors">AAYU Language</Link></li>
-              <li><Link href="/brainos" className="hover:text-blue-400 transition-colors">BrainOS</Link></li>
-              <li><Link href="/intent-engine" className="hover:text-blue-400 transition-colors">Intent Engine</Link></li>
+              <li><Link href="/architecture" className="hover:text-blue-400 transition-colors">Runtime Architecture</Link></li>
+              <li><Link href="/docs/cli" className="hover:text-blue-400 transition-colors">CLI &amp; Tools</Link></li>
               <li><Link href="/playground" className="hover:text-white transition-colors">Playground</Link></li>
               <li><Link href="/download" className="hover:text-white transition-colors">Download</Link></li>
             </ul>
@@ -35,17 +36,17 @@ export function Footer() {
             <h3 className="mb-4 text-sm font-semibold text-white tracking-wider uppercase">Resources</h3>
             <ul className="space-y-3 text-sm text-zinc-400">
               <li><Link href="/docs" className="hover:text-white transition-colors">Documentation</Link></li>
-              <li><Link href="/learn" className="hover:text-white transition-colors">Learn AAYU</Link></li>
-              <li><Link href="/packages" className="hover:text-white transition-colors">Packages</Link></li>
               <li><Link href="/examples" className="hover:text-white transition-colors">Examples Gallery</Link></li>
+              <li><Link href="/packages" className="hover:text-white transition-colors">Packages</Link></li>
               <li><Link href="/blog" className="hover:text-white transition-colors">Blog</Link></li>
+              <li><Link href="/roadmap" className="hover:text-white transition-colors">Roadmap</Link></li>
             </ul>
           </div>
           <div>
             <h3 className="mb-4 text-sm font-semibold text-white tracking-wider uppercase">Company</h3>
             <ul className="space-y-3 text-sm text-zinc-400">
               <li><Link href="/about" className="hover:text-white transition-colors">About</Link></li>
-              <li><Link href="/roadmap" className="hover:text-white transition-colors">Roadmap</Link></li>
+              <li><Link href="https://github.com/Minato95-ayu/INTENT-TO-SILICON" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub</Link></li>
               <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
               <li><Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
             </ul>

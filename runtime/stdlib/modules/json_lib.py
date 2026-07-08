@@ -74,3 +74,5 @@ def register_json_lib(registry: StdLibRegistry):
             
     registry.register("json::parse", fn_parse)
     registry.register("json::stringify", fn_stringify)
+    registry.register("json::decode", fn_parse)
+    registry.register("json::encode", fn_stringify)

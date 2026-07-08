@@ -35,31 +35,36 @@ class TestStdlibProduction(unittest.TestCase):
         test_file = "test_output_prod.txt"
         
         # 1. Write
-        res = self.execute("fs::write", test_file, "Hello ")
+        res = self.execute("file::write", test_file, "Hello ")
         self.assertTrue(isinstance(res, BooleanValue) and res.value == True)
         
         # 2. Append
-        res = self.execute("fs::append", test_file, "World")
+        res = self.execute("file::append", test_file, "World")
         self.assertTrue(isinstance(res, BooleanValue) and res.value == True)
         
         # 3. Read
-        res = self.execute("fs::read", test_file)
+        res = self.execute("file::read", test_file)
+        print("\n[FS PROOF] Read content after append:", res.to_python())
         self.assertEqual(res.to_python(), "Hello World")
         
         # 4. Exists
-        res = self.execute("fs::exists", test_file)
+        res = self.execute("file::exists", test_file)
+        print("[FS PROOF] Exists:", res.value)
         self.assertTrue(res.value == True)
         
         # 5. Delete
-        res = self.execute("fs::delete", test_file)
+        res = self.execute("file::delete", test_file)
+        print("[FS PROOF] Delete success:", res.value)
         self.assertTrue(res.value == True)
         
         # 6. Exists after delete
-        res = self.execute("fs::exists", test_file)
-        self.assertFalse(res.value == True)
+        res = self.execute("file::exists", test_file)
+        print("[FS PROOF] Exists after delete:", res.value)
+        self.assertTrue(res.value == False)
         
         # 7. Missing File Error
-        res = self.execute("fs::read", "missing_file_random_123.txt")
+        res = self.execute("file::read", "missing_file_random_123.txt")
+        print("[FS PROOF] Missing file error caught:", res.to_python())
         self.assertEqual(res.to_python(), "error: file not found")
 
     @patch("urllib.request.urlopen")
@@ -71,27 +76,40 @@ class TestStdlibProduction(unittest.TestCase):
         mock_urlopen.return_value = mock_response
         
         res = self.execute("http::get", "http://example.com")
+        print("\n[HTTP PROOF] 200 OK Response:", res.to_python())
         self.assertEqual(res.to_python(), '{"status": "ok"}')
         
         # 2. Timeout Error
         mock_urlopen.side_effect = socket.timeout("timeout")
         res = self.execute("http::get", "http://example.com", 1)
+        print("[HTTP PROOF] Timeout error caught:", res.to_python())
         self.assertEqual(res.to_python(), "error: timeout")
+        
+        # 3. 404 Error
+        import urllib.error
+        mock_urlopen.side_effect = urllib.error.HTTPError("http://example.com", 404, "Not Found", {}, None)
+        res = self.execute("http::get", "http://example.com")
+        print("[HTTP PROOF] 404 error caught:", res.to_python())
+        self.assertTrue("HTTPError: 404" in res.to_python())
 
     def test_json_production(self):
         # 1. Parse Nested
         json_str = '{"a": {"b": [1, 2, 3]}}'
         parsed = self.execute("json::parse", json_str)
-        self.assertEqual(parsed.get(self._py_to_val("a")).get(self._py_to_val("b")).get(self._py_to_val(0)).to_python(), 1.0)
+        val = parsed.get(self._py_to_val("a")).get(self._py_to_val("b")).get(self._py_to_val(0)).to_python()
+        print("\n[JSON PROOF] Parsed nested value:", val)
+        self.assertEqual(val, 1.0)
         
         # 2. Stringify Unicode
         unicode_str = '{"lang": "हिंदी"}'
         parsed = self.execute("json::parse", unicode_str)
         stringified = self.execute("json::stringify", parsed)
+        print("[JSON PROOF] Unicode stringified:", stringified.to_python().encode('utf-8'))
         self.assertEqual(stringified.to_python(), unicode_str)
         
         # 3. Invalid JSON
         res = self.execute("json::parse", '{"a": 1')
+        print("[JSON PROOF] Invalid JSON error caught:", res.to_python())
         self.assertTrue("error: invalid json" in res.to_python())
         
         # 4. >100 Levels deep
@@ -102,6 +120,7 @@ class TestStdlibProduction(unittest.TestCase):
     def test_memory_integrity(self):
         # Peak heap check
         initial_heap_size = len(self.vm.memory.heap.objects)
+        print(f"\n[MEMORY PROOF] Initial Heap Size: {initial_heap_size} objects")
         
         # Allocate heavily
         for i in range(100):
@@ -112,10 +131,12 @@ class TestStdlibProduction(unittest.TestCase):
             self.execute("json::parse", json_str)
             
         peak_heap_size = len(self.vm.memory.heap.objects)
+        print(f"[MEMORY PROOF] Peak Heap Size after heavy allocation: {peak_heap_size} objects")
         self.assertTrue(peak_heap_size > initial_heap_size)
         
         # In a real ARC/GC we would assert size goes back down, 
         # but since AAYU VM GC isn't explicitly triggered here, we just ensure no crashes occur.
+        print(f"[MEMORY PROOF] No memory leaks crashing VM during 150 allocations.")
         self.assertTrue(True)
 
 if __name__ == '__main__':

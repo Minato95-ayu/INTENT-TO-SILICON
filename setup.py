@@ -54,10 +54,9 @@ setup(
     # ========================================================================
     # STEP 3: Specify which Python code files to include in the package
     # ========================================================================
-    package_dir={"": "prototype"},  # Tells Python that our code files are in the "prototype" folder
-    packages=find_packages(where="prototype"),  # Automatically finds all Python packages inside "prototype" folder
-    py_modules=["cli"],  # Include the cli.py module (command-line interface for users to run "aayu" command)
-    include_package_data=True,  # Include non-Python files like configuration and data files
+    package_dir={"": "."},
+    packages=find_packages(where=".", include=["compiler*", "runtime*", "tools*", "brainos*", "intent_engine*"]),
+    include_package_data=True,
     
     # ========================================================================
     # STEP 4: Create command-line command that users can run
@@ -66,7 +65,7 @@ setup(
     # When they type "aayu", it will run the main() function from the cli module
     entry_points={
         "console_scripts": [
-            "aayu=cli:main",  # Creates "aayu" command that calls the main() function from cli.py
+            "aayu=tools.cli:main",  # Creates "aayu" command that calls the main() function from tools.cli
         ]
     },
     

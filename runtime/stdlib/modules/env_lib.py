@@ -4,8 +4,8 @@ from ...values.string import StringValue
 from ...values.null import NullValue
 
 def create_string(vm, text):
-    obj = vm.heap.allocate("string", text)
-    return StringValue(obj.id, vm.heap)
+    obj = vm.memory.heap.allocate("string", text)
+    return StringValue(obj.id, vm.memory.heap)
 
 def register_env_lib(registry: StdLibRegistry):
     def fn_get(args, vm):

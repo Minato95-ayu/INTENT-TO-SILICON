@@ -67,6 +67,12 @@ class AAYUCompiler:
             AST Node types par dispatch karke compile karta hai.
         """
         self.bytecode.file = self.filename
+        
+        # Phase 3: Attach Native Runtime Application Metadata
+        if isinstance(node, ProgramNode):
+            from compiler.backend.app_ir import AppIRBuilder
+            self.bytecode.app_metadata = AppIRBuilder(node).build()
+            
         self.visit(node)
         return self.bytecode
         
@@ -96,6 +102,101 @@ class AAYUCompiler:
         for stmt in node.statements:
             self.visit(stmt)
         self._emit(Opcode.RETURN)
+
+    def visit_StorageNode(self, node): pass
+    def visit_ModelNode(self, node): pass
+    def visit_ServiceNode(self, node): pass
+    def visit_SecurityNode(self, node): pass
+    def visit_ProjectDefNode(self, node): pass
+    def visit_PageNode(self, node): pass
+    def visit_PageDefNode(self, node): pass
+    def visit_ThemeNode(self, node): pass
+    def visit_RouteNode(self, node): pass
+    def visit_TaskNode(self, node): pass
+    def visit_ComponentNode(self, node): pass
+    def visit_UIServeNode(self, node): pass
+    
+    def visit_TryNode(self, node):
+        entry_idx = len(self.bytecode.exception_table)
+        self.bytecode.exception_table.append({})
+        
+        self._emit(Opcode.TRY_BEGIN, entry_idx)
+        
+        for stmt in node.try_block:
+            self.visit(stmt)
+            
+        self._emit(Opcode.TRY_END)
+        jmp_to_finally = len(self.bytecode.instructions)
+        self._emit(Opcode.JUMP, 0)
+        
+        catch_target = -1
+        jmp_from_catch = -1
+        if node.catch_node:
+            catch_target = len(self.bytecode.instructions)
+            
+            if node.catch_node.binding:
+                if node.catch_node.symbol:
+                    idx = self._add_name(node.catch_node.symbol.name)
+                else:
+                    idx = self._add_name(node.catch_node.binding)
+                self._emit(Opcode.STORE_VAR, idx)
+            else:
+                self._emit(Opcode.POP)
+                
+            for stmt in node.catch_node.block:
+                self.visit(stmt)
+                
+            jmp_from_catch = len(self.bytecode.instructions)
+            self._emit(Opcode.JUMP, 0)
+            
+        finally_target = -1
+        if node.finally_node:
+            finally_target = len(self.bytecode.instructions)
+            self._emit(Opcode.FINALLY_BEGIN)
+            for stmt in node.finally_node.block:
+                self.visit(stmt)
+            self._emit(Opcode.FINALLY_END)
+            
+        end_pc = len(self.bytecode.instructions)
+        
+        # Patch relative jumps
+        target = finally_target if finally_target >= 0 else end_pc
+        self.bytecode.instructions[jmp_to_finally].operand = target - jmp_to_finally
+        if jmp_from_catch >= 0:
+            self.bytecode.instructions[jmp_from_catch].operand = target - jmp_from_catch
+            
+        # Update exception table (absolute addresses)
+        self.bytecode.exception_table[entry_idx] = {
+            'catch_target': catch_target,
+            'finally_target': finally_target
+        }
+
+    def visit_ThrowNode(self, node):
+        self.visit(node.expression)
+        self._emit(Opcode.THROW)
+
+    def visit_PanicNode(self, node):
+        self.visit(node.message)
+        self._emit(Opcode.PANIC)
+
+    def visit_AssertNode(self, node):
+        self.visit(node.condition)
+        
+        jump_if_true = len(self.bytecode.instructions)
+        self._emit(Opcode.JUMP_IF_TRUE, 0)
+        
+        msg_idx = self._add_constant("Assertion failed")
+        self._emit(Opcode.LOAD_CONST, msg_idx)
+        self._emit(Opcode.THROW)
+        
+        self.bytecode.instructions[jump_if_true].operand = len(self.bytecode.instructions) - jump_if_true
+
+    def visit_ModuleDeclarationNode(self, node):
+        self.module_name = node.name
+        self.bytecode.reflection_info.module = node.name
+
+    def visit_ExportListNode(self, node):
+        pass
 
     def visit_InterfaceDeclNode(self, node):
         # Interfaces are purely semantic and do not generate bytecode
@@ -156,6 +257,13 @@ class AAYUCompiler:
         child_compiler = AAYUCompiler(filename=self.filename)
         child_compiler.bytecode.name = node.name
         child_compiler.bytecode.parameters = node.parameters
+        
+        # Phase 4.6 Reflection Info
+        child_compiler.bytecode.reflection_info.name = node.name
+        child_compiler.bytecode.reflection_info.module = getattr(self, 'module_name', '')
+        child_compiler.bytecode.reflection_info.visibility = getattr(node, 'visibility', 'private')
+        child_compiler.bytecode.reflection_info.is_exported = getattr(node, 'is_exported', False)
+        child_compiler.bytecode.reflection_info.parameter_count = len(node.parameters)
         
         # Compile function body
         for stmt in node.body:
@@ -763,6 +871,42 @@ class AAYUCompiler:
         self.visit(RouteNode(path=TextNode(f"/{entity_name.lower()}s/delete"), handler_name=del_task_name, method="DELETE"))
 
 
+    def visit_InsertNode(self, node: InsertNode):
+        # Push the model name as a string constant
+        model_idx = self._add_constant(node.model_name)
+        self._emit(Opcode.LOAD_CONST, model_idx)
+        
+        # Build a map of fields
+        for field_name, expr in node.fields.items():
+            key_idx = self._add_constant(field_name)
+            self._emit(Opcode.LOAD_CONST, key_idx)
+            self.visit(expr)
+            
+        self._emit(Opcode.MAKE_MAP, len(node.fields))
+        self._emit(Opcode.DB_INSERT)
+
+    def visit_FindNode(self, node: FindNode):
+        model_idx = self._add_constant(node.model_name)
+        self._emit(Opcode.LOAD_CONST, model_idx)
+        self._emit(Opcode.DB_FIND)
+
+    def visit_UpdateNode(self, node: UpdateNode):
+        model_idx = self._add_constant(node.model_name)
+        self._emit(Opcode.LOAD_CONST, model_idx)
+        
+        for field_name, expr in node.fields.items():
+            key_idx = self._add_constant(field_name)
+            self._emit(Opcode.LOAD_CONST, key_idx)
+            self.visit(expr)
+            
+        self._emit(Opcode.MAKE_MAP, len(node.fields))
+        self._emit(Opcode.DB_UPDATE)
+
+    def visit_DeleteNode(self, node: DeleteNode):
+        model_idx = self._add_constant(node.model_name)
+        self._emit(Opcode.LOAD_CONST, model_idx)
+        self._emit(Opcode.DB_DELETE)
+
 if __name__ == "__main__":
     from compiler.frontend.lexer import Lexer
     from compiler.frontend.parser import Parser
@@ -778,4 +922,5 @@ if __name__ == "__main__":
     bytecode = compiler.compile(ast)
     
     print(bytecode.format())
+
 

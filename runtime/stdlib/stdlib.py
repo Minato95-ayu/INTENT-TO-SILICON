@@ -411,7 +411,6 @@ class StdLib:
         """Starts HTTP server and dispatches incoming requests to VM tasks."""
         from http.server import BaseHTTPRequestHandler, HTTPServer
         import urllib.parse
-        from interpreter import AayuJSONResponse, AayuHTMLResponse, AayuTextResponse
         
         vm_instance = self.vm
         port = int(port)

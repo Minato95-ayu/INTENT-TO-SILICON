@@ -1,0 +1,63 @@
+let html = "<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>AAYU Code Academy</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; background-color: #0f172a; color: #f8fafc; }
+        header { padding: 80px 20px; text-align: center; background: linear-gradient(135deg, #2563eb, #7c3aed); box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        h1 { margin: 0; font-size: 3.5rem; font-weight: 800; letter-spacing: -1px; }
+        p.subtitle { font-size: 1.2rem; opacity: 0.9; max-width: 600px; margin: 20px auto; line-height: 1.6; }
+        .container { max-width: 1100px; margin: -40px auto 40px auto; padding: 20px; display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; }
+        .card { flex: 1; min-width: 320px; max-width: 400px; background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(10px); padding: 40px 30px; border-radius: 16px; box-shadow: 0 10px 30px -5px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card:hover { transform: translateY(-10px); border-color: rgba(96, 165, 250, 0.5); box-shadow: 0 20px 40px -5px rgba(0,0,0,0.8); }
+        .card h2 { color: #60a5fa; margin-top: 0; font-size: 1.8rem; }
+        .card p { color: #cbd5e1; line-height: 1.6; }
+        .badge { display: inline-block; padding: 4px 10px; background: #334155; border-radius: 20px; font-size: 0.85rem; font-weight: bold; margin-bottom: 15px; color: #94a3b8; }
+        .btn { display: inline-block; padding: 14px 32px; background: #f8fafc; color: #0f172a; text-decoration: none; border-radius: 50px; font-weight: 800; margin-top: 20px; transition: transform 0.2s, background 0.2s; }
+        .btn:hover { background: #e2e8f0; transform: scale(1.05); }
+        footer { text-align: center; padding: 40px 20px; border-top: 1px solid #1e293b; margin-top: 40px; color: #64748b; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AAYU Code Academy</h1>
+        <p class='subtitle'>Unlock the future of software engineering. Learn to build compilers, virtual machines, and AI-native languages from scratch.</p>
+        <a href='#enroll' class='btn'>Enroll in Batch 2026</a>
+    </header>
+    
+    <div class='container'>
+        <div class='card'>
+            <span class='badge'>Beginner</span>
+            <h2>🚀 Foundation Batch</h2>
+            <p>Start from absolute zero. Learn AAYU syntax, memory management, and how modern compilers actually work under the hood.</p>
+            <p><strong>Duration:</strong> 3 Months</p>
+            <a href='#' class='btn' style='background: #3b82f6; color: white; width: 100%; box-sizing: border-box; text-align: center; margin-top: 30px;'>Join Foundation</a>
+        </div>
+        <div class='card'>
+            <span class='badge'>Advanced</span>
+            <h2>🧠 BrainOS Masterclass</h2>
+            <p>Build autonomous AI agents that write their own code. Dive deep into LLM context, AST generation, and intent-to-silicon pipelines.</p>
+            <p><strong>Duration:</strong> 2 Months</p>
+            <a href='#' class='btn' style='background: #8b5cf6; color: white; width: 100%; box-sizing: border-box; text-align: center; margin-top: 30px;'>Join Masterclass</a>
+        </div>
+        <div class='card'>
+            <span class='badge'>Expert</span>
+            <h2>⚡ System Design</h2>
+            <p>Learn to design highly scalable VMs, distributed runtime environments, and low-latency architectures for AI ecosystems.</p>
+            <p><strong>Duration:</strong> 4 Months</p>
+            <a href='#' class='btn' style='background: #10b981; color: white; width: 100%; box-sizing: border-box; text-align: center; margin-top: 30px;'>Join System Design</a>
+        </div>
+    </div>
+    
+    <footer>
+        &copy; 2026 AAYU Technologies. <br>This coaching website was generated strictly using the AAYU Programming Language!
+    </footer>
+</body>
+</html>".
+
+fs::mkdir("coaching_website").
+fs::write("coaching_website/index.html", html).
+show("Coaching website successfully generated at coaching_website/index.html").

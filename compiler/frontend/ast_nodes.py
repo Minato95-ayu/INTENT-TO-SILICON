@@ -197,6 +197,59 @@ class PropertyAccessNode(Node):
     object_expr: Node
 
 @dataclass
+class ProjectDefNode(Node):
+    name: str
+
+@dataclass
+class PageDefNode(Node):
+    name: str
+    children: list = None
+
+@dataclass
+class TitleDefNode(Node):
+    text: str
+
+@dataclass
+class ButtonDefNode(Node):
+    text: str
+
+@dataclass
+class UIServeNode(Node):
+    pass
+
+@dataclass
+class ThemeNode(Node):
+    name: str
+    properties: list = None
+
+@dataclass
+class StateDefNode(Node):
+    name: str
+    initial_value: Node
+
+@dataclass
+class RouteDefNode(Node):
+    path: str
+    target_page: str
+
+@dataclass
+class EventNode(Node):
+    event_type: str
+    action_block: Node
+
+@dataclass
+class LayoutNode(Node):
+    layout_type: str
+    properties: list = None
+    children: list = None
+
+@dataclass
+class ComponentNode(Node):
+    component_type: str
+    properties: list = None
+    children: list = None
+
+@dataclass
 class InterfaceMethodNode(Node):
     name: str
     parameters: List[tuple] # (name: str, type: TypeNode)
@@ -455,3 +508,72 @@ class UIElementNode(Node):
 @dataclass
 class CrudNode(Node):
     entity_name: str
+
+# --- Phase 2: Full-Stack Framework Nodes ---
+
+@dataclass
+class StorageNode(Node):
+    name: str
+
+@dataclass
+class ModelFieldNode(Node):
+    name: str
+    field_type: str
+
+@dataclass
+class ModelNode(Node):
+    name: str
+    fields: List[ModelFieldNode]
+
+@dataclass
+class EndpointNode(Node):
+    method: str
+    path: str
+    returns: str = None
+    action_block: Node = None
+
+@dataclass
+class ServiceNode(Node):
+    name: str
+    endpoints: List[EndpointNode]
+
+@dataclass
+class SecurityNode(Node):
+    features: List[str]
+
+# --- Database/Storage AST Nodes (Phase C) ---
+
+@dataclass
+class InsertNode(Node):
+    model_name: str
+    fields: Dict[str, Node]
+
+@dataclass
+class FindNode(Node):
+    model_name: str
+
+@dataclass
+class UpdateNode(Node):
+    model_name: str
+    fields: Dict[str, Node]
+
+@dataclass
+class DeleteNode(Node):
+    model_name: str
+
+@dataclass
+class WhereNode(Node):
+    condition: Node
+
+@dataclass
+class OrderNode(Node):
+    field_name: str
+    direction: str = 'ASC'
+
+@dataclass
+class LimitNode(Node):
+    count: int
+
+@dataclass
+class OffsetNode(Node):
+    count: int

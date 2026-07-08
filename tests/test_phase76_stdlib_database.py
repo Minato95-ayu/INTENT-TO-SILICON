@@ -31,6 +31,6 @@ class TestPhase76StdlibDatabase(unittest.TestCase):
         conn.commit()
         conn.close()
 
-        vm = self.run_code('show sqlite::query("test.db", "SELECT * FROM users").')
+        vm = self.run_code('show db::query("test.db", "SELECT * FROM users").')
         
         os.remove("test.db")

@@ -74,6 +74,48 @@ def list_contains(args: list, vm) -> RuntimeValue:
         raise Exception(f"Expected a list, got {lst.type_name()}")
     return lst.contains(val)
 
+def list_pop(args: list, vm) -> RuntimeValue:
+    if len(args) < 1:
+        raise Exception("list_pop requires a list")
+    lst = args[0]
+    if not isinstance(lst, ListValue):
+        raise Exception(f"Expected a list, got {lst.type_name()}")
+    val = lst._get_payload().pop()
+    return val
+
+def list_insert(args: list, vm) -> RuntimeValue:
+    if len(args) < 3:
+        raise Exception("list_insert requires a list, an index, and a value")
+    lst = args[0]
+    idx = args[1]
+    val = args[2]
+    if not isinstance(lst, ListValue):
+        raise Exception(f"Expected a list, got {lst.type_name()}")
+    if not isinstance(idx, NumberValue):
+        raise Exception(f"Expected index to be a number")
+    lst._get_payload().insert(int(idx.to_python()), val)
+    return NullValue()
+
+def list_reverse(args: list, vm) -> RuntimeValue:
+    if len(args) < 1:
+        raise Exception("list_reverse requires a list")
+    lst = args[0]
+    if not isinstance(lst, ListValue):
+        raise Exception(f"Expected a list, got {lst.type_name()}")
+    lst._get_payload().reverse()
+    return NullValue()
+
+def list_sort(args: list, vm) -> RuntimeValue:
+    if len(args) < 1:
+        raise Exception("list_sort requires a list")
+    lst = args[0]
+    if not isinstance(lst, ListValue):
+        raise Exception(f"Expected a list, got {lst.type_name()}")
+    
+    # Simple sort based on underlying python values
+    lst._get_payload().sort(key=lambda x: x.to_python())
+    return NullValue()
+
 def register_list_stdlib(registry):
     registry.register("list_append", list_append)
     registry.register("list_length", list_length)
@@ -81,3 +123,7 @@ def register_list_stdlib(registry):
     registry.register("list_set", list_set)
     registry.register("list_remove", list_remove)
     registry.register("list_contains", list_contains)
+    registry.register("list_pop", list_pop)
+    registry.register("list_insert", list_insert)
+    registry.register("list_reverse", list_reverse)
+    registry.register("list_sort", list_sort)

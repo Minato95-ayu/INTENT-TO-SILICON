@@ -33,6 +33,9 @@ class TestPhase73Stdlib(unittest.TestCase):
         compiler = AAYUCompiler()
         bc = compiler.compile(ast)
         vm = VirtualMachine(trace_execution=False)
+        from runtime.stdlib.stdlib import StdLib
+        stdlib = StdLib(vm)
+        stdlib.populate_globals(vm.memory.globals)
         vm.run(bc)
         return vm.output
 

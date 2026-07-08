@@ -136,7 +136,11 @@ class Parser:
             elif self.match("KEYWORD", "set"):
                 node = self.parse_set_statement()
             elif self.match("KEYWORD", "serve"):
-                node = self.parse_serve()
+                if self.check("DOT"):
+                    self.advance()
+                    node = UIServeNode()
+                else:
+                    node = self.parse_serve()
             elif self.match("KEYWORD", "route"):
                 node = self.parse_route("GET")
             # Agar entity keyword mila, to Entity parse karo.
@@ -144,6 +148,8 @@ class Parser:
                 node = self.parse_entity_declaration()
             elif self.match("KEYWORD", "create"):
                 node = self.parse_create()
+            elif self.match("KEYWORD", "insert"):
+                node = self.parse_insert()
             elif self.match("KEYWORD", "update"):
                 node = self.parse_update()
             elif self.check("KEYWORD", "get"):
@@ -165,8 +171,37 @@ class Parser:
                 node = self.parse_logout()
             elif self.match("KEYWORD", "guard"):
                 node = self.parse_guard()
-            elif self.match("KEYWORD", "page") or self.match("KEYWORD", "component"):
-                node = self.parse_ui_component()
+            elif self.match("KEYWORD", "storage"):
+                node = self.parse_storage()
+            elif self.match("KEYWORD", "model"):
+                node = self.parse_model()
+            elif self.match("KEYWORD", "service"):
+                node = self.parse_service()
+            elif self.match("KEYWORD", "security"):
+                node = self.parse_security()
+            elif self.match("KEYWORD", "project"):
+                node = self.parse_project_def()
+            elif self.match("KEYWORD", "theme"):
+                node = self.parse_theme_def()
+            elif self.check("KEYWORD", "state"):
+                node = self.parse_state_def()
+            elif self.check("KEYWORD", "page"):
+                # Differentiate between flat page and block page
+                # In flat, it's just 'page Home.'
+                # In block, it has 'end.' later. Let's just consume the flat one for now.
+                # Since the old parse_ui_block is breaking, we can check if it's the new style by looking for 'end'.
+                self.advance()
+                if self.is_flat_ui_syntax():
+                    node = self.parse_page_def()
+                else:
+                    node = self.parse_ui_block(is_page=True)
+            elif self.match("KEYWORD", "title"):
+                node = self.parse_title_def()
+            elif self.match("KEYWORD", "button"):
+                node = self.parse_button_def()
+            elif self.check("KEYWORD", "component"):
+                self.advance()
+                node = self.parse_ui_block(is_page=False)
             elif self.match("KEYWORD", "crud"):
                 node = self.parse_crud()
             elif self.match("KEYWORD", "relation"):
@@ -196,7 +231,7 @@ class Parser:
                     is_assignment = False
                     lookahead = self.current
                     while lookahead < len(self.tokens) and self.tokens[lookahead].type != "DOT":
-                        if self.tokens[lookahead].value in ("is", "="):
+                        if self.tokens[lookahead].value in ("is", "=", "+=", "-="):
                             is_assignment = True
                             break
                         lookahead += 1
@@ -484,15 +519,22 @@ class Parser:
         self.consume("DOT", "Expect '.' after serve statement.")
         return ServeNode(handler_name=handler_name, port=port)
 
-    def parse_route(self, method: str = "GET") -> RouteNode:
+    def parse_route(self, method: str = "GET") -> Node:
         path = self.parse_expression()
-        self.consume("KEYWORD", "Expect 'to' before handler.", "to")
-        if self.check("IDENTIFIER") or self.check("KEYWORD"):
-            handler_name = self.advance().value
+        if self.match("KEYWORD", "to"):
+            if self.check("IDENTIFIER") or self.check("KEYWORD"):
+                handler_name = self.advance().value
+            else:
+                raise AAYUSyntaxError("Expect handler task name after 'to'.", self.peek().line, column=self.peek().column)
+            self.consume("DOT", "Expect '.' after route declaration.")
+            return RouteNode(path=path, handler_name=handler_name, method=method)
         else:
-            raise AAYUSyntaxError("Expect handler task name after 'to'.", self.peek().line, column=self.peek().column)
-        self.consume("DOT", "Expect '.' after route declaration.")
-        return RouteNode(path=path, handler_name=handler_name, method=method)
+            # Frontend route: route "/" Home.
+            target_page = self.consume("IDENTIFIER", "Expect page name for frontend route.").value
+            self.consume("DOT", "Expect '.' after route declaration.")
+            # path is an AST expression, we expect it to be a TextNode
+            path_str = path.value if hasattr(path, 'value') else ""
+            return RouteDefNode(path=path_str, target_page=target_page)
 
     def _parse_run_core(self) -> RunNode:
         # Check for qualified access: IDENTIFIER.IDENTIFIER
@@ -715,12 +757,19 @@ class Parser:
         
         return InstanceDeclarationNode(type_name=type_name, name=name, properties=properties)
 
-    def parse_assignment_statement(self) -> AssignmentNode:
+    def parse_assignment_statement(self) -> Node:
         target = self.parse_primary()
-        self.consume("KEYWORD", "Expect 'is' after assignment target.", "is")
-        value = self.parse_expression()
-        self.consume("DOT", "Expect '.' after assignment statement.")
-        return AssignmentNode(target=target, value=value)
+        if self.match("KEYWORD", "is") or self.match("EQ"):
+            value = self.parse_expression()
+            self.consume("DOT", "Expect '.' after assignment statement.")
+            return AssignmentNode(target=target, value=value)
+        elif self.match("PLUS_EQ") or self.match("MINUS_EQ"):
+            operator = self.previous().value
+            value = self.parse_expression()
+            self.consume("DOT", "Expect '.' after assignment statement.")
+            return BinaryExpressionNode(left=target, operator=operator, right=value)
+        else:
+            raise AAYUSyntaxError("Expect 'is', '=', '+=', or '-=' after assignment target.", self.peek().line, column=self.peek().column)
 
     def parse_write_statement(self) -> WriteStatementNode:
         data = self.parse_expression()
@@ -1183,6 +1232,11 @@ class Parser:
             self.consume("KEYWORD", "Expect 'from' after get key.", "from")
             map_name = self.consume("IDENTIFIER", "Expect map name after 'from'.").value
             return GetFromMapNode(key=key, map_name=map_name)
+
+        if self.match("KEYWORD", "find"):
+            from compiler.frontend.ast_nodes import FindNode
+            model_name = self.consume("IDENTIFIER", "Expect model name after 'find'.").value
+            return FindNode(model_name=model_name)
         if self.match("KEYWORD", "run"):
             return self._parse_run_core()
 
@@ -1205,6 +1259,54 @@ class Parser:
         else:
             node = UIComponentNode(name, elements)
         node.line = start_token.line
+        return node
+
+    def is_flat_ui_syntax(self) -> bool:
+        # Check if 'end' exists before EOF or another 'page' or 'project' or 'serve'
+        for i in range(self.current, len(self.tokens)):
+            if self.tokens[i].type == "KEYWORD" and self.tokens[i].value == "end":
+                return False
+            if self.tokens[i].type == "KEYWORD" and self.tokens[i].value in ["page", "project", "serve"]:
+                return True
+        return True
+
+    def parse_project_def(self) -> Node:
+        token = self.tokens[self.current - 1]
+        name = self.consume("IDENTIFIER", "Expect project name.").value
+        self.consume("DOT", "Expect '.' after project name.")
+        node = ProjectDefNode(name=name)
+        node.line = token.line
+        return node
+
+    def parse_page_def(self) -> Node:
+        token = self.tokens[self.current - 1]
+        name = self.consume("IDENTIFIER", "Expect page name.").value
+        children = []
+        if self.match("LBRACE"):
+            while not self.is_at_end() and not self.check("RBRACE"):
+                children.append(self.parse_app_ui_block())
+            self.consume("RBRACE", "Expect '}' after page body.")
+        else:
+            self.consume("DOT", "Expect '.' or '{' after page name.")
+        
+        node = PageDefNode(name=name, children=children)
+        node.line = token.line
+        return node
+
+    def parse_title_def(self) -> Node:
+        token = self.tokens[self.current - 1]
+        text = self.consume("STRING", "Expect string after title.").value[1:-1]
+        self.consume("DOT", "Expect '.' after title text.")
+        node = TitleDefNode(text=text)
+        node.line = token.line
+        return node
+
+    def parse_button_def(self) -> Node:
+        token = self.tokens[self.current - 1]
+        text = self.consume("STRING", "Expect string after button.").value[1:-1]
+        self.consume("DOT", "Expect '.' after button text.")
+        node = ButtonDefNode(text=text)
+        node.line = token.line
         return node
 
     def parse_ui_element(self) -> Node:
@@ -1269,6 +1371,181 @@ class Parser:
             return False
         return True
 
+    def parse_app_ui_block(self) -> Node:
+        token = self.peek()
+        if token.type == "KEYWORD" and token.value == "state":
+            return self.parse_state_def()
+        
+        # Check for properties like padding 20. or center.
+        properties_list = ["padding", "margin", "width", "height", "radius", "background", "color", "font", "shadow", "center", "alignStart", "alignEnd", "spaceBetween", "spaceAround", "spaceEvenly"]
+        layout_list = ["stack", "container", "grid", "flex", "wrap", "scroll", "spacer", "divider", "row", "column"]
+        component_list = ["heading", "text", "button", "password", "textarea", "checkbox", "radio", "switch", "slider", "progress", "avatar", "footer", "hero", "dialog", "accordion", "video", "audio", "canvas", "icon", "card", "input", "navbar", "image", "table", "modal", "sidebar", "dashboard", "chart", "tabs", "badge", "alert", "list", "form"]
+
+        if token.type == "KEYWORD":
+            element_type = self.advance().value
+            
+            if element_type in properties_list:
+                # e.g. padding 20. or center.
+                val_node = None
+                if not self.check("DOT"):
+                    val_node = self.parse_expression()
+                self.consume("DOT", f"Expect '.' after property {element_type}.")
+                return ComponentNode(component_type="property", properties=[{"name": element_type, "value": val_node}])
+
+            elif element_type in layout_list or element_type in component_list:
+                node = ComponentNode(component_type=element_type, properties=[], children=[])
+                if element_type in layout_list:
+                    node = LayoutNode(layout_type=element_type, properties=[], children=[])
+                
+                # Check for string value, e.g. heading "Ayush Kaushik".
+                if self.check("STRING"):
+                    val_str = self.advance().value[1:-1]
+                    node.properties.append({"name": "text", "value": TextNode(val_str)})
+                elif self.check("IDENTIFIER"):
+                    val_name = self.advance().value
+                    node.properties.append({"name": "bind", "value": VariableNode(name=val_name)})
+
+                # Check for nested block vs DOT
+                if self.match("LBRACE"):
+                    while not self.is_at_end() and not self.check("RBRACE"):
+                        child = self.parse_app_ui_block()
+                        if getattr(child, "component_type", None) == "property":
+                            node.properties.extend(child.properties)
+                        elif getattr(child, "event_type", None) is not None:
+                            # Attach event
+                            node.properties.append({"name": "event", "value": child})
+                        else:
+                            node.children.append(child)
+                    self.consume("RBRACE", f"Expect '}}' after {element_type} body.")
+                elif self.check("KEYWORD", "click"):
+                    # Event attachment, skip DOT
+                    pass
+                else:
+                    self.consume("DOT", f"Expect '.' or '{{' after {element_type}.")
+                
+                # Check if next token is 'click' attached to this component (flat syntax event attachment)
+                if self.check("KEYWORD", "click"):
+                    self.advance()
+                    self.consume("LBRACE", "Expect '{' after 'click'.")
+                    action_stmts = []
+                    while not self.is_at_end() and not self.check("RBRACE"):
+                        action_stmts.append(self.parse_statement())
+                    self.consume("RBRACE", "Expect '}' after click block.")
+                    action_block = ProgramNode(statements=action_stmts)
+                    node.properties.append({"name": "event", "value": EventNode(event_type="click", action_block=action_block)})
+                    
+                return node
+
+    # --- Phase 2: Full-Stack Parsers ---
+
+    def parse_storage(self) -> Node:
+        name = self.consume("IDENTIFIER", "Expect storage name.").value
+        self.consume("DOT", "Expect '.' after storage declaration.")
+        return StorageNode(name=name)
+
+    def parse_model(self) -> Node:
+        name = self.consume("IDENTIFIER", "Expect model name.").value
+        self.consume("LBRACE", "Expect '{' after model name.")
+        fields = []
+        while not self.is_at_end() and not self.check("RBRACE"):
+            field_name = self.consume("IDENTIFIER", "Expect field name.").value
+            # Field type could be Int, String, Boolean or another Model
+            if self.match("IDENTIFIER") or self.match("KEYWORD"):
+                field_type = self.previous().value
+            else:
+                raise AAYUSyntaxError("Expect field type.", self.peek().line, column=self.peek().column)
+            
+            # Allow arrays like User[]
+            if self.match("LBRACKET"):
+                self.consume("RBRACKET", "Expect ']' after '[' for array type.")
+                field_type += "[]"
+                
+            self.consume("DOT", "Expect '.' after field declaration.")
+            fields.append(ModelFieldNode(name=field_name, field_type=field_type))
+            
+        self.consume("RBRACE", "Expect '}' after model body.")
+        return ModelNode(name=name, fields=fields)
+
+    def parse_service(self) -> Node:
+        name = self.consume("IDENTIFIER", "Expect service name.").value
+        self.consume("LBRACE", "Expect '{' after service name.")
+        endpoints = []
+        while not self.is_at_end() and not self.check("RBRACE"):
+            if self.match("KEYWORD", "get") or self.match("KEYWORD", "post") or \
+               self.match("KEYWORD", "put") or self.match("KEYWORD", "delete"):
+                method = self.previous().value.upper()
+                path = self.consume("STRING", "Expect endpoint path as string.").value
+                
+                # Check if it has 'returns'
+                returns_type = None
+                if self.match("DOT"):
+                    pass # Just a flat definition: get "/users".
+                elif self.match("LBRACE"):
+                    # Block definition
+                    action_stmts = []
+                    while not self.is_at_end() and not self.check("RBRACE"):
+                        action_stmts.append(self.parse_statement())
+                    self.consume("RBRACE", "Expect '}' after endpoint block.")
+                elif self.match("IDENTIFIER"):
+                    # Maybe it's not a dot, but more keywords
+                    pass
+                else:
+                    self.consume("DOT", "Expect '.' after endpoint definition.")
+                    
+                endpoints.append(EndpointNode(method=method, path=path.strip('"')))
+            else:
+                self.advance() # Skip unknown tokens in service block for now
+                
+        self.consume("RBRACE", "Expect '}' after service body.")
+        return ServiceNode(name=name, endpoints=endpoints)
+
+    def parse_security(self) -> Node:
+        self.consume("LBRACE", "Expect '{' after security keyword.")
+        features = []
+        while not self.is_at_end() and not self.check("RBRACE"):
+            if self.match("KEYWORD") or self.match("IDENTIFIER"):
+                features.append(self.previous().value)
+                self.consume("DOT", "Expect '.' after security feature.")
+            else:
+                self.advance()
+        self.consume("RBRACE", "Expect '}' after security body.")
+        return SecurityNode(features=features)
+
+
+                
+        raise AAYUSyntaxError(f"Unexpected token '{token.value}' in UI block.", token.line, column=token.column)
+
+    def parse_state_def(self) -> Node:
+        token = self.consume("KEYWORD", "Expect 'state'.", "state")
+        name = self.consume("IDENTIFIER", "Expect state variable name.").value
+        self.consume("EQ", "Expect '=' after state name.")
+        initial_value = self.parse_expression()
+        self.consume("DOT", "Expect '.' after state declaration.")
+        node = StateDefNode(name=name, initial_value=initial_value)
+        node.line = token.line
+        return node
+
+    def parse_theme_def(self) -> Node:
+        token = self.tokens[self.current - 1]
+        name = self.consume("IDENTIFIER", "Expect theme name.").value
+        properties = []
+        if self.match("LBRACE"):
+            while not self.is_at_end() and not self.check("RBRACE"):
+                if self.check("IDENTIFIER") or self.check("KEYWORD"):
+                    prop_name = self.advance().value
+                else:
+                    raise AAYUSyntaxError("Expect property name in theme.", self.peek().line, column=self.peek().column)
+                prop_val = self.parse_expression()
+                self.consume("DOT", "Expect '.' after theme property.")
+                properties.append({"name": prop_name, "value": prop_val})
+            self.consume("RBRACE", "Expect '}' after theme body.")
+        else:
+            self.consume("DOT", "Expect '.' or '{' after theme name.")
+        
+        node = ThemeNode(name=name, properties=properties)
+        node.line = token.line
+        return node
+
     def advance(self) -> Token:
         if not self.is_at_end():
             self.current += 1
@@ -1309,6 +1586,40 @@ class Parser:
             
         raise AAYUSyntaxError(f"{message} Found '{self.peek().value}'", self.peek().line, hint=hint, column=self.peek().column)
 
+    def parse_insert(self):
+        from compiler.frontend.ast_nodes import InsertNode
+        model_name = self.consume("IDENTIFIER", "Expect model name after 'insert'.").value
+        self.consume("LBRACE", "Expect '{' after model name in insert.")
+        fields = {}
+        while not self.is_at_end() and not self.check("RBRACE"):
+            field_name = self.consume("IDENTIFIER", "Expect field name in insert block.").value
+            self.consume("EQ", "Expect '=' after field name.")
+            value = self.parse_expression()
+            self.consume("DOT", "Expect '.' after field value.")
+            fields[field_name] = value
+        self.consume("RBRACE", "Expect '}' after insert block.")
+        return InsertNode(model_name=model_name, fields=fields)
+
+    def parse_update(self):
+        from compiler.frontend.ast_nodes import UpdateNode
+        model_name = self.consume("IDENTIFIER", "Expect model name after 'update'.").value
+        self.consume("LBRACE", "Expect '{' after model name in update.")
+        fields = {}
+        while not self.is_at_end() and not self.check("RBRACE"):
+            field_name = self.consume("IDENTIFIER", "Expect field name in update block.").value
+            self.consume("EQ", "Expect '=' after field name.")
+            value = self.parse_expression()
+            self.consume("DOT", "Expect '.' after field value.")
+            fields[field_name] = value
+        self.consume("RBRACE", "Expect '}' after update block.")
+        return UpdateNode(model_name=model_name, fields=fields)
+
+    def parse_delete(self):
+        from compiler.frontend.ast_nodes import DeleteNode
+        model_name = self.consume("IDENTIFIER", "Expect model name after 'delete'.").value
+        self.consume("DOT", "Expect '.' after delete statement.")
+        return DeleteNode(model_name=model_name)
+
 if __name__ == "__main__":
     def parse_entity_declaration(self):
         name = self.consume("IDENTIFIER", "Expect entity name.").value
@@ -1328,59 +1639,60 @@ if __name__ == "__main__":
         self.consume("DOT", "Expect '.' after end.")
         return EntityDeclarationNode(name=name, fields=fields)
 
-def parse_create(self):
-    name = self.consume("IDENTIFIER", "Expect entity or account.").value
-    self.consume("KEYWORD", "Expect 'with'.", "with")
-    data_map = self.parse_expression()
-    self.consume("DOT", "Expect '.' after create.")
+    def parse_create(self):
+        name = self.consume("IDENTIFIER", "Expect entity or account.").value
+        self.consume("KEYWORD", "Expect 'with'.", "with")
+        data_map = self.parse_expression()
+        self.consume("DOT", "Expect '.' after create.")
     
-    if name == "account":
-        return CreateAccountNode(data_map=data_map)
-    return CreateEntityNode(entity_name=name, data_map=data_map)
+        if name == "account":
+            return CreateAccountNode(data_map=data_map)
+        return CreateEntityNode(entity_name=name, data_map=data_map)
 
-def parse_find(self):
-    name = self.consume("IDENTIFIER", "Expect entity name.").value
-    if self.match("KEYWORD", "where"):
+    def parse_find(self):
+        name = self.consume("IDENTIFIER", "Expect entity name.").value
+        if self.match("KEYWORD", "where"):
+            field = self.consume("STRING", "Expect field string.").value
+            self.consume("KEYWORD", "Expect 'equal'.", "equal")
+            self.consume("KEYWORD", "Expect 'to'.", "to")
+            val = self.parse_expression()
+            return FindEntityNode(entity_name=name, condition_field=field, condition_value=val)
+        return FindEntityNode(entity_name=name, condition_field=None, condition_value=None)
+
+    def parse_update(self):
+        name = self.consume("IDENTIFIER", "Expect entity name.").value
+        self.consume("KEYWORD", "Expect 'where'.", "where")
         field = self.consume("STRING", "Expect field string.").value
         self.consume("KEYWORD", "Expect 'equal'.", "equal")
         self.consume("KEYWORD", "Expect 'to'.", "to")
-        val = self.parse_expression()
-        return FindEntityNode(entity_name=name, condition_field=field, condition_value=val)
-    return FindEntityNode(entity_name=name, condition_field=None, condition_value=None)
+        cond_val = self.parse_expression()
+        self.consume("KEYWORD", "Expect 'with'.", "with")
+        data_map = self.parse_expression()
+        self.consume("DOT", "Expect '.' after update.")
+        return UpdateEntityNode(entity_name=name, condition_field=field, condition_value=cond_val, data_map=data_map)
 
-def parse_update(self):
-    name = self.consume("IDENTIFIER", "Expect entity name.").value
-    self.consume("KEYWORD", "Expect 'where'.", "where")
-    field = self.consume("STRING", "Expect field string.").value
-    self.consume("KEYWORD", "Expect 'equal'.", "equal")
-    self.consume("KEYWORD", "Expect 'to'.", "to")
-    cond_val = self.parse_expression()
-    self.consume("KEYWORD", "Expect 'with'.", "with")
-    data_map = self.parse_expression()
-    self.consume("DOT", "Expect '.' after update.")
-    return UpdateEntityNode(entity_name=name, condition_field=field, condition_value=cond_val, data_map=data_map)
+    def parse_delete(self):
+        name = self.consume("IDENTIFIER", "Expect entity name.").value
+        self.consume("KEYWORD", "Expect 'where'.", "where")
+        field = self.consume("STRING", "Expect field string.").value
+        self.consume("KEYWORD", "Expect 'equal'.", "equal")
+        self.consume("KEYWORD", "Expect 'to'.", "to")
+        cond_val = self.parse_expression()
+        self.consume("DOT", "Expect '.' after delete.")
+        return DeleteEntityNode(entity_name=name, condition_field=field, condition_value=cond_val)
 
-def parse_delete(self):
-    name = self.consume("IDENTIFIER", "Expect entity name.").value
-    self.consume("KEYWORD", "Expect 'where'.", "where")
-    field = self.consume("STRING", "Expect field string.").value
-    self.consume("KEYWORD", "Expect 'equal'.", "equal")
-    self.consume("KEYWORD", "Expect 'to'.", "to")
-    cond_val = self.parse_expression()
-    self.consume("DOT", "Expect '.' after delete.")
-    return DeleteEntityNode(entity_name=name, condition_field=field, condition_value=cond_val)
+    def parse_login(self):
+        creds = self.parse_expression()
+        self.consume("DOT", "Expect '.' after login.")
+        return LoginNode(credentials=creds)
 
-def parse_login(self):
-    creds = self.parse_expression()
-    self.consume("DOT", "Expect '.' after login.")
-    return LoginNode(credentials=creds)
+    def parse_logout(self):
+        req = self.parse_expression()
+        self.consume("DOT", "Expect '.' after logout.")
+        return LogoutNode(request=req)
 
-def parse_logout(self):
-    req = self.parse_expression()
-    self.consume("DOT", "Expect '.' after logout.")
-    return LogoutNode(request=req)
+    def parse_guard(self):
+        self.consume("IDENTIFIER", "Expect 'session'.")
+        self.consume("DOT", "Expect '.' after guard session.")
+        return GuardSessionNode()
 
-def parse_guard(self):
-    self.consume("IDENTIFIER", "Expect 'session'.")
-    self.consume("DOT", "Expect '.' after guard session.")
-    return GuardSessionNode()

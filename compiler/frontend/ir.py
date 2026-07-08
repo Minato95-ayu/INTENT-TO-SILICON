@@ -67,6 +67,10 @@ class Opcode(Enum):
     TRY_END = auto()
     FINALLY_BEGIN = auto()
     FINALLY_END = auto()
+    DB_INSERT = auto()
+    DB_FIND = auto()
+    DB_UPDATE = auto()
+    DB_DELETE = auto()
 
 @dataclass
 class Instruction:
@@ -116,9 +120,10 @@ class Bytecode:
     constants: List[Any] = field(default_factory=list)
     names: List[str] = field(default_factory=list)
     parameters: List[str] = field(default_factory=list)
+    exception_table: List[Dict[str, Any]] = field(default_factory=list)
+    app_metadata: Dict[str, Any] = field(default_factory=dict)
     name: str = ""
     file: str = ""
-    exception_table: List[dict] = field(default_factory=list)
     debug_info: DebugInfo = field(default_factory=DebugInfo)
     reflection_info: ReflectionInfo = field(default_factory=ReflectionInfo)
     

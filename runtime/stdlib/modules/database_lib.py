@@ -8,8 +8,8 @@ from ...values.boolean import BooleanValue
 from ...values.number import NumberValue
 
 def create_string(vm, text):
-    obj = vm.heap.allocate("string", text)
-    return StringValue(obj.id, vm.heap)
+    obj = vm.memory.heap.allocate("string", text)
+    return StringValue(obj.id, vm.memory.heap)
 
 def py_to_aayu(py_val, vm):
     if isinstance(py_val, str): return create_string(vm, py_val)
@@ -45,10 +45,10 @@ def register_database_lib(registry: StdLibRegistry):
             result_list = []
             for row in rows:
                 d = {k: py_to_aayu(row[k], vm) for k in row.keys()}
-                obj_m = vm.heap.allocate("map", d)
-                result_list.append(MapValue(obj_m.id, vm.heap))
-            obj_l = vm.heap.allocate("list", result_list)
-            return ListValue(obj_l.id, vm.heap)
+                obj_m = vm.memory.heap.allocate("map", d)
+                result_list.append(MapValue(obj_m.id, vm.memory.heap))
+            obj_l = vm.memory.heap.allocate("list", result_list)
+            return ListValue(obj_l.id, vm.memory.heap)
         except Exception as e:
             return NullValue()
             

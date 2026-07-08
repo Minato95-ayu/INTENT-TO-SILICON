@@ -520,6 +520,11 @@ class VirtualMachine:
         if initial_locals is not None:
             self.memory.push_frame(init_locs)
             self._pushed_initial_frame = True
+            
+        # Phase 3: Initialize Native Runtime Manager
+        from runtime.manager import RuntimeManager
+        self.runtime_manager = RuntimeManager(bytecode.app_metadata)
+        self.runtime_manager.initialize()
         
         import time
         t_start = time.perf_counter()
@@ -608,6 +613,70 @@ class VirtualMachine:
                             current_frame = self.frames[-1]
                             current_frame.stack.append(ret_val)
                         continue
+                        
+                elif opcode in (Opcode.DB_INSERT, Opcode.DB_FIND, Opcode.DB_UPDATE, Opcode.DB_DELETE):
+                    import traceback
+                    try:
+                        db_runtime = self.runtime_manager.get_runtime("DatabaseRuntime")
+                        if not db_runtime:
+                            raise AAYURuntimeError("DatabaseRuntime is not initialized.")
+                        
+                        if opcode == Opcode.DB_INSERT:
+                            fields_map = current_frame.stack.pop()
+                            model_name = current_frame.stack.pop()
+                            
+                            from compiler.frontend.ast_nodes import InsertNode
+                            ast_node = InsertNode(model_name.to_python(), fields_map.to_python())
+                            res = db_runtime.engine.execute_query_ast(ast_node)
+                            current_frame.stack.append(NullValue())
+                            
+                        elif opcode == Opcode.DB_FIND:
+                            model_name = current_frame.stack.pop()
+                            from compiler.frontend.ast_nodes import FindNode
+                            ast_node = FindNode(model_name.to_python())
+                            res = db_runtime.engine.execute_query_ast(ast_node)
+                            
+                            from runtime.values.list import ListValue
+                            from runtime.values.map import MapValue
+                            from runtime.values.string import StringValue
+                            from runtime.values.number import NumberValue
+                            
+                            aayu_list = []
+                            if res:
+                                for row in res:
+                                    py_dict = {}
+                                    for k, v in row.items():
+                                        if isinstance(v, (int, float)):
+                                            py_dict[str(k)] = NumberValue(v)
+                                        else:
+                                            s_obj = self.memory.heap.allocate("string", str(v))
+                                            py_dict[str(k)] = StringValue(s_obj.id, self.memory.heap)
+                                    map_obj = self.memory.heap.allocate("map", py_dict)
+                                    aayu_list.append(MapValue(map_obj.id, self.memory.heap))
+                                
+                            list_obj = self.memory.heap.allocate("list", aayu_list)
+                            current_frame.stack.append(ListValue(list_obj.id, self.memory.heap))
+                            
+                        elif opcode == Opcode.DB_UPDATE:
+                            fields_map = current_frame.stack.pop()
+                            model_name = current_frame.stack.pop()
+                            from compiler.frontend.ast_nodes import UpdateNode
+                            ast_node = UpdateNode(model_name.to_python(), fields_map.to_python())
+                            res = db_runtime.engine.execute_query_ast(ast_node)
+                            current_frame.stack.append(NullValue())
+                            
+                        elif opcode == Opcode.DB_DELETE:
+                            model_name = current_frame.stack.pop()
+                            from compiler.frontend.ast_nodes import DeleteNode
+                            ast_node = DeleteNode(model_name.to_python())
+                            res = db_runtime.engine.execute_query_ast(ast_node)
+                            current_frame.stack.append(NullValue())
+                            
+                    except Exception as e:
+                        traceback.print_exc()
+                        raise AAYURuntimeError(f"Database Error: {str(e)}")
+                        
+                    continue
                         
                 handled_jump = dispatch(opcode, operand, current_frame, self)
                 if not handled_jump:

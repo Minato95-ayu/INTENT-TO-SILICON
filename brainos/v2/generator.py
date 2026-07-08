@@ -132,6 +132,14 @@ version = "0.1.0"
 edition = "2026"
 """)
 
+        # Write README.md
+        with open(os.path.join(project_path, "README.md"), 'w') as f:
+            f.write(f"# {os.path.basename(project_path)}\n\nGenerated AAYU project.\n")
+
+        # Write .gitignore
+        with open(os.path.join(project_path, ".gitignore"), 'w') as f:
+            f.write("*.db\nbuild/\n.aayu/\n")
+
         # Add AI context rules so LLM Agents know how to code in AAYU
         ai_rules = """# AAYU Language - AI Agent Guidelines
 You are an AI programming assistant. AAYU is a new language. Follow these rules:

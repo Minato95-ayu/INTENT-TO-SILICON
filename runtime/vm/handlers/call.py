@@ -44,7 +44,8 @@ def handle_call(opcode, operand, current_frame, vm):
             
             locals_dict = {}
             for i, param in enumerate(func_bc.parameters):
-                locals_dict[param] = args[i] if i < len(args) else NullValue()
+                param_name = param[0] if isinstance(param, tuple) else param
+                locals_dict[param_name] = args[i] if i < len(args) else NullValue()
                 
             vm.frames.append(func_frame)
             vm.memory.push_frame(locals_dict)

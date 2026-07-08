@@ -85,9 +85,9 @@ def register_file_lib(registry: StdLibRegistry):
     def fn_exists(args, vm):
         return BooleanValue(os.path.exists(args[0].to_python()))
         
-    registry.register("fs::read", fn_read)
-    registry.register("fs::write", fn_write)
-    registry.register("fs::append", fn_append)
-    registry.register("fs::delete", fn_delete)
-    registry.register("fs::mkdir", fn_mkdir)
-    registry.register("fs::exists", fn_exists)
+    registry.register("file::read", fn_read)
+    registry.register("file::write", fn_write)
+    registry.register("file::append", fn_append)
+    registry.register("file::delete", fn_delete)
+    registry.register("file::mkdir", fn_mkdir)
+    registry.register("file::exists", fn_exists)

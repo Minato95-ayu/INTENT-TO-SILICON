@@ -8,13 +8,17 @@ from runtime.stdlib.modules.regex_lib import register_regex_lib
 from runtime.values.string import StringValue
 from runtime.memory.heap import Heap
 
-class MockVM:
+class MockMemory:
     def __init__(self):
         self.heap = Heap()
 
+class MockVM:
+    def __init__(self):
+        self.memory = MockMemory()
+
 def create_string(vm, text):
-    obj = vm.heap.allocate("string", text)
-    return StringValue(obj.id, vm.heap)
+    obj = vm.memory.heap.allocate("string", text)
+    return StringValue(obj.id, vm.memory.heap)
 
 class TestStdLibE2E(unittest.TestCase):
     def setUp(self):

@@ -1,3 +1,27 @@
+project CRM.
 
-page Dashboard.
-end.
+storage Main.
+
+model User {
+    id Int.
+    name String.
+}
+
+service UserService {
+    get "/users".
+    post "/login".
+}
+
+security {
+    authentication.
+    authorization.
+    roles.
+    permissions.
+}
+
+page Dashboard {
+    heading "CRM".
+    button "Create User".
+}
+
+serve.

@@ -1,0 +1,14 @@
+{
+  "name": "REST API Skeleton",
+  "routes": [
+    "GET /",
+    "POST /",
+    "PUT /:id",
+    "DELETE /:id"
+  ],
+  "middlewares": [
+    "Auth",
+    "Logger",
+    "ErrorHandler"
+  ]
+}

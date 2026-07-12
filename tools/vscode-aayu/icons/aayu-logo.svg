@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="aayuGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#a855f7" />
+    </linearGradient>
+  </defs>
+  <path d="M 50 15 L 20 85 L 35 85 L 43 65 L 57 65 L 65 85 L 80 85 Z M 50 45 L 47 55 L 53 55 Z" fill="url(#aayuGrad)" />
+</svg>

@@ -1,0 +1,171 @@
+{
+  "name": "Erp",
+  "entities": [
+    "User",
+    "Session",
+    "Log",
+    "Settings",
+    "Configuration",
+    "Role",
+    "Permission",
+    "ErpEntity1",
+    "ErpEntity2",
+    "ErpEntity3",
+    "ErpEntity4",
+    "ErpEntity5",
+    "ErpEntity6",
+    "ErpEntity7",
+    "ErpEntity8",
+    "ErpEntity9",
+    "ErpEntity10",
+    "ErpEntity11",
+    "ErpEntity12",
+    "ErpEntity13",
+    "ErpEntity14",
+    "ErpEntity15",
+    "ErpEntity16",
+    "ErpEntity17",
+    "ErpEntity18",
+    "ErpEntity19",
+    "ErpEntity20",
+    "ErpEntity21",
+    "ErpEntity22",
+    "ErpEntity23",
+    "ErpEntity24",
+    "ErpEntity25",
+    "ErpEntity26",
+    "ErpEntity27",
+    "ErpEntity28",
+    "ErpEntity29",
+    "ErpEntity30",
+    "ErpEntity31",
+    "ErpEntity32",
+    "ErpEntity33",
+    "ErpEntity34",
+    "ErpEntity35",
+    "ErpEntity36",
+    "ErpEntity37",
+    "ErpEntity38",
+    "ErpEntity39",
+    "ErpEntity40",
+    "ErpEntity41",
+    "ErpEntity42",
+    "ErpEntity43",
+    "ErpEntity44",
+    "ErpEntity45",
+    "ErpEntity46",
+    "ErpEntity47",
+    "ErpEntity48",
+    "ErpEntity49",
+    "ErpEntity50"
+  ],
+  "relationships": [
+    {
+      "source": "ErpEntity10",
+      "target": "Settings",
+      "type": "one_to_one"
+    },
+    {
+      "source": "ErpEntity12",
+      "target": "ErpEntity35",
+      "type": "one_to_one"
+    },
+    {
+      "source": "ErpEntity30",
+      "target": "ErpEntity25",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Log",
+      "target": "ErpEntity25",
+      "type": "many_to_many"
+    },
+    {
+      "source": "ErpEntity45",
+      "target": "ErpEntity13",
+      "type": "one_to_one"
+    },
+    {
+      "source": "ErpEntity30",
+      "target": "ErpEntity41",
+      "type": "many_to_many"
+    },
+    {
+      "source": "ErpEntity45",
+      "target": "ErpEntity41",
+      "type": "many_to_many"
+    },
+    {
+      "source": "ErpEntity32",
+      "target": "ErpEntity26",
+      "type": "many_to_many"
+    },
+    {
+      "source": "ErpEntity17",
+      "target": "Settings",
+      "type": "one_to_many"
+    },
+    {
+      "source": "ErpEntity35",
+      "target": "ErpEntity18",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Log",
+      "target": "Role",
+      "type": "many_to_many"
+    },
+    {
+      "source": "ErpEntity28",
+      "target": "ErpEntity41",
+      "type": "one_to_one"
+    },
+    {
+      "source": "ErpEntity33",
+      "target": "ErpEntity49",
+      "type": "one_to_one"
+    },
+    {
+      "source": "ErpEntity17",
+      "target": "ErpEntity36",
+      "type": "one_to_many"
+    },
+    {
+      "source": "ErpEntity50",
+      "target": "ErpEntity12",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Permission",
+      "target": "Role",
+      "type": "one_to_many"
+    },
+    {
+      "source": "ErpEntity36",
+      "target": "ErpEntity6",
+      "type": "one_to_one"
+    },
+    {
+      "source": "ErpEntity30",
+      "target": "ErpEntity21",
+      "type": "many_to_many"
+    },
+    {
+      "source": "ErpEntity43",
+      "target": "ErpEntity48",
+      "type": "many_to_many"
+    }
+  ],
+  "workflows": [
+    "Erp Workflow 1",
+    "Erp Workflow 2",
+    "Erp Workflow 3",
+    "Erp Workflow 4",
+    "Erp Workflow 5",
+    "Erp Workflow 6",
+    "Erp Workflow 7",
+    "Erp Workflow 8",
+    "Erp Workflow 9",
+    "Erp Workflow 10"
+  ]
+}

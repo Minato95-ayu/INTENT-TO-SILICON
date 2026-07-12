@@ -1,0 +1,23 @@
+---
+title: "Functions"
+description: "Defining logic and behavior."
+---
+
+# Functions
+
+## Overview
+Functions are declared using the n keyword, parameters in parentheses, and a return type via ->.
+
+## Syntax
+<CodeBlock lang="aayu" code="fn add(a: Number, b: Number) -> Number\ndo\n    return a + b.\nend." playgroundUrl="/playground" />
+
+## Common Errors
+<ErrorBlock 
+    wrong="fn add(a, b)\ndo return a + b. end."
+    correct="fn add(a: Number, b: Number) -> Number\ndo return a + b. end."
+    errorMsg="TypeError: Missing type annotations for parameters 'a' and 'b'."
+/>
+
+## Best Practices
+Keep functions pure where possible. The Semantic Analyzer checks for pure execution paths to allow concurrent invocation.
+\n\n[Edit on GitHub (Available in v1.0)](#)\n

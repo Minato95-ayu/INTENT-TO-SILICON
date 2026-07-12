@@ -1,1 +1,0 @@
-# AAYU CLI Commands Package

@@ -1,3 +1,0 @@
-aayu_language
-cli
-intent_engine

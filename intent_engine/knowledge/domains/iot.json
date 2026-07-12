@@ -1,0 +1,176 @@
+{
+  "name": "Iot",
+  "entities": [
+    "User",
+    "Session",
+    "Log",
+    "Settings",
+    "Configuration",
+    "Role",
+    "Permission",
+    "IotEntity1",
+    "IotEntity2",
+    "IotEntity3",
+    "IotEntity4",
+    "IotEntity5",
+    "IotEntity6",
+    "IotEntity7",
+    "IotEntity8",
+    "IotEntity9",
+    "IotEntity10",
+    "IotEntity11",
+    "IotEntity12",
+    "IotEntity13",
+    "IotEntity14",
+    "IotEntity15",
+    "IotEntity16",
+    "IotEntity17",
+    "IotEntity18",
+    "IotEntity19",
+    "IotEntity20",
+    "IotEntity21",
+    "IotEntity22",
+    "IotEntity23",
+    "IotEntity24",
+    "IotEntity25",
+    "IotEntity26",
+    "IotEntity27",
+    "IotEntity28",
+    "IotEntity29",
+    "IotEntity30",
+    "IotEntity31",
+    "IotEntity32",
+    "IotEntity33",
+    "IotEntity34",
+    "IotEntity35",
+    "IotEntity36",
+    "IotEntity37",
+    "IotEntity38",
+    "IotEntity39",
+    "IotEntity40",
+    "IotEntity41",
+    "IotEntity42",
+    "IotEntity43",
+    "IotEntity44",
+    "IotEntity45",
+    "IotEntity46",
+    "IotEntity47",
+    "IotEntity48",
+    "IotEntity49",
+    "IotEntity50"
+  ],
+  "relationships": [
+    {
+      "source": "IotEntity37",
+      "target": "IotEntity26",
+      "type": "many_to_many"
+    },
+    {
+      "source": "IotEntity2",
+      "target": "IotEntity5",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Settings",
+      "target": "IotEntity31",
+      "type": "one_to_one"
+    },
+    {
+      "source": "IotEntity49",
+      "target": "Log",
+      "type": "one_to_many"
+    },
+    {
+      "source": "IotEntity24",
+      "target": "IotEntity45",
+      "type": "many_to_many"
+    },
+    {
+      "source": "IotEntity39",
+      "target": "IotEntity41",
+      "type": "one_to_many"
+    },
+    {
+      "source": "IotEntity28",
+      "target": "Configuration",
+      "type": "one_to_one"
+    },
+    {
+      "source": "IotEntity18",
+      "target": "Settings",
+      "type": "one_to_one"
+    },
+    {
+      "source": "IotEntity14",
+      "target": "IotEntity22",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Session",
+      "target": "IotEntity20",
+      "type": "many_to_many"
+    },
+    {
+      "source": "IotEntity16",
+      "target": "IotEntity12",
+      "type": "many_to_many"
+    },
+    {
+      "source": "IotEntity28",
+      "target": "IotEntity31",
+      "type": "one_to_many"
+    },
+    {
+      "source": "IotEntity34",
+      "target": "IotEntity45",
+      "type": "one_to_one"
+    },
+    {
+      "source": "IotEntity44",
+      "target": "IotEntity16",
+      "type": "many_to_many"
+    },
+    {
+      "source": "IotEntity8",
+      "target": "IotEntity26",
+      "type": "one_to_many"
+    },
+    {
+      "source": "IotEntity17",
+      "target": "IotEntity25",
+      "type": "one_to_many"
+    },
+    {
+      "source": "IotEntity7",
+      "target": "Log",
+      "type": "one_to_one"
+    },
+    {
+      "source": "IotEntity26",
+      "target": "Configuration",
+      "type": "many_to_many"
+    },
+    {
+      "source": "IotEntity12",
+      "target": "IotEntity43",
+      "type": "many_to_many"
+    },
+    {
+      "source": "IotEntity29",
+      "target": "Log",
+      "type": "one_to_many"
+    }
+  ],
+  "workflows": [
+    "Iot Workflow 1",
+    "Iot Workflow 2",
+    "Iot Workflow 3",
+    "Iot Workflow 4",
+    "Iot Workflow 5",
+    "Iot Workflow 6",
+    "Iot Workflow 7",
+    "Iot Workflow 8",
+    "Iot Workflow 9",
+    "Iot Workflow 10"
+  ]
+}

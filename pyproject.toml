@@ -66,14 +66,14 @@ docs = [
 ]
 
 [project.scripts]
-aayu = "cli:main"
+aayu = "tools.cli:main"
 
 [tool.setuptools]
-package-dir = {"" = "prototype"}
+package-dir = {"" = "."}
 
 [tool.setuptools.packages.find]
-where = ["prototype"]
-include = ["aayu_language*", "intent_engine*"]
+where = ["."]
+include = ["compiler*", "runtime*", "tools*", "brainos*", "intent_engine*"]
 
 [tool.black]
 line-length = 100

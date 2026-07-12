@@ -1,0 +1,97 @@
+{
+  "name": "E-commerce",
+  "entities": [
+    "Customer",
+    "Product",
+    "Order",
+    "Cart",
+    "Payment",
+    "Category",
+    "Inventory",
+    "Shipping"
+  ],
+  "fields": {
+    "Product": [
+      "id: UUID",
+      "name: Text",
+      "price: Number",
+      "stock: Number",
+      "category_id: UUID"
+    ],
+    "Order": [
+      "id: UUID",
+      "customer_id: UUID",
+      "total_amount: Number",
+      "status: Enum"
+    ],
+    "Payment": [
+      "id: UUID",
+      "order_id: UUID",
+      "amount: Number",
+      "method: Enum",
+      "status: Enum"
+    ]
+  },
+  "relationships": [
+    {
+      "source": "Customer",
+      "target": "Order",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Order",
+      "target": "Product",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Order",
+      "target": "Payment",
+      "type": "one_to_one"
+    }
+  ],
+  "actions": [
+    "Add to Cart",
+    "Place Order",
+    "Process Payment",
+    "Update Inventory"
+  ],
+  "constraints": [
+    {
+      "entity": "Product",
+      "field": "price",
+      "rule": "> 0"
+    },
+    {
+      "entity": "Product",
+      "field": "stock",
+      "rule": ">= 0"
+    },
+    {
+      "entity": "Order",
+      "field": "total_amount",
+      "rule": "== sum(product_prices)"
+    }
+  ],
+  "workflows": [
+    "Add to Cart -> Checkout -> Payment -> Shipping"
+  ],
+  "api_templates": {
+    "Order": [
+      "POST /orders",
+      "GET /orders/:id",
+      "PUT /orders/:id/status"
+    ]
+  },
+  "database_schema": "Relational (Orders/Payments) + NoSQL (Product Catalog)",
+  "architecture_pattern": "Event-Driven Microservices",
+  "validation_rules": [
+    "Cannot place order if cart is empty.",
+    "Cannot process payment if order is already paid."
+  ],
+  "clarification_rules": [
+    {
+      "trigger": "order without payment",
+      "question": "How should orders be paid? Should I add a Payment entity and integration?"
+    }
+  ]
+}

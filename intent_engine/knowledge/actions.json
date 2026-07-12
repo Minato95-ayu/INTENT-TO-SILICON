@@ -1,0 +1,13 @@
+{
+    "Create": [
+        "make",
+        "build",
+        "add",
+        "register"
+    ],
+    "Delete": [
+        "remove",
+        "destroy",
+        "drop"
+    ]
+}

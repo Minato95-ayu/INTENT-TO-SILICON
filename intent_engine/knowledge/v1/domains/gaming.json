@@ -1,0 +1,191 @@
+{
+  "domain": "Gaming",
+  "version": "1.0",
+  "entities": [
+    "GamingUser",
+    "GamingRecord",
+    "GamingTransaction"
+  ],
+  "fields": {
+    "GamingUser": [
+      "id: UUID",
+      "name: String",
+      "email: String",
+      "created_at: DateTime"
+    ],
+    "GamingRecord": [
+      "id: UUID",
+      "user_id: UUID",
+      "status: Enum"
+    ]
+  },
+  "relationships": [
+    {
+      "source": "GamingUser",
+      "target": "GamingRecord",
+      "type": "one_to_many"
+    }
+  ],
+  "actions": [
+    "Create",
+    "Read",
+    "Update",
+    "Delete",
+    "Archive"
+  ],
+  "constraints": [
+    {
+      "entity": "GamingUser",
+      "field": "email",
+      "rule": "must be unique and valid format"
+    }
+  ],
+  "workflows": [
+    "User Onboarding -> Record Creation -> Processing"
+  ],
+  "database_design": {
+    "primary": "PostgreSQL for ACID compliance",
+    "search": "Elasticsearch for fast querying",
+    "ledger": "EventStore if strict audit required"
+  },
+  "api_design": {
+    "style": "REST by default, GraphQL if complex UI data requirements exist",
+    "versioning": "URI versioning (e.g., /api/v1/...)"
+  },
+  "architecture_patterns": [
+    "Modular Monolith (Starter)",
+    "Microservices (Enterprise)"
+  ],
+  "authentication": [
+    "JWT",
+    "OAuth2",
+    "2FA for sensitive actions"
+  ],
+  "authorization": [
+    "RBAC (Role-Based Access Control)",
+    "ABAC (Attribute-Based Access Control)"
+  ],
+  "validation_rules": [
+    "Input sanitization on all text fields",
+    "Strict type checking at API boundaries"
+  ],
+  "security_rules": [
+    "Encrypt PII at rest",
+    "Rate limiting on all public endpoints"
+  ],
+  "performance_rules": [
+    "Database indexing on frequently queried foreign keys",
+    "Pagination for all collection endpoints (limit=50)"
+  ],
+  "caching_rules": [
+    {
+      "strategy": "Cache-Aside",
+      "ttl": "15m",
+      "targets": [
+        "Public Data",
+        "Read-Heavy Records"
+      ]
+    }
+  ],
+  "deployment_rules": [
+    "Containerized via Docker",
+    "Stateless application servers"
+  ],
+  "testing_rules": [
+    "Unit tests for domain logic (>80% coverage)",
+    "Integration tests for API endpoints"
+  ],
+  "monitoring_rules": [
+    "Prometheus metrics for endpoint latency",
+    "Alerting on 5xx error spikes > 1%"
+  ],
+  "logging_rules": [
+    "Structured JSON logging",
+    "Never log PII or credentials"
+  ],
+  "error_handling": [
+    "Standardized API error responses (RFC 7807)",
+    "Global exception catching middleware"
+  ],
+  "clarification_rules": {
+    "missing_modules": [
+      {
+        "trigger": "No admin panel mentioned for Gaming",
+        "question": "Do you need a back-office Admin Panel to manage GamingRecords?"
+      },
+      {
+        "trigger": "No auth mentioned",
+        "question": "Should I implement standard email/password authentication or SSO?"
+      }
+    ]
+  },
+  "decision_rules": [
+    {
+      "condition": "users > 1000000 OR strict isolation required",
+      "recommendation": "Microservices"
+    },
+    {
+      "condition": "users <= 1000000",
+      "recommendation": "Modular Monolith"
+    },
+    {
+      "condition": "Payment handling required",
+      "recommendation": "Suggest Audit Logs, Suggest Retry Mechanism, Suggest Idempotency Keys"
+    }
+  ],
+  "architecture_recommendations": {
+    "starter": {
+      "database": "SQLite/Postgres",
+      "cache": "None",
+      "deployment": "Single Server"
+    },
+    "production": {
+      "database": "Postgres (HA)",
+      "cache": "Redis",
+      "deployment": "Kubernetes/ECS"
+    }
+  },
+  "multi_level_templates": {
+    "starter": [
+      "Basic CRUD",
+      "SQLite",
+      "Single Service"
+    ],
+    "professional": [
+      "Authentication",
+      "Dashboard",
+      "Reports",
+      "Postgres"
+    ],
+    "enterprise": [
+      "Microservices",
+      "Audit Logs",
+      "Analytics",
+      "Redis Cache",
+      "RabbitMQ"
+    ],
+    "production": [
+      "Monitoring (Prometheus)",
+      "CI/CD",
+      "Auto-scaling",
+      "Multi-AZ Deployment"
+    ]
+  },
+  "best_practices": [
+    "Keep controllers thin and domain models fat",
+    "Always use environment variables for configuration"
+  ],
+  "anti_patterns": [
+    "God objects/classes",
+    "N+1 query problems in ORM",
+    "Hardcoding credentials"
+  ],
+  "code_templates": [
+    "Repository Pattern Interface",
+    "Service Layer implementation"
+  ],
+  "sample_projects": [
+    "Simple Gaming Manager",
+    "Enterprise Gaming Suite"
+  ]
+}

@@ -1,6 +1,0 @@
-number count is 1.
-
-while count less than 5.
-    show count.
-    count is count + 1.
-end.

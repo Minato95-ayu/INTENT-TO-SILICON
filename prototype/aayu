@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-AAYU_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-python3 "$AAYU_DIR/cli.py" "$@"

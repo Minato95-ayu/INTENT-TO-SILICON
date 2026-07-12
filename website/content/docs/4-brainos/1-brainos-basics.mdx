@@ -1,0 +1,24 @@
+---
+title: "BrainOS Basics"
+description: "Autonomous Architectural Scaffolding."
+---
+
+# BrainOS Basics
+
+## Overview
+BrainOS is the AI orchestrator within the AAYU ecosystem. It acts as a senior software architect.
+
+<PipelineDiagram stages={["Intent", "Knowledge Graph", "Decision Engine", "Planner", "Scaffold AAYU"]} />
+
+## Why it exists
+Writing boilerplate entities and plumbing APIs takes time. BrainOS understands your Intent (e.g., "Build an ERP") and generates the foundational AST instantly.
+
+## Example
+<CodeBlock lang="bash" code='aayu brain generate "Build a scalable hospital management system"' />
+
+## Output
+<CodeBlock lang="bash" code="[BrainOS] Analyzing Domain: Healthcare\n[BrainOS] Applying Tradeoffs: High Security, ACID Compliance.\n[BrainOS] Generated 45 AAYU Entities.\n[PASS] Project scaffolded in /hospital_erp." />
+
+## Best Practices
+Use BrainOS to bootstrap projects, but always review the generated AAYU code before pushing to production.
+\n\n[Edit on GitHub (Available in v1.0)](#)\n

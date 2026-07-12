@@ -1,6 +1,0 @@
-[package]
-name = "aayu_server"
-version = "0.6.0"
-edition = "2021"
-
-[dependencies]

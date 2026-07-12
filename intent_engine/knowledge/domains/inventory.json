@@ -1,0 +1,171 @@
+{
+  "name": "Inventory",
+  "entities": [
+    "User",
+    "Session",
+    "Log",
+    "Settings",
+    "Configuration",
+    "Role",
+    "Permission",
+    "InventoryEntity1",
+    "InventoryEntity2",
+    "InventoryEntity3",
+    "InventoryEntity4",
+    "InventoryEntity5",
+    "InventoryEntity6",
+    "InventoryEntity7",
+    "InventoryEntity8",
+    "InventoryEntity9",
+    "InventoryEntity10",
+    "InventoryEntity11",
+    "InventoryEntity12",
+    "InventoryEntity13",
+    "InventoryEntity14",
+    "InventoryEntity15",
+    "InventoryEntity16",
+    "InventoryEntity17",
+    "InventoryEntity18",
+    "InventoryEntity19",
+    "InventoryEntity20",
+    "InventoryEntity21",
+    "InventoryEntity22",
+    "InventoryEntity23",
+    "InventoryEntity24",
+    "InventoryEntity25",
+    "InventoryEntity26",
+    "InventoryEntity27",
+    "InventoryEntity28",
+    "InventoryEntity29",
+    "InventoryEntity30",
+    "InventoryEntity31",
+    "InventoryEntity32",
+    "InventoryEntity33",
+    "InventoryEntity34",
+    "InventoryEntity35",
+    "InventoryEntity36",
+    "InventoryEntity37",
+    "InventoryEntity38",
+    "InventoryEntity39",
+    "InventoryEntity40",
+    "InventoryEntity41",
+    "InventoryEntity42",
+    "InventoryEntity43",
+    "InventoryEntity44",
+    "InventoryEntity45",
+    "InventoryEntity46",
+    "InventoryEntity47",
+    "InventoryEntity48",
+    "InventoryEntity49",
+    "InventoryEntity50"
+  ],
+  "relationships": [
+    {
+      "source": "InventoryEntity47",
+      "target": "InventoryEntity46",
+      "type": "one_to_one"
+    },
+    {
+      "source": "InventoryEntity49",
+      "target": "InventoryEntity48",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Session",
+      "target": "InventoryEntity34",
+      "type": "one_to_one"
+    },
+    {
+      "source": "InventoryEntity33",
+      "target": "InventoryEntity9",
+      "type": "one_to_one"
+    },
+    {
+      "source": "InventoryEntity4",
+      "target": "InventoryEntity26",
+      "type": "many_to_many"
+    },
+    {
+      "source": "InventoryEntity49",
+      "target": "InventoryEntity14",
+      "type": "one_to_one"
+    },
+    {
+      "source": "InventoryEntity26",
+      "target": "Session",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Settings",
+      "target": "InventoryEntity39",
+      "type": "one_to_many"
+    },
+    {
+      "source": "InventoryEntity49",
+      "target": "InventoryEntity1",
+      "type": "many_to_many"
+    },
+    {
+      "source": "InventoryEntity29",
+      "target": "InventoryEntity21",
+      "type": "many_to_many"
+    },
+    {
+      "source": "InventoryEntity14",
+      "target": "InventoryEntity5",
+      "type": "one_to_one"
+    },
+    {
+      "source": "InventoryEntity2",
+      "target": "InventoryEntity3",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Role",
+      "target": "InventoryEntity33",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Configuration",
+      "target": "InventoryEntity18",
+      "type": "one_to_many"
+    },
+    {
+      "source": "InventoryEntity4",
+      "target": "InventoryEntity47",
+      "type": "many_to_many"
+    },
+    {
+      "source": "InventoryEntity16",
+      "target": "InventoryEntity14",
+      "type": "one_to_many"
+    },
+    {
+      "source": "InventoryEntity14",
+      "target": "Role",
+      "type": "one_to_one"
+    },
+    {
+      "source": "InventoryEntity1",
+      "target": "InventoryEntity39",
+      "type": "one_to_many"
+    },
+    {
+      "source": "InventoryEntity23",
+      "target": "InventoryEntity16",
+      "type": "one_to_many"
+    }
+  ],
+  "workflows": [
+    "Inventory Workflow 1",
+    "Inventory Workflow 2",
+    "Inventory Workflow 3",
+    "Inventory Workflow 4",
+    "Inventory Workflow 5",
+    "Inventory Workflow 6",
+    "Inventory Workflow 7",
+    "Inventory Workflow 8",
+    "Inventory Workflow 9",
+    "Inventory Workflow 10"
+  ]
+}

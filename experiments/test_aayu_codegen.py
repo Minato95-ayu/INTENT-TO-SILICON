@@ -1,3 +1,17 @@
+"""
+=============================================================================
+FILE: test_aayu_codegen.py
+PURPOSE: Test suite for AAYU components
+=============================================================================
+This file is part of the AAYU (Aayu) Intent-to-Silicon Programming Language.
+The AAYU language enables developers to write code using natural language
+intentions, which are compiled to optimized backend code.
+
+For beginners: This file handles test suite for aayu components.
+To understand the project architecture, see the ARCHITECTURE_FREEZE.md file.
+=============================================================================
+"""
+
 import sys
 import os
 import json
@@ -5,7 +19,7 @@ import json
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.join(base_dir, 'prototype', 'compiler_v2'))
 
-from compiler import CompilerV2
+from compiler.frontend.compiler import CompilerV2
 
 def run_tests():
     c = CompilerV2()

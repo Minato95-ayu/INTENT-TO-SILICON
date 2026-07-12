@@ -1,8 +1,0 @@
-entity Product.
-    text title.
-    text price.
-    text inventory.
-end.
-
-crud Product.
-serve on 8080.

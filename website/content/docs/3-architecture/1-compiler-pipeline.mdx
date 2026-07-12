@@ -1,0 +1,21 @@
+---
+title: "Compiler Pipeline"
+description: "How AAYU source becomes native machine code."
+---
+
+# Compiler Pipeline
+
+## Overview
+The AAYU compiler is a multi-pass system written in Python (prototype) that ultimately targets LLVM IR.
+
+<PipelineDiagram stages={["Lexer", "Parser", "AST", "Semantic", "Optimizer", "LLVM", "Binary"]} />
+
+## Why it exists
+A direct-to-LLVM pipeline ensures that AAYU runs as fast as C or Rust without the overhead of an interpreter or JIT.
+
+## Best Practices
+Use the CLI flag ayu build --emit-llvm to inspect the generated IR if you are optimizing a hot-path in your application.
+
+## Related Topics
+- [Playground](/playground) (Interactive Pipeline View)
+\n\n[Edit on GitHub (Available in v1.0)](#)\n

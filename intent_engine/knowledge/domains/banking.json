@@ -1,0 +1,94 @@
+{
+  "name": "Banking",
+  "entities": [
+    "Account",
+    "Customer",
+    "Transaction",
+    "Branch",
+    "Loan",
+    "Card",
+    "CreditScore"
+  ],
+  "fields": {
+    "Account": [
+      "account_number: Text",
+      "balance: Number",
+      "customer_id: UUID",
+      "type: Enum"
+    ],
+    "Customer": [
+      "id: UUID",
+      "name: Text",
+      "ssn: Text",
+      "kyc_status: Boolean"
+    ],
+    "Transaction": [
+      "id: UUID",
+      "account_id: UUID",
+      "amount: Number",
+      "type: Enum",
+      "timestamp: DateTime"
+    ]
+  },
+  "relationships": [
+    {
+      "source": "Customer",
+      "target": "Account",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Account",
+      "target": "Transaction",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Account",
+      "target": "Card",
+      "type": "one_to_many"
+    }
+  ],
+  "actions": [
+    "Open Account",
+    "Transfer Funds",
+    "Process Loan",
+    "Issue Card"
+  ],
+  "constraints": [
+    {
+      "entity": "Transaction",
+      "field": "amount",
+      "rule": "> 0"
+    },
+    {
+      "entity": "Customer",
+      "field": "ssn",
+      "rule": "unique_and_encrypted"
+    },
+    {
+      "entity": "Account",
+      "field": "balance",
+      "rule": ">= 0 for Savings"
+    }
+  ],
+  "workflows": [
+    "KYC Verification -> Open Account -> Issue Card"
+  ],
+  "api_templates": {
+    "Transaction": [
+      "POST /transactions/transfer",
+      "GET /accounts/:id/statement"
+    ]
+  },
+  "database_schema": "Event Sourcing or strict Relational",
+  "architecture_pattern": "CQRS (Command Query Responsibility Segregation) for ledger tracking.",
+  "validation_rules": [
+    "Withdrawal amount cannot exceed account balance.",
+    "Transfer requires valid source and destination accounts."
+  ],
+  "clarification_rules": [
+    {
+      "trigger": "account without customer",
+      "question": "An Account needs an owner. Should I create a Customer entity?"
+    }
+  ]
+}

@@ -1,5 +1,0 @@
-number count is 3.
-
-repeat count times.
-    show "Aayu".
-end.

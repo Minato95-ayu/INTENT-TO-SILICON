@@ -2,7 +2,34 @@
 
 This log records major architectural decisions, ensuring that rationale is preserved as the repository evolves.
 
-## Milestone 5: Type System
+## Milestone 7: Production Readiness (Ecosystem & DX)
+
+### Phase 7.2: AAYU Linter
+- **Decision:** Do not fail builds on warnings by default. Introduce `--strict` mode to promote warnings to errors.
+- **Rationale:** Ensures that CI pipelines aren't blocked by minor stylistic suggestions or empty blocks while still providing teams the option to enforce strict quality controls, aligning with modern production tooling (e.g. Go, Rust).
+- **Status:** Approved & Implemented.
+
+### Phase 7.1: AAYU Formatter
+- **Decision:** Implement Formatter outside the semantic pass pipeline directly relying on parser AST.
+- **Rationale:** Formatter strictly deals with AST stringification without semantic resolution. Running it outside the semantic pipeline prevents mutating the AST or evaluating types, ensuring a zero-side-effect format run. `aayu fmt` ensures an opinionated canonical layout for the community.
+- **Status:** Approved & Implemented.
+
+## Milestone 5: Type System & Optimization
+
+### Phase 5.8: Static Optimization
+- **Decision:** Implement Constant Folding, Dead Code Elimination, and Branch Pruning strictly as AST transformations via an `ASTTransformerPass`.
+- **Rationale:** To adhere to the Architecture Freeze, optimization happens purely at the AST semantic layer. The compiler and VM are untouched, ensuring behavior is preserved exactly while performance improves.
+- **Status:** Approved & Implemented.
+
+### Phase 5.7: Generics
+- **Decision:** Implement type erasure generics entirely within the semantic layer.
+- **Rationale:** To adhere to the Architecture Freeze, generics (<T>) are resolved into GenericPlaceholderType and GenericInstance purely during type checking. The Compiler and VM remain completely oblivious to generics, meaning zero regressions in execution logic.
+- **Status:** Approved & Implemented.
+
+### Phase 5.6: Traits & Extensions
+- **Decision:** Implement purely semantic extensions and zero-cost abstraction compiler pass.
+- **Rationale:** To strictly adhere to the compiler/VM freeze, Phase 5.6 is limited to AST parsing, semantic scope isolation, and type checking interface contracts. Method dispatch lowering is deferred.
+- **Status:** Approved & Implemented.
 
 ### Phase 5.5: Interfaces
 - **Decision:** Introduce the "Language Evolution Policy" (Additive Only).

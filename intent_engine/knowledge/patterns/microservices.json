@@ -1,0 +1,10 @@
+{
+  "name": "Microservices Architecture",
+  "description": "Arranges an application as a collection of loosely coupled services.",
+  "components": [
+    "API Gateway",
+    "Service Registry",
+    "Independent Services",
+    "Event Bus"
+  ]
+}

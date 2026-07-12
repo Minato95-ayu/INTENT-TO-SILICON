@@ -1,0 +1,56 @@
+{
+  "name": "aayu",
+  "displayName": "AAYU Language Support",
+  "description": "Official VS Code extension for the AAYU programming language.",
+  "version": "1.0.0-alpha",
+  "publisher": "AAYU",
+  "icon": "./icons/aayu-logo.png",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Formatters",
+    "Linters"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "aayu",
+        "extensions": [".aayu"],
+        "aliases": ["AAYU", "aayu"],
+        "icon": {
+          "light": "./icons/aayu-logo.svg",
+          "dark": "./icons/aayu-logo.svg"
+        },
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "aayu",
+        "scopeName": "source.aayu",
+        "path": "./syntaxes/aayu.tmLanguage.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "aayu.explain",
+        "title": "AAYU BrainOS: Explain Selection"
+      },
+      {
+        "command": "aayu.optimize",
+        "title": "AAYU BrainOS: Optimize Architecture"
+      },
+      {
+        "command": "aayu.generate",
+        "title": "AAYU BrainOS: Generate Module"
+      },
+      {
+        "command": "aayu.review",
+        "title": "AAYU BrainOS: Review Security & Scalability"
+      }
+    ]
+  },
+  "main": "./out/extension.js"
+}

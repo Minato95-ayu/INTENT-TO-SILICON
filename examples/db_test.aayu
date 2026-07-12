@@ -1,0 +1,25 @@
+project AAYUDBTest.
+
+storage Main.
+
+model User {
+    id Int.
+    name String.
+    email String.
+}
+
+task main.
+    print("Initializing Database...").
+    
+    insert User {
+        name = "Ayush".
+        email = "ayush@example.com".
+    }
+    
+    print("Inserted User.").
+    
+    let users is find User.
+    print(users).
+end.
+
+run main.

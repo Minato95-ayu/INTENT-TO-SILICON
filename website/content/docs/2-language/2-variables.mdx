@@ -1,0 +1,23 @@
+---
+title: "Variables"
+description: "Declaring and mutating state."
+---
+
+# Variables
+
+## Overview
+Variables in AAYU are declared using the let keyword. They are strictly typed and immutable by default.
+
+## Syntax
+<CodeBlock lang="aayu" code='let name: Text = "Developer".\nmut age: Number = 25.' playgroundUrl="/playground" />
+
+## Common Errors
+<ErrorBlock 
+    wrong='let age = 25.\nage = 26.'
+    correct='mut age: Number = 25.\nage = 26.'
+    errorMsg="TypeError: Cannot reassign immutable variable 'age'."
+/>
+
+## Best Practices
+Prefer let over mut. AAYU's LLVM optimizer can aggressively fold constants and inline immutable state.
+\n\n[Edit on GitHub (Available in v1.0)](#)\n

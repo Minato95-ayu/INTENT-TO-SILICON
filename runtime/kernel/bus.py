@@ -19,7 +19,10 @@ used by the main UI thread.
 
 import threading
 import logging
+import uuid
+import time
 from typing import Dict, List, Callable, Any
+from .interface import Event, EventPriority
 
 logger = logging.getLogger("aayu.kernel")
 
@@ -29,9 +32,9 @@ class EventBus:
     """
     def __init__(self):
         self._lock = threading.RLock()
-        self._subscribers: Dict[str, List[Callable]] = {}
+        self._subscribers: Dict[str, List[Callable[[Event], None]]] = {}
 
-    def subscribe(self, topic: str, callback: Callable[[Any], None]) -> None:
+    def subscribe(self, topic: str, callback: Callable[[Event], None]) -> None:
         """
         Subscribe a callback function to a specific event topic.
         e.g., kernel.bus.subscribe("storage.inserted", my_callback)
@@ -42,7 +45,7 @@ class EventBus:
             if callback not in self._subscribers[topic]:
                 self._subscribers[topic].append(callback)
 
-    def unsubscribe(self, topic: str, callback: Callable[[Any], None]) -> None:
+    def unsubscribe(self, topic: str, callback: Callable[[Event], None]) -> None:
         """
         Remove a callback from a topic. Used during plugin shutdown to prevent memory leaks.
         """
@@ -50,13 +53,20 @@ class EventBus:
             if topic in self._subscribers and callback in self._subscribers[topic]:
                 self._subscribers[topic].remove(callback)
 
-    def publish(self, topic: str, payload: Any) -> None:
+    def publish(self, topic: str, payload: Any = None, priority: str = EventPriority.NORMAL, source: str = "kernel") -> None:
         """
         Publish an event to all subscribers of a topic.
-        WHY USE try/except INSIDE THE LOOP?
-        If one subscriber's callback throws a crash, we MUST catch it. If we don't, 
-        the exception halts the loop, and the remaining subscribers never receive the event.
+        Wraps payload into a strict Event object as mandated by the CTO.
         """
+        event = Event(
+            id=str(uuid.uuid4()),
+            topic=topic,
+            payload=payload,
+            timestamp=time.time(),
+            priority=priority,
+            source=source
+        )
+
         with self._lock:
             # We copy the list of subscribers to prevent a deadlock if a subscriber 
             # tries to unsubscribe *during* the execution of its callback.
@@ -64,7 +74,7 @@ class EventBus:
             
         for callback in subs:
             try:
-                callback(payload)
+                callback(event)
             except Exception as e:
                 # We log the error but swallow the exception to protect the Event Bus
                 logger.error(f"EventBus: Exception in callback for topic '{topic}': {e}", exc_info=True)

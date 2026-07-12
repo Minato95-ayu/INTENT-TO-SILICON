@@ -123,9 +123,9 @@ class TestRuntimeKernel(unittest.TestCase):
         events_received = []
         lock = threading.Lock()
         
-        def callback(payload):
+        def callback(event):
             with lock:
-                events_received.append(payload)
+                events_received.append(event.payload)
                 
         self.kernel.bus.subscribe("test.event", callback)
         

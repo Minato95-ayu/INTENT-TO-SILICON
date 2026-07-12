@@ -57,8 +57,8 @@ class TestStateRuntime(unittest.TestCase):
 
     def test_watchers_and_events(self):
         events_received = []
-        def on_update(payload):
-            events_received.append(payload)
+        def on_update(event):
+            events_received.append(event.payload)
             
         self.kernel.bus.subscribe("state.updated", on_update)
         

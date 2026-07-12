@@ -21,6 +21,24 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict, List
 import time
 
+class EventPriority:
+    SYSTEM = "system"
+    HIGH = "high"
+    NORMAL = "normal"
+    LOW = "low"
+
+class Event:
+    """
+    Immutable Event object strictly structured for the EventBus.
+    """
+    def __init__(self, id: str, topic: str, payload: Any, timestamp: float, priority: str, source: str):
+        self.id = id
+        self.topic = topic
+        self.payload = payload
+        self.timestamp = timestamp
+        self.priority = priority
+        self.source = source
+
 class RuntimeMetadata:
     """
     Holds metadata about a plugin before it is booted.

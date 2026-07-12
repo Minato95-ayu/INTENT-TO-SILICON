@@ -1,0 +1,57 @@
+# AAYU Mini OS UI
+# A desktop-like environment built entirely in AAYU
+
+state open_windows = []
+state active_window = ""
+state time = "10:42 AM"
+
+fn open_app(app_name)
+    open_windows = open_windows + [app_name]
+    active_window = app_name
+end
+
+fn close_app(app_name)
+    # Ideally filter list
+    active_window = ""
+end
+
+page Desktop
+    layout Column
+        # Top Bar
+        layout Row
+            text "AAYU OS"
+            text time
+        end
+        
+        # Desktop Area
+        layout Row
+            # App Icons
+            layout Column
+                button "Calculator" on_click: open_app("Calculator")
+                button "Files" on_click: open_app("Files")
+                button "Browser" on_click: open_app("Browser")
+            end
+            
+            # Window Manager Area
+            layout Column
+                for app in open_windows
+                    layout Column
+                        layout Row
+                            text app + " Window"
+                            button "X" on_click: close_app(app)
+                        end
+                        text "Content for " + app
+                    end
+                end
+            end
+        end
+        
+        # Dock / Taskbar
+        layout Row
+            text "Taskbar: "
+            for app in open_windows
+                button app on_click: { active_window = app }
+            end
+        end
+    end
+end

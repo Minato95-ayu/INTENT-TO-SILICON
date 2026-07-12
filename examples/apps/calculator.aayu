@@ -1,0 +1,73 @@
+# AAYU Calculator App
+# Demonstrates basic state management and UI events
+
+state display = "0"
+state operand1 = ""
+state operator = ""
+
+fn handle_digit(digit)
+    if display == "0"
+        display = digit
+    else
+        display = display + digit
+    end
+end
+
+fn handle_op(op)
+    operand1 = display
+    operator = op
+    display = "0"
+end
+
+fn calculate()
+    if operator == "+"
+        display = string(number(operand1) + number(display))
+    end
+    if operator == "-"
+        display = string(number(operand1) - number(display))
+    end
+    if operator == "*"
+        display = string(number(operand1) * number(display))
+    end
+    if operator == "/"
+        display = string(number(operand1) / number(display))
+    end
+    operator = ""
+    operand1 = ""
+end
+
+fn clear()
+    display = "0"
+    operand1 = ""
+    operator = ""
+end
+
+page CalculatorPage
+    layout Stack
+        text "Display: " + display
+        layout Row
+            button "7" on_click: handle_digit("7")
+            button "8" on_click: handle_digit("8")
+            button "9" on_click: handle_digit("9")
+            button "/" on_click: handle_op("/")
+        end
+        layout Row
+            button "4" on_click: handle_digit("4")
+            button "5" on_click: handle_digit("5")
+            button "6" on_click: handle_digit("6")
+            button "*" on_click: handle_op("*")
+        end
+        layout Row
+            button "1" on_click: handle_digit("1")
+            button "2" on_click: handle_digit("2")
+            button "3" on_click: handle_digit("3")
+            button "-" on_click: handle_op("-")
+        end
+        layout Row
+            button "C" on_click: clear()
+            button "0" on_click: handle_digit("0")
+            button "=" on_click: calculate()
+            button "+" on_click: handle_op("+")
+        end
+    end
+end

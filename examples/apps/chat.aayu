@@ -1,0 +1,49 @@
+# AAYU Chat App
+
+model Message
+    sender: string
+    text: string
+    timestamp: string
+end
+
+state messages = []
+state draft = ""
+state user = "User1"
+
+fn load_messages()
+    messages = db_find("Message")
+end
+
+fn send_message()
+    if draft != ""
+        db_insert("Message", {
+            "sender": user,
+            "text": draft,
+            "timestamp": "Now"
+        })
+        draft = ""
+        load_messages()
+    end
+end
+
+load_messages()
+
+page ChatPage
+    layout Column
+        text "Global Chat"
+        
+        layout Column
+            for msg in messages
+                layout Row
+                    text msg.sender + ":"
+                    text msg.text
+                end
+            end
+        end
+        
+        layout Row
+            input "Type a message..." bind: draft
+            button "Send" on_click: send_message()
+        end
+    end
+end

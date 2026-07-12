@@ -1,0 +1,36 @@
+# AAYU Portfolio
+
+state active_section = "about"
+
+page PortfolioPage
+    layout Column
+        layout Row
+            text "Developer Portfolio"
+            button "About" on_click: { active_section = "about" }
+            button "Projects" on_click: { active_section = "projects" }
+            button "Contact" on_click: { active_section = "contact" }
+        end
+        
+        if active_section == "about"
+            layout Column
+                text "Hi, I am an AAYU Developer."
+                text "I build ultra-fast, native compiled applications."
+            end
+        end
+        
+        if active_section == "projects"
+            layout Column
+                text "1. CRM System"
+                text "2. E-Commerce Platform"
+                text "3. Native IDE"
+            end
+        end
+        
+        if active_section == "contact"
+            layout Column
+                text "Email: dev@aayu.os"
+                text "Github: @aayu-dev"
+            end
+        end
+    end
+end

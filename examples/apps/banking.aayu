@@ -1,0 +1,49 @@
+# AAYU Banking App
+
+model Account
+    account_number: string
+    owner: string
+    balance: number
+end
+
+model Transaction
+    account_id: string
+    amount: number
+    type: string # Deposit, Withdrawal, Transfer
+    date: string
+end
+
+state current_account = "ACC-1001"
+state balance = 0
+state amount_input = "0"
+state transactions = []
+
+fn load_account()
+    # Mock data fetch logic
+    balance = 5430.50
+    transactions = [
+        {"type": "Deposit", "amount": 1000},
+        {"type": "Withdrawal", "amount": 200}
+    ]
+end
+
+load_account()
+
+page BankingApp
+    layout Column
+        text "AAYU Secure Banking"
+        text "Account: " + current_account
+        text "Balance: $" + string(balance)
+        
+        layout Row
+            input "Amount" bind: amount_input
+            button "Deposit" on_click: { balance = balance + number(amount_input) }
+            button "Withdraw" on_click: { balance = balance - number(amount_input) }
+        end
+        
+        text "Recent Transactions"
+        for txn in transactions
+            text txn.type + " : $" + string(txn.amount)
+        end
+    end
+end

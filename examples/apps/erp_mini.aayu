@@ -1,0 +1,54 @@
+# AAYU ERP Mini
+
+model Employee
+    name: string
+    role: string
+    salary: number
+    department: string
+end
+
+model InventoryItem
+    sku: string
+    name: string
+    quantity: number
+    price: number
+end
+
+state tab = "HR"
+state employees = []
+state inventory = []
+
+fn load_data()
+    employees = db_find("Employee")
+    inventory = db_find("InventoryItem")
+end
+
+load_data()
+
+page ERP_Dashboard
+    layout Column
+        text "Enterprise Resource Planning (Mini)"
+        layout Row
+            button "HR Module" on_click: { tab = "HR" }
+            button "Inventory Module" on_click: { tab = "Inventory" }
+        end
+        
+        if tab == "HR"
+            layout Column
+                text "Employees"
+                for emp in employees
+                    text emp.name + " (" + emp.role + ") - $" + string(emp.salary)
+                end
+            end
+        end
+        
+        if tab == "Inventory"
+            layout Column
+                text "Warehouse Stock"
+                for item in inventory
+                    text item.sku + " : " + item.name + " QTY: " + string(item.quantity)
+                end
+            end
+        end
+    end
+end

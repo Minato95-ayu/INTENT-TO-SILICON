@@ -1,0 +1,47 @@
+# AAYU Todo App
+
+model Todo
+    task: string
+    completed: boolean
+end
+
+state todos = []
+state new_task = ""
+
+fn fetch_todos()
+    todos = db_find("Todo")
+end
+
+fn add_task()
+    if new_task != ""
+        db_insert("Todo", {"task": new_task, "completed": false})
+        new_task = ""
+        fetch_todos()
+    end
+end
+
+fn toggle_task(id, current_status)
+    db_update("Todo", {"id": id, "completed": !current_status})
+    fetch_todos()
+end
+
+fetch_todos()
+
+page TodoPage
+    layout Column
+        text "Todo List"
+        layout Row
+            input "Add task..." bind: new_task
+            button "Add" on_click: add_task()
+        end
+        layout Column
+            for item in todos
+                layout Row
+                    text item.task
+                    text "Status: " + string(item.completed)
+                    button "Toggle" on_click: toggle_task(item.id, item.completed)
+                end
+            end
+        end
+    end
+end

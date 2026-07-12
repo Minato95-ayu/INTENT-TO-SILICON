@@ -41,11 +41,12 @@ class DispatchResult:
     WHY? If plugins return random data types, the Kernel can't reliably handle errors. 
     This struct ensures every execution explicitly reports success or failure.
     """
-    def __init__(self, success: bool, data: Any = None, error: str = None, time: float = 0.0):
+    def __init__(self, success: bool, data: Any = None, error: str = None, time: float = 0.0, metadata: Dict[str, Any] = None):
         self.success = success
         self.data = data
         self.error = error
         self.time = time
+        self.metadata = metadata or {}
 
 
 class RuntimeInterface(ABC):

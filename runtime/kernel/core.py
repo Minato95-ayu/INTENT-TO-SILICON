@@ -58,7 +58,16 @@ class RuntimeKernel:
             except Exception as e:
                 logger.error(f"Kernel: Failed to initialize {meta.name}: {e}", exc_info=True)
                 
-        # Phase 2: Start
+        # Phase 2: Boot
+        for plugin in boot_order:
+            meta = plugin.metadata()
+            try:
+                plugin.boot()
+                logger.debug(f"Booted {meta.name}")
+            except Exception as e:
+                logger.error(f"Kernel: Failed to boot {meta.name}: {e}", exc_info=True)
+
+        # Phase 3: Start
         for plugin in boot_order:
             meta = plugin.metadata()
             try:

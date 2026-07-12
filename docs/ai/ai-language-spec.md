@@ -1,161 +1,164 @@
-# AAYU Language Specification v1.0
+# AAYU Language Specification v1.0 & Vision
 
-This document is the "source of truth" for the AAYU programming language. AAYU is NOT a React or Flutter replacement, nor is it a SQL language. It is a general-purpose programming language designed with specific syntax and features outlined below.
+This document is the "source of truth" for the AAYU programming language and ecosystem. 
+AAYU is NOT just a React, Flutter, or Python replacement, nor is it merely a SQL abstraction. **AAYU is a complete, integrated full-stack application platform.**
 
-## 1. Language Philosophy
-AAYU is designed to be highly readable, robust, and capable of seamlessly interacting with storage and APIs.
-- Statements in AAYU always terminate with a period (`.`).
-- Code blocks are enclosed in curly braces (`{}`).
-- AAYU abstracts database operations. Developers write native `insert`, `update`, `find`, and `delete` statements, and the internal compiler pipeline (Parser -> Storage AST -> Planner -> Optimizer -> SQLite Adapter -> SQLite) translates this into SQL. Users never write SQL directly.
+The core philosophy of AAYU is that a developer **only writes AAYU code**. They never write HTML, CSS, JavaScript, React, Flutter, or SQL. A single syntax and runtime handle the frontend UI, backend servers, routing, and database storage.
 
-## 2. Grammar
-- Statements must end with a period `.`.
-- Blocks use `{` and `}`.
-- Single-line comments start with `//`.
-- Multi-line comments are enclosed in `/*` and `*/`.
+---
 
-## 3. Keywords
-Programming keywords include:
-`task`, `return`, `if`, `else`, `while`, `for`, `each`, `break`, `continue`, `let`, `const`, `print`, `input`, `assert`.
+## The 12 Core Pillars of AAYU
 
-## 4. Identifiers
-Standard identifier rules apply (alphanumeric and underscores, cannot start with a number).
+AAYU is built upon 12 foundational pillars that make it a unified platform:
 
-## 5. Variables
-Variables are declared using `let` and `const`.
+### 1. Core Language
+Equivalent to Python/C++, providing the logical foundation.
+- Variables, Constants, Data Types, Expressions, Operators.
+- Functions (`task`), Classes / Models, Modules, Packages, Imports.
+- Error Handling (`try`, `catch`, `finally`, `throw`, `panic`).
+- Syntax: Blocks use `{ }`, statements terminate with `.`.
 ```aayu
 let name = "Ayush".
-let age = 18.
-const PI = 3.14.
-```
-
-## 6. Data Types
-**Primitive Data Types:**
-- `Int`, `Float`, `Bool`, `String`, `Char`, `Null`
-
-## 7. Expressions
-AAYU supports standard arithmetic, comparison, and logical expressions.
-
-**Operators:**
-- **Arithmetic:** `+`, `-`, `*`, `/`, `//` (integer division), `%`, `**` (power)
-- **Comparison:** `==`, `!=`, `>`, `<`, `>=`, `<=`
-- **Logical:** `and`, `or`, `not`
-- **Assignment:** `=`, `+=`, `-=`, `*=`, `/=`
-
-## 8. Statements
-All valid AAYU statements must end with a period `.`.
-
-## 9. Functions (task)
-Functions are defined using the `task` keyword.
-```aayu
-task add(a, b) {
-    return a + b.
+let age = 20.
+task hello() {
+    print name.
 }
 ```
 
-## 10. Collections
-AAYU supports several collection types:
-- `List`, `Map`, `Set`, `Tuple`, `Record`
-
-## 11. Storage System
-AAYU provides native keywords for data modeling and persistence: `storage`, `model`, `insert`, `find`, `update`, `delete`.
+### 2. Native UI Framework
+Replaces HTML/CSS.
+- Elements: `page`, `window`, `layout`, `row`, `column`, `stack`, `grid`, `card`, `button`, `text`, `heading`, `image`, `icon`, `table`, `list`, `tabs`, `dialog`, `drawer`, `sidebar`.
 ```aayu
-storage Main.
+page Home {
+    column {
+        heading "Welcome".
+        button "Login".
+    }
+}
+```
 
+### 3. Forms Framework
+Native support for data collection and validation.
+- Inputs: `input`, `password`, `email`, `phone`, `date`, `file`, `checkbox`, `radio`, `dropdown`, `submit`.
+```aayu
+form Login {
+    input Email.
+    input Password.
+    submit Login.
+}
+```
+
+### 4. State Management
+Built-in reactive state without external libraries.
+```aayu
+state counter = 0.
+counter += 1.
+```
+
+### 5. Events
+Native event handlers for user interaction.
+- Types: `click`, `hover`, `change`, `submit`, `load`, `scroll`, `drag`, `drop`.
+```aayu
+button "Save" {
+    click {
+        print "Saved".
+    }
+}
+```
+
+### 6. Routing & Navigation
+Seamless navigation built directly into the language.
+- Commands: `route`, `goto`, `back`, `redirect`, Dynamic Routes.
+```aayu
+goto Dashboard.
+```
+
+### 7. Web Framework
+Built-in backend server capabilities.
+- Support: `server`, `route`, `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, middleware, static files.
+```aayu
+server 8080.
+route "/users" {
+    // handle request
+}
+```
+
+### 8. Storage System
+Native database modeling and queries. No SQL required.
+- Commands: `storage`, `model`, `insert`, `find`, `update`, `delete`, transactions, relations, migrations.
+```aayu
 model User {
     name String.
-    age Int.
 }
-
 insert User {
     name = "Ayush".
 }
 ```
 
-## 12. Error Handling
-AAYU uses `try`, `catch`, `finally`, `throw`, and `panic`.
+### 9. Authentication
+First-class support for secure authentication.
+- Support: Login, Logout, Register, Session, JWT, OAuth, Roles, Permissions.
 ```aayu
-try {
-    // code here.
-} catch {
-    // handle error.
-} finally {
-    // cleanup.
-}
+auth JWT.
 ```
 
-## 13. Modules
-Modules can be imported and exported.
+### 10. Networking
+Native API and communication tools.
+- Support: HTTP Client, REST, WebSocket, GraphQL, File Upload/Download.
 ```aayu
-import math.
-
-export task hello() {
-    print "Hello".
-}
+request GET "/users".
 ```
 
-## 14. Standard Library
-(To be documented - includes core system, math, and file utilities.)
-
-## 15. Compiler Pipeline
-AAYU code is executed through the following pipeline:
-1. Source Code
-2. Lexer
-3. Parser
-4. AST
-5. Compiler
-6. Bytecode
-7. VM
-8. Runtime
-9. Storage / HTTP / UI
-
-## 16. VM & Bytecode
-The Virtual Machine executes compiled AAYU bytecode. The VM has distinct subsystems:
-- Opcode handlers
-- Storage runtime
-- Runtime manager
-- Execution pipeline
-
-## 17. Runtime APIs
-AAYU provides runtime support for Storage, HTTP, and UI execution environments.
-
-## 18. Complete Example Programs
-
-**File Structure:**
-Typical AAYU projects contain files like:
-- `project.aayu`
-- `storage.aayu`
-- `main.aayu`
-- `routes.aayu`
-- `models.aayu`
-- `config.aayu`
-
-**Example:**
+### 11. Native Standard Library
+A rich set of built-in modules.
+- Modules: Math, String, JSON, File, Path, Date, Time, Crypto, Random, HTTP, Regex, Compression, XML, CSV.
 ```aayu
-import math.
+json.parse(data).
+```
 
-storage Main.
+### 12. Runtime & VM
+The heart of AAYU that seamlessly executes everything above.
+- Handles: Bytecode, Garbage Collection, Memory, Scheduler, Storage, UI rendering, Networking, Events, Threads, and Async Tasks.
+- The internal compiler pipeline (Source -> Lexer -> Parser -> AST -> Compiler -> Bytecode -> VM -> Native UI/Web/Storage) handles all lower-level translation.
 
-model User {
-    name String.
-    age Int.
-}
+---
 
-task main() {
-    let age = 18.
-    
-    if age >= 18 {
-        print "Adult".
-    } else {
-        print "Minor".
-    }
+## Execution Pipeline Architecture
 
-    for i = 0 to 10 {
-        print i.
-    }
-
-    insert User {
-        name = "Ayush".
-    }
-}
+```text
+Application
+      │
+      ▼
+AAYU Source Code
+      │
+      ▼
+Lexer
+      │
+      ▼
+Parser
+      │
+      ▼
+AST
+      │
+      ▼
+Compiler
+      │
+      ▼
+Bytecode
+      │
+      ▼
+Virtual Machine
+      │
+      ▼
+┌──────────────────────────────┐
+│ Native UI                    │
+│ Native Web Server            │
+│ Native Storage               │
+│ Native Networking            │
+│ Native Authentication        │
+│ Native Standard Library      │
+└──────────────────────────────┘
+      │
+      ▼
+Operating System
 ```

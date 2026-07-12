@@ -1,3 +1,24 @@
+"""
+AAYU Operating System - Runtime Kernel Core
+-------------------------------------------
+File: runtime/kernel/core.py
+
+WHY DOES THIS FILE EXIST?
+This is the master brain of the AAYU Runtime OS. The AAYU Virtual Machine (VM) executes 
+bytecode, but when that bytecode needs to do something "real" (like write to a database, 
+draw a UI button, or send an HTTP request), the VM calls the Kernel. The Kernel then 
+dispatches that request to the appropriate Plugin (Storage, UI, Web).
+
+WHAT DOES THIS CODE DO?
+1. Boot/Shutdown Cascade: It orchestrates the lifecycle of all registered plugins. 
+   It ensures they are initialized, booted, and shut down in the correct topological order.
+2. Plugin Isolation (The `dispatch` method): This is critical. If the VM asks the 
+   Storage plugin to execute a query, and the Storage plugin throws a fatal crash, 
+   the Kernel catches it. It logs the crash and returns a clean `DispatchResult` 
+   containing the error. The AAYU OS *does not crash*. This is how robust operating 
+   systems prevent a single bad app from taking down the whole machine.
+"""
+
 import time
 import logging
 from typing import Any, Dict
@@ -20,11 +41,15 @@ class RuntimeKernel:
     def boot(self) -> None:
         """
         Initializes and starts all registered runtimes in topological order.
+        WHY SEPARATE initialize() FROM start()?
+        Dependency Injection. Phase 1 (initialize) injects the Kernel into all plugins.
+        Phase 2 (start) boots them up. If we tried to do this in one pass, a plugin 
+        might try to use the Event Bus before all other plugins were registered.
         """
         logger.info("Kernel: Booting OS...")
         boot_order = self.registry.get_boot_order()
         
-        # Step 1: Initialize (Dependency Injection)
+        # Phase 1: Initialize (Dependency Injection)
         for plugin in boot_order:
             meta = plugin.metadata()
             try:
@@ -33,7 +58,7 @@ class RuntimeKernel:
             except Exception as e:
                 logger.error(f"Kernel: Failed to initialize {meta.name}: {e}", exc_info=True)
                 
-        # Step 2: Start
+        # Phase 2: Start
         for plugin in boot_order:
             meta = plugin.metadata()
             try:
@@ -48,9 +73,15 @@ class RuntimeKernel:
     def dispatch(self, target: str, action: str, payload: Dict[str, Any]) -> DispatchResult:
         """
         Dispatch an action to a specific runtime target.
+        e.g., kernel.dispatch(target="storage", action="insert", payload=data)
+        
+        WHY IS THIS SURROUNDED IN A TRY/CATCH?
+        Plugin Isolation. We never trust the plugin's code. If it crashes, we catch 
+        the exception, log it, and return a clean failure result.
         """
         start_time = time.time()
         plugin = self.registry.get(target)
+        
         if not plugin:
             err = f"Target runtime '{target}' not found."
             logger.error(f"Kernel Dispatch Error: {err}")
@@ -62,25 +93,30 @@ class RuntimeKernel:
                 raise ValueError("Runtime handle() must return a DispatchResult.")
             result.time = time.time() - start_time
             return result
+            
         except Exception as e:
+            # We catch ALL exceptions to protect the Kernel
             logger.error(f"Kernel: Dispatch crash in '{target}' handling '{action}': {e}", exc_info=True)
             return DispatchResult(success=False, error=str(e), time=time.time() - start_time)
 
     def shutdown(self) -> None:
         """
-        Gracefully shuts down all plugins in reverse boot order.
+        Gracefully shuts down all plugins in *reverse* boot order.
+        WHY REVERSE?
+        If 'UI' depends on 'State', we must shut down 'UI' before shutting down 'State'. 
+        If we shut down 'State' first, the still-running 'UI' might crash trying to read from it.
         """
         logger.info("Kernel: Initiating OS Shutdown...")
         shutdown_order = list(reversed(self.registry.get_boot_order()))
         
-        # Step 1: Stop accepting new requests
+        # Phase 1: Stop accepting new requests (drain)
         for plugin in shutdown_order:
             try:
                 plugin.stop()
             except Exception as e:
                 logger.error(f"Kernel: Error stopping {plugin.metadata().name}: {e}", exc_info=True)
                 
-        # Step 2: Full shutdown/resource release
+        # Phase 2: Full shutdown/resource release
         for plugin in shutdown_order:
             try:
                 plugin.shutdown()

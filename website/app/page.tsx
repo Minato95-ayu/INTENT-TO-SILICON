@@ -3,6 +3,7 @@
 "use client";
 
 import Link from "next/link";
+import React from "react";
 import {
   ArrowRight,
   Code2,
@@ -186,7 +187,7 @@ export default function HomePage() {
     spans.sort((a, b) => a.start - b.start);
     if (spans.length === 0) return <span className="text-zinc-300">{line}</span>;
 
-    const parts: JSX.Element[] = [];
+    const parts: React.ReactNode[] = [];
     let lastEnd = 0;
     spans.forEach((s, i) => {
       if (s.start > lastEnd) {

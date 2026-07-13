@@ -65,7 +65,41 @@
           "description": "Absolute path to the aayu_lsp.py script."
         }
       }
-    }
+    },
+    "debuggers": [
+      {
+        "type": "aayu",
+        "label": "AAYU Debugger",
+        "program": "aayu",
+        "args": [
+          "run",
+          "--debug",
+          ""
+        ],
+        "configurationAttributes": {
+          "launch": {
+            "required": [
+              "program"
+            ],
+            "properties": {
+              "program": {
+                "type": "string",
+                "description": "Absolute path to the AAYU file to debug.",
+                "default": ""
+              }
+            }
+          }
+        },
+        "initialConfigurations": [
+          {
+            "type": "aayu",
+            "request": "launch",
+            "name": "Debug AAYU File",
+            "program": ""
+          }
+        ]
+      }
+    ]
   },
   "dependencies": {
     "vscode-languageclient": "^9.0.1"

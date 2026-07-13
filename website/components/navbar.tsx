@@ -26,12 +26,15 @@ export function Navbar() {
             <Image src="/aayu-logo.png" alt="AAYU Logo" width={32} height={32} className="object-contain group-hover:scale-110 transition-transform" />
             <span className="font-bold text-xl tracking-tight text-white">AAYU</span>
           </Link>
-          <nav className="hidden lg:flex gap-6 text-sm font-medium text-zinc-400">
-            <Link href="/language" className="hover:text-white transition-colors">Language</Link>
-            <Link href="/architecture" className="hover:text-white transition-colors">Runtime</Link>
+          <nav className="hidden lg:flex gap-6 text-sm font-medium text-zinc-400 items-center">
+            <Link href="/" className="hover:text-white transition-colors">Home</Link>
+            <Link href="/learn" className="hover:text-white transition-colors flex items-center gap-1">
+              Learn <span className="text-[10px] bg-purple-500 text-white px-1.5 py-0.5 rounded-full font-bold leading-none">15m</span>
+            </Link>
             <Link href="/docs" className="hover:text-white transition-colors">Docs</Link>
+            <Link href="/examples" className="hover:text-white transition-colors">Examples</Link>
+            <Link href="/docs/cli" className="hover:text-white transition-colors">CLI</Link>
             <Link href="/packages" className="hover:text-white transition-colors">Packages</Link>
-            <Link href="/playground" className="hover:text-white transition-colors">Playground</Link>
             <Link href="/roadmap" className="hover:text-white transition-colors">Roadmap</Link>
           </nav>
         </div>

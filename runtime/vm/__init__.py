@@ -1,3 +1,3 @@
 from .vm import VirtualMachine
-
-__all__ = ["VirtualMachine"]
+from .config import VMConfig
+from .exceptions import VMError, InvalidBytecodeError, StackOverflowError

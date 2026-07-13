@@ -32,3 +32,22 @@ class SemanticWidgetNode(SemanticNode):
     widget_type: str
     props: Dict[str, Any]
     children: List['SemanticWidgetNode']
+
+
+@dataclass(frozen=True)
+class SemanticImportNode(SemanticNode):
+    module: str
+
+@dataclass(frozen=True)
+class SemanticIdentifierNode(SemanticNode):
+    name: str
+
+@dataclass(frozen=True)
+class SemanticActionDeclNode(SemanticNode):
+    name: str
+    statements: List[SemanticNode]
+
+@dataclass(frozen=True)
+class SemanticActionCallNode(SemanticNode):
+    name: str
+    args: List[SemanticNode]

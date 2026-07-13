@@ -1,41 +1,45 @@
-from compiler.bytecode.instructions import BytecodeObject
-from runtime.kernel.core import RuntimeKernel
+from runtime.vm.config import VMConfig
+from runtime.vm.registers import Registers
+from runtime.vm.stack import CallStack, ValueStack
+from runtime.vm.heap import Heap
+from runtime.vm.decoder import Decoder
+from runtime.vm.validator import Validator
+from runtime.vm.profiler import Profiler
+from runtime.debugger import Debugger
+from runtime.vm.interpreter import Interpreter
+from runtime.vm.crash_reporter import CrashReporter
+from runtime.vm.result import RuntimeResult, ResultStatus
 
 class VirtualMachine:
-    def __init__(self, kernel: RuntimeKernel):
-        self.kernel = kernel
-        self.ip = 0
-        self.stack = []
-
-    def execute(self, bytecode: BytecodeObject):
-        instructions = bytecode.instructions
-        self.ip = 0
+    """The unified Virtual Machine orchestrator."""
+    def __init__(self, config: VMConfig = None):
+        self.config = config or VMConfig.development()
+        self.registers = Registers()
+        self.heap = Heap()
+        self.call_stack = CallStack(max_depth=self.config.max_call_depth)
+        self.value_stack = ValueStack()
+        self.profiler = Profiler()
+        self.debugger = Debugger(self)
+        self.interpreter = Interpreter(self)
         
-        while self.ip < len(instructions):
-            inst = instructions[self.ip]
-            self._dispatch_instruction(inst)
-            self.ip += 1
+        self.state = {} # Mock State Runtime
+        self.constant_pool = []
+        self.decoder = None
 
-    def _dispatch_instruction(self, inst):
-        opcode = inst.opcode
-        
-        if opcode == "STATE_INIT":
-            # Dispatch to State Runtime
-            self.kernel.dispatch("state", "set", {
-                "key": inst.arg1,
-                "value": inst.arg2
-            })
-        elif opcode.startswith("BUILD_"):
-            # Dispatch to UI Runtime
-            w_type = opcode[6:]
-            self.kernel.dispatch("ui", "build", {
-                "type": w_type,
-                "name": inst.arg1
-            })
-        elif opcode == "LOAD_CONST":
-            self.stack.append(inst.arg1)
-        elif opcode == "POP":
-            if self.stack:
-                self.stack.pop()
-        else:
-            raise NotImplementedError(f"Opcode {opcode} not implemented in VM")
+    def load(self, bytecode, constant_pool=None):
+        self.constant_pool = constant_pool or []
+        Validator.validate(bytecode, self.constant_pool)
+        self.decoder = Decoder(bytecode, self.constant_pool)
+        self.registers.reset()
+
+    def execute(self):
+        try:
+            self.interpreter.run()
+        except Exception as e:
+            report = CrashReporter.generate(e, self)
+            print(report)
+            raise e
+            
+    def kernel_dispatch(self) -> RuntimeResult:
+        # Mock plugin dispatch logic for Exception Recovery testing
+        return RuntimeResult.ok()

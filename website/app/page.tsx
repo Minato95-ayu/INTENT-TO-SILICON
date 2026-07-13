@@ -109,27 +109,14 @@ export default function HomePage() {
   const [copied, setCopied] = useState(false);
 
   const heroCode = [
-    'app CRM.',
+    'app hello_world',
     '',
-    'storage Main.',
+    'page Home',
+    '    title "Hello"',
+    '    text "Welcome to AAYU"',
+    'end',
     '',
-    'model User {',
-    '    id Int.',
-    '    name String.',
-    '    email String.',
-    '}',
-    '',
-    'task main {',
-    '    show "Hello from AAYU".',
-    '',
-    '    insert User {',
-    '        name = "Ayush".',
-    '        email = "ayush@aayu.dev".',
-    '    }.',
-    '',
-    '    let users = find User.',
-    '    show users.',
-    '}.',
+    'run'
   ];
 
   const { displayed, done } = useTypingEffect(heroCode, 22, 200);
@@ -161,7 +148,7 @@ export default function HomePage() {
   function highlightLine(line: string) {
     if (!line) return <span>&nbsp;</span>;
 
-    const keywords = /\b(app|storage|model|task|let|show|insert|find|update|delete|if|else|each|while|return)\b/g;
+    const keywords = /\b(app|page|title|text|button|container|row|column|input|state|action|end|run)\b/g;
     const types = /\b(Int|String|Bool|Float|List|Map)\b/g;
     const strings = /"[^"]*"/g;
     const comments = /\/\/.*$/g;
@@ -337,7 +324,7 @@ export default function HomePage() {
                     <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
                     <div className="w-3 h-3 rounded-full bg-green-500/80" />
                   </div>
-                  <span className="text-xs font-mono text-zinc-500">crm.aayu</span>
+                  <span className="text-xs font-mono text-zinc-500">main.aayu</span>
                 </div>
                 <button onClick={handleCopy} className="text-zinc-500 hover:text-white transition-colors">
                   {copied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}

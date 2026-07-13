@@ -1,168 +1,85 @@
-"""
-=============================================================================
-FILE: debugger.py
-PURPOSE: Part of the AAYU Intent-to-Silicon project
-=============================================================================
-This file is part of the AAYU (Aayu) Intent-to-Silicon Programming Language.
-The AAYU language enables developers to write code using natural language
-intentions, which are compiled to optimized backend code.
+import threading
+from .breakpoint import BreakpointManager
+from .stepping import SteppingController
+from .timeline import Timeline
+from .snapshot import VMSnapshot
 
-For beginners: This file handles part of the aayu intent-to-silicon project.
-To understand the project architecture, see the ARCHITECTURE_FREEZE.md file.
-=============================================================================
-"""
-
-from typing import List, Dict, Any, Optional
-from .models import Breakpoint, ExecutionMode
-from .host import DebuggerHost
-from runtime.values.base import RuntimeValue
-
-class BreakpointManager:
-    def __init__(self):
-        self.breakpoints: Dict[int, Breakpoint] = {}
-        self._next_id = 1
-        
-    def add_breakpoint(self, module: str, instruction_pointer: Optional[int] = None, span=None) -> Breakpoint:
-        bp = Breakpoint(
-            id=self._next_id,
-            module=module,
-            instruction_pointer=instruction_pointer,
-            span=span
-        )
-        self.breakpoints[bp.id] = bp
-        self._next_id += 1
-        return bp
-        
-    def remove_breakpoint(self, bp_id: int) -> bool:
-        if bp_id in self.breakpoints:
-            del self.breakpoints[bp_id]
-            return True
-        return False
-        
-    def enable_breakpoint(self, bp_id: int, enabled: bool):
-        if bp_id in self.breakpoints:
-            self.breakpoints[bp_id].enabled = enabled
-            
-    def should_pause(self, module: str, ip: int) -> Optional[Breakpoint]:
-        for bp in self.breakpoints.values():
-            if not bp.enabled:
-                continue
-            if bp.module == module:
-                if bp.instruction_pointer == ip:
-                    return bp
-                # Advanced SourceSpan matching can be added here
-        return None
-
-
-class ExecutionController:
-    def __init__(self, host: DebuggerHost):
-        self.host = host
-        self.mode = ExecutionMode.RUN
-        
-        # Step Over/Out state
-        self.target_depth = -1
-        
-    def pause(self):
-        self.mode = ExecutionMode.PAUSED
-        
-    def resume(self):
-        self.mode = ExecutionMode.RUN
-        self.target_depth = -1
-        
-    def step_into(self):
-        self.mode = ExecutionMode.STEP_INTO
-        
-    def step_over(self, current_depth: int):
-        self.mode = ExecutionMode.STEP_OVER
-        self.target_depth = current_depth
-        
-    def step_out(self, current_depth: int):
-        self.mode = ExecutionMode.STEP_OUT
-        self.target_depth = current_depth - 1
-
-    def evaluate_pause(self, current_depth: int) -> bool:
-        if self.mode == ExecutionMode.PAUSED:
-            return True
-        elif self.mode == ExecutionMode.STEP_INTO:
-            return True
-        elif self.mode == ExecutionMode.STEP_OVER:
-            if current_depth <= self.target_depth:
-                return True
-        elif self.mode == ExecutionMode.STEP_OUT:
-            if current_depth <= self.target_depth:
-                return True
-        return False
-
-
-class VariableInspector:
+class Debugger:
+    """The central orchestrator sitting above the VM."""
+    
     def __init__(self, vm):
         self.vm = vm
+        self.breakpoints = BreakpointManager()
+        self.timeline = Timeline()
         
-    def inspect_locals(self) -> Dict[str, Any]:
-        """Resolves local variables for the current frame."""
-        if not self.vm.frames:
-            return {}
+        # Set by compiler payload
+        self.debug_map = {} 
+        self.stepping = SteppingController(self.debug_map)
+        
+        self.is_paused = False
+        self.pause_event = threading.Event()
+        self.pause_event.set() # Initially running
+        
+        self.snapshot = None
+        
+    def load_debug_symbols(self, debug_symbols: dict):
+        """Loads the .debug symbols from the compiler."""
+        self.debug_map = debug_symbols.get("map", {})
+        self.stepping.debug_map = self.debug_map
+        
+    def check_hook(self, ip: int):
+        """Called by the VM's interpreter loop on every instruction."""
+        if not self.debug_map:
+            return
             
-        current_frame = self.vm.frames[-1]
-        
-        # We need to map stack offsets to local names.
-        # This requires the compiler to emit a local variables table in DebugInfo.
-        # For now, if we don't have that metadata, we might not be able to name them.
-        # But we return what we can. 
-        # A full VariableInspector would read frame.stack and map using DebugInfo.
-        # In this phase, we just expose the current stack or empty if no metadata.
-        locals_dict = {}
-        for k, v in self.vm.memory.get_locals().items():
-            locals_dict[k] = v.to_python() if isinstance(v, RuntimeValue) else str(v)
+        current_line = None
+        if ip in self.debug_map:
+            current_line = self.debug_map[ip]["line"]
             
-        return locals_dict
-
-
-class StackInspector:
-    def __init__(self, vm):
-        self.vm = vm
-        
-    def get_stack_trace(self) -> List['StackFrame']:
-        """Returns the current stack trace using the VM's built-in mechanism."""
-        # Using the VM's existing _build_frame_info
-        trace = []
-        for frame in self.vm.frames:
-            trace.append(self.vm._build_frame_info(frame))
-        return trace
-
-
-class DebuggerRuntime:
-    def __init__(self, host: DebuggerHost):
-        self.host = host
-        self.breakpoint_manager = BreakpointManager()
-        self.execution_controller = ExecutionController(host)
-        self.vm = None
-        self.variable_inspector = None
-        self.stack_inspector = None
-        
-    def attach(self, vm):
-        """Attaches the debugger to a VirtualMachine."""
-        self.vm = vm
-        self.variable_inspector = VariableInspector(vm)
-        self.stack_inspector = StackInspector(vm)
-        
-    def before_instruction(self, vm, current_frame, opcode, operand):
-        """Called by the VM before executing an instruction."""
-        module_name = current_frame.bytecode.name or 'main'
-        if hasattr(current_frame.bytecode, 'debug_info') and current_frame.bytecode.debug_info:
-            if current_frame.bytecode.debug_info.module_table:
-                module_name = current_frame.bytecode.debug_info.module_table[0]
-                
-        ip = current_frame.ip
-        current_depth = len(vm.frames)
+        should_pause = False
         
         # 1. Check Breakpoints
-        bp = self.breakpoint_manager.should_pause(module_name, ip)
-        if bp:
-            self.execution_controller.pause()
-            self.host.on_breakpoint(self, vm, bp)
+        if current_line is not None:
+            if self.breakpoints.should_break(current_line):
+                should_pause = True
+                self.timeline.record("breakpoint", f"Hit at line {current_line}")
+                
+        # 2. Check Stepping
+        if not should_pause and self.stepping.mode:
+            current_depth = len(self.vm.call_stack.frames)
+            # We assume target depth was saved during step request, mocked here
+            if self.stepping.should_break(ip, current_depth, current_depth):
+                should_pause = True
+                
+        if should_pause or self.is_paused:
+            self._halt(ip)
             
-        # 2. Check Execution Controller Step logic
-        if self.execution_controller.evaluate_pause(current_depth):
-            self.execution_controller.pause()
-            self.host.on_pause(self, vm)
+    def pause(self):
+        self.is_paused = True
+        
+    def resume(self):
+        self.is_paused = False
+        self.stepping.mode = None
+        self.snapshot = None
+        self.pause_event.set()
+        
+    def step_into(self):
+        self.stepping.step_into()
+        self.pause_event.set()
+        
+    def step_over(self):
+        if self.vm.registers.ip in self.debug_map:
+            self.stepping.step_over(self.debug_map[self.vm.registers.ip]["line"])
+            self.pause_event.set()
+            
+    def step_out(self):
+        self.stepping.step_out()
+        self.pause_event.set()
+        
+    def _halt(self, ip):
+        self.is_paused = True
+        self.snapshot = VMSnapshot(self.vm)
+        self.pause_event.clear()
+        
+        # Block the VM thread until pause_event is set by DAP server
+        self.pause_event.wait()

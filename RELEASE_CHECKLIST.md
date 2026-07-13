@@ -1,41 +1,32 @@
-# AAYU v1.0.0 Stable Release Checklist
+# Stable 1.0 Release Checklist
 
-## Compiler
-- [x] All compiler tests pass
+Before certifying AAYU as **Stable 1.0**, the following criteria must be independently verified across Windows, macOS, and Linux:
 
-## Runtime
-- [x] VM tests pass
+## 1. Installation & Environment
+- [ ] Fresh Machine Virtual Environment installation succeeds (`pip install aayu-lang`).
+- [ ] Global `aayu` command works out of the box without manual PATH edits.
+- [ ] `aayu doctor` reports healthy environment dependencies.
 
-## Formatter
-- [x] 100% formatter tests pass
+## 2. CLI & Workflows
+- [ ] `aayu new <App>` creates a valid scaffold.
+- [ ] `aayu run` successfully launches the VM.
+- [ ] `aayu test` executes successfully.
+- [ ] `aayu format` works on dirty source files.
 
-## Linter
-- [x] Diagnostics verified on sample projects
+## 3. Builder
+- [ ] `aayu build` natively invokes PyInstaller and generates `app.exe` (Windows), `app` (Linux/macOS).
+- [ ] The generated native executable launches and executes AAYU bytecode correctly.
+- [ ] `aayu build --target web` transpiles AST to `index.html` and `app.js`.
+- [ ] The Web bundle opens in a browser and reactivity works.
 
-## Website
-- [ ] No broken links
-- [ ] Responsive layout
-- [ ] Lighthouse score >= 90
+## 4. Editor Experience (LSP)
+- [ ] Diagnostics display syntax errors live.
+- [ ] Hover reveals type/component metadata.
+- [ ] Go To Definition routes to file starts.
+- [ ] Rename successfully alters references.
+- [ ] Autocomplete suggestions popup.
 
-## Playground
-- [x] Connected to real compiler backend
-- [x] Real VM output verified on frontend
-
-## Documentation
-- [x] No placeholder pages
-- [x] Installation guide verified
-- [x] CLI reference verified
-- [x] Language guide verified
-- [x] BrainOS & Intent Engine docs verified
-- [x] All code examples executed
-
-## CI/CD
-- [x] Windows green
-- [x] Linux green
-- [x] macOS green
-- [x] Formatter & Linter hooks green
-
-## Release Engineering
-- [ ] Tag 1.0.0 created
-- [x] Cross-platform assets generated (simulated)
-- [x] Checksums generated
+## 5. Documentation
+- [ ] Quick Start works flawlessly.
+- [ ] Hello World is understandable for beginners.
+- [ ] API Reference is complete.

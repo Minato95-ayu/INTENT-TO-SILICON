@@ -39,25 +39,25 @@ class Lexer:
             if self.pos + 1 < self.length:
                 two_char = self.source[self.pos:self.pos+2]
                 if two_char in OPERATORS:
-                    tokens.append(Token(TokenType.OPERATOR, two_char, self.line, self.column))
+                    tokens.append(Token(TokenType.OPERATOR, two_char, self.line, self.column, self._get_source_line(self.line)))
                     self._advance()
                     self._advance()
                     continue
 
             if char in OPERATORS:
-                tokens.append(Token(TokenType.OPERATOR, char, self.line, self.column))
+                tokens.append(Token(TokenType.OPERATOR, char, self.line, self.column, self._get_source_line(self.line)))
                 self._advance()
                 continue
 
             if char in SYMBOLS:
-                tokens.append(Token(TokenType.SYMBOL, char, self.line, self.column))
+                tokens.append(Token(TokenType.SYMBOL, char, self.line, self.column, self._get_source_line(self.line)))
                 self._advance()
                 continue
 
-            tokens.append(Token(TokenType.UNKNOWN, char, self.line, self.column))
-            self._advance()
+            from compiler.errors import CompilerError
+            raise CompilerError(f"Unexpected character '{char}'", self.line, self.column, self._get_source_line(self.line))
 
-        tokens.append(Token(TokenType.EOF, "", self.line, self.column))
+        tokens.append(Token(TokenType.EOF, "", self.line, self.column, self._get_source_line(self.line)))
         return tokens
 
     def _advance(self):
@@ -89,7 +89,7 @@ class Lexer:
             val += self.source[self.pos]
             self._advance()
             
-        return Token(TokenType.NUMBER, val, self.line, start_col)
+        return Token(TokenType.NUMBER, val, self.line, start_col, self._get_source_line(self.line))
 
     def _read_string(self, quote: str) -> Token:
         start_col = self.column
@@ -102,4 +102,10 @@ class Lexer:
         if self.pos < self.length:
             self._advance() # skip closing quote
             
-        return Token(TokenType.STRING, val, self.line, start_col)
+        return Token(TokenType.STRING, val, self.line, start_col, self._get_source_line(self.line))
+
+    def _get_source_line(self, line_no: int) -> str:
+        lines = self.source.split('\n')
+        if 1 <= line_no <= len(lines):
+            return lines[line_no - 1]
+        return ""

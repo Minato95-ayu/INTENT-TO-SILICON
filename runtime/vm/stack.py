@@ -1,36 +1,47 @@
-"""
-=============================================================================
-FILE: stack.py
-PURPOSE: Part of the AAYU Intent-to-Silicon project
-=============================================================================
-This file is part of the AAYU (Aayu) Intent-to-Silicon Programming Language.
-The AAYU language enables developers to write code using natural language
-intentions, which are compiled to optimized backend code.
+from runtime.vm.frame import CallFrame
+from runtime.vm.exceptions import StackOverflowError
 
-For beginners: This file handles part of the aayu intent-to-silicon project.
-To understand the project architecture, see the ARCHITECTURE_FREEZE.md file.
-=============================================================================
-"""
+class CallStack:
+    """
+    Manages CallFrames with depth protection.
+    """
+    def __init__(self, max_depth: int = 4096):
+        self.frames = []
+        self.max_depth = max_depth
+        
+    def push(self, frame: CallFrame):
+        if len(self.frames) >= self.max_depth:
+            raise StackOverflowError(self.max_depth)
+        self.frames.append(frame)
+        
+    def pop(self) -> CallFrame:
+        if not self.frames:
+            return None
+        return self.frames.pop()
+        
+    def current(self) -> CallFrame:
+        if not self.frames:
+            return None
+        return self.frames[-1]
+        
+    def depth(self) -> int:
+        return len(self.frames)
 
-class Stack:
+class ValueStack:
+    """Operand stack for the VM."""
     def __init__(self):
-        self._stack = []
-
-    def push(self, value):
-        self._stack.append(value)
-
+        self.stack = []
+        
+    def push(self, val):
+        self.stack.append(val)
+        
     def pop(self):
-        if not self._stack:
-            raise IndexError("pop from empty stack")
-        return self._stack.pop()
+        if not self.stack:
+            raise RuntimeError("ValueStack underflow")
+        return self.stack.pop()
         
     def peek(self):
-        if not self._stack:
-            raise IndexError("peek from empty stack")
-        return self._stack[-1]
+        return self.stack[-1] if self.stack else None
         
-    def is_empty(self):
-        return len(self._stack) == 0
-
-    def __len__(self):
-        return len(self._stack)
+    def depth(self):
+        return len(self.stack)

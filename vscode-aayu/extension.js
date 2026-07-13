@@ -1,41 +1,34 @@
-const path = require('path');
 const { LanguageClient, TransportKind } = require('vscode-languageclient/node');
-const { workspace } = require('vscode');
+const { workspace, window } = require('vscode');
+const cp = require('child_process');
 
 let client;
 
-function getPythonPath() {
-    // Basic detection for OS
-    const platform = process.platform;
-    if (platform === 'win32') {
-        return 'python'; // 'py' or 'python' works on most Windows
+function checkAayuInstalled() {
+    try {
+        // Try to run 'aayu --version' to see if it's in PATH
+        cp.execSync('aayu --version', { stdio: 'ignore' });
+        return true;
+    } catch (e) {
+        return false;
     }
-    return 'python3';
 }
 
 function activate(context) {
-    const pythonPath = getPythonPath();
-    
-    // Path to the AAYU Language Server
-    const config = workspace.getConfiguration('aayu');
-    let serverModule = config.get('languageServerPath');
-    
-    if (!serverModule) {
-        // Fallback for development if not configured
-        serverModule = context.asAbsolutePath(
-            path.join('..', 'prototype', 'language', 'aayu_lsp.py')
-        );
+    if (!checkAayuInstalled()) {
+        window.showErrorMessage('AAYU CLI not found. Run: pip install aayu-lang');
+        return;
     }
 
     const serverOptions = {
         run: { 
-            command: pythonPath, 
-            args: [serverModule], 
+            command: 'aayu', 
+            args: ['lsp'], 
             transport: TransportKind.stdio 
         },
         debug: { 
-            command: pythonPath, 
-            args: [serverModule], 
+            command: 'aayu', 
+            args: ['lsp'], 
             transport: TransportKind.stdio 
         }
     };

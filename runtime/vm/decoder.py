@@ -1,4 +1,4 @@
-from runtime.vm_next.instructions import Opcode
+from runtime.vm.instructions import Opcode
 
 class Decoder:
     """Decodes bytecode stream into instructions."""

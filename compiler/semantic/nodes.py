@@ -51,3 +51,9 @@ class SemanticActionDeclNode(SemanticNode):
 class SemanticActionCallNode(SemanticNode):
     name: str
     args: List[SemanticNode]
+
+@dataclass(frozen=True)
+class SemanticBinaryOpNode(SemanticNode):
+    left: SemanticNode
+    op: str
+    right: SemanticNode

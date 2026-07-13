@@ -1,0 +1,24 @@
+app aayu_ecommerce
+
+state {
+    cart_items = 0
+    total_price = 0
+    discount_applied = 0
+}
+
+page Storefront
+    text "Welcome to AAYU E-Commerce!"
+    
+    text "Items in your Cart:"
+    text cart_items
+    
+    text "Total Price ($):"
+    text total_price
+    
+    button "Add Smartphone ()"
+    button "Add Laptop ()"
+    button "Apply 10% Discount"
+    button "Checkout"
+end
+
+run

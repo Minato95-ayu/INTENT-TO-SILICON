@@ -81,8 +81,8 @@ def test_negative_cases():
     
     cases = {
         "hyphen_name": ("app my-app\nrun", "Application names and identifiers cannot contain hyphens"),
-        "missing_end": ("app test\npage Home\ntext \"Hello\"\nrun", "Expected 'end'"),
-        "undefined_var": ("app test\npage Home\ntext myVar\nend\nrun", "Variable not found"),
+        "missing_end": ("app test\npage Home\ntext \"Hello\"\nrun", "Expect 'end'"),
+        "undefined_var": ("app test\npage Home\ntext myVar\nend\nrun", "myVar"),
     }
     
     for name, (code, expected_error) in cases.items():

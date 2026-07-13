@@ -1,0 +1,9 @@
+{
+  "name": "INTENT-TO-SILICON",
+  "version": "1.0.0",
+  "description": "An AAYU project",
+  "author": "Unknown",
+  "license": "MIT",
+  "entry": "main.aayu",
+  "dependencies": {}
+}

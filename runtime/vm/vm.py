@@ -5,7 +5,7 @@ from runtime.vm.heap import Heap
 from runtime.vm.decoder import Decoder
 from runtime.vm.validator import Validator
 from runtime.vm.profiler import Profiler
-from runtime.debugger import Debugger
+from runtime.vm.debugger import Debugger
 from runtime.vm.interpreter import Interpreter
 from runtime.vm.crash_reporter import CrashReporter
 from runtime.vm.result import RuntimeResult, ResultStatus

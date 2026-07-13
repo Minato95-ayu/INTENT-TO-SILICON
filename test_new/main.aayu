@@ -1,0 +1,8 @@
+app test_new
+
+page Home
+    title "Welcome to test_new"
+    text "Your AAYU app is running!"
+end
+
+run

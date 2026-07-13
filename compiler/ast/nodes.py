@@ -68,3 +68,11 @@ class AppDeclarationNode(ASTNode):
 class RunNode(ASTNode):
     """Marks the entry point. E.g., 'run'"""
     pass
+
+@dataclass(frozen=True)
+class BinaryOpNode(ASTNode):
+    left: ASTNode
+    operator: str
+    right: ASTNode
+    def __post_init__(self):
+        super().__init__(self.line, self.column)

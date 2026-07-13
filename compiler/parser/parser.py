@@ -29,7 +29,11 @@ class Parser:
     def parse(self) -> ProgramNode:
         statements = []
         while not self._is_at_end():
-            statements.append(self._parse_statement())
+            stmt = self._parse_statement()
+            if isinstance(stmt, list):
+                statements.extend(stmt)
+            else:
+                statements.append(stmt)
         return ProgramNode(line=1, column=1, statements=statements)
 
     def _parse_statement(self):
@@ -93,12 +97,20 @@ class Parser:
     def _parse_state_declaration(self):
         line, col = self._previous().line, self._previous().column
         
-        name_token = self._consume(TokenType.IDENTIFIER, "Expect variable name after 'state'.")
-        self._consume(TokenType.OPERATOR, "Expect '=' after variable name.", value="=")
-        
-        value = self._parse_expression()
-        
-        return StateDeclarationNode(line=line, column=col, name=name_token.value, value=value)
+        if self._match(TokenType.SYMBOL, "{"):
+            decls = []
+            while not self._check(TokenType.SYMBOL, "}") and not self._is_at_end():
+                name_token = self._consume(TokenType.IDENTIFIER, "Expect variable name in state block.")
+                self._consume(TokenType.OPERATOR, "Expect '=' after variable name.", value="=")
+                value = self._parse_expression()
+                decls.append(StateDeclarationNode(line=name_token.line, column=name_token.column, name=name_token.value, value=value))
+            self._consume(TokenType.SYMBOL, "Expect '}' after state block.", value="}")
+            return decls
+        else:
+            name_token = self._consume(TokenType.IDENTIFIER, "Expect variable name after 'state'.")
+            self._consume(TokenType.OPERATOR, "Expect '=' after variable name.", value="=")
+            value = self._parse_expression()
+            return StateDeclarationNode(line=line, column=col, name=name_token.value, value=value)
 
     def _parse_assignment(self):
         line, col = self._peek().line, self._peek().column
@@ -138,6 +150,63 @@ class Parser:
         return ActionCallNode(line=line, column=col, name=name_token.value, args=args)
 
     def _parse_expression(self):
+        return self._parse_logical_or()
+
+    def _parse_logical_or(self):
+        expr = self._parse_logical_and()
+        while self._match(TokenType.OPERATOR, "||"):
+            operator = self._previous().value
+            right = self._parse_logical_and()
+            from compiler.ast.nodes import BinaryOpNode
+            expr = BinaryOpNode(line=expr.line, column=expr.column, left=expr, operator=operator, right=right)
+        return expr
+
+    def _parse_logical_and(self):
+        expr = self._parse_equality()
+        while self._match(TokenType.OPERATOR, "&&"):
+            operator = self._previous().value
+            right = self._parse_equality()
+            from compiler.ast.nodes import BinaryOpNode
+            expr = BinaryOpNode(line=expr.line, column=expr.column, left=expr, operator=operator, right=right)
+        return expr
+
+    def _parse_equality(self):
+        expr = self._parse_comparison()
+        while self._match(TokenType.OPERATOR, "==") or self._match(TokenType.OPERATOR, "!="):
+            operator = self._previous().value
+            right = self._parse_comparison()
+            from compiler.ast.nodes import BinaryOpNode
+            expr = BinaryOpNode(line=expr.line, column=expr.column, left=expr, operator=operator, right=right)
+        return expr
+
+    def _parse_comparison(self):
+        expr = self._parse_term()
+        while self._match(TokenType.OPERATOR, ">") or self._match(TokenType.OPERATOR, ">=") or self._match(TokenType.OPERATOR, "<") or self._match(TokenType.OPERATOR, "<="):
+            operator = self._previous().value
+            right = self._parse_term()
+            from compiler.ast.nodes import BinaryOpNode
+            expr = BinaryOpNode(line=expr.line, column=expr.column, left=expr, operator=operator, right=right)
+        return expr
+
+    def _parse_term(self):
+        expr = self._parse_factor()
+        while self._match(TokenType.OPERATOR, "+") or self._match(TokenType.OPERATOR, "-"):
+            operator = self._previous().value
+            right = self._parse_factor()
+            from compiler.ast.nodes import BinaryOpNode
+            expr = BinaryOpNode(line=expr.line, column=expr.column, left=expr, operator=operator, right=right)
+        return expr
+
+    def _parse_factor(self):
+        expr = self._parse_primary()
+        while self._match(TokenType.OPERATOR, "*") or self._match(TokenType.OPERATOR, "/") or self._match(TokenType.OPERATOR, "%"):
+            operator = self._previous().value
+            right = self._parse_primary()
+            from compiler.ast.nodes import BinaryOpNode
+            expr = BinaryOpNode(line=expr.line, column=expr.column, left=expr, operator=operator, right=right)
+        return expr
+
+    def _parse_primary(self):
         if self._match(TokenType.NUMBER):
             raw = self._previous().value
             value = float(raw) if '.' in raw else int(raw)

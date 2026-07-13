@@ -43,3 +43,9 @@ class HIRPrint(HIRNode):
 @dataclass
 class HIRImport(HIRNode):
     module: str
+
+@dataclass
+class HIRBinaryOp(HIRNode):
+    left: HIRNode
+    op: str
+    right: HIRNode

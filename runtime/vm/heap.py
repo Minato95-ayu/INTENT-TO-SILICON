@@ -1,5 +1,5 @@
-from runtime.vm_next.allocator import Allocator
-from runtime.vm_next.gc import GarbageCollector
+from runtime.vm.allocator import Allocator
+from runtime.vm.gc import GarbageCollector
 
 class Heap:
     """

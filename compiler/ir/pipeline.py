@@ -58,6 +58,9 @@ class IRPipeline:
         elif isinstance(node, SemanticImportNode):
             return HIRImport(node.module)
 
+        elif type(node).__name__ == "SemanticBinaryOpNode":
+            from compiler.ir.hir import HIRBinaryOp
+            return HIRBinaryOp(self._semantic_to_hir(node.left), node.op, self._semantic_to_hir(node.right))
         elif isinstance(node, SemanticLiteralNode):
             # Standalone literal (e.g. inside a widget child list)
             return HIRPrint(node.value)

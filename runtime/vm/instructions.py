@@ -1,9 +1,5 @@
 class Opcode:
-    """AAYU Bytecode Instruction Set
-    
-    All instructions are fixed-width: 3 bytes.
-        [OPCODE: 1 byte] [OPERAND: 2 bytes big-endian]
-    """
+    """AAYU Bytecode Instruction Set"""
     # Stack Operations
     PUSH_CONST = 0x01
     POP = 0x02
@@ -27,18 +23,14 @@ class Opcode:
     
     # Kernel & External
     DISPATCH = 0x40
-    
-    # I/O
-    PRINT = 0x50
-    
-    # UI
-    BUILD_WIDGET = 0x60
+    BUILD_WIDGET = 0x50
+    PRINT = 0x51
     
     # System
     HALT = 0xFF
 
 def opcode_to_str(opcode):
     for k, v in Opcode.__dict__.items():
-        if not k.startswith('__') and v == opcode:
+        if v == opcode:
             return k
     return "UNKNOWN"

@@ -1,0 +1,9 @@
+page ChatRow
+    container
+        card
+            text "Chat Row Component"
+            text "Props: name, last_message, time"
+            button "Open" onClick="navigateToChat"
+        end
+    end
+end

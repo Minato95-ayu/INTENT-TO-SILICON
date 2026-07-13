@@ -1,0 +1,12 @@
+app Hello.
+
+task main {
+    show "Hello, World".
+    
+    let x = 10.
+    let y = 20.
+    let sum = x + y.
+    
+    show "Sum is".
+    show sum.
+}

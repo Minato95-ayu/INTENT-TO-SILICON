@@ -1,0 +1,34 @@
+state username = "John Doe"
+state bio = "I am using AAYU!"
+
+action saveProfile()
+    alert("Profile saved successfully!")
+    navigateBack()
+end
+
+page Profile
+    container
+        heading "My Profile"
+        button "<- Back" onClick="navigateBack"
+        
+        container
+            card
+                text "Edit Username:"
+                input placeholder="John Doe" bind="username"
+                
+                text "Edit Bio:"
+                input placeholder="Available" bind="bio"
+                
+                button "Save Changes" onClick="saveProfile"
+            end
+            
+            card
+                text "Preview:"
+                text "Name: "
+                text bind="username"
+                text "Bio: "
+                text bind="bio"
+            end
+        end
+    end
+end

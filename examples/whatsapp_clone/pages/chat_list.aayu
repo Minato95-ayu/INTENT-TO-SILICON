@@ -1,0 +1,33 @@
+import components.chat_row
+
+action handleSearch()
+    alert("Searching for: ", search_query)
+end
+
+page ChatList
+    container
+        heading "Chats"
+        input placeholder="Search..." bind="search_query"
+        button "Search" onClick="handleSearch"
+        
+        container
+            card
+                text "Alice"
+                text "Hey, how are you?"
+                button "Open Chat" onClick="navigateToChat"
+            end
+            
+            card
+                text "Bob"
+                text "Did you see the game?"
+                button "Open Chat" onClick="navigateToChat"
+            end
+            
+            card
+                text "Charlie"
+                text "Meeting at 5 PM"
+                button "Open Chat" onClick="navigateToChat"
+            end
+        end
+    end
+end

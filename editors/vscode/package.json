@@ -1,0 +1,49 @@
+{
+  "name": "aayu-lang",
+  "displayName": "AAYU Language Support",
+  "description": "Official VS Code extension for the AAYU Intent-to-Silicon programming language.",
+  "version": "1.0.0",
+  "publisher": "aayu-org",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Linters",
+    "Formatters"
+  ],
+  "activationEvents": [
+    "onLanguage:aayu"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "aayu",
+        "aliases": ["AAYU", "aayu"],
+        "extensions": [".aayu"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "aayu",
+        "scopeName": "source.aayu",
+        "path": "./syntaxes/aayu.tmLanguage.json"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^8.1.0"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "16.x",
+    "typescript": "^4.9.3"
+  }
+}

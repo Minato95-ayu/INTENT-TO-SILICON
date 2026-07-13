@@ -1,0 +1,8 @@
+page MessageBubble
+    container
+        card
+            text "Bubble Component"
+            text "Props: sender, message, time, is_mine"
+        end
+    end
+end

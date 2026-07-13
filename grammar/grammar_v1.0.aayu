@@ -1,0 +1,83 @@
+/*
+  AAYU Programming Language
+  Grammar Version: v1.0
+  Status: FROZEN
+*/
+
+// --- Apps & Config ---
+app CRM.
+server Port8080.
+storage Main.
+
+// --- Storage Models ---
+model User {
+    id Int.
+    name String.
+    email String.
+    isActive Boolean.
+}
+
+// --- Tasks (Functions) ---
+task main {
+    // Variable Declaration
+    let x = 10.
+    let name = "AAYU".
+    let active = true.
+    
+    // Assignment
+    x = 20.
+    
+    // Output
+    show x.
+    show "Hello, World".
+    
+    // Lists and Maps
+    let users = ["Ayush", "Rahul"].
+    let config = { "port": 8080, "debug": true }.
+    
+    // Control Flow
+    if (x > 10) {
+        show "Greater".
+    } else {
+        show "Smaller".
+    }
+    
+    while (x > 0) {
+        x = x - 1.
+    }
+    
+    each item in users {
+        show item.
+    }
+    
+    // Database Operations
+    insert User {
+        name = "Ayush".
+        email = "ayush@example.com".
+        isActive = true.
+    }.
+    
+    let allUsers = find User.
+    
+    update User {
+        isActive = false.
+    }.
+    
+    delete User.
+    
+    // Exception Handling
+    try {
+        let y = 10 / 0.
+    } catch {
+        show "Error occurred".
+    } finally {
+        show "Done".
+    }
+    
+    // Tasks and Returns
+    let result = calculate(5, 5).
+}
+
+task calculate(a, b) {
+    return a + b.
+}

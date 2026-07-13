@@ -1,0 +1,20 @@
+component Navbar {
+    view {
+        row(justify: "space-between", padding: "15px", background: "primary", color: "white") {
+            text(text: "Demo App", weight: "bold", size: "lg")
+            
+            if AppState.user != null {
+                row(gap: "10px") {
+                    text(text: AppState.user.name)
+                    button(text: "Logout", onClick: handleLogout, variant: "outline")
+                }
+            }
+        }
+    }
+    
+    action handleLogout() {
+        storage.remove("auth_token")
+        AppState.user = null
+        navigate("/login")
+    }
+}

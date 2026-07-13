@@ -1,0 +1,54 @@
+# AAYU CRM System
+
+model Customer
+    name: string
+    email: string
+    company: string
+    status: string # Lead, Active, Churned
+end
+
+state customers = []
+state form_name = ""
+state form_email = ""
+state form_company = ""
+
+fn load_customers()
+    customers = db_find("Customer")
+end
+
+fn add_customer()
+    db_insert("Customer", {
+        "name": form_name,
+        "email": form_email,
+        "company": form_company,
+        "status": "Lead"
+    })
+    form_name = ""
+    form_email = ""
+    form_company = ""
+    load_customers()
+end
+
+load_customers()
+
+page CRMPage
+    layout Row
+        layout Column
+            text "Add New Lead"
+            input "Name" bind: form_name
+            input "Email" bind: form_email
+            input "Company" bind: form_company
+            button "Save Lead" on_click: add_customer()
+        end
+        layout Column
+            text "Customer List"
+            for c in customers
+                layout Row
+                    text c.name
+                    text c.company
+                    text c.status
+                end
+            end
+        end
+    end
+end

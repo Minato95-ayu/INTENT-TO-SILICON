@@ -1,0 +1,23 @@
+import pages.Home
+import pages.Login
+import services.api
+
+state AppState {
+    user: User | null
+    theme: String = "light"
+}
+
+event OnAppLoad {
+    // Check local storage for session
+    let savedToken = storage.get("auth_token")
+    if savedToken != null {
+        AppState.user = api.validateSession(savedToken)
+    }
+}
+
+app DemoApp {
+    router {
+        path "/" -> pages.Home
+        path "/login" -> pages.Login
+    }
+}

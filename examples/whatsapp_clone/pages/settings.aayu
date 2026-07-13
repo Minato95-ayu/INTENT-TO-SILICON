@@ -1,0 +1,41 @@
+state theme = "light"
+state notifications = "enabled"
+
+action toggleTheme()
+    theme = "dark"
+    alert("Theme switched to Dark")
+end
+
+action toggleNotifications()
+    notifications = "disabled"
+    alert("Notifications disabled")
+end
+
+page Settings
+    container
+        heading "Settings"
+        button "<- Back" onClick="navigateBack"
+        
+        container
+            card
+                text "Account Info"
+                text "Phone: +1 234 567 8900"
+                text "Status: Available"
+            end
+            
+            card
+                text "Theme Settings"
+                text "Current Theme: "
+                text bind="theme"
+                button "Toggle Theme" onClick="toggleTheme"
+            end
+            
+            card
+                text "Notifications"
+                text "Status: "
+                text bind="notifications"
+                button "Toggle Notifications" onClick="toggleNotifications"
+            end
+        end
+    end
+end

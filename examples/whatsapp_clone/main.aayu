@@ -1,0 +1,47 @@
+import pages.chat_list
+import pages.chat_view
+import pages.settings
+import pages.profile
+
+state current_page = "chat_list"
+state active_chat_id = "0"
+state search_query = ""
+
+action navigateToChat()
+    current_page = "chat_view"
+end
+
+action navigateBack()
+    current_page = "chat_list"
+    active_chat_id = "0"
+end
+
+action navigateToSettings()
+    current_page = "settings"
+end
+
+action navigateToProfile()
+    current_page = "profile"
+end
+
+page App
+    container
+        heading "AAYU WhatsApp Clone"
+        
+        container
+            text "Navigation:"
+            button "Chats" onClick="navigateBack"
+            button "Settings" onClick="navigateToSettings"
+            button "Profile" onClick="navigateToProfile"
+        end
+
+        container
+            text "Active Page: "
+            text bind="current_page"
+        end
+        
+        container
+            text "View Rendered Below:"
+        end
+    end
+end

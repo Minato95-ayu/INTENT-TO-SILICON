@@ -1,0 +1,36 @@
+project Portfolio.
+
+theme Dark {
+    primary "#00ff00".
+    background "#111111".
+    text "#ffffff".
+}
+
+route "/" Home.
+route "/about" About.
+
+page Home {
+    state count = 0.
+
+    hero {
+        heading "Ayush Kaushik".
+        text "Creator of AAYU".
+    }
+    
+    row {
+        button "Increment" click {
+            count += 1.
+        }
+        text count.
+    }
+}
+
+page About {
+    column {
+        heading "About Me".
+        text "Building the future of software with AI.".
+        button "Go Back" click {
+            count += 0.
+        }
+    }
+}

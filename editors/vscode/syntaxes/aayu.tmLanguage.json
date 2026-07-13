@@ -1,0 +1,45 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "aayu",
+  "patterns": [
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#comments"
+    }
+  ],
+  "repository": {
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.aayu",
+          "match": "\\b(app|page|title|text|button|state|fn|model|end|run)\\b"
+        }
+      ]
+    },
+    "strings": {
+      "name": "string.quoted.double.aayu",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "name": "constant.character.escape.aayu",
+          "match": "\\\\."
+        }
+      ]
+    },
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.aayu",
+          "match": "//.*$"
+        }
+      ]
+    }
+  },
+  "scopeName": "source.aayu"
+}

@@ -1,0 +1,29 @@
+app UserSystem.
+
+storage MainDB.
+
+model User {
+    id Int.
+    name String.
+    isActive Boolean.
+}
+
+task main {
+    // Create
+    insert User {
+        name = "Alice".
+        isActive = true.
+    }.
+    
+    // Read
+    let allUsers = find User.
+    show allUsers.
+    
+    // Update
+    update User {
+        isActive = false.
+    }.
+    
+    // Delete
+    delete User.
+}

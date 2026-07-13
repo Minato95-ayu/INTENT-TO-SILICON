@@ -1,0 +1,9 @@
+page NavBar
+    container
+        card
+            heading "WhatsApp Clone"
+            button "Chats" onClick="navigateBack"
+            button "Settings" onClick="navigateToSettings"
+        end
+    end
+end

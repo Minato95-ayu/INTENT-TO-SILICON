@@ -1,0 +1,33 @@
+import components.Navbar
+
+page Home {
+    title "Dashboard - Demo App"
+    
+    view {
+        Navbar()
+        
+        container(padding: "20px") {
+            if AppState.user != null {
+                heading(level: 1, text: "Welcome back, {AppState.user.name}!")
+                
+                // Form Example
+                form(id: "updateProfileForm") {
+                    input(type: "text", placeholder: "Update Status", id: "statusInput")
+                    button(text: "Save", onClick: updateStatus)
+                }
+            } else {
+                heading(level: 1, text: "Please login to continue.")
+                button(text: "Go to Login", onClick: navigate("/login"))
+            }
+        }
+    }
+    
+    action updateStatus(data) {
+        if data.statusInput == "" {
+            alert("Status cannot be empty!") // Validation
+            return
+        }
+        api.updateStatus(data.statusInput)
+        alert("Status saved securely!")
+    }
+}

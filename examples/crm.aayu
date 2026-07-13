@@ -1,0 +1,21 @@
+app CRM.
+
+storage Main.
+
+model Customer {
+    id Int.
+    name String.
+    company String.
+    email String.
+}
+
+task main {
+    insert Customer {
+        name = "John Doe".
+        company = "Acme Corp".
+        email = "john@acme.com".
+    }.
+    
+    let customers = find Customer.
+    show customers.
+}

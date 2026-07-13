@@ -1,0 +1,38 @@
+app Calculator.
+
+task calculate(a, b, op) {
+    if (op == "+") {
+        return a + b.
+    }
+    
+    if (op == "-") {
+        return a - b.
+    }
+    
+    if (op == "*") {
+        return a * b.
+    }
+    
+    if (op == "/") {
+        if (b == 0) {
+            return 0.
+        }
+        return a / b.
+    }
+    
+    return 0.
+}
+
+task main {
+    let result1 = calculate(10, 5, "+").
+    show result1.
+    
+    let result2 = calculate(10, 5, "-").
+    show result2.
+    
+    let result3 = calculate(10, 5, "*").
+    show result3.
+    
+    let result4 = calculate(10, 0, "/").
+    show result4.
+}

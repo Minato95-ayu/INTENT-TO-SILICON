@@ -1,0 +1,37 @@
+service api {
+    
+    fn loginMock(username, password) {
+        if username == "admin" && password == "password" {
+            return {
+                success: true,
+                token: "mock_jwt_token_123",
+                user: {
+                    id: 1,
+                    name: "Admin User",
+                    role: "admin"
+                }
+            }
+        }
+        return { success: false }
+    }
+    
+    fn validateSession(token) {
+        if token == "mock_jwt_token_123" {
+            return {
+                id: 1,
+                name: "Admin User",
+                role: "admin"
+            }
+        }
+        return null
+    }
+    
+    fn updateStatus(status) {
+        // Mock network delay
+        network.request({
+            url: "https://mockapi.local/status",
+            method: "POST",
+            body: { status: status }
+        })
+    }
+}

@@ -1,0 +1,10 @@
+app counter_demo
+
+state count = 0
+
+page Home
+    text "Count is:"
+    text count
+end
+
+run

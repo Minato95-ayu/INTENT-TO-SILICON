@@ -1,0 +1,33 @@
+import components.message_bubble
+import components.nav_bar
+
+state new_message = ""
+
+action sendMessage()
+    alert("Sending message: ", new_message)
+    new_message = ""
+end
+
+page ChatView
+    container
+        button "<- Back" onClick="navigateBack"
+        heading "Chat with Alice"
+        
+        container
+            card
+                text "Alice: Hey, how are you?"
+            end
+            card
+                text "You: I am good, thanks!"
+            end
+            card
+                text "Alice: What are you doing today?"
+            end
+        end
+        
+        container
+            input placeholder="Type a message..." bind="new_message"
+            button "Send" onClick="sendMessage"
+        end
+    end
+end

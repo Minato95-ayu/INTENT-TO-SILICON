@@ -266,10 +266,13 @@ export default function HomePage() {
         <div className="relative z-10 grid lg:grid-cols-2 gap-16 items-center">
           {/* Left — tagline */}
           <div>
-            <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5 mb-8">
-              <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-              <span className="text-xs font-semibold text-zinc-400">v2.0.0 — Application Language + Runtime Platform</span>
-            </div>
+            <Link href="/releases/0.7.3">
+              <div className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-4 py-1.5 mb-8 hover:bg-purple-500/20 transition-colors cursor-pointer">
+                <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                <span className="text-xs font-semibold text-purple-300">New in v0.7.3: Custom Flutter-style UI Render Engine & Diff Pipeline 🚀</span>
+                <ChevronRight className="w-3.5 h-3.5 text-purple-400" />
+              </div>
+            </Link>
 
             <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 leading-[1.05]">
               The Application{" "}

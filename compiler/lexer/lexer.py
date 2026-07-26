@@ -23,7 +23,7 @@ class Lexer:
                 self._skip_comment()
                 continue
 
-            if char.isalpha() or char == '_':
+            if char.isalpha() or char == '_' or char == '$':
                 tokens.append(self._read_identifier())
                 continue
 
@@ -46,6 +46,14 @@ class Lexer:
 
             if char in OPERATORS:
                 tokens.append(Token(TokenType.OPERATOR, char, self.line, self.column, self._get_source_line(self.line)))
+                self._advance()
+                continue
+
+            if char == '@':
+                if self.pos + 1 < self.length and self.source[self.pos + 1].isspace():
+                    from compiler.errors import CompilerError
+                    raise CompilerError("Space not allowed after '@'", self.line, self.column, self._get_source_line(self.line))
+                tokens.append(Token(TokenType.SYMBOL, char, self.line, self.column, self._get_source_line(self.line)))
                 self._advance()
                 continue
 
@@ -75,7 +83,7 @@ class Lexer:
     def _read_identifier(self) -> Token:
         start_col = self.column
         val = ""
-        while self.pos < self.length and (self.source[self.pos].isalnum() or self.source[self.pos] == '_'):
+        while self.pos < self.length and (self.source[self.pos].isalnum() or self.source[self.pos] == '_' or self.source[self.pos] == '$'):
             val += self.source[self.pos]
             self._advance()
             
@@ -89,7 +97,15 @@ class Lexer:
             val += self.source[self.pos]
             self._advance()
             
-        return Token(TokenType.NUMBER, val, self.line, start_col, self._get_source_line(self.line))
+        # Check for CSS-like units
+        has_unit = False
+        while self.pos < self.length and (self.source[self.pos].isalpha() or self.source[self.pos] == '%'):
+            val += self.source[self.pos]
+            has_unit = True
+            self._advance()
+            
+        token_type = TokenType.STRING if has_unit else TokenType.NUMBER
+        return Token(token_type, val, self.line, start_col, self._get_source_line(self.line))
 
     def _read_string(self, quote: str) -> Token:
         start_col = self.column

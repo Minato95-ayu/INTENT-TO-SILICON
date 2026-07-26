@@ -1,0 +1,12 @@
+    page AccountPage display="flex" flexDirection="column" width="100vw" height="100vh" margin="0" overflow="hidden" backgroundColor="#eaeded"
+        import components.simple_navbar
+
+        Container width="100%" height="100%" display="flex" justifyContent="center" alignItems="center"
+            Column width="400px" backgroundColor="#fff" padding="30px" borderRadius="8px" border="1px solid #ddd" gap="20px" alignItems="center"
+                Icon name="user-circle" fontSize="80px" color="#ccc"
+                Text "Your Account" fontSize="28px" fontWeight="800" color="#0f1111"
+                Text accountGreeting fontSize="18px" color="#565959"
+                Button "Sign Out" onClick="do_logout" width="100%" backgroundColor="#e7e9ec" color="#0f1111" padding="12px" borderRadius="8px" fontWeight="bold" border="1px solid #adb1b8" hoverBackgroundColor="#d5d9d9"
+            end
+        end
+    end

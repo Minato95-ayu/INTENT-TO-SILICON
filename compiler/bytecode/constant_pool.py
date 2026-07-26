@@ -25,7 +25,13 @@ class ConstantPool:
         Deduplicates identical (type, value) pairs.
         """
         type_tag = self._infer_type(value)
-        key = (type_tag, value)
+        if isinstance(value, dict):
+            key_val = str(sorted([(k, str(v)) for k, v in value.items()]))
+        elif isinstance(value, list):
+            key_val = str(value)
+        else:
+            key_val = value
+        key = (type_tag, key_val)
 
         if key in self._index_cache:
             return self._index_cache[key]
@@ -41,7 +47,13 @@ class ConstantPool:
             raise IndexError(f"Constant pool index out of bounds: {index}")
         return self.entries[index]
 
+    def __getitem__(self, index: int) -> Any:
+        return self.entries[index].value
+
     def size(self) -> int:
+        return len(self.entries)
+
+    def __len__(self) -> int:
         return len(self.entries)
 
     def values(self) -> List[Any]:
@@ -58,6 +70,8 @@ class ConstantPool:
             return "FLOAT"
         elif isinstance(value, str):
             return "STRING"
+        elif isinstance(value, dict):
+            return "DICT"
         else:
             return "STRING"  # fallback: serialize as string
 

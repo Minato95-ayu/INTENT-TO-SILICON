@@ -1,0 +1,29 @@
+        Row width="100%" padding="15px 40px" backgroundColor="#131921" justifyContent="space-between" alignItems="center" borderBottom="1px solid #27272a"
+            Row alignItems="center" gap="10px" cursor="pointer" onClick="go_home"
+                Icon name="store" color="#f59e0b" fontSize="28px"
+                Text "Nova Shop" fontSize="28px" fontWeight="800" color="#fff" letterSpacing="1px"
+            end
+            
+            Row alignItems="center" gap="0" width="40%"
+                Input placeholder="Search Nova Shop..." width="100%" padding="12px 20px" borderRadius="6px 0px 0px 6px" border="none" backgroundColor="#fff" color="#000"
+                Button "Search" onClick="do_search" backgroundColor="#febd69" color="#0f1111" padding="12px 24px" borderRadius="0px 6px 6px 0px" fontWeight="bold" border="none" hoverBackgroundColor="#f3a847"
+            end
+            
+            Row alignItems="center" gap="30px"
+                Column alignItems="flex-start" gap="2px" cursor="pointer" onClick="go_account"
+                    Text accountGreeting fontSize="12px" color="#ccc"
+                    Text "Account & Lists" fontSize="14px" fontWeight="bold" color="#fff"
+                end
+                Column alignItems="flex-start" gap="2px"
+                    Text "Returns" fontSize="12px" color="#ccc"
+                    Text "& Orders" fontSize="14px" fontWeight="bold" color="#fff"
+                end
+                Row alignItems="center" gap="8px" cursor="pointer" onClick="go_cart"
+                    Icon name="shopping-cart" color="#fff" fontSize="32px"
+                    Column gap="2px"
+                        Text cartItemsCount color="#f59e0b" fontWeight="900" fontSize="16px"
+                        Text "Cart" color="#fff" fontWeight="bold" fontSize="14px"
+                    end
+                end
+            end
+        end

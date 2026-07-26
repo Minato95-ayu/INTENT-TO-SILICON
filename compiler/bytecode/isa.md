@@ -9,6 +9,12 @@ Any changes to this ISA require synchronized updates in both `compiler/bytecode/
 - `STORE_VAR <name>`: Pop top of stack and store it in a variable.
 - `POP`: Pop and discard the top of the stack.
 
+## 1.5 Array & Map Operations
+- `CREATE_ARRAY <size>`: Pop `<size>` elements, construct an array, and push it.
+- `GET_LENGTH`: Pop array/string/map, push its length.
+- `LOAD_SUBSCR`: Pop index, pop array/map. Push `array[index]`.
+- `STORE_SUBSCR`: Pop index, pop array/map, pop value. Set `array[index] = value`.
+
 ## 2. Control Flow
 - `JUMP <offset>`: Unconditional jump relative to the current instruction pointer.
 - `JUMP_IF_FALSE <offset>`: Pop the top of the stack. If false, jump by offset.

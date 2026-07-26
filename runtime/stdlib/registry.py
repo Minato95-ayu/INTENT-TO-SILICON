@@ -31,7 +31,14 @@ class StdLibRegistry:
             if not args:
                 raise Exception(f"Method call {method_name} missing target object")
             obj = args[0]
-            type_name = obj.type_name()
+            if isinstance(obj, list):
+                type_name = "list"
+            elif isinstance(obj, dict):
+                type_name = "map"
+            elif isinstance(obj, str):
+                type_name = "string"
+            else:
+                type_name = obj.type_name() if hasattr(obj, 'type_name') else type(obj).__name__
             specific_name = f"{type_name}_{method_name}"
             if specific_name in self.functions:
                 return self.functions[specific_name](args, vm)

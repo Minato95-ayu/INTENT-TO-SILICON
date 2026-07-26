@@ -39,5 +39,6 @@ aayu = "tools.cli:main"
 Repository = "https://github.com/Minato95-ayu/INTENT-TO-SILICON"
 Documentation = "https://aayu-lang.github.io"
 
-[tool.setuptools]
-packages = ["compiler", "compiler.lexer", "compiler.parser", "compiler.ast", "compiler.semantic", "runtime", "runtime.vm", "tools", "tools.commands", "tools.package_manager", "tools.builder", "tools.builder.targets", "tools.lsp", "brainos", "intent_engine"]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["compiler*", "runtime*", "tools*", "brainos*", "intent_engine*"]

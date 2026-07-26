@@ -84,29 +84,39 @@ class StdLib:
         from .modules import (
             register_math_lib, register_string_lib, register_list_lib, register_map_lib,
             register_file_lib, register_path_lib, register_json_lib, register_time_lib,
-            register_random_lib, register_http_lib, register_crypto_lib, register_core_lib, register_database_lib, register_regex_lib, register_env_lib, register_process_lib, register_logging_lib, register_testing_lib, register_compression_lib, register_concurrency_lib, register_networking_lib, register_encoding_lib
+            register_random_lib, register_http_lib, register_crypto_lib, register_core_lib, register_database_lib, register_regex_lib, register_env_lib, register_process_lib, register_logging_lib, register_testing_lib, register_compression_lib, register_concurrency_lib, register_networking_lib, register_encoding_lib,
+            register_storage_lib, register_auth_lib
         )
         
         register_core_lib(self.registry)
         
         register_math_lib(self.registry)
+        register_http_lib(self.registry)
         register_string_lib(self.registry)
         register_list_lib(self.registry)
         register_map_lib(self.registry)
         register_file_lib(self.registry)
         register_path_lib(self.registry)
         register_json_lib(self.registry)
+        register_auth_lib(self.registry)
         register_time_lib(self.registry)
         register_random_lib(self.registry)
         register_database_lib(self.registry)
         register_regex_lib(self.registry)
         register_env_lib(self.registry)
-        register_process_lib, register_logging_lib, register_testing_lib, register_compression_lib, register_concurrency_lib, register_networking_lib, register_encoding_lib(self.registry)
+        register_process_lib(self.registry)
+        register_logging_lib(self.registry)
+        register_testing_lib(self.registry)
+        register_compression_lib(self.registry)
+        register_concurrency_lib(self.registry)
+        register_networking_lib(self.registry)
+        register_encoding_lib(self.registry)
         register_http_lib(self.registry)
         register_crypto_lib(self.registry)
+        register_storage_lib(self.registry)
         
         # Register common method dispatchers
-        for method in ["append", "length", "get", "set", "remove", "contains"]:
+        for method in ["append", "length", "get", "set", "remove", "contains", "clear"]:
             self.registry.register_method(method)
         
     def populate_globals(self, globals_dict):

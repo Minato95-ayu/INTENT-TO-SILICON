@@ -5,7 +5,7 @@ from runtime.vm.vm import VirtualMachine
 
 def main():
     print("AAYU App Starting...")
-    b64_bc = "Q09NUElMRURfQllURUNPREU="
+    b64_bc = "TU9DS19CWVRFQ09ERQ=="
     if b64_bc:
         # Deserialize and run
         raw_bc = base64.b64decode(b64_bc)

@@ -1,0 +1,79 @@
+    action go_home
+        navigate HomePage
+    end
+    
+    action go_cart
+        navigate CartPage
+    end
+
+    action go_account
+        if isLoggedIn == 0
+            navigate LoginPage
+        else
+            navigate AccountPage
+        end
+    end
+
+    action go_signup
+        navigate SignupPage
+    end
+
+    action do_login
+        isLoggedIn = 1
+        accountGreeting = "Hello, Ayush"
+        navigate HomePage
+    end
+
+    action do_logout
+        isLoggedIn = 0
+        accountGreeting = "Hello, sign in"
+        navigate HomePage
+    end
+    
+    action add_iphone
+        cartItemsCount = cartItemsCount + 1
+        qty_iphone = qty_iphone + 1
+        subtotalAmount = subtotalAmount + 999.0
+    end
+    
+    action add_macbook
+        cartItemsCount = cartItemsCount + 1
+        qty_macbook = qty_macbook + 1
+        subtotalAmount = subtotalAmount + 2499.0
+    end
+    
+    action add_headphones
+        cartItemsCount = cartItemsCount + 1
+        qty_headphones = qty_headphones + 1
+        subtotalAmount = subtotalAmount + 249.0
+    end
+    
+    action add_ps5
+        cartItemsCount = cartItemsCount + 1
+        qty_ps5 = qty_ps5 + 1
+        subtotalAmount = subtotalAmount + 499.0
+    end
+
+    action add_camera
+        cartItemsCount = cartItemsCount + 1
+        qty_camera = qty_camera + 1
+        subtotalAmount = subtotalAmount + 3299.0
+    end
+
+    action add_watch
+        cartItemsCount = cartItemsCount + 1
+        qty_watch = qty_watch + 1
+        subtotalAmount = subtotalAmount + 799.0
+    end
+
+    action do_search
+        navigate GenericPage
+    end
+
+    action go_generic
+        navigate GenericPage
+    end
+
+    action sys_nav_back
+        navigate HomePage
+    end

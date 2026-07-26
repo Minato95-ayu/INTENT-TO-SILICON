@@ -1,0 +1,6 @@
+        Row width="100%" padding="15px 40px" backgroundColor="#131921" justifyContent="center" alignItems="center" borderBottom="1px solid #27272a" cursor="pointer" onClick="go_home"
+            Row alignItems="center" gap="10px"
+                Icon name="store" color="#f59e0b" fontSize="28px"
+                Text "Nova Shop" fontSize="28px" fontWeight="800" color="#fff" letterSpacing="1px"
+            end
+        end

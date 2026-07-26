@@ -1,0 +1,28 @@
+    page CartPage display="flex" flexDirection="column" width="100vw" height="100vh" margin="0" overflow="hidden" backgroundColor="#eaeded"
+        import components.simple_navbar
+        
+        Row width="100%" height="100%" padding="40px" gap="30px" alignItems="flex-start" justifyContent="center" overflowY="auto"
+            
+            Column width="70%" backgroundColor="#fff" borderRadius="12px" padding="30px" border="1px solid #ddd" gap="20px"
+                Text "Shopping Cart" fontSize="32px" fontWeight="800" color="#0f1111"
+                Text "Price" fontSize="14px" color="#565959" alignSelf="flex-end"
+                Divider color="#ddd"
+                
+                Row alignItems="center" justifyContent="center" padding="40px" gap="20px" display="flex" flexDirection="column"
+                    Icon name="shopping-cart" fontSize="80px" color="#ccc"
+                    Text "Your items have been saved!" fontSize="18px" color="#565959"
+                    Button "Back to Shopping" onClick="go_home" backgroundColor="#ffd814" color="#0f1111" padding="12px 24px" borderRadius="8px" fontWeight="bold" border="none" hoverBackgroundColor="#f7ca00"
+                end
+                
+            end
+            
+            Column width="25%" backgroundColor="#fff" borderRadius="12px" padding="25px" border="1px solid #ddd" gap="15px"
+                Row alignItems="baseline" gap="8px"
+                    Text "Subtotal:" fontSize="18px" color="#0f1111"
+                    Text subtotalAmount fontSize="22px" fontWeight="bold" color="#0f1111"
+                end
+                Button "Proceed to checkout" backgroundColor="#ffd814" color="#0f1111" padding="12px" borderRadius="8px" fontWeight="bold" border="none" hoverBackgroundColor="#f7ca00" width="100%"
+            end
+            
+        end
+    end

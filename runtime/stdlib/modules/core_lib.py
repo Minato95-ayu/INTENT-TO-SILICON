@@ -20,11 +20,12 @@ from ...values.null import NullValue
 
 def register_core_lib(registry: StdLibRegistry):
     def fn_print(args, vm):
-        val = args[0].stringify() if args else ""
+        val = args[0].stringify() if args and hasattr(args[0], "stringify") else str(args[0]) if args else ""
         print(val)
         vm.output.append(val)
         return NullValue()
     registry.register("core::print", fn_print)
+    registry.register("print", fn_print)
     
     def fn_input(args, vm):
         prompt = args[0].stringify() if args else ""

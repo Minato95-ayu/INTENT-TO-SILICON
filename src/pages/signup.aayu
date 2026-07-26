@@ -1,0 +1,31 @@
+    page SignupPage display="flex" flexDirection="column" width="100vw" height="100vh" margin="0" overflow="hidden" backgroundColor="#eaeded"
+        import components.simple_navbar
+
+        Container width="100%" height="100%" display="flex" justifyContent="center" alignItems="center"
+            Column width="350px" backgroundColor="#fff" padding="30px" borderRadius="8px" border="1px solid #ddd" gap="15px"
+                Text "Create account" fontSize="28px" fontWeight="500" color="#0f1111"
+                Column gap="5px" width="100%"
+                    Text "Your name" fontSize="14px" fontWeight="bold" color="#111"
+                    Input placeholder="First and last name" width="100%" padding="10px" borderRadius="4px" border="1px solid #a6a6a6"
+                end
+                Column gap="5px" width="100%"
+                    Text "Email" fontSize="14px" fontWeight="bold" color="#111"
+                    Input placeholder="Enter your email" width="100%" padding="10px" borderRadius="4px" border="1px solid #a6a6a6"
+                        bind loginEmail
+                    end
+                end
+                Column gap="5px" width="100%"
+                    Text "Password" fontSize="14px" fontWeight="bold" color="#111"
+                    Input type="password" placeholder="At least 6 characters" width="100%" padding="10px" borderRadius="4px" border="1px solid #a6a6a6"
+                        bind loginPassword
+                    end
+                end
+                Button "Verify email" onClick="do_login" width="100%" backgroundColor="#ffd814" color="#0f1111" padding="10px" borderRadius="8px" fontWeight="normal" border="1px solid #fcd200" hoverBackgroundColor="#f7ca00"
+                Divider color="#ddd"
+                Row alignItems="center" gap="5px"
+                    Text "Already have an account?" fontSize="13px" color="#0f1111"
+                    Text "Sign in" fontSize="13px" color="#007185" cursor="pointer" onClick="go_account"
+                end
+            end
+        end
+    end

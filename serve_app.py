@@ -54,7 +54,8 @@ def main():
     session_manager = SessionManager(prog)
 
     # 3. Web Renderer Initialization
-    renderer = WebRenderer(session_manager, project_dir=".")
+    port = int(os.environ.get("PORT", 3000))
+    renderer = WebRenderer(session_manager, project_dir=".", port=port)
     renderer.initialize()
 
     # 4. Render Loop (Cleanup Thread)

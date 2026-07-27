@@ -47,7 +47,7 @@ class Session:
                     self.vm.update_state(evt.target_state, evt.value)
                     
                 if self.vm.router.current_route:
-                    self.vm.call_action_by_name(f"__PAGE_START_{self.vm.router.current_route.name}")
+                    self.vm.call_action_by_name(self.vm.router.current_route.name)
                 else:
                     self.vm.call_action_by_name("__PAGE_START__")
             

@@ -34,7 +34,7 @@ class UIRouter:
         self.vm.state["route"] = {"params": params, "name": target, "path": path, "query": {}}
         
         # Execute the page in the VM
-        self.vm.call_action_by_name(f"__PAGE_START_{target}")
+        self.vm.call_action_by_name(target)
         
         # Dispatch event to Renderer
         if self.vm.interpreter and hasattr(self.vm.interpreter, 'render_tree') and self.vm.interpreter.render_tree:

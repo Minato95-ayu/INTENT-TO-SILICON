@@ -1,4 +1,4 @@
-    page HomePage display="flex" flexDirection="column" width="100vw" height="100vh" margin="0" overflow="hidden" backgroundColor="#eaeded"
+    Page HomePage display="flex" flexDirection="column" width="100vw" height="100vh" margin="0" overflow="hidden" backgroundColor="#eaeded"
         import components.navbar
         
         Row width="100%" padding="8px 40px" backgroundColor="#232f3e" gap="20px" alignItems="center"

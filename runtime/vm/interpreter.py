@@ -224,6 +224,7 @@ class Interpreter:
                 if isinstance(props, dict):
                     stack_keys = [k for k, v in props.items() if v == "$STACK"]
                     if stack_keys:
+                        props = props.copy()
                         for key in reversed(stack_keys):
                             props[key] = self.vm.value_stack.pop()
                 

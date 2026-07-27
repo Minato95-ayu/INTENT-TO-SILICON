@@ -1,4 +1,5 @@
 from runtime.vm.config import VMConfig
+from typing import Any
 from runtime.vm.registers import Registers
 from runtime.vm.stack import CallStack, ValueStack
 from runtime.vm.heap import Heap
@@ -44,6 +45,16 @@ class VirtualMachine:
     @property
     def state(self):
         return self.state_scopes[-1]
+
+    def update_state(self, name: str, value: Any):
+        # Lexical scoping traversal
+        for scope in reversed(self.state_scopes):
+            if name in scope:
+                scope[name] = value
+                return
+        
+        # If not found, assign to the local scope
+        self.state_scopes[-1][name] = value
 
     def load(self, bytecode, constant_pool=None, action_addresses=None, action_params=None):
         self.constant_pool = constant_pool or []

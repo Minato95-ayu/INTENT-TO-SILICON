@@ -482,9 +482,21 @@ class Parser:
             statements.append(self._parse_statement())
             
         self._consume(TokenType.KEYWORD, f"Expect 'end' after {component_type} block.", value="end")
-        from compiler.ast.nodes import ActionDeclarationNode
+        from compiler.ast.nodes import ActionDeclarationNode, WidgetNode
+        
+        ui_statements = []
+        other_statements = []
+        for stmt in statements:
+            if isinstance(stmt, WidgetNode):
+                ui_statements.append(stmt)
+            else:
+                other_statements.append(stmt)
+                
+        component_widget = WidgetNode(line=line, column=col, widget_type=component_type, props={"name": name}, children=ui_statements)
+        other_statements.append(component_widget)
+        
         # Treat component as an action declaration to simplify the IR pipeline
-        return ActionDeclarationNode(line=line, column=col, name=name, statements=statements)
+        return ActionDeclarationNode(line=line, column=col, name=name, statements=other_statements)
 
     def _parse_action_declaration(self, decorators=None):
         line, col = self._previous().line, self._previous().column

@@ -67,8 +67,7 @@ class Interpreter:
             self.vm.debugger.check_breakpoint()
             
             opcode = self.vm.decoder.fetch8(self.vm.registers.ip)
-            if self.vm.config.debug_mode:
-                print(f"[DEBUG] Executing opcode {opcode:02X} at IP {self.vm.registers.ip}")
+            print(f"[VM TRACE] IP={self.vm.registers.ip} Opcode={opcode:02X} depth={self.vm.call_stack.depth()}")
             
             # Profiler tick
             self.vm.profiler.tick(len(self.vm.heap.allocator.pool.pool) * 64)
@@ -90,7 +89,10 @@ class Interpreter:
                 self.vm.registers.ip += 3
                 b = self.vm.value_stack.pop()
                 a = self.vm.value_stack.pop()
-                self.vm.value_stack.push(a + b)
+                if isinstance(a, str) or isinstance(b, str):
+                    self.vm.value_stack.push(str(a) + str(b))
+                else:
+                    self.vm.value_stack.push(a + b)
                 
             elif opcode == Opcode.SUB:
                 self.vm.registers.ip += 3
@@ -118,6 +120,7 @@ class Interpreter:
                 self.vm.registers.ip += 3
                 b = self.vm.value_stack.pop()
                 a = self.vm.value_stack.pop()
+                print(f"[VM DEBUG] CMP_EQ: {repr(a)} == {repr(b)}")
                 self.vm.value_stack.push(a == b)
                 
             elif opcode == Opcode.CMP_NEQ:
@@ -155,13 +158,17 @@ class Interpreter:
                 self.vm.registers.ip += 3
                 name = self.vm.constant_pool[idx]
                 val = self.vm.value_stack.pop()
-                self.vm.state[name] = val
+                self.vm.update_state(name, val)
                 
             elif opcode == Opcode.LOAD_STATE:
                 idx = self.vm.decoder.fetch16(self.vm.registers.ip + 1)
                 self.vm.registers.ip += 3
                 name = self.vm.constant_pool[idx]
-                val = self.vm.state.get(name, None)
+                val = None
+                for scope in reversed(self.vm.state_scopes):
+                    if name in scope:
+                        val = scope[name]
+                        break
                 self.vm.value_stack.push(val)
                 
             elif opcode == Opcode.INIT_STATE:
@@ -169,7 +176,13 @@ class Interpreter:
                 self.vm.registers.ip += 3
                 name = self.vm.constant_pool[idx]
                 val = self.vm.value_stack.pop()
-                self.vm.state[name] = val
+                found = False
+                for scope in reversed(self.vm.state_scopes):
+                    if name in scope:
+                        found = True
+                        break
+                if not found:
+                    self.vm.state[name] = val
                 
             elif opcode == Opcode.CALL_COMPONENT:
                 target = self.vm.decoder.fetch16(self.vm.registers.ip + 1)
@@ -210,8 +223,10 @@ class Interpreter:
                 # Resolve $STACK markers in props
                 if isinstance(props, dict):
                     stack_keys = [k for k, v in props.items() if v == "$STACK"]
-                    for key in reversed(stack_keys):
-                        props[key] = self.vm.value_stack.pop()
+                    if stack_keys:
+                        props = props.copy()  # Shallow copy is sufficient since $STACK markers are only at top-level
+                        for key in reversed(stack_keys):
+                            props[key] = self.vm.value_stack.pop()
                 
                 from compiler.bytecode.encoder import WIDGET_TYPES
                 widget_name = next((k for k, v in WIDGET_TYPES.items() if v == widget_type), "UNKNOWN")
@@ -400,6 +415,8 @@ class Interpreter:
                             self.vm.value_stack.push(None)
                     else:
                         print(f"[VM Warning] Unresolved target for method call: {func_name}")
+                        self.vm.value_stack.push(None)
+                else:
                     print(f"[VM Warning] Unresolved native function call: {func_name}")
                     self.vm.value_stack.push(None)
                 

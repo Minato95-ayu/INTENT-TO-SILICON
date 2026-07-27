@@ -242,6 +242,7 @@ class IRPipeline:
     # ── MIR Stage ──────────────────────────────────────────────
 
     def to_mir(self, hir_list: List[HIRNode]) -> List[MIRNode]:
+        self._has_page_start = False
         mir_list = []
         for hir in hir_list:
             self._hir_to_mir(hir, mir_list)
@@ -276,28 +277,6 @@ class IRPipeline:
                 
                 mir_list.append(MIRInstruction(f"INIT_{hir.w_type.upper()}", [props]))
                 return
-            if hir.w_type.lower() in ["page", "component"]:
-                page_name = hir.props.get("name", "")
-                
-                if hir.w_type.lower() == "page":
-                    body_mir = []
-                    body_mir.append(MIRInstruction("MARK_BLOCK_START", []))
-                    for child in hir.children:
-                        self._hir_to_mir(child, body_mir)
-                    body_mir.append(MIRInstruction(f"INIT_{hir.w_type.upper()}", [hir.props]))
-                    mir_list.append(MIRInstruction("ACTION_DECL", [f"__PAGE_START_{page_name}", body_mir]))
-                    # For legacy compatibility, also map the first page to __PAGE_START__
-                    if not getattr(self, '_first_page_seen', False):
-                        mir_list.append(MIRInstruction("ACTION_DECL", ["__PAGE_START__", body_mir]))
-                        self._first_page_seen = True
-                else:
-                    # Components are compiled as actions!
-                    body_mir = []
-                    body_mir.append(MIRInstruction("MARK_BLOCK_START", []))
-                    for child in hir.children:
-                        self._hir_to_mir(child, body_mir)
-                    body_mir.append(MIRInstruction(f"INIT_{hir.w_type.upper()}", [hir.props]))
-                    mir_list.append(MIRInstruction("ACTION_DECL", [page_name, body_mir]))
             elif hir.w_type.lower() == "call":
                 # calling a component is calling its action
                 target = hir.props.get("target", "")
@@ -312,7 +291,7 @@ class IRPipeline:
                     "container", "row", "column", "card", "stack", "center",
                     "expanded", "padding", "scrollview", "grid",
                     "appbar", "navigationbar", "list", "form", "dialog",
-                    "drawer", "snackbar", "tabbar", "scaffold"
+                    "drawer", "snackbar", "tabbar", "scaffold", "page", "component"
                 ]
                 if is_block:
                     mir_list.append(MIRInstruction("MARK_BLOCK_START", []))
@@ -352,13 +331,24 @@ class IRPipeline:
             for stmt in hir.body:
                 self._hir_to_mir(stmt, body_mir)
             mir_list.append(MIRInstruction("ACTION_DECL", [hir.name, body_mir, hir.args]))
+            
+            # Alias component as __PAGE_START__ if it has @entry decorator, or is named 'App', or fallback to first capitalized if none found yet
+            if hir.name and hir.name[0].isupper():
+                has_entry = any(d.get("name") == "entry" for d in getattr(hir, "decorators", []))
+                is_app = (hir.name == "App")
+                if has_entry or is_app or not getattr(self, "_has_page_start", False):
+                    self._has_page_start = True
+                    alias_body = [MIRInstruction("CALL_ACTION", [hir.name])]
+                    mir_list.append(MIRInstruction("ACTION_DECL", ["__PAGE_START__", alias_body, []]))
 
         elif isinstance(hir, HIRActionCall):
             for arg in hir.args:
                 self._hir_to_mir(arg, mir_list)
-            if "." in hir.name or hir.name in ["print", "len", "type"]:
+            if "." in hir.name or hir.name in ["print", "len", "type", "float", "int"]:
+                print(f"[DEBUG MIR] Compiling OP_ASYNC_CALL for {hir.name}")
                 mir_list.append(MIRInstruction("OP_ASYNC_CALL", [hir.name, len(hir.args)]))
             else:
+                print(f"[DEBUG MIR] Compiling CALL_ACTION for {hir.name}")
                 mir_list.append(MIRInstruction("CALL_ACTION", [hir.name]))
 
         elif isinstance(hir, HIRTheme):
@@ -426,6 +416,7 @@ class IRPipeline:
             pass
 
         elif isinstance(hir, HIRBinaryOp):
+            print(f"[DEBUG HIR] BinaryOp left={type(hir.left)} right={type(hir.right)}")
             self._hir_to_mir(hir.left, mir_list)
             self._hir_to_mir(hir.right, mir_list)
             mir_list.append(MIRInstruction("BINARY_OP", [hir.op]))

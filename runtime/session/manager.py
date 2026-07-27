@@ -52,7 +52,7 @@ class Session:
                     self.vm.call_action_by_name("__PAGE_START__")
             
             # Serialize the tree
-            if self.vm.interpreter.render_tree:
+            if self.vm.interpreter.render_tree and self.vm.interpreter.render_tree.root:
                 style_sheet = set()
                 tree_dict = serialize_node(self.vm.interpreter.render_tree.root, style_sheet)
                 data = {

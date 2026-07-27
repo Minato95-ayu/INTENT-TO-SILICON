@@ -284,6 +284,7 @@ class BytecodeEncoder:
             self._emit(Opcode.PUSH_CONST, keys_idx)
             self._emit(Opcode.BUILD_DICT, 0)
         elif opcode == "OP_ASYNC_CALL":
+            print(f"[DEBUG ENCODER] Encoding OP_ASYNC_CALL: {node.operands[0]}")
             name = node.operands[0]
             num_args = node.operands[1]
             name_idx = self.pool.add(name)
@@ -452,6 +453,7 @@ class BytecodeEncoder:
     def _encode_call_action(self, node: LIRNode):
         """CALL_ACTION [name] → CALL target_address"""
         action_name = node.operands[0]
+        print(f"[DEBUG ENCODER] Encoding CALL_ACTION: {action_name}")
         if action_name in self._action_addresses:
             target = self._action_addresses[action_name]
             self._emit(Opcode.CALL, target)

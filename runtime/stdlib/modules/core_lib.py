@@ -35,5 +35,21 @@ def register_core_lib(registry: StdLibRegistry):
     
     def fn_typeof(args, vm):
         if not args: return NullValue()
-        return make_string(vm, args[0].type_name())
+        return make_string(vm, args[0].type_name()) if hasattr(args[0], 'type_name') else str(type(args[0]).__name__)
     registry.register("core::typeof", fn_typeof)
+    
+    def fn_float(args, vm):
+        if not args: return 0.0
+        val = args[0]
+        if hasattr(val, "value"): val = val.value
+        try: return float(val)
+        except (ValueError, TypeError): return 0.0
+    registry.register("float", fn_float)
+    
+    def fn_int(args, vm):
+        if not args: return 0
+        val = args[0]
+        if hasattr(val, "value"): val = val.value
+        try: return int(float(val))
+        except (ValueError, TypeError): return 0
+    registry.register("int", fn_int)

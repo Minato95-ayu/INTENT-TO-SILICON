@@ -261,6 +261,10 @@ class WebRendererHandler(BaseHTTPRequestHandler):
         if self.path == "/api/action":
             content_length = int(self.headers.get('Content-Length', 0))
             action_name = self.rfile.read(content_length).decode('utf-8')
+            if action_name not in session.vm.action_addresses:
+                self.send_response(400)
+                self.end_headers()
+                return
             session.event_queue.push(ActionEvent(action_name))
             self.send_response(200)
             self.end_headers()
@@ -279,6 +283,10 @@ class WebRendererHandler(BaseHTTPRequestHandler):
                 if evt_type == "INPUT":
                     session.event_queue.push(InputEvent(target, val))
                 elif evt_type == "ACTION":
+                    if target not in session.vm.action_addresses:
+                        self.send_response(400)
+                        self.end_headers()
+                        return
                     session.event_queue.push(ActionEvent(target))
                     
                 self.send_response(200)

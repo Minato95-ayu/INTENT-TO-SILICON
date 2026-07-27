@@ -20,7 +20,8 @@ Whether you're building a simple counter or a full-fledged WhatsApp clone, AAYU 
 - **Intent-Driven**: Say goodbye to JSX, HTML, and CSS spaghetti. Write clean, declarative pages and widgets.
 - **Built-in State**: State management is a first-class citizen. No `useState` hooks, Redux stores, or providers.
 - **Native & Web**: One codebase compiles directly to a Windows `.exe` or a static Web App.
-- **Zero Configuration**: AAYU comes with its own compiler, VM, package manager, and LSP. 
+- **Zero Configuration**: AAYU comes with its own compiler, VM, package manager, and LSP.
+- **Explicit Types & Casting**: AAYU prefers explicitness. Input values from forms or variables initialized with quotes are always strings. You must cast them explicitly (e.g. `float(val)` or `int(val)`) when performing mathematical operations to prevent silent concatenation bugs.
 
 ---
 

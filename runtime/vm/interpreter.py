@@ -224,6 +224,9 @@ class Interpreter:
                 if isinstance(props, dict):
                     stack_keys = [k for k, v in props.items() if v == "$STACK"]
                     if stack_keys:
+                        # SECURITY: Enforce invariant that compiler does not nest $STACK in dicts/lists.
+                        # If this assertion fails, you MUST implement deepcopy here or fix the compiler.
+                        assert not any(isinstance(v, (dict, list)) for v in props.values()), "Nested props detected! Shallow copy is no longer safe."
                         props = props.copy()  # Shallow copy is sufficient since $STACK markers are only at top-level
                         for key in reversed(stack_keys):
                             props[key] = self.vm.value_stack.pop()

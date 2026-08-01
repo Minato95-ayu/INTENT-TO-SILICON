@@ -25,7 +25,7 @@ end
 
 load_files()
 
-page FileManager
+Page FileManager
     layout Column
         text "AAYU File Explorer"
         text "Path: " + current_path

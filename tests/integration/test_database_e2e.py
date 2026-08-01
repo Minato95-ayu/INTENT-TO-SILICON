@@ -1,5 +1,5 @@
 import pytest
-from runtime.database.runtime import DatabaseRuntime
+from aayu.runtime.database.runtime import DatabaseRuntime
 
 def test_database_runtime_e2e():
     metadata = {

@@ -15,9 +15,9 @@ To understand the project architecture, see the ARCHITECTURE_FREEZE.md file.
 import sys
 import os
 sys.path.insert(0, os.path.join(os.getcwd(), "prototype", "language"))
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.compiler import AAYUCompiler
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.bytecode.encoder import BytecodeEncoder
 
 with open(r"prototype\tests\runtime\test_functions.aayu", "r") as f:
     code = f.read()
@@ -26,7 +26,7 @@ lexer = Lexer(code)
 tokens = lexer.tokenize()
 parser = Parser(tokens)
 ast = parser.parse()
-compiler = AAYUCompiler(filename="test_functions.aayu")
+compiler = BytecodeEncoder(filename="test_functions.aayu")
 bc = compiler.compile(ast)
 
 for i, inst in enumerate(bc.instructions):

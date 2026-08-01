@@ -1,0 +1,6 @@
+import pages.dashboard
+import pages.settings
+
+app DashboardApp
+
+run

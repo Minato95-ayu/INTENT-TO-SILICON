@@ -1,0 +1,113 @@
+
+app StThomasSchool
+
+model Notice
+    title String
+    date String
+    content String
+end
+
+model AdmissionEnquiry
+    parent_name String
+    phone String
+    class String
+end
+
+route "/api/notices"
+    get
+        return "success"
+    end
+end
+
+state current_tab = "home"
+
+Page Navbar
+    row
+        heading "St. Thomas School, Dwarka"
+        button "Home"
+        button "Admissions"
+        button "Notices"
+        button "Contact Us"
+    end
+end
+
+Page Home
+    column
+        heading "Welcome to St. Thomas School"
+        text "A CBSE-affiliated co-educational day school located in Goyala Vihar, Dwarka, New Delhi."
+        
+        row
+            card
+                heading "Our Vision"
+                text "To nurture leaders of tomorrow through holistic education."
+            end
+            card
+                heading "Academics"
+                text "Classes Nursery to XII. World-class infrastructure including Math and Science parks."
+            end
+        end
+    end
+end
+
+Page Admissions
+    column
+        heading "Admissions 2026-2027"
+        text "Admissions are currently open for Nursery to Class IX. Please submit your details below."
+        
+        card
+            heading "Enquiry Form"
+            text "Parent Name"
+            text "Phone Number"
+            text "Class Applying For"
+            button "Submit Enquiry"
+        end
+    end
+end
+
+Page Notices
+    column
+        heading "Notice Board"
+        card
+            heading "Admissions Open 2026"
+            text "Date: 14-Jul-2026"
+            text "Hurry up! Last date to apply is 30th August 2026."
+        end
+        card
+            heading "TEDx Youth Event"
+            text "Date: 01-Aug-2026"
+            text "Join us for our annual TEDx event featuring brilliant student speakers."
+        end
+    end
+end
+
+Page Contact
+    column
+        heading "Contact Us"
+        text "Address: Goyala Vihar, Near Sec-19, Dwarka, New Delhi - 110071"
+        text "Email: info@stthomasdwarka.com"
+        text "Phone: +91-8826479992, +91-8826479990"
+    end
+end
+
+Page App
+    column
+        call Navbar
+        
+        if current_tab == "home"
+            call Home
+        end
+        
+        if current_tab == "admissions"
+            call Admissions
+        end
+        
+        if current_tab == "notices"
+            call Notices
+        end
+        
+        if current_tab == "contact"
+            call Contact
+        end
+    end
+end
+

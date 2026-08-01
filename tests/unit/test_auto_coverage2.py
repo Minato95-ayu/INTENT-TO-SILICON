@@ -6,7 +6,7 @@ class AutoCoverageStdlibTest(unittest.TestCase):
     def test_auto_coverage_stdlib(self):
         import pkgutil
         import importlib
-        import runtime.stdlib.modules as modules_pkg
+        import aayu.runtime.stdlib.modules as modules_pkg
         
         # Load all modules dynamically and invoke all functions with dummy arguments
         pkg_path = os.path.dirname(modules_pkg.__file__)
@@ -22,7 +22,7 @@ class AutoCoverageStdlibTest(unittest.TestCase):
                                 func_val.function([])
                             except: pass
                             try:
-                                from runtime.values.string import StringValue
+                                from aayu.runtime.values.string import StringValue
                                 func_val.function([StringValue("a")])
                             except: pass
             except: pass

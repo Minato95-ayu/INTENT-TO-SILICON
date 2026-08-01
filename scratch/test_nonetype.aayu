@@ -1,0 +1,6 @@
+app test_crash
+state count = 0
+Page Home
+  text "Count: " + string(count)
+  button "Increment" on_click: count = count + 1
+end

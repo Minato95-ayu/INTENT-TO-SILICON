@@ -1,0 +1,11 @@
+app NovaShopApp
+
+    import app.state
+    import app.actions
+    
+    import pages.home
+    import pages.cart
+    import pages.login
+    import pages.signup
+    import pages.account
+    import pages.generic

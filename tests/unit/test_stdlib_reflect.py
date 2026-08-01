@@ -1,7 +1,7 @@
 import unittest
-from runtime.stdlib.reflect_lib import _reflect_type_of, _reflect_methods, _reflect_has_method
-from runtime.values.number import NumberValue
-from runtime.values.string import StringValue
+from aayu.runtime.stdlib.reflect_lib import _reflect_type_of, _reflect_methods, _reflect_has_method
+from aayu.runtime.values.number import NumberValue
+from aayu.runtime.values.string import StringValue
 
 class TestStdlibReflect(unittest.TestCase):
     def test_reflect_type_of(self):
@@ -21,7 +21,7 @@ class TestStdlibReflect(unittest.TestCase):
         self.assertEqual(len(val.elements), 0)
 
     def test_reflect_has_method(self):
-        from runtime.values.boolean import BooleanValue
+        from aayu.runtime.values.boolean import BooleanValue
         val = _reflect_has_method([StringValue("test"), StringValue("upper")])
         self.assertEqual(val.value, True)
         val = _reflect_has_method([StringValue("test"), StringValue("not_exist")])

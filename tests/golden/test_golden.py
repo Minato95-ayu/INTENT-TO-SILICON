@@ -1,9 +1,9 @@
 import os
 import pytest
 import json
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.compiler import AAYUCompiler
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.bytecode.encoder import BytecodeEncoder
 
 EXAMPLES_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "examples")
 SNAPSHOTS_DIR = os.path.join(os.path.dirname(__file__), "snapshots")
@@ -41,7 +41,7 @@ def test_golden_ast_and_bytecode(filename):
     parser = Parser(tokens)
     ast = parser.parse()
     
-    compiler = AAYUCompiler()
+    compiler = BytecodeEncoder()
     bytecode = compiler.compile(ast)
     
     ast_snapshot_path = os.path.join(SNAPSHOTS_DIR, f"{filename}.ast.json")

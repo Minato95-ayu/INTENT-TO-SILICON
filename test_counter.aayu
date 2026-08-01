@@ -1,0 +1,12 @@
+app counter_demo
+
+state {
+    count = 0
+}
+
+Page Home
+    text "Counter"
+    text count
+end
+
+run

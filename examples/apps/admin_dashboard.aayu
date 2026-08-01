@@ -6,7 +6,7 @@ state server_load = "42%"
 
 state view = "overview"
 
-page Dashboard
+Page Dashboard
     layout Row
         # Sidebar
         layout Column

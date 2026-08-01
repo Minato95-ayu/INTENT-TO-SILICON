@@ -18,15 +18,15 @@ import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..\..')))
 
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.passes.semantic.scope_builder import ScopeBuilderPass
-from compiler.frontend.passes.semantic.symbol_binding import SymbolBindingPass
-from compiler.frontend.passes.semantic.type_checker import TypeCheckerPass
-from compiler.frontend.compiler_context import CompilerContext
-from compiler.frontend.resolver.symbols import SymbolKind
-from compiler.frontend.ast_nodes import FunctionDeclNode, RecordDeclarationNode, InterfaceDeclNode, ExtensionDeclNode
-from compiler.frontend.type_nodes import GenericTypeNode
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.passes.semantic.scope_builder import ScopeBuilderPass
+from aayu.compiler.passes.semantic.symbol_binding import SymbolBindingPass
+from aayu.compiler.passes.semantic.type_checker import TypeCheckerPass
+from aayu.compiler.bytecode.encoder_context import CompilerContext
+from aayu.compiler.resolver.symbols import SymbolKind
+from aayu.compiler.ast_nodes import FunctionDeclNode, RecordDeclarationNode, InterfaceDeclNode, ExtensionDeclNode
+from aayu.compiler.type_nodes import GenericTypeNode
 
 class TestGenerics(unittest.TestCase):
     def _run_pipeline(self, source: str) -> CompilerContext:
@@ -38,15 +38,15 @@ class TestGenerics(unittest.TestCase):
         parser = Parser(tokens)
         ast = parser.parse()
         
-        from compiler.frontend.resolver.symbols import SymbolTable, ScopeType
+        from aayu.compiler.resolver.symbols import SymbolTable, ScopeType
         ctx.symbol_tables["test_module"] = SymbolTable("test_module", ScopeType.MODULE)
         ctx.asts = {"test_module": ast}
         
         ScopeBuilderPass().run(ctx)
         SymbolBindingPass().run(ctx)
         
-        from compiler.frontend.resolver.symbols import Symbol, SymbolKind
-        from compiler.frontend.resolver.semantic_types import GenericType, InterfaceType
+        from aayu.compiler.resolver.symbols import Symbol, SymbolKind
+        from aayu.compiler.resolver.semantic_types import GenericType, InterfaceType
         box = Symbol("Box", SymbolKind.INTERFACE, ctx.symbol_tables["test_module"])
         box.resolved_type = GenericType("Box", ["T"])
         ctx.symbol_tables["test_module"].define(box)

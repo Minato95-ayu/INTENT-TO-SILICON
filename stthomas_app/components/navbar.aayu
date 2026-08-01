@@ -1,0 +1,10 @@
+
+component Navbar
+    row
+        heading "St. Thomas School, Dwarka"
+        button "Home"
+        button "Admissions"
+        button "Notices"
+    end
+end
+

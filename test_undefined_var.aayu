@@ -1,0 +1,5 @@
+app test
+Page Home
+text myVar
+end
+run

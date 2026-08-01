@@ -1,0 +1,405 @@
+app NovaStoreApp
+
+    state cartItemsCount = 0
+    state subtotalAmount = 0.0
+    state isLoggedIn = 0
+    state accountGreeting = "Hello, sign in"
+    state loginEmail = ""
+    state loginPassword = ""
+    
+    state qty_iphone = 0
+    state qty_macbook = 0
+    state qty_headphones = 0
+    state qty_ps5 = 0
+    state qty_watch = 0
+    state qty_camera = 0
+
+    Page HomePage display="flex" flexDirection="column" width="100vw" height="100vh" margin="0" overflow="hidden" backgroundColor="#eaeded"
+        
+        Row width="100%" padding="15px 40px" backgroundColor="#131921" justifyContent="space-between" alignItems="center" borderBottom="1px solid #27272a"
+            Row alignItems="center" gap="10px" cursor="pointer" onClick="go_home"
+                Icon name="store" color="#f59e0b" fontSize="28px"
+                Text "Nova Store" fontSize="28px" fontWeight="800" color="#fff" letterSpacing="1px"
+            end
+            
+            Row alignItems="center" gap="0" width="40%"
+                Input placeholder="Search Nova Store..." width="100%" padding="12px 20px" borderRadius="6px 0px 0px 6px" border="none" backgroundColor="#fff" color="#000"
+                Button "Search" onClick="do_search" backgroundColor="#febd69" color="#0f1111" padding="12px 24px" borderRadius="0px 6px 6px 0px" fontWeight="bold" border="none" hoverBackgroundColor="#f3a847"
+            end
+            
+            Row alignItems="center" gap="30px"
+                Column alignItems="flex-start" gap="2px" cursor="pointer" onClick="go_account"
+                    Text accountGreeting fontSize="12px" color="#ccc"
+                    Text "Account & Lists" fontSize="14px" fontWeight="bold" color="#fff"
+                end
+                Column alignItems="flex-start" gap="2px"
+                    Text "Returns" fontSize="12px" color="#ccc"
+                    Text "& Orders" fontSize="14px" fontWeight="bold" color="#fff"
+                end
+                Row alignItems="center" gap="8px" cursor="pointer" onClick="go_cart"
+                    Icon name="shopping-cart" color="#fff" fontSize="32px"
+                    Column gap="2px"
+                        Text cartItemsCount color="#f59e0b" fontWeight="900" fontSize="16px"
+                        Text "Cart" color="#fff" fontWeight="bold" fontSize="14px"
+                    end
+                end
+            end
+        end
+        
+        Row width="100%" padding="8px 40px" backgroundColor="#232f3e" gap="20px" alignItems="center"
+            Row alignItems="center" gap="5px" cursor="pointer" onClick="go_generic"
+                Icon name="bars" color="#fff"
+                Text "All" color="#fff" fontWeight="bold"
+            end
+            Text "Today's Deals" color="#fff" fontSize="14px" cursor="pointer" onClick="go_generic"
+            Text "Customer Service" color="#fff" fontSize="14px" cursor="pointer" onClick="go_generic"
+            Text "Registry" color="#fff" fontSize="14px" cursor="pointer" onClick="go_generic"
+            Text "Gift Cards" color="#fff" fontSize="14px" cursor="pointer" onClick="go_generic"
+            Text "Sell" color="#fff" fontSize="14px" cursor="pointer" onClick="go_generic"
+        end
+        
+        Column width="100%" height="100%" overflowY="auto" padding="0" gap="0"
+            
+            Container width="100%" padding="60px 40px" backgroundColor="#0f1111" alignItems="center" justifyContent="center"
+                Column alignItems="center" gap="15px"
+                    Text "Discover the Future of Tech." fontSize="48px" fontWeight="900" color="#fff"
+                    Text "Up to 40% off on flagship devices. Limited time only." fontSize="18px" color="#a1a1aa"
+                end
+            end
+            
+            Column padding="40px" gap="30px" backgroundColor="#eaeded"
+                Text "Trending Electronics" fontSize="28px" fontWeight="bold" color="#0f1111"
+                
+                Grid gridTemplateColumns="repeat(auto-fill, minmax(320px, 1fr))" gap="20px" width="100%"
+                    
+                    Card backgroundColor="#fff" borderRadius="8px" padding="30px" border="1px solid #ddd" display="flex" flexDirection="column" gap="15px" hoverBackgroundColor="#f9f9f9"
+                        Container height="220px" backgroundColor="#f0f2f2" borderRadius="8px" justifyContent="center" alignItems="center"
+                            Icon name="mobile-alt" color="#565959" fontSize="80px"
+                        end
+                        Text "NovaPhone 15 Pro, 256GB" fontSize="20px" fontWeight="bold" color="#0f1111"
+                        Row alignItems="center" gap="5px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Icon name="star-half-alt" color="#de7921" fontSize="16px"
+                            Text "14,092" color="#007185" fontSize="14px"
+                        end
+                        Text "$999.00" fontSize="28px" fontWeight="900" color="#0f1111"
+                        Text "FREE Delivery Tomorrow" fontSize="12px" color="#565959"
+                        Button "Add to Cart" onClick="add_iphone" backgroundColor="#ffd814" color="#0f1111" padding="10px" borderRadius="24px" fontWeight="bold" border="none" hoverBackgroundColor="#f7ca00"
+                    end
+                    
+                    Card backgroundColor="#fff" borderRadius="8px" padding="30px" border="1px solid #ddd" display="flex" flexDirection="column" gap="15px" hoverBackgroundColor="#f9f9f9"
+                        Container height="220px" backgroundColor="#f0f2f2" borderRadius="8px" justifyContent="center" alignItems="center"
+                            Icon name="laptop" color="#565959" fontSize="80px"
+                        end
+                        Text "NovaBook M3 Max, 16-inch" fontSize="20px" fontWeight="bold" color="#0f1111"
+                        Row alignItems="center" gap="5px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Text "8,231" color="#007185" fontSize="14px"
+                        end
+                        Text "$2499.00" fontSize="28px" fontWeight="900" color="#0f1111"
+                        Text "FREE Delivery by Wednesday" fontSize="12px" color="#565959"
+                        Button "Add to Cart" onClick="add_macbook" backgroundColor="#ffd814" color="#0f1111" padding="10px" borderRadius="24px" fontWeight="bold" border="none" hoverBackgroundColor="#f7ca00"
+                    end
+                    
+                    Card backgroundColor="#fff" borderRadius="8px" padding="30px" border="1px solid #ddd" display="flex" flexDirection="column" gap="15px" hoverBackgroundColor="#f9f9f9"
+                        Container height="220px" backgroundColor="#f0f2f2" borderRadius="8px" justifyContent="center" alignItems="center"
+                            Icon name="headphones" color="#565959" fontSize="80px"
+                        end
+                        Text "SonicPods Pro" fontSize="20px" fontWeight="bold" color="#0f1111"
+                        Row alignItems="center" gap="5px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Icon name="star-half-alt" color="#de7921" fontSize="16px"
+                            Text "21,805" color="#007185" fontSize="14px"
+                        end
+                        Text "$249.00" fontSize="28px" fontWeight="900" color="#0f1111"
+                        Text "FREE Delivery Tomorrow" fontSize="12px" color="#565959"
+                        Button "Add to Cart" onClick="add_headphones" backgroundColor="#ffd814" color="#0f1111" padding="10px" borderRadius="24px" fontWeight="bold" border="none" hoverBackgroundColor="#f7ca00"
+                    end
+                    
+                    Card backgroundColor="#fff" borderRadius="8px" padding="30px" border="1px solid #ddd" display="flex" flexDirection="column" gap="15px" hoverBackgroundColor="#f9f9f9"
+                        Container height="220px" backgroundColor="#f0f2f2" borderRadius="8px" justifyContent="center" alignItems="center"
+                            Icon name="gamepad" color="#565959" fontSize="80px"
+                        end
+                        Text "PlayBox Station 5" fontSize="20px" fontWeight="bold" color="#0f1111"
+                        Row alignItems="center" gap="5px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Text "45,112" color="#007185" fontSize="14px"
+                        end
+                        Text "$499.00" fontSize="28px" fontWeight="900" color="#0f1111"
+                        Text "FREE Delivery by Friday" fontSize="12px" color="#565959"
+                        Button "Add to Cart" onClick="add_ps5" backgroundColor="#ffd814" color="#0f1111" padding="10px" borderRadius="24px" fontWeight="bold" border="none" hoverBackgroundColor="#f7ca00"
+                    end
+
+                    Card backgroundColor="#fff" borderRadius="8px" padding="30px" border="1px solid #ddd" display="flex" flexDirection="column" gap="15px" hoverBackgroundColor="#f9f9f9"
+                        Container height="220px" backgroundColor="#f0f2f2" borderRadius="8px" justifyContent="center" alignItems="center"
+                            Icon name="camera" color="#565959" fontSize="80px"
+                        end
+                        Text "Lumina Alpha 7R" fontSize="20px" fontWeight="bold" color="#0f1111"
+                        Row alignItems="center" gap="5px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Icon name="star-half-alt" color="#de7921" fontSize="16px"
+                            Text "3,401" color="#007185" fontSize="14px"
+                        end
+                        Text "$3299.00" fontSize="28px" fontWeight="900" color="#0f1111"
+                        Text "FREE Delivery by Monday" fontSize="12px" color="#565959"
+                        Button "Add to Cart" onClick="add_camera" backgroundColor="#ffd814" color="#0f1111" padding="10px" borderRadius="24px" fontWeight="bold" border="none" hoverBackgroundColor="#f7ca00"
+                    end
+                    
+                    Card backgroundColor="#fff" borderRadius="8px" padding="30px" border="1px solid #ddd" display="flex" flexDirection="column" gap="15px" hoverBackgroundColor="#f9f9f9"
+                        Container height="220px" backgroundColor="#f0f2f2" borderRadius="8px" justifyContent="center" alignItems="center"
+                            Icon name="clock" color="#565959" fontSize="80px"
+                        end
+                        Text "NovaWatch Ultra" fontSize="20px" fontWeight="bold" color="#0f1111"
+                        Row alignItems="center" gap="5px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Icon name="star" color="#de7921" fontSize="16px"
+                            Text "11,234" color="#007185" fontSize="14px"
+                        end
+                        Text "$799.00" fontSize="28px" fontWeight="900" color="#0f1111"
+                        Text "FREE Delivery Tomorrow" fontSize="12px" color="#565959"
+                        Button "Add to Cart" onClick="add_watch" backgroundColor="#ffd814" color="#0f1111" padding="10px" borderRadius="24px" fontWeight="bold" border="none" hoverBackgroundColor="#f7ca00"
+                    end
+
+                end
+            end
+        end
+    end
+    
+    Page CartPage display="flex" flexDirection="column" width="100vw" height="100vh" margin="0" overflow="hidden" backgroundColor="#eaeded"
+        
+        Row width="100%" padding="15px 40px" backgroundColor="#131921" justifyContent="space-between" alignItems="center" borderBottom="1px solid #27272a"
+            Row alignItems="center" gap="10px" cursor="pointer" onClick="go_home"
+                Icon name="store" color="#f59e0b" fontSize="28px"
+                Text "Nova Store" fontSize="28px" fontWeight="800" color="#fff" letterSpacing="1px"
+            end
+        end
+        
+        Row width="100%" height="100%" padding="40px" gap="30px" alignItems="flex-start" justifyContent="center" overflowY="auto"
+            
+            Column width="70%" backgroundColor="#fff" borderRadius="12px" padding="30px" border="1px solid #ddd" gap="20px"
+                Text "Shopping Cart" fontSize="32px" fontWeight="800" color="#0f1111"
+                Text "Price" fontSize="14px" color="#565959" alignSelf="flex-end"
+                Divider color="#ddd"
+                
+                Row alignItems="center" justifyContent="center" padding="40px" gap="20px" display="flex" flexDirection="column"
+                    Icon name="shopping-cart" fontSize="80px" color="#ccc"
+                    Text "Your items have been saved!" fontSize="18px" color="#565959"
+                    Button "Back to Shopping" onClick="go_home" backgroundColor="#ffd814" color="#0f1111" padding="12px 24px" borderRadius="8px" fontWeight="bold" border="none" hoverBackgroundColor="#f7ca00"
+                end
+                
+            end
+            
+            Column width="25%" backgroundColor="#fff" borderRadius="12px" padding="25px" border="1px solid #ddd" gap="15px"
+                Row alignItems="baseline" gap="8px"
+                    Text "Subtotal:" fontSize="18px" color="#0f1111"
+                    Text subtotalAmount fontSize="22px" fontWeight="bold" color="#0f1111"
+                end
+                Button "Proceed to checkout" backgroundColor="#ffd814" color="#0f1111" padding="12px" borderRadius="8px" fontWeight="bold" border="none" hoverBackgroundColor="#f7ca00" width="100%"
+            end
+            
+        end
+    end
+    
+    Page LoginPage display="flex" flexDirection="column" width="100vw" height="100vh" margin="0" overflow="hidden" backgroundColor="#eaeded"
+        Row width="100%" padding="15px 40px" backgroundColor="#131921" justifyContent="center" alignItems="center" borderBottom="1px solid #27272a" cursor="pointer" onClick="go_home"
+            Row alignItems="center" gap="10px"
+                Icon name="store" color="#f59e0b" fontSize="28px"
+                Text "Nova Store" fontSize="28px" fontWeight="800" color="#fff" letterSpacing="1px"
+            end
+        end
+
+        Container width="100%" height="100%" display="flex" justifyContent="center" alignItems="center"
+            Column width="350px" backgroundColor="#fff" padding="30px" borderRadius="8px" border="1px solid #ddd" gap="15px"
+                Text "Sign in" fontSize="28px" fontWeight="500" color="#0f1111"
+                Column gap="5px" width="100%"
+                    Text "Email or mobile phone number" fontSize="14px" fontWeight="bold" color="#111"
+                    Input placeholder="Enter your email" width="100%" padding="10px" borderRadius="4px" border="1px solid #a6a6a6"
+                        bind loginEmail
+                    end
+                end
+                Column gap="5px" width="100%"
+                    Text "Password" fontSize="14px" fontWeight="bold" color="#111"
+                    Input type="password" placeholder="Enter password" width="100%" padding="10px" borderRadius="4px" border="1px solid #a6a6a6"
+                        bind loginPassword
+                    end
+                end
+                Button "Continue" onClick="do_login" width="100%" backgroundColor="#ffd814" color="#0f1111" padding="10px" borderRadius="8px" fontWeight="normal" border="1px solid #fcd200" hoverBackgroundColor="#f7ca00"
+                Divider color="#ddd"
+                Text "New to Nova Store?" fontSize="12px" color="#767676" textAlign="center"
+                Button "Create your Nova account" onClick="go_signup" width="100%" backgroundColor="#fff" color="#0f1111" padding="10px" borderRadius="8px" fontWeight="normal" border="1px solid #d5d9d9" hoverBackgroundColor="#f7fafa"
+            end
+        end
+    end
+
+    Page SignupPage display="flex" flexDirection="column" width="100vw" height="100vh" margin="0" overflow="hidden" backgroundColor="#eaeded"
+        Row width="100%" padding="15px 40px" backgroundColor="#131921" justifyContent="center" alignItems="center" borderBottom="1px solid #27272a" cursor="pointer" onClick="go_home"
+            Row alignItems="center" gap="10px"
+                Icon name="store" color="#f59e0b" fontSize="28px"
+                Text "Nova Store" fontSize="28px" fontWeight="800" color="#fff" letterSpacing="1px"
+            end
+        end
+
+        Container width="100%" height="100%" display="flex" justifyContent="center" alignItems="center"
+            Column width="350px" backgroundColor="#fff" padding="30px" borderRadius="8px" border="1px solid #ddd" gap="15px"
+                Text "Create account" fontSize="28px" fontWeight="500" color="#0f1111"
+                Column gap="5px" width="100%"
+                    Text "Your name" fontSize="14px" fontWeight="bold" color="#111"
+                    Input placeholder="First and last name" width="100%" padding="10px" borderRadius="4px" border="1px solid #a6a6a6"
+                end
+                Column gap="5px" width="100%"
+                    Text "Email" fontSize="14px" fontWeight="bold" color="#111"
+                    Input placeholder="Enter your email" width="100%" padding="10px" borderRadius="4px" border="1px solid #a6a6a6"
+                        bind loginEmail
+                    end
+                end
+                Column gap="5px" width="100%"
+                    Text "Password" fontSize="14px" fontWeight="bold" color="#111"
+                    Input type="password" placeholder="At least 6 characters" width="100%" padding="10px" borderRadius="4px" border="1px solid #a6a6a6"
+                        bind loginPassword
+                    end
+                end
+                Button "Verify email" onClick="do_login" width="100%" backgroundColor="#ffd814" color="#0f1111" padding="10px" borderRadius="8px" fontWeight="normal" border="1px solid #fcd200" hoverBackgroundColor="#f7ca00"
+                Divider color="#ddd"
+                Row alignItems="center" gap="5px"
+                    Text "Already have an account?" fontSize="13px" color="#0f1111"
+                    Text "Sign in" fontSize="13px" color="#007185" cursor="pointer" onClick="go_account"
+                end
+            end
+        end
+    end
+    
+    Page AccountPage display="flex" flexDirection="column" width="100vw" height="100vh" margin="0" overflow="hidden" backgroundColor="#eaeded"
+        Row width="100%" padding="15px 40px" backgroundColor="#131921" justifyContent="space-between" alignItems="center" borderBottom="1px solid #27272a"
+            Row alignItems="center" gap="10px" cursor="pointer" onClick="go_home"
+                Icon name="store" color="#f59e0b" fontSize="28px"
+                Text "Nova Store" fontSize="28px" fontWeight="800" color="#fff" letterSpacing="1px"
+            end
+        end
+
+        Container width="100%" height="100%" display="flex" justifyContent="center" alignItems="center"
+            Column width="400px" backgroundColor="#fff" padding="30px" borderRadius="8px" border="1px solid #ddd" gap="20px" alignItems="center"
+                Icon name="user-circle" fontSize="80px" color="#ccc"
+                Text "Your Account" fontSize="28px" fontWeight="800" color="#0f1111"
+                Text accountGreeting fontSize="18px" color="#565959"
+                Button "Sign Out" onClick="do_logout" width="100%" backgroundColor="#e7e9ec" color="#0f1111" padding="12px" borderRadius="8px" fontWeight="bold" border="1px solid #adb1b8" hoverBackgroundColor="#d5d9d9"
+            end
+        end
+    end
+
+    action go_home
+        navigate HomePage
+    end
+    
+    action go_cart
+        navigate CartPage
+    end
+
+    action go_account
+        if isLoggedIn == 0
+            navigate LoginPage
+        else
+            navigate AccountPage
+        end
+    end
+
+    action go_signup
+        navigate SignupPage
+    end
+
+    action do_login
+        isLoggedIn = 1
+        accountGreeting = "Hello, Ayush"
+        navigate HomePage
+    end
+
+    action do_logout
+        isLoggedIn = 0
+        accountGreeting = "Hello, sign in"
+        navigate HomePage
+    end
+    
+    action add_iphone
+        cartItemsCount = cartItemsCount + 1
+        qty_iphone = qty_iphone + 1
+        subtotalAmount = subtotalAmount + 999.0
+    end
+    
+    action add_macbook
+        cartItemsCount = cartItemsCount + 1
+        qty_macbook = qty_macbook + 1
+        subtotalAmount = subtotalAmount + 2499.0
+    end
+    
+    action add_headphones
+        cartItemsCount = cartItemsCount + 1
+        qty_headphones = qty_headphones + 1
+        subtotalAmount = subtotalAmount + 249.0
+    end
+    
+    action add_ps5
+        cartItemsCount = cartItemsCount + 1
+        qty_ps5 = qty_ps5 + 1
+        subtotalAmount = subtotalAmount + 499.0
+    end
+
+    action add_camera
+        cartItemsCount = cartItemsCount + 1
+        qty_camera = qty_camera + 1
+        subtotalAmount = subtotalAmount + 3299.0
+    end
+
+    action add_watch
+        cartItemsCount = cartItemsCount + 1
+        qty_watch = qty_watch + 1
+        subtotalAmount = subtotalAmount + 799.0
+    end
+
+    Page GenericPage display="flex" flexDirection="column" width="100vw" height="100vh" margin="0" overflow="hidden" backgroundColor="#eaeded"
+        Row width="100%" padding="15px 40px" backgroundColor="#131921" justifyContent="space-between" alignItems="center" borderBottom="1px solid #27272a"
+            Row alignItems="center" gap="10px" cursor="pointer" onClick="go_home"
+                Icon name="store" color="#f59e0b" fontSize="28px"
+                Text "Nova Store" fontSize="28px" fontWeight="800" color="#fff" letterSpacing="1px"
+            end
+        end
+
+        Container width="100%" height="100%" display="flex" justifyContent="center" alignItems="center"
+            Column width="400px" backgroundColor="#fff" padding="40px" borderRadius="8px" border="1px solid #ddd" gap="20px" alignItems="center"
+                Icon name="tools" fontSize="60px" color="#f59e0b"
+                Text "Coming Soon" fontSize="24px" fontWeight="800" color="#0f1111"
+                Text "We are working hard to bring you this feature!" fontSize="16px" color="#565959" textAlign="center"
+                Button "Back to Shopping" onClick="go_home" backgroundColor="#ffd814" color="#0f1111" padding="10px 20px" borderRadius="8px" fontWeight="bold" border="none" hoverBackgroundColor="#f7ca00"
+            end
+        end
+    end
+
+    action do_search
+        navigate GenericPage
+    end
+
+    action go_generic
+        navigate GenericPage
+    end
+
+    action sys_nav_back
+        navigate HomePage
+    end

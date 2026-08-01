@@ -18,13 +18,13 @@ import unittest
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..\..')))
 
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.compiler_context import CompilerContext
-from compiler.frontend.passes.semantic.scope_builder import ScopeBuilderPass
-from compiler.frontend.passes.semantic.type_checker import TypeCheckerPass
-from compiler.frontend.resolver.symbols import SymbolTable, ScopeType
-from compiler.frontend.resolver.semantic_types import BuiltinTypes, AnyType
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.bytecode.encoder_context import CompilerContext
+from aayu.compiler.passes.semantic.scope_builder import ScopeBuilderPass
+from aayu.compiler.passes.semantic.type_checker import TypeCheckerPass
+from aayu.compiler.resolver.symbols import SymbolTable, ScopeType
+from aayu.compiler.resolver.semantic_types import BuiltinTypes, AnyType
 
 class TestTypeCheckerPass(unittest.TestCase):
     def _run_type_checker(self, source: str) -> CompilerContext:

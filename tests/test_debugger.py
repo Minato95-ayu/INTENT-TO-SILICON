@@ -1,10 +1,10 @@
 import pytest
 import threading
 import time
-from runtime.vm.vm import VirtualMachine
-from runtime.vm.config import VMConfig
-from runtime.vm.instructions import Opcode
-from runtime.debugger.session import DebugSession
+from aayu.runtime.vm.vm import VirtualMachine
+from aayu.runtime.vm.config import VMConfig
+from aayu.runtime.vm.instructions import Opcode
+from aayu.runtime.debugger.session import DebugSession
 
 class MockProtocol:
     def __init__(self):

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <!-- Foreground Neon Gradient -->
+    <linearGradient id="neonGrad" x1="10%" y1="0%" x2="90%" y2="100%">
+      <stop offset="0%" stop-color="#00C0D0" />
+      <stop offset="50%" stop-color="#5000C0" />
+      <stop offset="100%" stop-color="#D00045" />
+    </linearGradient>
+
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Outer Circuit Ring -->
+  <circle cx="128" cy="128" r="100" fill="none" stroke="#D0D5ED" stroke-width="8" stroke-dasharray="20 10 50 10" />
+
+  <!-- The stylized 'A' -->
+  <path d="M 128 50 
+           L 190 190 
+           L 155 190 
+           L 128 135
+           L 101 190
+           L 66 190 
+           Z
+           M 128 100
+           L 118 125
+           L 138 125
+           Z" 
+        fill="url(#neonGrad)" 
+        filter="url(#glow)" />
+        
+  <!-- Silicon Node Dots -->
+  <circle cx="128" cy="50" r="10" fill="#00C0D0" />
+  <circle cx="190" cy="190" r="10" fill="#D00045" />
+  <circle cx="66" cy="190" r="10" fill="#5000C0" />
+</svg>

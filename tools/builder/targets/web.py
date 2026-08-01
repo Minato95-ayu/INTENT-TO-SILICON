@@ -1,6 +1,6 @@
 import os
 import json
-from compiler.ast.nodes import ProgramNode, WidgetNode, StateDeclarationNode, LiteralNode
+from aayu.compiler.ast.nodes import ProgramNode, WidgetNode, StateDeclarationNode, LiteralNode
 
 class WebTarget:
     """Transpiles AAYU AST directly to standard HTML/CSS/JS via Intermediate DOM."""

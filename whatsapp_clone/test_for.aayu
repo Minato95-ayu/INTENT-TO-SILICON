@@ -1,0 +1,6 @@
+app TestFor
+page App
+    for i in [1, 2, 3]
+        heading text=i
+    end
+end

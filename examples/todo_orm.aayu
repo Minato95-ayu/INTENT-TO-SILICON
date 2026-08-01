@@ -1,0 +1,59 @@
+app TodoORM
+
+model Todo {
+    id: Int @primary
+    title: String
+    is_done: Boolean
+}
+
+state todos = []
+state newTodo = ""
+
+action loadTodos()
+    todos = db.Todo.find()
+end
+
+action addTodo()
+    if newTodo != ""
+        db.Todo.save({
+            "title": newTodo,
+            "is_done": False
+        })
+        newTodo = ""
+        loadTodos()
+    end
+end
+
+action __PAGE_START__()
+    loadTodos()
+end
+
+Page TodoPage
+    Scaffold
+        Column
+            Heading "AAYU ORM Todos"
+
+            Row
+                Input
+                    bind newTodo
+                    placeholder "New Todo"
+                end
+                Button "Save to DB"
+                    onClick addTodo
+                end
+            end
+
+            for index, todo in todos
+                Card
+                    Row
+                        Text todo["title"]
+                        Text " Done? "
+                        Text todo["is_done"]
+                    end
+                end
+            end
+        end
+    end
+end
+
+run TodoPage

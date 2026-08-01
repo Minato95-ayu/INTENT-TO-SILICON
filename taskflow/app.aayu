@@ -1,0 +1,119 @@
+
+app TaskFlow
+
+# --- Database Models ---
+
+model User
+    email String
+    password String
+end
+
+model Project
+    name String
+end
+
+model Task
+    title String
+    status String
+    project_id Integer
+end
+
+model Comment
+    text String
+    task_id Integer
+end
+
+# --- Backend APIs ---
+
+route "/api/login"
+    post
+        return "success"
+    end
+end
+
+route "/api/tasks"
+    get
+        return "[]"
+    end
+    post
+        return "created"
+    end
+    delete
+        return "deleted"
+    end
+    update
+        return "updated"
+    end
+end
+
+# --- UI State ---
+
+state current_view = "login"
+
+# --- UI Pages ---
+
+Page Login
+    column
+        heading "Login to TaskFlow"
+        text "Email"
+        text "Password"
+        button "Login"
+    end
+end
+
+Page Dashboard
+    row
+        # Sidebar
+        column
+            heading "Projects"
+            text "Marketing"
+            text "Website"
+            text "Personal"
+        end
+        
+        # Main Kanban Board
+        column
+            heading "Kanban Board"
+            row
+                column
+                    heading "TODO"
+                    card
+                        text "Design UI"
+                        button "Move to DOING"
+                    end
+                    card
+                        text "Write API"
+                        button "Move to DOING"
+                    end
+                end
+                
+                column
+                    heading "DOING"
+                    card
+                        text "Testing"
+                        button "Move to DONE"
+                    end
+                end
+                
+                column
+                    heading "DONE"
+                    card
+                        text "Publish"
+                    end
+                end
+            end
+        end
+    end
+end
+
+# --- Entrypoint ---
+
+Page App
+    if current_view == "login"
+        call Login
+    end
+    if current_view == "dashboard"
+        call Dashboard
+    end
+end
+

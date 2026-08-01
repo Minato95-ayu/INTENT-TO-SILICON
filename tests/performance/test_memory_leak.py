@@ -1,9 +1,9 @@
 import tracemalloc
 import pytest
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.compiler import AAYUCompiler
-from runtime.vm.vm import VirtualMachine
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.bytecode.encoder import BytecodeEncoder
+from aayu.runtime.vm.vm import VirtualMachine
 
 def get_ast(source):
     lexer = Lexer(source)
@@ -21,7 +21,7 @@ def test_memory_leak_vm_execution():
     """
     
     ast = get_ast(source)
-    compiler = AAYUCompiler()
+    compiler = BytecodeEncoder()
     bytecode = compiler.compile(ast)
     
     vm = VirtualMachine()

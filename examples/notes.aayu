@@ -1,0 +1,64 @@
+app NotesApp
+
+useTheme "light"
+
+state notes = ["First Note", "Second Note", "Third Note"]
+state new_note = ""
+
+action addNote()
+    notes.append(new_note)
+    new_note = ""
+end
+
+action deleteNote(index)
+    notes.remove(index)
+end
+
+action clearNotes()
+    notes.clear()
+end
+
+Component NoteItem
+    prop index
+    prop text
+    Card
+        padding=16
+        Row
+            Text text
+            Expanded
+            Icon "trash"
+                onClick deleteNote(index)
+                color="red"
+            end
+        end
+    end
+end
+
+Page NotesPage
+    Scaffold
+        Column
+            Heading "My Notes"
+            
+            Row
+                Input
+                    placeholder "Write a note..."
+                    bind new_note
+                end
+                Button "Add"
+                    onClick addNote
+                end
+            end
+
+            Button "Clear All"
+                onClick clearNotes
+                color="red"
+            end
+
+            for index, note in notes
+                NoteItem index=index text=note
+            end
+        end
+    end
+end
+
+run NotesPage

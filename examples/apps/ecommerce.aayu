@@ -32,7 +32,7 @@ end
 
 load_products()
 
-page StorePage
+Page StorePage
     layout Row
         layout Column
             text "Products"

@@ -1,0 +1,543 @@
+{
+  "id": "e8f60dc5-bbfd-4616-996c-798d100230f6",
+  "type": "page",
+  "class": "cls-0026dfe2",
+  "props": {
+    "name": "HomePage",
+    "display": "flex",
+    "flexDirection": "column",
+    "width": "100vw",
+    "height": "100vh",
+    "margin": "0",
+    "overflow": "hidden"
+  },
+  "children": [
+    {
+      "id": "52afbe19-b08f-446a-b572-27b022289b23",
+      "type": "column",
+      "class": "cls-ecf4f742",
+      "props": {
+        "width": "100%",
+        "height": "100vh",
+        "overflowY": "auto",
+        "display": "flex",
+        "flexDirection": "column",
+        "gap": "0px"
+      },
+      "children": [
+        {
+          "id": "5e5f52d3-5678-4e5f-9806-2e5a4a9b5c2f",
+          "type": "row",
+          "class": "cls-da5c3b41",
+          "props": {
+            "width": "100%",
+            "padding": "20px 40px",
+            "backgroundColor": "#18181b",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "borderBottom": "1px solid #27272a",
+            "display": "flex",
+            "flexDirection": "row",
+            "gap": "0px"
+          },
+          "children": [
+            {
+              "id": "de83d0fd-7a93-4d06-84b0-6b7ad8f597dc",
+              "type": "text",
+              "class": "cls-0299faf6",
+              "props": {
+                "text": "NovaStore",
+                "fontSize": "24px",
+                "fontWeight": "bold",
+                "letterSpacing": "2px",
+                "color": "#fff"
+              },
+              "children": []
+            },
+            {
+              "id": "30969dd9-e959-4793-b20c-c96c4a023f4b",
+              "type": "row",
+              "class": "cls-46f99b15",
+              "props": {
+                "gap": "20px",
+                "alignItems": "center",
+                "display": "flex",
+                "flexDirection": "row"
+              },
+              "children": [
+                {
+                  "id": "b63db297-621b-4d44-a59c-c3b03ab9b4b2",
+                  "type": "button",
+                  "class": "cls-63370969",
+                  "props": {
+                    "text": "Home",
+                    "onClick": "go_home",
+                    "backgroundColor": "transparent",
+                    "color": "#a1a1aa",
+                    "padding": "8px 16px",
+                    "hoverColor": "#fff",
+                    "border": "none"
+                  },
+                  "children": []
+                },
+                {
+                  "id": "4bdc6f9a-38bd-4518-8391-5f7311955999",
+                  "type": "row",
+                  "class": "cls-6852fd32",
+                  "props": {
+                    "backgroundColor": "#fff",
+                    "padding": "8px 24px",
+                    "borderRadius": "20px",
+                    "alignItems": "center",
+                    "gap": "8px",
+                    "display": "flex",
+                    "flexDirection": "row"
+                  },
+                  "children": [
+                    {
+                      "id": "8260d012-a685-4c0f-a789-7e9c8be64df4",
+                      "type": "button",
+                      "class": "cls-c31747cd",
+                      "props": {
+                        "text": "Cart",
+                        "onClick": "go_cart",
+                        "backgroundColor": "transparent",
+                        "color": "#000",
+                        "fontWeight": "600",
+                        "border": "none",
+                        "padding": "0"
+                      },
+                      "children": []
+                    },
+                    {
+                      "id": "a92e2c62-7cf2-44ff-ad5b-6c0d965fb22c",
+                      "type": "text",
+                      "class": "cls-22394f97",
+                      "props": {
+                        "text": "(",
+                        "color": "#000",
+                        "fontWeight": "600"
+                      },
+                      "children": []
+                    },
+                    {
+                      "id": "856caa7b-3ad1-4ecd-9f2f-5d844eeddee1",
+                      "type": "text",
+                      "class": "cls-421c2269",
+                      "props": {
+                        "value_node": 0,
+                        "color": "#000",
+                        "fontWeight": "600"
+                      },
+                      "children": []
+                    },
+                    {
+                      "id": "b238ca08-2017-4145-af22-e5a29d02aec1",
+                      "type": "text",
+                      "class": "cls-667aa9b6",
+                      "props": {
+                        "text": ")",
+                        "color": "#000",
+                        "fontWeight": "600"
+                      },
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "d3c25f57-8a85-4399-adbd-3c42fa379e2a",
+          "type": "column",
+          "class": "cls-979371a9",
+          "props": {
+            "padding": "80px 40px",
+            "alignItems": "center",
+            "gap": "20px",
+            "backgroundColor": "#09090b",
+            "display": "flex",
+            "flexDirection": "column"
+          },
+          "children": [
+            {
+              "id": "fd817edc-e95d-4e65-b11a-2478e235828f",
+              "type": "text",
+              "class": "cls-74f5f7ca",
+              "props": {
+                "text": "The Future of Tech",
+                "fontSize": "64px",
+                "fontWeight": "800",
+                "color": "#fff"
+              },
+              "children": []
+            },
+            {
+              "id": "8b26f7d2-6ff9-48b8-90b9-aa9ac4182cc9",
+              "type": "text",
+              "class": "cls-1e468c63",
+              "props": {
+                "text": "Experience unparalleled performance and design with our latest lineup.",
+                "fontSize": "20px",
+                "color": "#a1a1aa"
+              },
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "96c5daa5-e6cc-4cc9-9361-a1fb74e5a5e3",
+          "type": "row",
+          "class": "cls-b6cef8ca",
+          "props": {
+            "padding": "40px",
+            "gap": "40px",
+            "justifyContent": "center",
+            "flexWrap": "wrap",
+            "display": "flex",
+            "flexDirection": "row"
+          },
+          "children": [
+            {
+              "id": "09394355-7370-4186-a6af-06ec1e4a339e",
+              "type": "card",
+              "class": "cls-bbdc5b1b",
+              "props": {
+                "width": "320px",
+                "backgroundColor": "#18181b",
+                "borderRadius": "16px",
+                "padding": "24px",
+                "border": "1px solid #27272a",
+                "display": "flex",
+                "flexDirection": "column",
+                "gap": "16px",
+                "hoverBackgroundColor": "#1f1f23"
+              },
+              "children": [
+                {
+                  "id": "13959cd2-77b7-4d33-adf3-1928be599258",
+                  "type": "column",
+                  "class": "cls-8aca4bf8",
+                  "props": {
+                    "height": "200px",
+                    "backgroundColor": "#27272a",
+                    "borderRadius": "12px",
+                    "justifyContent": "center",
+                    "alignItems": "center",
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "gap": "0px"
+                  },
+                  "children": [
+                    {
+                      "id": "b9a26710-093e-47de-8773-502577bff678",
+                      "type": "text",
+                      "class": "cls-41dcd136",
+                      "props": {
+                        "text": "\ud83d\udcbb",
+                        "fontSize": "80px"
+                      },
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "8216dee9-148b-4275-98d6-8829a8f39619",
+                  "type": "text",
+                  "class": "cls-d3c9337f",
+                  "props": {
+                    "text": "NovaBook Pro",
+                    "fontSize": "24px",
+                    "fontWeight": "bold",
+                    "color": "#fff"
+                  },
+                  "children": []
+                },
+                {
+                  "id": "36422b35-833c-4f6c-84ae-302a658bd04b",
+                  "type": "text",
+                  "class": "cls-fc24af9e",
+                  "props": {
+                    "text": "M4 Chip, 32GB RAM, 1TB SSD. The ultimate machine.",
+                    "fontSize": "14px",
+                    "color": "#a1a1aa"
+                  },
+                  "children": []
+                },
+                {
+                  "id": "b8138c7b-6768-48fb-8db6-6e04b9f6e8cc",
+                  "type": "row",
+                  "class": "cls-f1c52049",
+                  "props": {
+                    "justifyContent": "space-between",
+                    "alignItems": "center",
+                    "marginTop": "10px",
+                    "display": "flex",
+                    "flexDirection": "row",
+                    "gap": "0px"
+                  },
+                  "children": [
+                    {
+                      "id": "8169ab40-3324-45f8-9634-2ad56785bb09",
+                      "type": "text",
+                      "class": "cls-5025c259",
+                      "props": {
+                        "text": "$1999",
+                        "fontSize": "20px",
+                        "fontWeight": "bold",
+                        "color": "#fff"
+                      },
+                      "children": []
+                    },
+                    {
+                      "id": "b5d89cf1-9964-4ac0-937d-8cbc1a1199e3",
+                      "type": "button",
+                      "class": "cls-c00fd049",
+                      "props": {
+                        "text": "Add to Cart",
+                        "onClick": "add_to_cart_1",
+                        "backgroundColor": "#3b82f6",
+                        "color": "#fff",
+                        "padding": "10px 20px",
+                        "borderRadius": "8px",
+                        "fontWeight": "600",
+                        "hoverBackgroundColor": "#2563eb",
+                        "border": "none"
+                      },
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "fbc7bc13-208d-48c3-8933-fe48dd144231",
+              "type": "card",
+              "class": "cls-bbdc5b1b",
+              "props": {
+                "width": "320px",
+                "backgroundColor": "#18181b",
+                "borderRadius": "16px",
+                "padding": "24px",
+                "border": "1px solid #27272a",
+                "display": "flex",
+                "flexDirection": "column",
+                "gap": "16px",
+                "hoverBackgroundColor": "#1f1f23"
+              },
+              "children": [
+                {
+                  "id": "2164782b-0cd4-4ebc-8908-db3ffcf6fc0b",
+                  "type": "column",
+                  "class": "cls-8aca4bf8",
+                  "props": {
+                    "height": "200px",
+                    "backgroundColor": "#27272a",
+                    "borderRadius": "12px",
+                    "justifyContent": "center",
+                    "alignItems": "center",
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "gap": "0px"
+                  },
+                  "children": [
+                    {
+                      "id": "7ff09d0c-b018-4927-95e9-f58e2b51eca5",
+                      "type": "text",
+                      "class": "cls-c14cfd05",
+                      "props": {
+                        "text": "\ud83d\udcf1",
+                        "fontSize": "80px"
+                      },
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "4a4b062d-c1ea-4217-b935-c8a34476b0a2",
+                  "type": "text",
+                  "class": "cls-46298b41",
+                  "props": {
+                    "text": "NovaPhone 15",
+                    "fontSize": "24px",
+                    "fontWeight": "bold",
+                    "color": "#fff"
+                  },
+                  "children": []
+                },
+                {
+                  "id": "62ed4e66-b161-4f70-a2bc-0cba038809df",
+                  "type": "text",
+                  "class": "cls-5b63a3c5",
+                  "props": {
+                    "text": "Pro Camera System, Titanium frame, A17 Pro chip.",
+                    "fontSize": "14px",
+                    "color": "#a1a1aa"
+                  },
+                  "children": []
+                },
+                {
+                  "id": "d8370a31-9485-4443-b54c-38cf7178b2f8",
+                  "type": "row",
+                  "class": "cls-f1c52049",
+                  "props": {
+                    "justifyContent": "space-between",
+                    "alignItems": "center",
+                    "marginTop": "10px",
+                    "display": "flex",
+                    "flexDirection": "row",
+                    "gap": "0px"
+                  },
+                  "children": [
+                    {
+                      "id": "4786e6d4-3ccf-4f23-a767-dd4d717e1996",
+                      "type": "text",
+                      "class": "cls-17040e53",
+                      "props": {
+                        "text": "$999",
+                        "fontSize": "20px",
+                        "fontWeight": "bold",
+                        "color": "#fff"
+                      },
+                      "children": []
+                    },
+                    {
+                      "id": "20937b33-cc71-4b41-8e06-8179e471a9a0",
+                      "type": "button",
+                      "class": "cls-c00fd049",
+                      "props": {
+                        "text": "Add to Cart",
+                        "onClick": "add_to_cart_1",
+                        "backgroundColor": "#3b82f6",
+                        "color": "#fff",
+                        "padding": "10px 20px",
+                        "borderRadius": "8px",
+                        "fontWeight": "600",
+                        "hoverBackgroundColor": "#2563eb",
+                        "border": "none"
+                      },
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "aad58dd7-439e-45be-b28e-7cf65567a3bb",
+              "type": "card",
+              "class": "cls-bbdc5b1b",
+              "props": {
+                "width": "320px",
+                "backgroundColor": "#18181b",
+                "borderRadius": "16px",
+                "padding": "24px",
+                "border": "1px solid #27272a",
+                "display": "flex",
+                "flexDirection": "column",
+                "gap": "16px",
+                "hoverBackgroundColor": "#1f1f23"
+              },
+              "children": [
+                {
+                  "id": "9d03590e-e1fe-4e61-a93f-b5316461b09e",
+                  "type": "column",
+                  "class": "cls-8aca4bf8",
+                  "props": {
+                    "height": "200px",
+                    "backgroundColor": "#27272a",
+                    "borderRadius": "12px",
+                    "justifyContent": "center",
+                    "alignItems": "center",
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "gap": "0px"
+                  },
+                  "children": [
+                    {
+                      "id": "5584bec3-4513-42e5-ae0b-ad2e162a25d3",
+                      "type": "text",
+                      "class": "cls-7740d7d8",
+                      "props": {
+                        "text": "\ud83c\udfa7",
+                        "fontSize": "80px"
+                      },
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "14832d5c-fb42-45f4-bb79-f465274617f5",
+                  "type": "text",
+                  "class": "cls-d5bc5235",
+                  "props": {
+                    "text": "NovaPods Max",
+                    "fontSize": "24px",
+                    "fontWeight": "bold",
+                    "color": "#fff"
+                  },
+                  "children": []
+                },
+                {
+                  "id": "9191367b-f4ab-4851-bf74-2eb164470111",
+                  "type": "text",
+                  "class": "cls-679eeeeb",
+                  "props": {
+                    "text": "High-fidelity audio, Active Noise Cancellation.",
+                    "fontSize": "14px",
+                    "color": "#a1a1aa"
+                  },
+                  "children": []
+                },
+                {
+                  "id": "6354dda9-3617-401f-b37e-bb50636e9b30",
+                  "type": "row",
+                  "class": "cls-f1c52049",
+                  "props": {
+                    "justifyContent": "space-between",
+                    "alignItems": "center",
+                    "marginTop": "10px",
+                    "display": "flex",
+                    "flexDirection": "row",
+                    "gap": "0px"
+                  },
+                  "children": [
+                    {
+                      "id": "4ad57694-8460-4701-b317-3b96afcd7825",
+                      "type": "text",
+                      "class": "cls-62fa2acd",
+                      "props": {
+                        "text": "$499",
+                        "fontSize": "20px",
+                        "fontWeight": "bold",
+                        "color": "#fff"
+                      },
+                      "children": []
+                    },
+                    {
+                      "id": "b04a5b1c-9cbd-454a-bc9a-52cc419c14db",
+                      "type": "button",
+                      "class": "cls-c00fd049",
+                      "props": {
+                        "text": "Add to Cart",
+                        "onClick": "add_to_cart_1",
+                        "backgroundColor": "#3b82f6",
+                        "color": "#fff",
+                        "padding": "10px 20px",
+                        "borderRadius": "8px",
+                        "fontWeight": "600",
+                        "hoverBackgroundColor": "#2563eb",
+                        "border": "none"
+                      },
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

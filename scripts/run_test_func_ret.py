@@ -23,9 +23,9 @@ sys.path.insert(0, r"D:\intent-to-silicon-research\INTENT-TO-SILICON\prototype\a
 sys.path.insert(0, r"D:\intent-to-silicon-research\INTENT-TO-SILICON\prototype")
 
 # Import the AAYU language processing tools
-from compiler.frontend.lexer import Lexer          # Lexer: Breaks source code into tokens (like words)
-from compiler.frontend.parser import Parser        # Parser: Turns tokens into an Abstract Syntax Tree (AST)
-from compiler.frontend.compiler import AAYUCompiler  # Compiler: Converts AST into bytecode instructions
+from aayu.compiler.lexer.lexer import Lexer          # Lexer: Breaks source code into tokens (like words)
+from aayu.compiler.parser.parser import Parser        # Parser: Turns tokens into an Abstract Syntax Tree (AST)
+from aayu.compiler.bytecode.encoder import BytecodeEncoder  # Compiler: Converts AST into bytecode instructions
 from vm import VirtualMachine, Frame  # VM: Executes bytecode; Frame: execution context
 from opcode import Opcode        # Opcode: Instruction codes (LOAD_CONST, CALL, RETURN, etc.)
 
@@ -49,7 +49,7 @@ ast = parser.parse()  # AST represents the program structure
 
 # STEP 1C: Compilation - Convert AST into bytecode (like assembly for AAYU)
 # Example: Return statement → [OPCODE.LOAD_CONST(5), OPCODE.RETURN]
-compiler = AAYUCompiler()
+compiler = BytecodeEncoder()
 code_obj = compiler.compile(ast)  # Code object contains bytecode instructions
 
 

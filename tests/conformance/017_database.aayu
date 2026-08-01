@@ -1,0 +1,3 @@
+import db
+let users = db.query("SELECT * FROM users").
+show(users[0].name).

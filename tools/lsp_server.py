@@ -29,9 +29,9 @@ import os
 # Add prototype to sys.path so we can import aayu_language modules
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.errors import AAYUError
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.errors import AAYUError
 
 server = LanguageServer("aayu-lsp", "v1.0")
 

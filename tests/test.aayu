@@ -11,6 +11,6 @@ workflow AppointmentWorkflow for Appointment.
     step BookAppointment.
 end.
 
-page Dashboard.
+Page Dashboard.
     heading "Hospital".
 end.

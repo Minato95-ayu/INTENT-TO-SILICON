@@ -1,4 +1,4 @@
-page MessageBubble
+Page MessageBubble
     container
         card
             text "Bubble Component"

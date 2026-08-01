@@ -19,12 +19,12 @@ class SemanticActionCallNode(SemanticNode):
 with open("compiler/semantic/nodes.py", "a") as f:
     f.write(nodes_add)
 
-import_add = """from compiler.ast.nodes import (
+import_add = """from aayu.compiler.ast.nodes import (
     ProgramNode, StateDeclarationNode, LiteralNode,
     AssignmentNode, WidgetNode, ImportNode,
     ActionDeclarationNode, ActionCallNode, IdentifierNode
 )"""
-nodes_import_add = """from compiler.semantic.nodes import (
+nodes_import_add = """from aayu.compiler.semantic.nodes import (
     SemanticProgramNode, SemanticStateDeclNode, SemanticLiteralNode,
     SemanticAssignmentNode, SemanticWidgetNode, SemanticImportNode,
     SemanticActionDeclNode, SemanticActionCallNode, SemanticIdentifierNode
@@ -80,13 +80,13 @@ with open("compiler/semantic/analyzer.py", "r") as f:
     text = f.read()
 
 # Replace ast imports
-text = text.replace("""from compiler.ast.nodes import (
+text = text.replace("""from aayu.compiler.ast.nodes import (
     ProgramNode, StateDeclarationNode, LiteralNode,
     AssignmentNode, WidgetNode, ImportNode
 )""", import_add)
 
 # Replace semantic nodes imports
-text = text.replace("""from compiler.semantic.nodes import (
+text = text.replace("""from aayu.compiler.semantic.nodes import (
     SemanticProgramNode, SemanticStateDeclNode, SemanticLiteralNode,
     SemanticAssignmentNode, SemanticWidgetNode, SemanticImportNode
 )""", nodes_import_add)

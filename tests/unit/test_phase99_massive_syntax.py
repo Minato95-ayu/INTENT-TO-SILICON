@@ -1,9 +1,9 @@
 import unittest
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.compiler import AAYUCompiler
-from compiler.frontend.passes.manager import PassManager
-from runtime.vm.vm import VirtualMachine
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.bytecode.encoder import BytecodeEncoder
+from aayu.compiler.passes.manager import PassManager
+from aayu.runtime.vm.vm import VirtualMachine
 import io
 import contextlib
 
@@ -85,7 +85,7 @@ class TestMassiveSyntax(unittest.TestCase):
         parser = Parser(tokens, filename="<test>")
         ast = parser.parse()
         
-        compiler = AAYUCompiler(filename="<test>")
+        compiler = BytecodeEncoder(filename="<test>")
         bytecode = compiler.compile(ast)
         
         vm = VirtualMachine()

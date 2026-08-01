@@ -37,7 +37,7 @@ end
 
 load_posts()
 
-page BlogPage
+Page BlogPage
     layout Column
         text "AAYU Tech Blog"
         

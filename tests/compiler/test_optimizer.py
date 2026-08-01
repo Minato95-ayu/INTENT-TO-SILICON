@@ -1,7 +1,7 @@
 import unittest
-from compiler.ir.lir import LIRNode
-from compiler.optimizer.optimizer import Optimizer
-from compiler.optimizer.passes import DeadCodeElimination
+from aayu.compiler.ir.lir import LIRNode
+from aayu.compiler.optimizer.optimizer import Optimizer
+from aayu.compiler.optimizer.passes import DeadCodeElimination
 
 class TestOptimizer(unittest.TestCase):
     def test_dead_code_elimination(self):

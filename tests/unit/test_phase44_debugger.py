@@ -18,19 +18,19 @@ import sys
 # Ensure prototype directory is in path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..\..')))
 
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.compiler import AAYUCompiler
-from runtime.vm.vm import VirtualMachine
-from runtime.debugger.debugger import DebuggerRuntime
-from runtime.debugger.host import MockDebuggerHost
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.bytecode.encoder import BytecodeEncoder
+from aayu.runtime.vm.vm import VirtualMachine
+from aayu.runtime.debugger.debugger import DebuggerRuntime
+from aayu.runtime.debugger.host import MockDebuggerHost
 
 def compile_source(source: str):
     lexer = Lexer(source)
     tokens = lexer.tokenize()
     parser = Parser(tokens)
     ast = parser.parse()
-    compiler = AAYUCompiler()
+    compiler = BytecodeEncoder()
     return compiler.compile(ast)
 
 def test_breakpoint_pause():

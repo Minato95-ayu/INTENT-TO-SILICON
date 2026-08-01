@@ -1,4 +1,4 @@
-page Login {
+Page Login {
     title "Login - Demo App"
     
     state LoginForm {

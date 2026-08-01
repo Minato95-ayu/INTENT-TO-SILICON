@@ -15,7 +15,7 @@ fn close_app(app_name)
     active_window = ""
 end
 
-page Desktop
+Page Desktop
     layout Column
         # Top Bar
         layout Row

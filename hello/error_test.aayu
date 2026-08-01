@@ -1,6 +1,6 @@
 app counter_demo
 
-page Home
+Page Home
     text count
     # Missing end
 run

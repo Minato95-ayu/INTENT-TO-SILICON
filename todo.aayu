@@ -1,0 +1,41 @@
+app TodoApp
+
+theme TodoTheme
+    primaryColor "#4CAF50"
+    backgroundColor "#FAFAFA"
+    textColor "#333333"
+end
+
+state todos = [
+    "Learn AAYU framework",
+    "Build Notes app",
+    "Build Todo app",
+    "Deploy to production"
+]
+
+Page HomePage
+    Column
+        AppBar title="My Tasks" backgroundColor="#4CAF50" color="#FFFFFF"
+        end
+        
+        ScrollView
+            Padding padding="16"
+                Column
+                    for task in todos
+                        Card backgroundColor="#FFFFFF" cornerRadius="8" padding="16" elevation="1"
+                            Row
+                                Checkbox checked="false" color="#4CAF50"
+                                Text task fontSize="16" color="#333333"
+                                Spacer
+                                Icon name="delete" color="#F44336"
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        
+        FloatingActionButton icon="add" backgroundColor="#4CAF50" color="#FFFFFF"
+        end
+    end
+end

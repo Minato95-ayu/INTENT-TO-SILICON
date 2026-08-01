@@ -1,11 +1,11 @@
 import unittest
-from compiler.lexer.lexer import Lexer
-from compiler.parser.parser import Parser
-from compiler.semantic.analyzer import SemanticAnalyzer
-from compiler.ir.pipeline import IRPipeline
-from compiler.ir.hir import HIRNode
-from compiler.ir.mir import MIRNode
-from compiler.ir.lir import LIRNode
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.semantic.analyzer import SemanticAnalyzer
+from aayu.compiler.ir.pipeline import IRPipeline
+from aayu.compiler.ir.hir import HIRNode
+from aayu.compiler.ir.mir import MIRNode
+from aayu.compiler.ir.lir import LIRNode
 
 class TestIRPipeline(unittest.TestCase):
     def test_ir_lowering_pipeline(self):

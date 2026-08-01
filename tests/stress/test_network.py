@@ -1,8 +1,8 @@
 import unittest
 import time
 from unittest.mock import patch
-from runtime.kernel.core import RuntimeKernel
-from runtime.plugins.network.runtime import NetworkRuntime
+from aayu.runtime.kernel.core import RuntimeKernel
+from aayu.runtime.plugins.network.runtime import NetworkRuntime
 
 class TestNetworkStress(unittest.TestCase):
     def setUp(self):

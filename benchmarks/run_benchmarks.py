@@ -1,43 +1,85 @@
-import time
-import sys
 import os
+import time
+import subprocess
+import requests
+import psutil
+from concurrent.futures import ThreadPoolExecutor
+import random
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../prototype')))
+APPS = {
+    'FastAPI': {
+        'cmd': ['uvicorn', 'main:app', '--port', '8000'],
+        'cwd': 'benchmarks/apps/fastapi',
+        'loc_file': 'benchmarks/apps/fastapi/main.py'
+    },
+    'Django': {
+        'cmd': ['python', 'main.py', 'runserver', '8000', '--noreload'],
+        'cwd': 'benchmarks/apps/django',
+        'loc_file': 'benchmarks/apps/django/main.py'
+    }
+}
 
-def benchmark_python_fib():
-    def fib(n):
-        if n <= 1:
-            return n
-        return fib(n-1) + fib(n-2)
-        
+def count_loc(filepath):
+    with open(filepath, 'r') as f:
+        return len([line for line in f if line.strip() and not line.strip().startswith('#')])
+
+def wait_for_server():
+    for _ in range(50):
+        try:
+            r = requests.get('http://127.0.0.1:8000/', timeout=0.1)
+            if r.status_code == 200:
+                return True
+        except:
+            time.sleep(0.1)
+    return False
+
+def benchmark_latency_rps():
+    for _ in range(10):
+        try:
+            requests.get('http://127.0.0.1:8000/items/42')
+        except:
+            pass
     start = time.time()
-    fib(30)
+    reqs = 500
+    def fetch():
+        requests.get('http://127.0.0.1:8000/items/42')
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        for _ in range(reqs):
+            executor.submit(fetch)
     end = time.time()
-    return end - start
-
-def benchmark_aayu_fib():
-    # In a real environment, we would invoke the AAYU compiler and VM here.
-    # For now, we simulate the performance characteristics of the bytecode VM.
-    # We expect the AAYU bytecode VM (when built in Rust eventually) to be fast.
-    # Currently it's a Python VM, so it would be similar to Python, but we log the target.
-    time.sleep(0.1) # Simulated execution time
-    return 0.1
+    duration = end - start
+    rps = reqs / duration
+    latency = (duration / reqs) * 1000 # ms
+    return rps, latency
 
 def run_benchmarks():
-    print("🚀 AAYU v1.0.0 Benchmark Suite")
-    print("================================")
-    print("Test: Fibonacci(30)")
-    
-    py_time = benchmark_python_fib()
-    print(f"Python 3.11 : {py_time:.4f}s")
-    
-    aayu_time = benchmark_aayu_fib()
-    print(f"AAYU 1.0 VM : {aayu_time:.4f}s")
-    
-    print(f"\nAAYU is {py_time/aayu_time:.2f}x faster than Python.")
-    
-    # Placeholder for Rust/Go which would be compiled native binaries
-    print("\nNote: Rust and Go benchmarks require compiled binaries and are run separately.")
+    print("# Web Framework Benchmark: AAYU vs FastAPI vs Django")
+    print("| Framework | LOC | Startup Time (s) | RAM (MB) | RPS | Avg Latency (ms) |")
+    print("|-----------|-----|------------------|----------|-----|------------------|")
+
+    for name, config in APPS.items():
+        loc = count_loc(config['loc_file'])
+        cwd = config.get('cwd', os.getcwd())
+        start_time = time.time()
+        proc = subprocess.Popen(config['cmd'], cwd=cwd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        ready = wait_for_server()
+        startup_time = time.time() - start_time
+        if not ready:
+            proc.kill()
+            continue
+        try:
+            process = psutil.Process(proc.pid)
+            mem_mb = process.memory_info().rss / (1024 * 1024)
+            for child in process.children(recursive=True):
+                mem_mb += child.memory_info().rss / (1024 * 1024)
+        except:
+            mem_mb = 0
+        rps, latency = benchmark_latency_rps()
+        proc.kill()
+        proc.wait()
+        print(f"| {name} | {loc} | {startup_time:.3f} | {mem_mb:.1f} | {rps:.1f} | {latency:.2f} |")
+        time.sleep(1)
+
 
 if __name__ == '__main__':
     run_benchmarks()

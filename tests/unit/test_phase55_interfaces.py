@@ -13,14 +13,14 @@ To understand the project architecture, see the ARCHITECTURE_FREEZE.md file.
 """
 
 import unittest
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.compiler_context import CompilerContext
-from compiler.frontend.passes.semantic.scope_builder import ScopeBuilderPass
-from compiler.frontend.passes.semantic.type_checker import TypeCheckerPass
-from compiler.frontend.passes.semantic.symbol_binding import SymbolBindingPass
-from compiler.frontend.resolver.symbols import SymbolTable, ScopeType, SymbolKind, InterfaceSymbol
-from compiler.frontend.resolver.semantic_types import InterfaceType, BuiltinTypes, FunctionType
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.bytecode.encoder_context import CompilerContext
+from aayu.compiler.passes.semantic.scope_builder import ScopeBuilderPass
+from aayu.compiler.passes.semantic.type_checker import TypeCheckerPass
+from aayu.compiler.passes.semantic.symbol_binding import SymbolBindingPass
+from aayu.compiler.resolver.symbols import SymbolTable, ScopeType, SymbolKind, InterfaceSymbol
+from aayu.compiler.resolver.semantic_types import InterfaceType, BuiltinTypes, FunctionType
 
 class TestInterfaces(unittest.TestCase):
     def _run_type_checker(self, source: str) -> CompilerContext:

@@ -1,6 +1,6 @@
 project UITest.
 
-page Home {
+Page Home {
     column {
         heading "AAYU Native UI Engine".
         row {

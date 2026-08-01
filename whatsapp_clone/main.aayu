@@ -1,0 +1,160 @@
+app WhatsAppClone
+page App backgroundColor="#111b21" color="#e9edef"
+    state currentTab = "chats"
+    state activeChat = "none"
+
+    if currentTab == "chats"
+        row width="100%" height="100%" gap="0px"
+            # Sidebar
+            column width="400px" height="100%" backgroundColor="#111b21" borderRight="1px solid #222e35"
+                # Header
+                row justifyContent="space-between" alignItems="center" padding="10px 16px" backgroundColor="#202c33" height="59px"
+                    container width="40px" height="40px" borderRadius="20px" backgroundColor="#6b7c85" justifyContent="center" alignItems="center"
+                        icon name="user" color="#e9edef"
+                    end
+                    row gap="25px"
+                        icon name="users" color="#aebac1"
+                        icon name="spinner" color="#aebac1"
+                        icon name="comment-alt" color="#aebac1"
+                        icon name="ellipsis-v" color="#aebac1"
+                    end
+                end
+                
+                # Search Bar
+                container padding="8px 12px" backgroundColor="#111b21" borderBottom="1px solid #222e35"
+                    row width="100%" height="35px" backgroundColor="#202c33" borderRadius="8px" alignItems="center" padding="0 10px" gap="10px"
+                        icon name="search" color="#8696a0" fontSize="14"
+                        input placeholder="Search or start new chat" width="100%" height="35px" backgroundColor="transparent" color="#d1d7db" border="none"
+                    end
+                end
+                    
+                # Chat List
+                column width="100%" height="100%" overflowY="auto"
+                    
+                    # Chat 1: Kaushik
+                    button padding="0" backgroundColor="#111b21" hoverBackgroundColor="#202c33" onClick="openKaushik" border="none"
+                        row width="100%" padding="12px" gap="15px" alignItems="center" borderBottom="1px solid #222e35"
+                            container width="49px" height="49px" borderRadius="25px" backgroundColor="#00a884" justifyContent="center" alignItems="center"
+                                text text="K" color="#111b21" fontSize="20" fontWeight="bold"
+                            end
+                            column width="100%" gap="4px"
+                                row justifyContent="space-between" width="100%"
+                                    text text="My Number Kaushik" fontSize="17" color="#e9edef"
+                                    text text="10:30 AM" fontSize="12" color="#8696a0"
+                                end
+                                row gap="5px" alignItems="center"
+                                    icon name="check-double" color="#53bdeb" fontSize="12"
+                                    text text="Hello!" fontSize="14" color="#8696a0"
+                                end
+                            end
+                        end
+                    end
+                    
+                    # Chat 2: Ayush
+                    button padding="0" backgroundColor="#111b21" hoverBackgroundColor="#202c33" onClick="openAyush" border="none"
+                        row width="100%" padding="12px" gap="15px" alignItems="center" borderBottom="1px solid #222e35"
+                            container width="49px" height="49px" borderRadius="25px" backgroundColor="#6b7c85" justifyContent="center" alignItems="center"
+                                icon name="user" color="#e9edef"
+                            end
+                            column width="100%" gap="4px"
+                                row justifyContent="space-between" width="100%"
+                                    text text="Ayush 2nd No" fontSize="17" color="#e9edef"
+                                    text text="Yesterday" fontSize="12" color="#00a884"
+                                end
+                                row justifyContent="space-between" width="100%"
+                                    text text="How are you?" fontSize="14" color="#8696a0"
+                                    container backgroundColor="#00a884" borderRadius="10px" width="20px" height="20px" justifyContent="center" alignItems="center"
+                                        text text="2" color="#111b21" fontSize="12" fontWeight="bold"
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+                        
+            # Main Chat Area (Empty State)
+            column width="100%" height="100%" backgroundColor="#222e35" justifyContent="center" alignItems="center" gap="30px"
+                icon name="laptop" fontSize="100" color="#8696a0"
+                column alignItems="center" gap="10px"
+                    heading text="WhatsApp for Windows" color="#e9edef" fontSize="32" fontWeight="300"
+                    text text="Send and receive messages without keeping your phone online." color="#8696a0" fontSize="14"
+                end
+            end
+        end
+    else
+        row width="100%" height="100%" gap="0px"
+            # Active Chat Mode (Full width chat for simplicity, simulating mobile view or focused view)
+            column width="100%" height="100%" backgroundColor="#0b141a"
+                
+                # Chat Header
+                row width="100%" height="59px" backgroundColor="#202c33" padding="10px 16px" alignItems="center" gap="15px"
+                    button backgroundColor="transparent" border="none" hoverColor="#00a884" onClick="goBack"
+                        icon name="arrow-left" color="#aebac1" fontSize="20"
+                    end
+                    container width="40px" height="40px" borderRadius="20px" backgroundColor="#6b7c85" justifyContent="center" alignItems="center"
+                        icon name="user" color="#e9edef"
+                    end
+                    column gap="2px"
+                        if activeChat == "kaushik"
+                            text text="My Number Kaushik" color="#e9edef" fontSize="16"
+                        else
+                            text text="Ayush 2nd No" color="#e9edef" fontSize="16"
+                        end
+                        text text="click here for contact info" color="#8696a0" fontSize="13"
+                    end
+                end
+                
+                # Chat Messages Area (Simulating WhatsApp chat background)
+                column width="100%" height="100%" padding="30px" overflowY="auto" gap="15px" backgroundColor="#0b141a"
+                    if activeChat == "kaushik"
+                        row width="100%" justifyContent="flex-start"
+                            container backgroundColor="#202c33" padding="8px 12px" borderRadius="8px"
+                                text text="Hi" color="#e9edef" fontSize="15"
+                            end
+                        end
+                        row width="100%" justifyContent="flex-end"
+                            container backgroundColor="#005c4b" padding="8px 12px" borderRadius="8px"
+                                text text="Hello Kaushik, how are you?" color="#e9edef" fontSize="15"
+                            end
+                        end
+                    else
+                        row width="100%" justifyContent="flex-end"
+                            container backgroundColor="#005c4b" padding="8px 12px" borderRadius="8px"
+                                text text="Hey Ayush, what's up?" color="#e9edef" fontSize="15"
+                            end
+                        end
+                        row width="100%" justifyContent="flex-start"
+                            container backgroundColor="#202c33" padding="8px 12px" borderRadius="8px"
+                                text text="Doing great!" color="#e9edef" fontSize="15"
+                            end
+                        end
+                    end
+                end
+                
+                # Chat Input
+                row width="100%" height="62px" backgroundColor="#202c33" padding="10px 16px" alignItems="center" gap="15px"
+                    icon name="smile" color="#aebac1" fontSize="24"
+                    icon name="paperclip" color="#aebac1" fontSize="24"
+                    input placeholder="Type a message" width="100%" height="42px" backgroundColor="#2a3942" borderRadius="8px" color="#d1d7db" border="none"
+                    icon name="microphone" color="#aebac1" fontSize="24"
+                end
+            end
+        end
+    end
+
+    action openKaushik
+        currentTab = "chat"
+        activeChat = "kaushik"
+    end
+    
+    action openAyush
+        currentTab = "chat"
+        activeChat = "ayush"
+    end
+    
+    action goBack
+        currentTab = "chats"
+        activeChat = "none"
+    end
+end

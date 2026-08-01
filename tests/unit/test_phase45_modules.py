@@ -20,15 +20,15 @@ prototype_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'p
 sys.path.insert(0, prototype_dir)
 sys.path.insert(0, os.path.join(prototype_dir, 'language'))
 
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.passes.manager import PassManager
-from compiler.frontend.passes.semantic.scope_builder import ScopeBuilderPass
-from compiler.frontend.passes.semantic.import_binding import ImportBindingPass
-from compiler.frontend.passes.semantic.symbol_binding import SymbolBindingPass
-from compiler.frontend.passes.semantic.export_validation import ExportValidationPass
-from compiler.frontend.compiler_context import CompilerContext
-from compiler.frontend.resolver.symbols import SymbolTable, ScopeType
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.passes.manager import PassManager
+from aayu.compiler.passes.semantic.scope_builder import ScopeBuilderPass
+from aayu.compiler.passes.semantic.import_binding import ImportBindingPass
+from aayu.compiler.passes.semantic.symbol_binding import SymbolBindingPass
+from aayu.compiler.passes.semantic.export_validation import ExportValidationPass
+from aayu.compiler.bytecode.encoder_context import CompilerContext
+from aayu.compiler.resolver.symbols import SymbolTable, ScopeType
 
 def validate_sources(sources):
     context = CompilerContext()

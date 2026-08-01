@@ -20,13 +20,13 @@ import os
 LANG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'language'))
 sys.path.insert(0, LANG_DIR)
 
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.compiler import AAYUCompiler
-from runtime.memory import MemoryManager
-from runtime.vm.vm import VirtualMachine
-from runtime.diagnostics import AAYUUnhandledException
-from compiler.frontend.errors import AAYURuntimeError
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.bytecode.encoder import BytecodeEncoder
+from aayu.runtime.memory import MemoryManager
+from aayu.runtime.vm.vm import VirtualMachine
+from aayu.runtime.diagnostics import AAYUUnhandledException
+from aayu.compiler.errors import AAYURuntimeError
 
 
 def compile_and_run(source: str) -> VirtualMachine:
@@ -35,7 +35,7 @@ def compile_and_run(source: str) -> VirtualMachine:
     tokens = lexer.tokenize()
     parser = Parser(tokens, filename="<test>")
     ast = parser.parse()
-    compiler = AAYUCompiler(filename="<test>")
+    compiler = BytecodeEncoder(filename="<test>")
     bytecode = compiler.compile(ast)
     vm = VirtualMachine()
     vm.run(bytecode)
@@ -298,7 +298,7 @@ def test_try_only_with_finally():
 
 def test_parser_throw_node():
     """Parser generates correct ThrowNode."""
-    from compiler.frontend.ast_nodes import ThrowNode
+    from aayu.compiler.ast_nodes import ThrowNode
     source = 'throw "test error".'
     lexer = Lexer(source)
     parser = Parser(lexer.tokenize(), filename="<test>")
@@ -311,7 +311,7 @@ def test_parser_throw_node():
 
 def test_parser_panic_node():
     """Parser generates correct PanicNode."""
-    from compiler.frontend.ast_nodes import PanicNode
+    from aayu.compiler.ast_nodes import PanicNode
     source = 'panic "fatal".'
     lexer = Lexer(source)
     parser = Parser(lexer.tokenize(), filename="<test>")
@@ -324,7 +324,7 @@ def test_parser_panic_node():
 
 def test_parser_assert_node():
     """Parser generates correct AssertNode."""
-    from compiler.frontend.ast_nodes import AssertNode
+    from aayu.compiler.ast_nodes import AssertNode
     source = 'assert 1 is greater than 0.'
     lexer = Lexer(source)
     parser = Parser(lexer.tokenize(), filename="<test>")
@@ -337,7 +337,7 @@ def test_parser_assert_node():
 
 def test_parser_try_catch_finally():
     """Parser generates correct TryNode with catch and finally."""
-    from compiler.frontend.ast_nodes import TryNode, CatchNode, FinallyNode
+    from aayu.compiler.ast_nodes import TryNode, CatchNode, FinallyNode
     source = '''
     try.
         print("body").
@@ -365,12 +365,12 @@ def test_parser_try_catch_finally():
 
 def test_compiler_throw_emits_opcodes():
     """Compiler emits THROW opcode for ThrowNode."""
-    from compiler.frontend.ir import Opcode
+    from aayu.compiler.ir import Opcode
     source = 'throw "error".'
     lexer = Lexer(source)
     parser = Parser(lexer.tokenize(), filename="<test>")
     ast = parser.parse()
-    compiler = AAYUCompiler(filename="<test>")
+    compiler = BytecodeEncoder(filename="<test>")
     bytecode = compiler.compile(ast)
     opcodes = [inst.opcode for inst in bytecode.instructions]
     assert Opcode.THROW in opcodes, f"Expected THROW opcode, got {opcodes}"
@@ -389,7 +389,7 @@ def test_compiler_try_emits_table():
     lexer = Lexer(source)
     parser = Parser(lexer.tokenize(), filename="<test>")
     ast = parser.parse()
-    compiler = AAYUCompiler(filename="<test>")
+    compiler = BytecodeEncoder(filename="<test>")
     bytecode = compiler.compile(ast)
     assert len(bytecode.exception_table) == 1, f"Expected 1 exception_table entry, got {len(bytecode.exception_table)}"
     entry = bytecode.exception_table[0]
@@ -399,12 +399,12 @@ def test_compiler_try_emits_table():
 
 def test_compiler_panic_emits_opcodes():
     """Compiler emits PANIC opcode for PanicNode."""
-    from compiler.frontend.ir import Opcode
+    from aayu.compiler.ir import Opcode
     source = 'panic "fatal".'
     lexer = Lexer(source)
     parser = Parser(lexer.tokenize(), filename="<test>")
     ast = parser.parse()
-    compiler = AAYUCompiler(filename="<test>")
+    compiler = BytecodeEncoder(filename="<test>")
     bytecode = compiler.compile(ast)
     opcodes = [inst.opcode for inst in bytecode.instructions]
     assert Opcode.PANIC in opcodes, f"Expected PANIC opcode, got {opcodes}"
@@ -415,7 +415,7 @@ def test_compiler_panic_emits_opcodes():
 
 def test_exception_value_hierarchy():
     """Exception value hierarchy is correctly structured."""
-    from runtime.values.exception import (
+    from aayu.runtime.values.exception import (
         ExceptionValue, LanguageException, RuntimeException,
         ArithmeticException, DivisionByZeroException,
         PanicValue, AssertionException
@@ -448,7 +448,7 @@ def test_exception_value_hierarchy():
 
 def test_panic_is_not_exception():
     """PanicValue is NOT an ExceptionValue - enforces uncatchability at type level."""
-    from runtime.values.exception import ExceptionValue, PanicValue
+    from aayu.runtime.values.exception import ExceptionValue, PanicValue
     panic = PanicValue("bad")
     assert not isinstance(panic, ExceptionValue), "PanicValue must NOT be an ExceptionValue"
     print("  [PASS] test_panic_is_not_exception")
@@ -456,7 +456,7 @@ def test_panic_is_not_exception():
 
 def test_execution_state_enum():
     """ExecutionState enum has the required states."""
-    from runtime.vm.vm import ExecutionState
+    from aayu.runtime.vm.vm import ExecutionState
     assert ExecutionState.NORMAL.value == "NORMAL"
     assert ExecutionState.THROWING.value == "THROWING"
     assert ExecutionState.PANICKING.value == "PANICKING"

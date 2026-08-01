@@ -6,7 +6,7 @@ class AutoCoverageVMTest(unittest.TestCase):
     def test_auto_coverage_vm(self):
         import pkgutil
         import importlib
-        import runtime.vm.handlers as handlers_pkg
+        import aayu.runtime.vm.handlers as handlers_pkg
         
         # Load all modules dynamically and invoke all functions with dummy arguments
         pkg_path = os.path.dirname(handlers_pkg.__file__)

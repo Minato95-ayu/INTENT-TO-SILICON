@@ -6,7 +6,7 @@ with open('compiler/parser/parser.py', 'r') as f:
 # Replace ParserError definition
 content = re.sub(
     r'class ParserError\(Exception\):\n\s+pass',
-    'from compiler.errors import CompilerError\n\n# Deprecated, using CompilerError directly\nclass ParserError(CompilerError):\n    pass',
+    'from aayu.compiler.errors import CompilerError\n\n# Deprecated, using CompilerError directly\nclass ParserError(CompilerError):\n    pass',
     content
 )
 

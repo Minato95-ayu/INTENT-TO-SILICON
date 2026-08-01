@@ -1,7 +1,7 @@
 import unittest
 import time
-from runtime.kernel.core import RuntimeKernel
-from runtime.plugins.state.runtime import StateRuntime
+from aayu.runtime.kernel.core import RuntimeKernel
+from aayu.runtime.plugins.state.runtime import StateRuntime
 
 class TestStateStress(unittest.TestCase):
     def setUp(self):

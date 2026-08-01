@@ -32,8 +32,8 @@ if __name__ == "__main__":
         bytecodes = ws.build("mock_workspace/src/main.aayu")
         print("Build successful.")
         
-        from runtime.vm.vm import VirtualMachine
-        from runtime.memory.manager import MemoryManager
+        from aayu.runtime.vm.vm import VirtualMachine
+        from aayu.runtime.memory.manager import MemoryManager
         
         memory = MemoryManager()
         vm = VirtualMachine(memory)

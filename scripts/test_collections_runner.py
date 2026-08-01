@@ -16,11 +16,11 @@ import sys
 sys.path.insert(0, r"D:\intent-to-silicon-research\INTENT-TO-SILICON\prototype\language")
 sys.path.insert(0, r"D:\intent-to-silicon-research\INTENT-TO-SILICON\prototype")
 
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.passes.lowering import LoweringPass
-from compiler.frontend.compiler import AAYUCompiler
-from runtime.vm.vm import VirtualMachine
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.passes.lowering import LoweringPass
+from aayu.compiler.bytecode.encoder import BytecodeEncoder
+from aayu.runtime.vm.vm import VirtualMachine
 
 filepath = r"D:\intent-to-silicon-research\INTENT-TO-SILICON\test_collections.aayu"
 with open(filepath, 'r', encoding='utf-8') as f:
@@ -39,7 +39,7 @@ lowering = LoweringPass()
 lowered_ast = lowering.lower(ast)
 
 print("Compiling...")
-compiler = AAYUCompiler()
+compiler = BytecodeEncoder()
 bytecode = compiler.compile(lowered_ast)
 
 print("Executing...")

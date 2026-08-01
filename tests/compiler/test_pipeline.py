@@ -1,14 +1,14 @@
 import unittest
-from compiler.lexer.lexer import Lexer
-from compiler.parser.parser import Parser
-from compiler.semantic.analyzer import SemanticAnalyzer
-from compiler.ir.pipeline import IRPipeline
-from compiler.optimizer.optimizer import Optimizer
-from compiler.optimizer.passes import DeadCodeElimination
-from compiler.bytecode.generator import BytecodeGenerator
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.semantic.analyzer import SemanticAnalyzer
+from aayu.compiler.ir.pipeline import IRPipeline
+from aayu.compiler.optimizer.optimizer import Optimizer
+from aayu.compiler.optimizer.passes import DeadCodeElimination
+from aayu.compiler.bytecode.generator import BytecodeGenerator
 
-from runtime.kernel.core import RuntimeKernel
-from runtime.vm.vm import VirtualMachine
+from aayu.runtime.kernel.core import RuntimeKernel
+from aayu.runtime.vm.vm import VirtualMachine
 
 class MockStateRuntime:
     def __init__(self):

@@ -1,0 +1,70 @@
+app ChatApp
+
+useTheme "light"
+
+state messages = [
+    {
+        "text": "Hey! How are you doing?",
+        "sender": "them"
+    },
+    {
+        "text": "I'm doing well, thanks for asking! What about you?",
+        "sender": "me"
+    }
+]
+
+state newMessage = ""
+
+action send()
+    if newMessage != ""
+        messages.append({
+            "text": newMessage,
+            "sender": "me"
+        })
+        newMessage = ""
+    end
+end
+
+Component ChatBubble
+    prop message
+
+    # A simple way to align bubbles based on sender
+    # Since we don't have 'if' inside widget tree yet, we just render them
+    Card
+        padding=12
+        Row
+            Text message["sender"]
+                color="gray"
+            end
+            Text ": "
+            Text message["text"]
+        end
+    end
+end
+
+Page ChatPage
+    Scaffold
+        Column
+            Heading "Chat App"
+
+            # Chat History
+            for index, msg in messages
+                ChatBubble message=msg
+            end
+
+            # Input Area
+            Row
+                Input
+                    placeholder "Type a message..."
+                    bind newMessage
+                end
+                Button "Send"
+                    onClick send
+                    color "blue"
+                end
+            end
+        end
+    end
+end
+
+run ChatPage

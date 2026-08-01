@@ -1,0 +1,28 @@
+name = "test_app"
+version = "0.1.0"
+description = ""
+license = ""
+authors = []
+homepage = ""
+repository = ""
+language = ">=0.1.0"
+
+[app]
+entry = "app.aayu"
+
+[dependencies]
+
+[dev-dependencies]
+
+[features]
+
+[build]
+target = "web"
+
+[target]
+
+[assets]
+
+[env]
+
+[scripts]

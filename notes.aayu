@@ -1,0 +1,38 @@
+app NotesApp
+
+theme NotesTheme
+    primaryColor "#FFC107"
+    backgroundColor "#F5F5F5"
+    textColor "#212121"
+end
+
+state notes = [
+    "Meeting with design team at 10 AM",
+    "Buy milk and eggs",
+    "Review AAYU pull requests",
+    "Call mom for her birthday",
+    "Draft Q3 roadmap"
+]
+
+Page HomePage
+    Column
+        AppBar title="My Notes" backgroundColor="#FFC107" color="#000000"
+        end
+        
+        ScrollView
+            Padding padding="16"
+                Column
+                    for note in notes
+                        Card backgroundColor="#FFFFFF" cornerRadius="12" padding="16" elevation="2"
+                            Row
+                                Text note fontSize="16" color="#212121"
+                                Spacer
+                                Icon name="delete" color="#F44336"
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end

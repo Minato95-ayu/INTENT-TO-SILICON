@@ -1,0 +1,17 @@
+app counter2
+
+state {
+    count = 0
+}
+
+action Increment
+    count = 1
+end
+
+Page Home
+    text "Counter"
+    text count
+    button "Up" onClick="Increment"
+end
+
+run

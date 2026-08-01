@@ -1,0 +1,38 @@
+[
+    {
+        "framework": "AAYU VM",
+        "dependency_size_mb": 1.6823749542236328,
+        "startup_time_ms": 3114.72,
+        "memory_mb": 7.83,
+        "latency_ms": {
+            "median": 6.48,
+            "min": 0.0,
+            "max": 25.58,
+            "std_dev": 6.82
+        }
+    },
+    {
+        "framework": "FastAPI",
+        "dependency_size_mb": 48.5,
+        "startup_time_ms": 2074.33,
+        "memory_mb": 7.68,
+        "latency_ms": {
+            "median": 10.6,
+            "min": 3.61,
+            "max": 30.56,
+            "std_dev": 8.74
+        }
+    },
+    {
+        "framework": "Django REST",
+        "dependency_size_mb": 62.3,
+        "startup_time_ms": 2597.29,
+        "memory_mb": 7.67,
+        "latency_ms": {
+            "median": 16.5,
+            "min": 7.47,
+            "max": 27.96,
+            "std_dev": 6.23
+        }
+    }
+]

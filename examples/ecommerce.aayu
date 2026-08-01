@@ -6,7 +6,7 @@ state {
     discount_applied = 0
 }
 
-page Storefront
+Page Storefront
     text "Welcome to AAYU E-Commerce!"
     
     text "Items in your Cart:"

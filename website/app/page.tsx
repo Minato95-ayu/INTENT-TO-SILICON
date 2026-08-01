@@ -35,6 +35,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
+import { Creator } from "@/components/creator";
 
 /* ─────────────────────────────────────────────
    Animated typing hook
@@ -644,6 +645,11 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ================================================================
+          CREATOR SECTION
+          ================================================================ */}
+      <Creator />
 
       {/* ================================================================
           LANGUAGE STATS BAR

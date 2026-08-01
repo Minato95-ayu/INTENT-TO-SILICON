@@ -30,7 +30,7 @@ if 'def _parse_term' not in content:
         while self._match(TokenType.OPERATOR, "+") or self._match(TokenType.OPERATOR, "-"):
             operator = self._previous().value
             right = self._parse_factor()
-            from compiler.ast.nodes import BinaryOpNode
+            from aayu.compiler.ast.nodes import BinaryOpNode
             expr = BinaryOpNode(line=expr.line, column=expr.column, left=expr, operator=operator, right=right)
         return expr
 
@@ -39,7 +39,7 @@ if 'def _parse_term' not in content:
         while self._match(TokenType.OPERATOR, "*") or self._match(TokenType.OPERATOR, "/"):
             operator = self._previous().value
             right = self._parse_primary()
-            from compiler.ast.nodes import BinaryOpNode
+            from aayu.compiler.ast.nodes import BinaryOpNode
             expr = BinaryOpNode(line=expr.line, column=expr.column, left=expr, operator=operator, right=right)
         return expr
 
@@ -74,7 +74,7 @@ if '_visit_BinaryOpNode' not in content:
     def _visit_BinaryOpNode(self, node) -> SemanticNode:
         left = self._visit_node(node.left)
         right = self._visit_node(node.right)
-        from compiler.semantic.nodes import SemanticBinaryOpNode
+        from aayu.compiler.semantic.nodes import SemanticBinaryOpNode
         return SemanticBinaryOpNode(line=node.line, column=node.column, left=left, op=node.operator, right=right)
 
     def _visit_LiteralNode'''
@@ -104,7 +104,7 @@ if 'SemanticBinaryOpNode' not in content:
     content = content.replace(
         'elif isinstance(node, SemanticLiteralNode):',
         '''elif type(node).__name__ == "SemanticBinaryOpNode":
-            from compiler.ir.hir import HIRBinaryOp
+            from aayu.compiler.ir.hir import HIRBinaryOp
             return HIRBinaryOp(self._semantic_to_hir(node.left), node.op, self._semantic_to_hir(node.right))
         elif isinstance(node, SemanticLiteralNode):'''
     )

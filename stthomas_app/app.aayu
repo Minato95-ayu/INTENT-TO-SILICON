@@ -1,0 +1,30 @@
+
+app StThomasSchool
+
+import models.notice
+import routes.api
+import components.navbar
+import pages.home
+import pages.admissions
+import pages.notices
+
+state current_tab = "home"
+
+Page App
+    column
+        call Navbar
+        
+        if current_tab == "home"
+            call Home
+        end
+        
+        if current_tab == "admissions"
+            call Admissions
+        end
+        
+        if current_tab == "notices"
+            call Notices
+        end
+    end
+end
+

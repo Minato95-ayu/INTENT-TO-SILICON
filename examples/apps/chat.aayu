@@ -28,7 +28,7 @@ end
 
 load_messages()
 
-page ChatPage
+Page ChatPage
     layout Column
         text "Global Chat"
         

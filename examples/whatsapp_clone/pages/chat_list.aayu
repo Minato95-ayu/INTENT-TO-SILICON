@@ -4,7 +4,7 @@ action handleSearch()
     alert("Searching for: ", search_query)
 end
 
-page ChatList
+Page ChatList
     container
         heading "Chats"
         input placeholder="Search..." bind="search_query"

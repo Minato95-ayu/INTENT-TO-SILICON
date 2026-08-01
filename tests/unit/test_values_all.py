@@ -1,8 +1,8 @@
 import unittest
-from runtime.values.string import StringValue
-from runtime.values.list import ListValue
-from runtime.values.map import MapValue
-from runtime.values.number import NumberValue
+from aayu.runtime.values.string import StringValue
+from aayu.runtime.values.list import ListValue
+from aayu.runtime.values.map import MapValue
+from aayu.runtime.values.number import NumberValue
 
 class TestValuesAll(unittest.TestCase):
     def test_string(self):

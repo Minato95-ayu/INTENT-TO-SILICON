@@ -6,7 +6,7 @@ action saveProfile()
     navigateBack()
 end
 
-page Profile
+Page Profile
     container
         heading "My Profile"
         button "<- Back" onClick="navigateBack"

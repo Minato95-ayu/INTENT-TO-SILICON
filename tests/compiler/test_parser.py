@@ -1,7 +1,7 @@
 import unittest
-from compiler.lexer.lexer import Lexer
-from compiler.parser.parser import Parser
-from compiler.ast.nodes import ProgramNode, StateDeclarationNode, LiteralNode, WidgetNode
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.ast.nodes import ProgramNode, StateDeclarationNode, LiteralNode, WidgetNode
 
 class TestParser(unittest.TestCase):
     def test_parse_state_declaration(self):

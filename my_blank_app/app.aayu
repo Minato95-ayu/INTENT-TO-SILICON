@@ -1,0 +1,7 @@
+import "pages/home.aayu"
+
+app BlankApp
+
+route "/" Home
+
+run

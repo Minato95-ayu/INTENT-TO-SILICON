@@ -1,0 +1,25 @@
+app FullStackDemo
+
+model Product {
+    name: String
+    price: Float
+}
+
+route "/api/hello"
+    get
+        return "Hello from AAYU Full-Stack!"
+    end
+end
+
+Page App
+    Card
+        Column
+            Text "Welcome to AAYU Full-Stack App!"
+            Button "Click Me" onClick="say_hello"
+        end
+    end
+    
+    action say_hello
+        print "Button clicked!"
+    end
+end

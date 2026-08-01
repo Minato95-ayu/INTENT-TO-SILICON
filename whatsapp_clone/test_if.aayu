@@ -1,0 +1,16 @@
+app TestIf
+page App
+    state counter = 1
+    
+    if counter == 1
+        heading text="Counter is ONE!"
+    else
+        heading text="Counter is NOT ONE!"
+    end
+    
+    button text="Change" onClick="change"
+    
+    action change
+        counter = 2
+    end
+end

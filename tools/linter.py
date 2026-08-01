@@ -12,9 +12,9 @@ To understand the project architecture, see the ARCHITECTURE_FREEZE.md file.
 =============================================================================
 """
 
-from compiler.frontend.ast_nodes import *
-from compiler.frontend.passes.base import BasePass
-from compiler.frontend.location import SourceSpan
+from aayu.compiler.ast_nodes import *
+from aayu.compiler.passes.base import BasePass
+from aayu.compiler.location import SourceSpan
 import re
 
 class LintMessage:

@@ -19,11 +19,11 @@ import sqlite3
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "aayu_language"))
 
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.compiler import AAYUCompiler
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.bytecode.encoder import BytecodeEncoder
 from vm import VirtualMachine
-from compiler.frontend.errors import (
+from aayu.compiler.errors import (
     UndefinedVariableError,
     DivisionByZeroError,
     IndexOutOfBoundsError,
@@ -54,7 +54,7 @@ class TestVMErrors(unittest.TestCase):
         lexer = Lexer(source)
         parser = Parser(lexer.tokenize(), filename=filename)
         ast = parser.parse()
-        compiler = AAYUCompiler(filename=filename)
+        compiler = BytecodeEncoder(filename=filename)
         bytecode = compiler.compile(ast)
         vm = VirtualMachine(db_path=self.db_path)
         try:

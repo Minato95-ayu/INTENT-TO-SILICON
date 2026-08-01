@@ -5,12 +5,12 @@ import unittest
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 
-from compiler.lexer.lexer import Lexer
-from compiler.parser.parser import Parser
-from compiler.semantic.analyzer import SemanticAnalyzer
-from compiler.ir.pipeline import IRPipeline
-from compiler.bytecode.encoder import BytecodeEncoder
-from runtime.session.manager import SessionManager
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.semantic.analyzer import SemanticAnalyzer
+from aayu.compiler.ir.pipeline import IRPipeline
+from aayu.compiler.bytecode.encoder import BytecodeEncoder
+from aayu.runtime.session.manager import SessionManager
 
 class AayuSmokeTests(unittest.TestCase):
     def compile_and_load(self, code, session_id="test-session"):
@@ -35,7 +35,7 @@ class AayuSmokeTests(unittest.TestCase):
         session = self.compile_and_load(code, "calc-session")
         print(session.vm.action_addresses)
         
-        from runtime.renderers.web_renderer import serialize_node
+        from aayu.runtime.renderers.web_renderer import serialize_node
         
         # 1. Initial Page Load
         session.vm.call_action_by_name("Calculator")
@@ -122,7 +122,7 @@ class AayuSmokeTests(unittest.TestCase):
         """
         session = self.compile_and_load(code, "counter-session")
         
-        from runtime.renderers.web_renderer import serialize_node
+        from aayu.runtime.renderers.web_renderer import serialize_node
 
         session.vm.call_action_by_name("Counter")
         tree = serialize_node(session.vm.interpreter.render_tree.root, set())

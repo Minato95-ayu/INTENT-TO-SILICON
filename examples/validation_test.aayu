@@ -1,0 +1,22 @@
+@public
+model User {
+    name: String
+        required
+        min(3)
+        max(50)
+
+    email: Email
+        required
+        unique
+
+    phone: Phone
+
+    age: Int
+        min(18)
+
+    status: String
+        enum("Active","Inactive")
+
+    createdAt: DateTime
+        default("now")
+}

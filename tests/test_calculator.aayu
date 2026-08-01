@@ -1,0 +1,70 @@
+Page Calculator
+    state current = "0"
+    state previous = ""
+    state op = ""
+
+    action press(num)
+        if current == "0"
+            current = num
+        else
+            current = current + num
+        end
+    end
+
+    action pressOp(newOp)
+        previous = current
+        current = "0"
+        op = newOp
+    end
+
+    action calculate()
+        if op == "+"
+            current = float(previous) + float(current)
+        end
+        if op == "-"
+            current = float(previous) - float(current)
+        end
+        if op == "*"
+            current = float(previous) * float(current)
+        end
+        if op == "/"
+            current = float(previous) / float(current)
+        end
+        previous = ""
+        op = ""
+    end
+
+    action clear()
+        current = "0"
+        previous = ""
+        op = ""
+    end
+
+    Column
+        Text current
+        Row
+            Button "7" onClick=press("7")
+            Button "8" onClick=press("8")
+            Button "9" onClick=press("9")
+            Button "/" onClick=pressOp("/")
+        end
+        Row
+            Button "4" onClick=press("4")
+            Button "5" onClick=press("5")
+            Button "6" onClick=press("6")
+            Button "*" onClick=pressOp("*")
+        end
+        Row
+            Button "1" onClick=press("1")
+            Button "2" onClick=press("2")
+            Button "3" onClick=press("3")
+            Button "-" onClick=pressOp("-")
+        end
+        Row
+            Button "C" onClick=clear
+            Button "0" onClick=press("0")
+            Button "=" onClick=calculate
+            Button "+" onClick=pressOp("+")
+        end
+    end
+end

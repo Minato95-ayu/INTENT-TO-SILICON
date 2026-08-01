@@ -1,6 +1,6 @@
 import pytest
 import asyncio
-from runtime.http.runtime import HttpRuntime
+from aayu.runtime.http.runtime import HttpRuntime
 
 @pytest.mark.asyncio
 async def test_http_runtime_e2e():

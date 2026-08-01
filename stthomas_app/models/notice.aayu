@@ -1,0 +1,7 @@
+
+model Notice
+    title String
+    date String
+    content String
+end
+

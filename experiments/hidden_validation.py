@@ -17,7 +17,7 @@ import sys
 import os
 
 sys.path.append(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'prototype', 'compiler_v2'))
-from compiler.frontend.compiler import CompilerV2
+from aayu.compiler.bytecode.encoder import CompilerV2
 
 def run_benchmark():
     c = CompilerV2()

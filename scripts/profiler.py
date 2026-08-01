@@ -6,16 +6,16 @@ import sys
 # Append root to path so we can import AAYU compiler and runtime
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from compiler.lexer.lexer import Lexer
-from compiler.parser.parser import Parser
-from compiler.semantic.analyzer import SemanticAnalyzer
-from compiler.ir.pipeline import IRPipeline
-from compiler.optimizer.optimizer import Optimizer
-from compiler.bytecode.generator import BytecodeGenerator
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.semantic.analyzer import SemanticAnalyzer
+from aayu.compiler.ir.pipeline import IRPipeline
+from aayu.compiler.optimizer.optimizer import Optimizer
+from aayu.compiler.bytecode.generator import BytecodeGenerator
 
-from runtime.kernel.core import RuntimeKernel
-from runtime.vm.vm import VirtualMachine
-from runtime.plugins.state.runtime import StateRuntime
+from aayu.runtime.kernel.core import RuntimeKernel
+from aayu.runtime.vm.vm import VirtualMachine
+from aayu.runtime.plugins.state.runtime import StateRuntime
 
 def profile_file(filepath):
     print(f"\n--- Profiling: {os.path.basename(filepath)} ---")

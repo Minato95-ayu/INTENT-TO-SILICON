@@ -5,29 +5,31 @@ import socket
 from unittest.mock import patch, MagicMock
 
 # AAYU Runtime Imports
-from runtime.vm.vm import VirtualMachine
-from runtime.stdlib.stdlib import StdLibLoader
-from runtime.values.string import StringValue
-from runtime.values.number import NumberValue
-from runtime.values.boolean import BooleanValue
-from runtime.values.null import NullValue
+from aayu.runtime.vm.vm import VirtualMachine
+from aayu.runtime.stdlib.stdlib import StdLib
+from aayu.runtime.values.string import StringValue
+from aayu.runtime.values.number import NumberValue
+from aayu.runtime.values.boolean import BooleanValue
+from aayu.runtime.values.null import NullValue
+from aayu.runtime.values.base import RuntimeValue
 
 class TestStdlibProduction(unittest.TestCase):
     def setUp(self):
         self.vm = VirtualMachine()
-        loader = StdLibLoader()
-        loader.register(self.vm)
-        self.vm._register_stdlib = lambda: None # mock as it's already registered via loader
         
         # Helper to execute stdlib functions easily
-        self.execute = lambda method, *args: self.vm.globals.get(method).value([self._py_to_val(a) for a in args], self.vm)
+        self.execute = lambda method, *args: self.vm.stdlib.registry.functions.get(method)([self._py_to_val(a) for a in args], self.vm)
 
     def _py_to_val(self, val):
+        if isinstance(val, RuntimeValue):
+            return val
         if isinstance(val, str):
-            obj = self.vm.memory.heap.allocate("string", val)
-            return StringValue(obj.id, self.vm.memory.heap)
+            ptr = self.vm.heap.allocate("string", val)
+            return StringValue(ptr, self.vm.heap)
         if isinstance(val, (int, float)):
             return NumberValue(val)
+        if isinstance(val, bool):
+            return BooleanValue(val)
         return NullValue()
 
     def test_fs_production(self):
@@ -42,23 +44,23 @@ class TestStdlibProduction(unittest.TestCase):
         self.assertTrue(isinstance(res, BooleanValue) and res.value == True)
         
         # 3. Read
-        res = self.execute("fs::read", test_file)
+        res = self.execute("file::read", test_file)
         self.assertEqual(res.to_python(), "Hello World")
         
         # 4. Exists
-        res = self.execute("fs::exists", test_file)
+        res = self.execute("file::exists", test_file)
         self.assertTrue(res.value == True)
         
         # 5. Delete
-        res = self.execute("fs::delete", test_file)
+        res = self.execute("file::delete", test_file)
         self.assertTrue(res.value == True)
         
         # 6. Exists after delete
-        res = self.execute("fs::exists", test_file)
+        res = self.execute("file::exists", test_file)
         self.assertFalse(res.value == True)
         
         # 7. Missing File Error
-        res = self.execute("fs::read", "missing_file_random_123.txt")
+        res = self.execute("file::read", "missing_file_random_123.txt")
         self.assertEqual(res.to_python(), "error: file not found")
 
     @patch("urllib.request.urlopen")
@@ -69,13 +71,17 @@ class TestStdlibProduction(unittest.TestCase):
         mock_response.__enter__.return_value = mock_response
         mock_urlopen.return_value = mock_response
         
-        res = self.execute("http::get", "http://example.com")
-        self.assertEqual(res.to_python(), '{"status": "ok"}')
+        res = self.execute("HTTP.get", "http://example.com")
+        if hasattr(res, 'to_python'):
+            res = res.to_python()
+        self.assertEqual(res, {"status": "ok"})
         
         # 2. Timeout Error
         mock_urlopen.side_effect = socket.timeout("timeout")
-        res = self.execute("http::get", "http://example.com", 1)
-        self.assertEqual(res.to_python(), "error: timeout")
+        res = self.execute("HTTP.get", "http://example.com", 1)
+        if hasattr(res, 'to_python'):
+            res = res.to_python()
+        self.assertIsNone(res)
 
     def test_json_production(self):
         # 1. Parse Nested
@@ -100,7 +106,7 @@ class TestStdlibProduction(unittest.TestCase):
 
     def test_memory_integrity(self):
         # Peak heap check
-        initial_heap_size = len(self.vm.memory.heap.objects)
+        initial_heap_size = len(self.vm.heap.allocator.pool.pool)
         
         # Allocate heavily
         for i in range(100):
@@ -110,7 +116,7 @@ class TestStdlibProduction(unittest.TestCase):
         for i in range(50):
             self.execute("json::parse", json_str)
             
-        peak_heap_size = len(self.vm.memory.heap.objects)
+        peak_heap_size = len(self.vm.heap.allocator.pool.pool)
         self.assertTrue(peak_heap_size > initial_heap_size)
         
         # In a real ARC/GC we would assert size goes back down, 

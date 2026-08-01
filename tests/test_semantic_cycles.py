@@ -5,9 +5,9 @@ import os
 # Add root to sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from compiler.ast.nodes import ProgramNode, ImportNode
-from compiler.semantic.analyzer import SemanticAnalyzer
-from compiler.errors import CompilerError
+from aayu.compiler.ast.nodes import ProgramNode, ImportNode
+from aayu.compiler.semantic.analyzer import SemanticAnalyzer
+from aayu.compiler.errors import CompilerError
 
 def test_import_cycle_detection():
     # Program: import A

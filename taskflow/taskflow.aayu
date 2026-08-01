@@ -1,0 +1,44 @@
+
+app TaskFlow
+
+model Task
+    title String
+    status String
+end
+
+route "/api/tasks"
+    get
+        return "tasks_data"
+    end
+end
+
+state current_page = "dashboard"
+state tasks = "Loading..."
+
+Page Dashboard
+    column
+        heading "TaskFlow Kanban"
+        
+        row
+            column
+                heading "TODO"
+                card
+                    text "Design UI"
+                    button "Move to DOING"
+                end
+            end
+            
+            column
+                heading "DOING"
+                card
+                    text "Write API"
+                end
+            end
+            
+            column
+                heading "DONE"
+            end
+        end
+    end
+end
+

@@ -1,0 +1,22 @@
+@public
+model User {
+    name: String
+    email: String @unique
+    age: Int
+}
+
+@public
+model Product {
+    title: String
+    price: Float
+}
+
+@role("teacher")
+model Document {
+    title: String
+    content: String
+}
+
+action ping()
+    return "pong"
+end

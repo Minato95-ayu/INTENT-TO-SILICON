@@ -1,8 +1,8 @@
 import time
 import pytest
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.compiler import AAYUCompiler
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.bytecode.encoder import BytecodeEncoder
 
 def generate_large_script(loc=1000):
     lines = []
@@ -26,7 +26,7 @@ def test_compilation_performance():
     ast = parser.parse()
     parse_time = time.perf_counter()
     
-    compiler = AAYUCompiler()
+    compiler = BytecodeEncoder()
     bytecode = compiler.compile(ast)
     comp_time = time.perf_counter()
     

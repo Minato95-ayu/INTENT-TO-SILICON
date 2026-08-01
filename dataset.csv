@@ -1,0 +1,34 @@
+Prompt,Expected
+Mera app bahot tezi se load hona chahiye,Latency < 200ms
+Bina lag ke turant page khul jaye,Latency < 200ms
+Jaldi reply aana mangta hai,Latency < 200ms
+Koi bhi hack na kar paye mere data ko,AES-256 Encryption
+Information secure rehni chahiye hamesha,AES-256 Encryption
+Data leak ka risk zero hona chahiye,AES-256 Encryption
+Kal ko lakhon log aayenge app par,Auto-scaling
+Traffic badhne par server down nahi hona chahiye,Auto-scaling
+Heavy load handle kar sake system,Auto-scaling
+Sirf mujhe hi backend dikhna chahiye,RBAC / Admin Only
+Users ko admin section mat dikhana,RBAC / Admin Only
+Kaun kya dekh sakta hai uspe control chahiye,RBAC / Admin Only
+App ka size bahot chhota rakhna hai,Resource-constrained footprint
+Kam memory me chalne wala code likho,Resource-constrained footprint
+Low end mobile pe bhi chal jana chahiye,Resource-constrained footprint
+Jaise hi koi message kare instantly dikhna chahiye,WebSockets
+Live chatting feature chahiye app me,WebSockets
+Real time data sync hona zaroori hai,WebSockets
+Sab log bina account ke dekh sakein,Public Access
+Koi OTP ya password nahi mangna hai,Public Access
+Open for all rakhna hai isko,Public Access
+Agar net chala jaye to bhi app kaam kare,Offline Support
+Airplane mode me bhi details dikhe,Offline Support
+No connection me data locally save ho jaye,Offline Support
+Sasta aur halka data store karke rakho,SQLite
+Database ke liye zyada paise nahi kharchne,SQLite
+Local DB me kaam chala lo,SQLite
+Mujhe sab manage karne ke liye ek panel de do,Admin Portal
+Peeche se control karne ka setup banao,Admin Portal
+Users aur sales track karne ke liye screen chahiye,Admin Portal
+App ka color theme dark hona chahiye,Unknown Specification
+SEO Google pe number one aana chahiye,Unknown Specification
+Razorpay payment gateway laga dena,Unknown Specification

@@ -18,7 +18,7 @@ import sys
 
 # Add compiler_v2 to path
 sys.path.append(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'prototype', 'compiler_v2'))
-from compiler.frontend.v2.compiler import CompilerV2
+from aayu.compiler.v2.compiler import CompilerV2
 
 def test_regression():
     c = CompilerV2()

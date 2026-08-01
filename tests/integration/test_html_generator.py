@@ -1,6 +1,6 @@
 import pytest
-from compiler.backend.html_generator import HTMLGenerator
-from compiler.frontend.v2.compiler import CompilerV2
+from aayu.compiler.backend.html_generator import HTMLGenerator
+from aayu.compiler.v2.compiler import CompilerV2
 
 def test_html_generator():
     c = CompilerV2()

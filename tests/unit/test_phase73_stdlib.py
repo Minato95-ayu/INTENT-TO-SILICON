@@ -19,10 +19,10 @@ import sys
 # Add prototype/language to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..\..')))
 
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.compiler import AAYUCompiler
-from runtime.vm.vm import VirtualMachine
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.bytecode.encoder import BytecodeEncoder
+from aayu.runtime.vm.vm import VirtualMachine
 
 class TestPhase73Stdlib(unittest.TestCase):
     def run_code(self, code: str):
@@ -30,10 +30,10 @@ class TestPhase73Stdlib(unittest.TestCase):
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        compiler = AAYUCompiler()
+        compiler = BytecodeEncoder()
         bc = compiler.compile(ast)
         vm = VirtualMachine(trace_execution=False)
-        from runtime.stdlib.stdlib import StdLib
+        from aayu.runtime.stdlib.stdlib import StdLib
         stdlib = StdLib(vm)
         stdlib.populate_globals(vm.memory.globals)
         vm.run(bc)

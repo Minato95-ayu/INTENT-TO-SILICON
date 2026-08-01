@@ -9,12 +9,12 @@ import unittest
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..\..')))
 
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.compiler import AAYUCompiler
-from compiler.frontend.resolver.symbols import TypeSource, SymbolKind
-from compiler.frontend.passes.semantic.scope_builder import ScopeBuilderPass
-from compiler.frontend.compiler_context import CompilerContext
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.bytecode.encoder import BytecodeEncoder
+from aayu.compiler.resolver.symbols import TypeSource, SymbolKind
+from aayu.compiler.passes.semantic.scope_builder import ScopeBuilderPass
+from aayu.compiler.bytecode.encoder_context import CompilerContext
 
 
 class TestSymbolTypeMetadata(unittest.TestCase):
@@ -29,7 +29,7 @@ class TestSymbolTypeMetadata(unittest.TestCase):
 
     def test_symbol_defaults(self):
         """Fresh symbols have declared_type=None, resolved_type=None, type_source='explicit'."""
-        from compiler.frontend.resolver.symbols import VariableSymbol, SymbolTable, ScopeType
+        from aayu.compiler.resolver.symbols import VariableSymbol, SymbolTable, ScopeType
         scope = SymbolTable("test", ScopeType.GLOBAL)
         sym = VariableSymbol("x", scope)
         self.assertIsNone(sym.declared_type)
@@ -38,7 +38,7 @@ class TestSymbolTypeMetadata(unittest.TestCase):
 
     def test_symbol_kind_preserved(self):
         """Symbol subclasses retain their SymbolKind."""
-        from compiler.frontend.resolver.symbols import FunctionSymbol, ParameterSymbol, SymbolTable, ScopeType
+        from aayu.compiler.resolver.symbols import FunctionSymbol, ParameterSymbol, SymbolTable, ScopeType
         scope = SymbolTable("test", ScopeType.GLOBAL)
         fn = FunctionSymbol("sum_values", scope)
         self.assertEqual(fn.kind, SymbolKind.FUNCTION)
@@ -61,7 +61,7 @@ class TestScopeBuilderTypeBinding(unittest.TestCase):
         ctx.current_module = "test"
         ctx.asts["test"] = ast
 
-        from compiler.frontend.resolver.symbols import SymbolTable, ScopeType
+        from aayu.compiler.resolver.symbols import SymbolTable, ScopeType
         ctx.symbol_tables["test"] = SymbolTable("test", ScopeType.GLOBAL)
 
         scope_pass = ScopeBuilderPass()
@@ -163,7 +163,7 @@ class TestScopeBuilderTypeBinding(unittest.TestCase):
             tokens = lexer.tokenize()
             parser = Parser(tokens, filename="test.aayu")
             ast = parser.parse()
-            compiler = AAYUCompiler()
+            compiler = BytecodeEncoder()
             bytecode = compiler.compile(ast)
             # Just verify it compiles without error — compiler is unchanged
             self.assertIsNotNone(bytecode)
@@ -184,7 +184,7 @@ class TestTaskSymbolBinding(unittest.TestCase):
         ctx.current_module = "test"
         ctx.asts["test"] = ast
 
-        from compiler.frontend.resolver.symbols import SymbolTable, ScopeType
+        from aayu.compiler.resolver.symbols import SymbolTable, ScopeType
         ctx.symbol_tables["test"] = SymbolTable("test", ScopeType.GLOBAL)
 
         scope_pass = ScopeBuilderPass()

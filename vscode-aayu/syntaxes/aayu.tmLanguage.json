@@ -43,11 +43,11 @@
       "patterns": [
         {
           "name": "keyword.control.aayu",
-          "match": "\\b(if|else|while|end|return|run)\\b"
+          "match": "\\b(if|else|while|end|return|run|for|navigate|call|import|route|use theme)\\b"
         },
         {
           "name": "storage.type.aayu",
-          "match": "\\b(system|record|task|entity|map|list|text|number|boolean|role|workflow|page|step)\\b"
+          "match": "\\b(system|record|task|entity|map|list|text|number|boolean|role|workflow|Page|Component|Form|Scaffold|Dialog|Drawer|Snackbar|TabBar|app|action|state|model|theme)\\b"
         },
         {
           "name": "keyword.operator.aayu",
@@ -59,7 +59,7 @@
         },
         {
           "name": "support.function.ui.aayu",
-          "match": "\\b(card|heading|button|table|sidebar|dashboard)\\b"
+          "match": "\\b(Button|Text|Input|Container|Row|Column|Card|Stack|Center|Expanded|Padding|ScrollView|Grid|AppBar|NavigationBar|List|Icon|Image|Divider|Table|Sidebar|Dashboard)\\b"
         },
         {
           "name": "constant.language.aayu",

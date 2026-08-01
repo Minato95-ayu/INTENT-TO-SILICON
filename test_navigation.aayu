@@ -1,0 +1,36 @@
+Page Home
+    Card
+        Column
+            Text "Home Page"
+            Button "Go to Profile" onClick="go_profile"
+        end
+    end
+    
+    action go_profile
+        navigate Profile(id=42, name="Ayush")
+    end
+end
+
+Page Profile
+    prop id
+    prop name
+    
+    Card
+        Column
+            Text "Profile Page"
+            Row
+                Text "User ID: "
+                Text id
+            end
+            Row
+                Text "Name: "
+                Text name
+            end
+            Button "Go Back" onClick="go_home"
+        end
+    end
+    
+    action go_home
+        navigate Home
+    end
+end

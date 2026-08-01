@@ -1,0 +1,27 @@
+model Product {
+    id: Int
+    name: String
+    price: Float
+    stock: Int
+}
+
+model Order {
+    id: Int
+    product_id: Int
+    quantity: Int
+    total: Float
+}
+
+action login(email, password)
+    print("DEBUG AAYU EMAIL:")
+    print(email)
+    print("DEBUG AAYU PASSWORD:")
+    print(password)
+    
+    if email == "bench@test.com"
+        if password == "password"
+            return "mock_token_12345"
+        end
+    end
+    return ""
+end

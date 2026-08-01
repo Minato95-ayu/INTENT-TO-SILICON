@@ -31,7 +31,7 @@ end
 # Initial load
 load_notes()
 
-page NotesPage
+Page NotesPage
     layout Column
         text "AAYU Notes App"
         

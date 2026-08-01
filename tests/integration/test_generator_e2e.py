@@ -1,7 +1,7 @@
 import pytest
-from compiler.backend.app_ir import AppIRBuilder
-from compiler.frontend.parser import Parser
-from compiler.frontend.lexer import Lexer
+from aayu.compiler.backend.app_ir import AppIRBuilder
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.lexer.lexer import Lexer
 
 def test_app_ir_builder():
     lexer = Lexer("""

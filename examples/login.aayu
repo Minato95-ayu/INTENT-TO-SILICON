@@ -1,0 +1,74 @@
+app LoginApp
+
+useTheme "light"
+
+action handleLogin()
+    if $form.valid
+        state loading = true
+        state res = HTTP.post("https://jsonplaceholder.typicode.com/posts", $form.values)
+        if res.id
+            print("Login Successful!")
+            navigate DashboardPage(email=$form.values.email)
+        end
+        loading = false
+    else
+        print("Please fix form errors")
+    end
+end
+
+Form LoginForm
+    validate
+        email: required email
+        password: required minLength 8
+    end
+
+    Column
+        Heading "Login"
+        
+        Input
+            placeholder "Email"
+            bind email
+        end
+        
+        if $form.errors.email
+            Text $form.errors.email.message
+                color "red"
+            end
+        end
+
+        Input
+            placeholder "Password"
+            bind password
+        end
+        
+        if $form.errors.password
+            Text $form.errors.password.message
+                color "red"
+            end
+        end
+
+        Button "Submit"
+            onClick handleLogin
+        end
+    end
+end
+
+Page DashboardPage
+    prop email
+    Scaffold
+        Column
+            Heading "Welcome to Dashboard"
+            Text email
+        end
+    end
+end
+
+Page LoginPage
+    Scaffold
+        Center
+            LoginForm()
+        end
+    end
+end
+
+run LoginPage

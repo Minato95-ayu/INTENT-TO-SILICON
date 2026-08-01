@@ -5,13 +5,13 @@ import socket
 from unittest.mock import patch, MagicMock
 
 # AAYU Runtime Imports
-from runtime.vm.vm import VirtualMachine
-from runtime.stdlib.stdlib import StdLib
-from runtime.values.string import StringValue
-from runtime.values.number import NumberValue
-from runtime.values.boolean import BooleanValue
-from runtime.values.null import NullValue
-from runtime.values.map import MapValue
+from aayu.runtime.vm.vm import VirtualMachine
+from aayu.runtime.stdlib.stdlib import StdLib
+from aayu.runtime.values.string import StringValue
+from aayu.runtime.values.number import NumberValue
+from aayu.runtime.values.boolean import BooleanValue
+from aayu.runtime.values.null import NullValue
+from aayu.runtime.values.map import MapValue
 
 vm = VirtualMachine()
 loader = StdLib(vm)

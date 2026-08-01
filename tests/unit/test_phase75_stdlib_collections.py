@@ -3,10 +3,10 @@ import os
 import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..\..')))
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.compiler import AAYUCompiler
-from runtime.vm.vm import VirtualMachine
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.bytecode.encoder import BytecodeEncoder
+from aayu.runtime.vm.vm import VirtualMachine
 
 class TestPhase75StdlibCollections(unittest.TestCase):
     def run_code(self, code: str):
@@ -14,7 +14,7 @@ class TestPhase75StdlibCollections(unittest.TestCase):
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        compiler = AAYUCompiler()
+        compiler = BytecodeEncoder()
         bytecode = compiler.compile(ast)
         vm = VirtualMachine()
         vm.run(bytecode)

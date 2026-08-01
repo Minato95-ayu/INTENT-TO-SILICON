@@ -20,8 +20,8 @@ with open(vm_path, "r", encoding="utf-8") as f:
 
 # Replace imports
 imports = """import sqlite3
-from compiler.frontend.ir import Opcode, Bytecode
-from compiler.frontend.errors import (
+from aayu.compiler.ir import Opcode, Bytecode
+from aayu.compiler.errors import (
     AAYUError,
     AAYURuntimeError,
     UndefinedVariableError,
@@ -32,8 +32,8 @@ from compiler.frontend.errors import (
 )
 
 from dataclasses import dataclass
-from runtime.memory import MemoryManager
-from runtime.values import RuntimeValue, NumberValue, StringValue, BooleanValue, NullValue, FunctionValue, ListValue, MapValue, NativeFunctionValue
+from aayu.runtime.memory import MemoryManager
+from aayu.runtime.values import RuntimeValue, NumberValue, StringValue, BooleanValue, NullValue, FunctionValue, ListValue, MapValue, NativeFunctionValue
 """
 vm_content = vm_content.split("@dataclass")[1]
 vm_content = imports + "\n@dataclass" + vm_content

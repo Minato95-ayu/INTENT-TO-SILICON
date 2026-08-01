@@ -31,14 +31,18 @@ dev = [
     "mypy>=1.0",
     "pyinstaller>=5.0"
 ]
+lsp = [
+    "pygls>=1.3",
+    "lsprotocol>=2023.0.1"
+]
 
 [project.scripts]
-aayu = "tools.cli:main"
+aayu = "aayu.cli:main"
 
-[project.urls]
-Repository = "https://github.com/Minato95-ayu/INTENT-TO-SILICON"
-Documentation = "https://aayu-lang.github.io"
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["compiler*", "runtime*", "tools*", "brainos*", "intent_engine*"]
+include = ["aayu*", "brainos*", "intent_engine*"]

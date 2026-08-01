@@ -1,0 +1,6 @@
+{
+  "total_prompts": 1250,
+  "exact_pass_rate": 6.0,
+  "tfidf_pass_rate": 82.0,
+  "time_taken_sec": 0.1069791316986084
+}

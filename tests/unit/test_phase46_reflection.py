@@ -19,7 +19,7 @@ import os
 prototype_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'prototype'))
 sys.path.insert(0, prototype_dir)
 
-from compiler.frontend.engine.api import AAYUEngine
+from aayu.compiler.engine.api import AAYUEngine
 
 def test_reflection():
     engine = AAYUEngine()
@@ -38,11 +38,11 @@ def test_reflection():
     export { hello }.
     """
     
-    from compiler.frontend.lexer import Lexer
-    from compiler.frontend.parser import Parser
-    from compiler.frontend.passes.lowering import LoweringPass
-    from compiler.frontend.compiler import AAYUCompiler
-    from runtime.vm.vm import VirtualMachine
+    from aayu.compiler.lexer.lexer import Lexer
+    from aayu.compiler.parser.parser import Parser
+    from aayu.compiler.passes.lowering import LoweringPass
+    from aayu.compiler.bytecode.encoder import BytecodeEncoder
+    from aayu.runtime.vm.vm import VirtualMachine
     
     def compile_aayu(src, name):
         lexer = Lexer(src)
@@ -51,7 +51,7 @@ def test_reflection():
         ast = parser.parse()
         lowering = LoweringPass()
         normalized_ast = lowering.lower(ast)
-        compiler = AAYUCompiler(filename=name)
+        compiler = BytecodeEncoder(filename=name)
         return compiler.compile(normalized_ast)
         
     # Compile module
@@ -87,7 +87,7 @@ def test_reflection():
     
     bytecode2 = compile_aayu(script, "test_reflect")
     
-    from runtime.vm.vm import VirtualMachine
+    from aayu.runtime.vm.vm import VirtualMachine
     vm = VirtualMachine()
     try:
         vm.run(bytecode2)

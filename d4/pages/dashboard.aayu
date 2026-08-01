@@ -1,0 +1,11 @@
+Page Dashboard
+    Row
+        Sidebar
+            Button "Dashboard" onClick="go_home"
+            Button "Settings" onClick="go_settings"
+        end
+        Column
+            Text "Dashboard Overview" 
+        end
+    end
+end

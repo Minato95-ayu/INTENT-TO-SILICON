@@ -1,0 +1,23 @@
+app TestDictApp
+
+state messages = []
+
+action testDict()
+    messages.append({
+        "name": "Aayu",
+        "age": 10
+    })
+end
+
+Page Home
+    Scaffold
+        for index, msg in messages
+            Text msg["name"]
+        end
+        Button "Grow"
+            onClick testDict
+        end
+    end
+end
+
+run Home

@@ -1,5 +1,5 @@
 import pytest
-from compiler.backend.app_ir import AppIR, DatabaseIR, FrontendIR, RouteIR
+from aayu.compiler.backend.app_ir import AppIR, DatabaseIR, FrontendIR, RouteIR
 
 def test_app_ir_models():
     db = DatabaseIR("sqlite", [{"name": "User", "fields": []}])

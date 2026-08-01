@@ -12,7 +12,7 @@ To understand the project architecture, see the ARCHITECTURE_FREEZE.md file.
 =============================================================================
 """
 
-from compiler.frontend.ast_nodes import UIPageNode, UIComponentNode, UIElementNode, TextNode, VariableNode
+from aayu.compiler.ast_nodes import UIPageNode, UIComponentNode, UIElementNode, TextNode, VariableNode
 import os
 
 class UIGenerator:

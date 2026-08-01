@@ -1,6 +1,6 @@
 import components.Navbar
 
-page Home {
+Page Home {
     title "Dashboard - Demo App"
     
     view {

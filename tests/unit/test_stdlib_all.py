@@ -1,12 +1,12 @@
 import unittest
-from runtime.stdlib.modules.math_lib import MATH_MODULE
-from runtime.stdlib.modules.string_lib import STRING_MODULE
-from runtime.stdlib.modules.json_lib import JSON_MODULE
-from runtime.stdlib.modules.file_lib import FILE_MODULE
-from runtime.values.number import NumberValue
-from runtime.values.string import StringValue
-from runtime.values.map import MapValue
-from runtime.values.list import ListValue
+from aayu.runtime.stdlib.modules.math_lib import MATH_MODULE
+from aayu.runtime.stdlib.modules.string_lib import STRING_MODULE
+from aayu.runtime.stdlib.modules.json_lib import JSON_MODULE
+from aayu.runtime.stdlib.modules.file_lib import FILE_MODULE
+from aayu.runtime.values.number import NumberValue
+from aayu.runtime.values.string import StringValue
+from aayu.runtime.values.map import MapValue
+from aayu.runtime.values.list import ListValue
 
 class TestStdlibAll(unittest.TestCase):
     def test_math(self):

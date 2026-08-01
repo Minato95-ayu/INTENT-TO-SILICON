@@ -1,0 +1,19 @@
+
+component Home
+    column
+        heading "Welcome to St. Thomas School"
+        text "A CBSE-affiliated co-educational day school located in Goyala Vihar, Dwarka, New Delhi."
+        
+        row
+            card
+                heading "Our Vision"
+                text "To nurture leaders of tomorrow through holistic education."
+            end
+            card
+                heading "Academics"
+                text "Classes Nursery to XII. World-class infrastructure."
+            end
+        end
+    end
+end
+

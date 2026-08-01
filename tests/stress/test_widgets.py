@@ -1,8 +1,8 @@
 import unittest
 import time
-from runtime.kernel.core import RuntimeKernel
-from runtime.plugins.ui.runtime import UIRuntime
-from runtime.plugins.render.runtime import RenderRuntime
+from aayu.runtime.kernel.core import RuntimeKernel
+from aayu.runtime.plugins.ui.runtime import UIRuntime
+from aayu.runtime.plugins.render.runtime import RenderRuntime
 
 class TestWidgetStress(unittest.TestCase):
     def setUp(self):

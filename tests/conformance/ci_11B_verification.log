@@ -1,0 +1,81 @@
+=======================================
+ AAYU CI Verification Report (Phase 11B)
+=======================================
+
+Timestamp: 2026-08-01T16:02:24.311551Z
+OS: Windows 10 (10.0.26200)
+Compiler: 'cl' is not recognized as an internal or external command,
+Commit Hash: cc25fb107eb39ea4f8d93796dfd9de9a2994f04d
+
+=======================================
+ 1. Building Runtime
+=======================================
+main.c
+vm.c
+runtime/native/vm.c(165): warning C4133: '=': incompatible types - from 'AayuArray *' to 'AayuObject *'
+runtime/native/vm.c(197): warning C4133: '=': incompatible types - from 'AayuDict *' to 'AayuObject *'
+runtime/native/vm.c(207): warning C4018: '<': signed/unsigned mismatch
+runtime/native/vm.c(216): warning C4018: '<': signed/unsigned mismatch
+runtime/native/vm.c(238): warning C4018: '<': signed/unsigned mismatch
+runtime/native/vm.c(244): warning C4018: '<': signed/unsigned mismatch
+runtime/native/vm.c(294): warning C4133: '=': incompatible types - from 'AayuDict *' to 'AayuObject *'
+runtime/native/vm.c(309): warning C4133: '=': incompatible types - from 'AayuDict *' to 'AayuObject *'
+runtime/native/vm.c(311): warning C4133: '=': incompatible types - from 'AayuArray *' to 'AayuObject *'
+runtime/native/vm.c(191): warning C4996: 'strtok': This function or variable may be unsafe. Consider using strtok_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+runtime/native/vm.c(205): warning C4244: 'initializing': conversion from 'int64_t' to 'int', possible loss of data
+runtime/native/vm.c(236): warning C4244: 'initializing': conversion from 'int64_t' to 'int', possible loss of data
+loader.c
+allocator.c
+runtime/native/memory/allocator.c(88): warning C4267: '+=': conversion from 'size_t' to 'uint32_t', possible loss of data
+os_mem.c
+arena.c
+manager.c
+visitor.c
+gc.c
+Generating code
+Finished generating code
+Compiling sources...
+Linking executable...
+Build successful.
+
+
+=======================================
+ 2. Running Conformance Suite
+=======================================
+=======================================
+ AAYU Language Conformance Suite       
+=======================================
+
+Testing 001_print.aayu... Testing 002_variables.aayu... Testing 003_arithmetic.aayu... Testing 004_boolean.aayu... Testing 005_comparison.aayu... Testing 006_if.aayu... Testing 007_while.aayu... Testing 008_functions.aayu... Testing 009_recursion.aayu... Testing 010_arrays.aayu... Testing 011_dictionaries.aayu... Testing 012_strings.aayu... Testing 013_modules.aayu... Testing 014_errors.aayu... Testing 015_filesystem.aayu... Testing 016_http.aayu... Testing 017_database.aayu... =======================================
+ AAYU Language Conformance Score
+=======================================
+
+PASS
+  001_print.aayu
+  002_variables.aayu
+  003_arithmetic.aayu
+  004_boolean.aayu
+  005_comparison.aayu
+  006_if.aayu
+  007_while.aayu
+  008_functions.aayu
+  009_recursion.aayu
+  010_arrays.aayu
+  011_dictionaries.aayu
+  012_strings.aayu
+  013_modules.aayu
+  014_errors.aayu
+  015_filesystem.aayu
+  016_http.aayu
+  017_database.aayu
+
+=======================================
+ Overall Conformance: 17 / 17 Features (100%)
+=======================================
+
+Release Status:
+âœ… PHASE 11A VERIFIED
+
+
+
+VERDICT: 17/17 PASS ✅

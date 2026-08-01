@@ -1,6 +1,6 @@
 import unittest
-from compiler.lexer.lexer import Lexer
-from compiler.lexer.tokens import TokenType
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.lexer.tokens import TokenType
 
 class TestLexer(unittest.TestCase):
     def test_basic_tokens(self):

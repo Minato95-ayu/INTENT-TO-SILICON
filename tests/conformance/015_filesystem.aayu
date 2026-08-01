@@ -1,0 +1,3 @@
+import fs
+let file = fs.read("test.txt").
+show(file).

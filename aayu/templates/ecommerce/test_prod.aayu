@@ -1,0 +1,11 @@
+let response = http::get("https://jsonplaceholder.typicode.com/todos/1").
+let data = json::parse(response).
+let str_data = json::stringify(data).
+fs::write("output.json", str_data).
+let exists = fs::exists("output.json").
+show exists.
+let content = fs::read("output.json").
+show content.
+fs::delete("output.json").
+let exists_after = fs::exists("output.json").
+show exists_after.

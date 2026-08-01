@@ -1,0 +1,40 @@
+
+widget App
+    Page
+        AppBar title="My App" color="blue"
+        ScrollView
+            Padding value="16"
+                Column gap="12"
+                    Card padding="20" shadow="0px 4px 10px rgba(0,0,0,0.1)" radius="16"
+                        Row
+                            Avatar src="user.png"
+                            Expanded
+                                Column
+                                    Heading "Ayush" fontSize="18"
+                                    Text "Software Engineer" color="gray"
+                            Spacer
+                            Icon name="menu"
+                    
+                    Divider color="#eee"
+                    
+                    Grid columns="2" gap="10"
+                        Container height="100" backgroundColor="red" radius="8"
+                        Container height="100" backgroundColor="green" radius="8"
+                        
+                    Form
+                        Column gap="10"
+                            Input placeholder="Email"
+                            PasswordInput placeholder="Password"
+                            Row gap="10"
+                                Checkbox
+                                Text "Remember me"
+                            Button "Login" padding="12" radius="8" backgroundColor="black" color="white"
+                            
+        NavigationBar
+            Row justifyContent="space-around" padding="10"
+                Icon name="home"
+                Icon name="search"
+                Icon name="user"
+    end
+end
+

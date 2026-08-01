@@ -1,0 +1,74 @@
+app AuthTest
+
+model User {
+  id: Int @primary
+  email: String @unique
+  password_hash: String @auth_password
+}
+
+model SecretNote {
+  id: Int @primary
+  title: String
+  userId: Int
+}
+
+state authToken = ""
+state user_email = ""
+state secrets = []
+
+action register(e, p)
+  t = auth.register(e, p)
+  if t != ""
+    authToken = t
+    user_email = e
+    print("Registered successfully: " + authToken)
+    return t
+  else
+    print("Failed to register")
+  end
+end
+
+action login(e, p)
+  t = auth.login(e, p)
+  if t != ""
+    authToken = t
+    user_email = e
+    print("Logged in successfully: " + authToken)
+    return t
+  else
+    print("Failed to login")
+  end
+end
+
+@auth_required
+action createSecret(title)
+  # req_user is injected by CHECK_AUTH
+  db.SecretNote.save({"title": title, "userId": req_user["id"]})
+  print("Secret created")
+end
+
+@auth_required
+action loadSecrets()
+  secrets = db.SecretNote.find()
+  print("Secrets loaded")
+end
+
+Page LoginScreen
+  Column
+    Text "Auth Test"
+    Button "Register"
+      onClick register("test@aayu.com", "password123")
+    end
+    Button "Login"
+      onClick login("test@aayu.com", "password123")
+    end
+    Button "Create Secret"
+      onClick createSecret("My Super Secret")
+    end
+    Button "Load Secrets"
+      onClick loadSecrets()
+    end
+  end
+end
+
+run LoginScreen

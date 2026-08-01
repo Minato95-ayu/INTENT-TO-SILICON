@@ -6,10 +6,10 @@ from intent_engine.v2.engine import IntentEngine
 from brainos.v2.generator import ProjectGenerator
 from tools.cli_formatter import AAYUFormatter
 from tools.cli_linter import AAYULinter
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.compiler import AAYUCompiler
-from runtime.vm.vm import VirtualMachine
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.bytecode.encoder import BytecodeEncoder
+from aayu.runtime.vm.vm import VirtualMachine
 
 class TestPipelineE2E(unittest.TestCase):
     def setUp(self):
@@ -53,7 +53,7 @@ class TestPipelineE2E(unittest.TestCase):
         tokens = lexer.tokenize()
         parser = Parser(tokens, filename="<test>")
         ast = parser.parse()
-        compiler = AAYUCompiler(filename="<test>")
+        compiler = BytecodeEncoder(filename="<test>")
         bytecode = compiler.compile(ast)
         self.assertTrue(len(bytecode.instructions) > 0)
         

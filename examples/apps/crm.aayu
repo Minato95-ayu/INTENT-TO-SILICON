@@ -31,7 +31,7 @@ end
 
 load_customers()
 
-page CRMPage
+Page CRMPage
     layout Row
         layout Column
             text "Add New Lead"

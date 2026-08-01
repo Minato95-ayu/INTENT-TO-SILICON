@@ -1,0 +1,11 @@
+Page Settings {
+    Row {
+        Sidebar {
+            Button "Dashboard" { navigate("/") }
+            Button "Settings" { navigate("/settings") }
+        }
+        Column {
+            Text "Settings Page"
+        }
+    }
+}

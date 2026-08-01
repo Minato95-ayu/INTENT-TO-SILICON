@@ -6,7 +6,7 @@ class AutoCoveragePlannerTest(unittest.TestCase):
     def test_auto_coverage_planner(self):
         import pkgutil
         import importlib
-        import compiler.planner as planner_pkg
+        import aayu.compiler.planner as planner_pkg
         
         pkg_path = os.path.dirname(planner_pkg.__file__)
         for _, module_name, _ in pkgutil.iter_modules([pkg_path]):

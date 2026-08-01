@@ -1,0 +1,13 @@
+    state cartItemsCount = 0
+    state subtotalAmount = 0.0
+    state isLoggedIn = 0
+    state accountGreeting = "Hello, sign in"
+    state loginEmail = ""
+    state loginPassword = ""
+    
+    state qty_iphone = 0
+    state qty_macbook = 0
+    state qty_headphones = 0
+    state qty_ps5 = 0
+    state qty_watch = 0
+    state qty_camera = 0

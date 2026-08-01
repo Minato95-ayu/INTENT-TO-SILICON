@@ -9,7 +9,7 @@ theme Dark {
 route "/" Home.
 route "/about" About.
 
-page Home {
+Page Home {
     state count = 0.
 
     hero {
@@ -25,7 +25,7 @@ page Home {
     }
 }
 
-page About {
+Page About {
     column {
         heading "About Me".
         text "Building the future of software with AI.".

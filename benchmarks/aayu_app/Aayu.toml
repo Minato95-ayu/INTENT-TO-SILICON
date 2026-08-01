@@ -1,0 +1,10 @@
+name = "benchmark_aayu"
+version = "0.1.0"
+
+[app]
+entry = "src/app.aayu"
+
+[dependencies]
+
+[build]
+target = "server"

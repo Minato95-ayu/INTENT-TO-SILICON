@@ -2,7 +2,7 @@
 
 state active_section = "about"
 
-page PortfolioPage
+Page PortfolioPage
     layout Column
         layout Row
             text "Developer Portfolio"

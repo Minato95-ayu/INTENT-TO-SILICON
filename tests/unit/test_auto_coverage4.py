@@ -6,7 +6,7 @@ class AutoCoverageValuesTest(unittest.TestCase):
     def test_auto_coverage_values(self):
         import pkgutil
         import importlib
-        import runtime.values as values_pkg
+        import aayu.runtime.values as values_pkg
         
         # Load all modules dynamically and instantiate classes
         pkg_path = os.path.dirname(values_pkg.__file__)

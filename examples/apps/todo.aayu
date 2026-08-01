@@ -27,7 +27,7 @@ end
 
 fetch_todos()
 
-page TodoPage
+Page TodoPage
     layout Column
         text "Todo List"
         layout Row

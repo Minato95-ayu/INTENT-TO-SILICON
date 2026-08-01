@@ -12,7 +12,7 @@ fn run_code()
     console_output = "Running...\nHello AAYU\nProcess exited with code 0."
 end
 
-page IDE
+Page IDE
     layout Column
         layout Row
             text "AAYU Studio"

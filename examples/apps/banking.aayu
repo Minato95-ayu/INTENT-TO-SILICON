@@ -29,7 +29,7 @@ end
 
 load_account()
 
-page BankingApp
+Page BankingApp
     layout Column
         text "AAYU Secure Banking"
         text "Account: " + current_account

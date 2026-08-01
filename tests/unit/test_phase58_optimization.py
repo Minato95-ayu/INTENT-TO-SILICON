@@ -18,16 +18,16 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..\..')))
 
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.compiler import AAYUCompiler
-from compiler.frontend.passes.manager import PassManager
-from compiler.frontend.passes.optimizer import StaticOptimizerPass
-from compiler.frontend.passes.semantic.type_checker import TypeCheckerPass
-from compiler.frontend.passes.semantic.scope_builder import ScopeBuilderPass
-from compiler.frontend.passes.semantic.symbol_binding import SymbolBindingPass
-from compiler.frontend.compiler_context import CompilerContext
-from compiler.frontend.ast_nodes import NumberNode, IfNode, BlockNode, ShowNode
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.bytecode.encoder import BytecodeEncoder
+from aayu.compiler.passes.manager import PassManager
+from aayu.compiler.passes.optimizer import StaticOptimizerPass
+from aayu.compiler.passes.semantic.type_checker import TypeCheckerPass
+from aayu.compiler.passes.semantic.scope_builder import ScopeBuilderPass
+from aayu.compiler.passes.semantic.symbol_binding import SymbolBindingPass
+from aayu.compiler.bytecode.encoder_context import CompilerContext
+from aayu.compiler.ast_nodes import NumberNode, IfNode, BlockNode, ShowNode
 
 class TestPhase58Optimization(unittest.TestCase):
     def setUp(self):
@@ -43,7 +43,7 @@ class TestPhase58Optimization(unittest.TestCase):
         context.asts["main"] = ast
         context.current_module = "main"
         
-        from compiler.frontend.resolver.symbols import SymbolTable, ScopeType
+        from aayu.compiler.resolver.symbols import SymbolTable, ScopeType
         context.symbol_tables["main"] = SymbolTable("main", ScopeType.MODULE)
         
         success = self.pass_manager.run(context)

@@ -1,0 +1,10 @@
+action get_root()
+    return "Hello from AAYU"
+end
+
+action get_item(item_id)
+    return "OK"
+end
+
+get "/" to get_root
+get "/items/{item_id}" to get_item

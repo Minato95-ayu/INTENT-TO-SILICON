@@ -1,6 +1,6 @@
 import unittest
-from runtime.vm.handlers.logic import execute_and, execute_or, execute_not
-from runtime.values.boolean import BooleanValue
+from aayu.runtime.vm.handlers.logic import execute_and, execute_or, execute_not
+from aayu.runtime.values.boolean import BooleanValue
 
 class DummyStack:
     def __init__(self):

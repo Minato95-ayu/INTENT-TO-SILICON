@@ -18,8 +18,8 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..\..')))
 
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
 from tools.linter import AAYULinter
 
 class TestPhase72Linter(unittest.TestCase):

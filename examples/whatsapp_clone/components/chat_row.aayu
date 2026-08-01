@@ -1,4 +1,4 @@
-page ChatRow
+Page ChatRow
     container
         card
             text "Chat Row Component"

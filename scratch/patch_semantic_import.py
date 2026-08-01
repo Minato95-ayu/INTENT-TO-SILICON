@@ -41,7 +41,7 @@ content = content.replace(
 # Add _analyze_import method
 analyze_import_method = """
     def _analyze_import(self, node: ImportNode):
-        from compiler.errors import CompilerError
+        from aayu.compiler.errors import CompilerError
         if node.module in self.visiting_modules:
             raise CompilerError(f"Import cycle detected: '{node.module}'", node.line, getattr(node, 'column', 0))
             

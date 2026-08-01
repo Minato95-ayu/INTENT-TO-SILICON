@@ -1,9 +1,9 @@
 import pytest
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.compiler import AAYUCompiler
-from compiler.frontend.ast_nodes import *
-from compiler.frontend.errors import AAYUSyntaxError
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.bytecode.encoder import BytecodeEncoder
+from aayu.compiler.ast_nodes import *
+from aayu.compiler.errors import AAYUSyntaxError
 
 def parse(source):
     lexer = Lexer(source)
@@ -13,7 +13,7 @@ def parse(source):
 
 def compile_source(source):
     ast = parse(source)
-    compiler = AAYUCompiler()
+    compiler = BytecodeEncoder()
     return compiler.compile(ast)
 
 class TestParserAdvanced:

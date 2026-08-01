@@ -4,11 +4,11 @@ import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
-from runtime.vm_next.vm import VirtualMachine
-from runtime.vm_next.config import VMConfig
-from runtime.vm_next.instructions import Opcode
-from runtime.vm_next.exceptions import StackOverflowError, InvalidBytecodeError
-from runtime.vm_next.frame import CallFrame
+from aayu.runtime.vm_next.vm import VirtualMachine
+from aayu.runtime.vm_next.config import VMConfig
+from aayu.runtime.vm_next.instructions import Opcode
+from aayu.runtime.vm_next.exceptions import StackOverflowError, InvalidBytecodeError
+from aayu.runtime.vm_next.frame import CallFrame
 
 def test_10m_instructions():
     # Construct 100k instructions to test throughput (10M takes too long in python pytest usually without JIT)
@@ -41,7 +41,7 @@ def test_invalid_opcode():
     assert "Unknown opcode" in str(exc.value)
 
 def test_plugin_recovery():
-    from runtime.vm_next.result import RuntimeResult, ResultStatus
+    from aayu.runtime.vm_next.result import RuntimeResult, ResultStatus
     
     vm = VirtualMachine()
     # Mocking a dispatch instruction

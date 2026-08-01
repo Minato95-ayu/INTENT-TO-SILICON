@@ -23,9 +23,9 @@ import sqlite3
 # Ensure we import from aayu_language directory
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "aayu_language"))
 
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.compiler import AAYUCompiler
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.bytecode.encoder import BytecodeEncoder
 from vm import VirtualMachine
 from serializer import serialize, deserialize
 from interpreter import Interpreter
@@ -65,7 +65,7 @@ def run_vm_otf(filepath):
     parser = Parser(lexer.tokenize(), filename=os.path.basename(filepath))
     ast = parser.parse()
     
-    compiler = AAYUCompiler()
+    compiler = BytecodeEncoder()
     bytecode = compiler.compile(ast)
     
     vm = VirtualMachine()
@@ -85,7 +85,7 @@ def run_vm_ayc(filepath, ayc_path):
     lexer = Lexer(source_code)
     parser = Parser(lexer.tokenize(), filename=os.path.basename(filepath))
     ast = parser.parse()
-    compiler = AAYUCompiler()
+    compiler = BytecodeEncoder()
     bytecode = compiler.compile(ast)
     
     with open(ayc_path, 'w', encoding='utf-8') as f:

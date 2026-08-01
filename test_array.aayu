@@ -1,0 +1,11 @@
+state notes = ["First", "Second", "Third"]
+
+Page Home
+    Column
+        for note in notes
+            Text(note)
+        end
+    end
+end
+
+navigate Home

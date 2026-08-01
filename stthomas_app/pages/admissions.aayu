@@ -1,0 +1,14 @@
+
+Page Admissions
+    column
+        heading "Admissions 2026-2027"
+        text "Admissions are currently open for Nursery to Class IX."
+        
+        card
+            heading "Enquiry Form"
+            text "Parent Name"
+            button "Submit Enquiry"
+        end
+    end
+end
+

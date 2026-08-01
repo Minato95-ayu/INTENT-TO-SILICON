@@ -11,7 +11,7 @@ action toggleNotifications()
     alert("Notifications disabled")
 end
 
-page Settings
+Page Settings
     container
         heading "Settings"
         button "<- Back" onClick="navigateBack"

@@ -12,9 +12,9 @@ To understand the project architecture, see the ARCHITECTURE_FREEZE.md file.
 =============================================================================
 """
 
-from compiler.frontend.ast_nodes import *
-from compiler.frontend.passes.base import BasePass
-from compiler.frontend.compiler_context import CompilerContext
+from aayu.compiler.ast_nodes import *
+from aayu.compiler.passes.base import BasePass
+from aayu.compiler.bytecode.encoder_context import CompilerContext
 
 class AAYUFormatter(BasePass):
     def __init__(self, indent_size=4):

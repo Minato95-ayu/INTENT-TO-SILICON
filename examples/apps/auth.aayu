@@ -21,7 +21,7 @@ fn logout()
     password = ""
 end
 
-page AuthPage
+Page AuthPage
     layout Column
         if is_logged_in
             text "Welcome back, " + username + "!"

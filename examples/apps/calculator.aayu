@@ -42,7 +42,7 @@ fn clear()
     operator = ""
 end
 
-page CalculatorPage
+Page CalculatorPage
     layout Stack
         text "Display: " + display
         layout Row

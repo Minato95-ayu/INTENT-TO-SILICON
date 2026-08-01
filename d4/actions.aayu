@@ -1,0 +1,7 @@
+action go_home
+    navigate("Dashboard")
+end
+
+action go_settings
+    navigate("Settings")
+end

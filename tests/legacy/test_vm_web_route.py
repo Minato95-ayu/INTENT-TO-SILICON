@@ -20,9 +20,9 @@ import json
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "aayu_language"))
 
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.compiler import AAYUCompiler
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.bytecode.encoder import BytecodeEncoder
 from vm import VirtualMachine
 from interpreter import AayuJSONResponse
 
@@ -57,7 +57,7 @@ class TestVMWebRoute(unittest.TestCase):
         parser = Parser(lexer.tokenize(), filename=filepath)
         ast = parser.parse()
 
-        compiler = AAYUCompiler()
+        compiler = BytecodeEncoder()
         bytecode = compiler.compile(ast)
 
         # 1. Run the main route registration script on VM

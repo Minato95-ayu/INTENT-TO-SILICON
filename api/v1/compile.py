@@ -6,10 +6,10 @@ import os
 # Append the prototype directory to path so we can import the language modules
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../')))
 
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.compiler import Compiler
-from compiler.frontend.vm import VM
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.bytecode.encoder import Compiler
+from aayu.compiler.vm import VM
 
 router = APIRouter()
 

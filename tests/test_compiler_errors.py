@@ -5,9 +5,9 @@ import os
 # Add root to sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from compiler.lexer.lexer import Lexer
-from compiler.parser.parser import Parser
-from compiler.errors import CompilerError
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.errors import CompilerError
 
 def test_compiler_error_formatting():
     err = CompilerError("Expected string after title", line=4, column=15, source_line='title button')

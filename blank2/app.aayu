@@ -1,0 +1,7 @@
+import pages.home
+
+app BlankApp
+
+route "/" Home
+
+run

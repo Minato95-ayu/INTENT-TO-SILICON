@@ -1,0 +1,25 @@
+app ECommerce
+
+model User {
+    email: String
+    password: String
+    role: String
+}
+
+model Product {
+    name: String
+    price: Float
+    stock: Int
+}
+
+route "/api/products"
+    get
+        return []
+    end
+end
+
+route "/api/login"
+    post
+        return {"token": "dummy"}
+    end
+end

@@ -1,0 +1,5 @@
+Page Home {
+    Container {
+        Text "Welcome to AAYU"
+    }
+}

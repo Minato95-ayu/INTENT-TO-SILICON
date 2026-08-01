@@ -1,0 +1,34 @@
+state myEmail = "test@example.com"
+
+Page Home
+
+    onLoad
+        myEmail = "loaded@example.com"
+        print(myEmail)
+    end
+
+    Form Login
+        Input
+            bind myEmail
+            validate
+                myEmail:
+                    required
+                    email
+            end
+        end
+
+        Button "Submit" onClick=Submit
+            animate
+                type "fade"
+                duration "300ms"
+            end
+        end
+    end
+end
+
+action Submit
+    await HTTP.post("https://api.example.com/login", { email: myEmail, role: "admin" })
+    print("Submitted")
+end
+
+run Home

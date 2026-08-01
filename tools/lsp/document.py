@@ -1,7 +1,7 @@
-from compiler.lexer.lexer import Lexer
-from compiler.parser.parser import Parser
-from compiler.semantic.analyzer import SemanticAnalyzer
-from compiler.errors import CompilerError
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.semantic.analyzer import SemanticAnalyzer
+from aayu.compiler.errors import CompilerError
 
 class Document:
     """Represents a single file, caching its Tokens, AST, and Semantic Result."""

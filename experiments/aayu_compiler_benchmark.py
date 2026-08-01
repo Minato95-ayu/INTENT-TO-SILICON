@@ -19,7 +19,7 @@ import sys
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.join(base_dir, 'prototype', 'compiler_v2'))
 
-from compiler.frontend.compiler import CompilerV2
+from aayu.compiler.bytecode.encoder import CompilerV2
 
 def run_benchmark(dataset_path, dataset_name):
     c = CompilerV2()

@@ -1,0 +1,23 @@
+app MyNotes
+
+state notes = ["A", "B", "C"]
+
+action delete_note(index)
+    print(index)
+    notes.remove(index)
+end
+
+Page
+    name="Home"
+    
+    Column
+        for index, note in notes
+            Card
+                Text note
+                Icon
+                    onClick delete_note(index)
+                end
+            end
+        end
+    end
+end

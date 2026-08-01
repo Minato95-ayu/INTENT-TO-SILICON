@@ -1,9 +1,17 @@
 # Contributing to AAYU
 
-We love your input! We want to make contributing to AAYU as easy and transparent as possible.
+Thank you for considering contributing to AAYU! We welcome community contributions to help build the future of Intent-to-Silicon computing.
 
-## Pull Requests
-1. Fork the repo and create your branch from main.
-2. Ensure you run the linter and formatter using the AAYU CLI (ayu lint / ayu fmt).
-3. Ensure the test suite passes (pytest prototype/tests/).
-4. Issue that pull request!\n
+## Development Environment
+AAYU is currently built using Python (Compiler) and C (Native Runtime). 
+
+### Prerequisites
+- Python 3.11+
+- GCC or MSVC (for building the Native Runtime)
+
+### Running Tests
+All tests are located in the 	ests/ directory. Run them using pytest:
+pytest tests/
+
+## Code of Conduct
+Please ensure all discussions, PRs, and issues remain respectful, constructive, and aligned with the overarching vision of the project.

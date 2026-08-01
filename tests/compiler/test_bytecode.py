@@ -1,6 +1,6 @@
 import unittest
-from compiler.ir.lir import LIRNode
-from compiler.bytecode.generator import BytecodeGenerator
+from aayu.compiler.ir.lir import LIRNode
+from aayu.compiler.bytecode.generator import BytecodeGenerator
 
 class TestBytecodeGenerator(unittest.TestCase):
     def test_generate_bytecode(self):

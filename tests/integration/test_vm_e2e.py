@@ -1,8 +1,8 @@
 import pytest
-from runtime.vm.vm import VirtualMachine
-from runtime.vm.instructions import Instruction, OpCode
-from runtime.values.number import NumberValue
-from runtime.values.string import StringValue
+from aayu.runtime.vm.vm import VirtualMachine
+from aayu.runtime.vm.instructions import Instruction, OpCode
+from aayu.runtime.values.number import NumberValue
+from aayu.runtime.values.string import StringValue
 
 def test_vm_math_flow_e2e():
     vm = VirtualMachine()

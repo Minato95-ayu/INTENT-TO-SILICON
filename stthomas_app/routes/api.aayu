@@ -1,0 +1,7 @@
+
+route "/api/notices"
+    get
+        return "success"
+    end
+end
+

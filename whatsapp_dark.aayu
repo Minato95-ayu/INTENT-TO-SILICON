@@ -1,0 +1,84 @@
+theme Light
+    primary      "#128C7E"
+    primaryDark  "#075E54"
+    secondary    "#25D366"
+    background   "#ECE5DD"
+    surface      "#FFFFFF"
+    text         "#000000"
+    textMuted    "#555555"
+    appBarText   "#FFFFFF"
+    appBarBg     "#128C7E"
+    bubbleIn     "#FFFFFF"
+    bubbleOut    "#DCF8C6"
+    radius       8
+    font         "Inter"
+end
+
+theme Dark
+    primary      "#00A884"
+    primaryDark  "#00A884"
+    secondary    "#00A884"
+    background   "#0B141A"
+    surface      "#111B21"
+    text         "#E9EDEF"
+    textMuted    "#8696A0"
+    appBarText   "#E9EDEF"
+    appBarBg     "#202C33"
+    bubbleIn     "#202C33"
+    bubbleOut    "#005C4B"
+    radius       8
+    font         "Inter"
+end
+
+app WhatsApp
+useTheme Dark
+
+Page Home
+    Scaffold
+        AppBar(title="WhatsApp", backgroundColor=Theme.appBarBg, color=Theme.appBarText)
+            Row(gap=15)
+                Icon(name="search", color=Theme.appBarText)
+                Icon(name="menu", color=Theme.appBarText)
+            end
+        end
+
+        ScrollView(backgroundColor=Theme.background, padding=10)
+            Container(backgroundColor=Theme.surface, padding=15, radius=Theme.radius, margin=5)
+                Row(gap=15, alignItems="center")
+                    Avatar(text="A", size=50)
+                    Column(expanded=true)
+                        Text("AAYU User", fontSize=16, fontWeight="bold", color=Theme.text)
+                        Text("Theme Engine looks awesome!", fontSize=14, color=Theme.textMuted)
+                    end
+                    Column(alignItems="flex-end")
+                        Text("10:45 AM", fontSize=12, color=Theme.secondary)
+                        Container(backgroundColor=Theme.secondary, radius=10, padding=5)
+                            Text("2", fontSize=10, color="#fff", fontWeight="bold")
+                        end
+                    end
+                end
+            end
+            
+            Container(backgroundColor=Theme.surface, padding=15, radius=Theme.radius, margin=5)
+                Row(gap=15, alignItems="center")
+                    Avatar(text="B", size=50)
+                    Column(expanded=true)
+                        Text("Beta Tester", fontSize=16, fontWeight="bold", color=Theme.text)
+                        Text("Light mode test?", fontSize=14, color=Theme.textMuted)
+                    end
+                end
+            end
+            
+            Button("Switch to Light Mode", onClick=sys_light_mode, backgroundColor=Theme.primary, color="#fff", padding=15, margin=10, radius=Theme.radius)
+            Button("Switch to Dark Mode", onClick=sys_dark_mode, backgroundColor=Theme.primary, color="#fff", padding=15, margin=10, radius=Theme.radius)
+        end
+    end
+end
+
+action sys_light_mode
+    useTheme Light
+end
+
+action sys_dark_mode
+    useTheme Dark
+end

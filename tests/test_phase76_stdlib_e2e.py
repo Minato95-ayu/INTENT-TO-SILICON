@@ -1,16 +1,17 @@
 import unittest
-from runtime.stdlib.registry import StdLibRegistry
-from runtime.stdlib.modules.file_lib import register_file_lib
-from runtime.stdlib.modules.json_lib import register_json_lib
-from runtime.stdlib.modules.crypto_lib import register_crypto_lib
-from runtime.stdlib.modules.database_lib import register_database_lib
-from runtime.stdlib.modules.regex_lib import register_regex_lib
-from runtime.values.string import StringValue
-from runtime.memory.heap import Heap
+from aayu.runtime.stdlib.registry import StdLibRegistry
+from aayu.runtime.stdlib.modules.file_lib import register_file_lib
+from aayu.runtime.stdlib.modules.json_lib import register_json_lib
+from aayu.runtime.stdlib.modules.crypto_lib import register_crypto_lib
+from aayu.runtime.stdlib.modules.database_lib import register_database_lib
+from aayu.runtime.stdlib.modules.regex_lib import register_regex_lib
+from aayu.runtime.values.string import StringValue
+from aayu.runtime.memory.heap import Heap
 
 class MockVM:
     def __init__(self):
         self.heap = Heap()
+        self.memory = self
 
 def create_string(vm, text):
     obj = vm.heap.allocate("string", text)

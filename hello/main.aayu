@@ -2,7 +2,7 @@ app counter_demo
 
 state count = 0
 
-page Home
+Page Home
     text "Count is:"
     text count
 end

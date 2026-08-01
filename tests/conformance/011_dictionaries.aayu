@@ -1,0 +1,2 @@
+let dict = {"name": "AAYU", "version": 1}.
+show(dict["name"]).

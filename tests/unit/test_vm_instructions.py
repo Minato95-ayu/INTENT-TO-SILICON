@@ -1,5 +1,5 @@
 import unittest
-from compiler.frontend.ir import Opcode
+from aayu.compiler.ir import Opcode
 
 class TestVMInstructions(unittest.TestCase):
     def test_instructions(self):

@@ -1,4 +1,4 @@
-page NavBar
+Page NavBar
     container
         card
             heading "WhatsApp Clone"

@@ -24,7 +24,7 @@ action navigateToProfile()
     current_page = "profile"
 end
 
-page App
+Page App
     container
         heading "AAYU WhatsApp Clone"
         

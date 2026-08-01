@@ -1,9 +1,9 @@
 import unittest
 import os
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.compiler import AAYUCompiler
-from runtime.vm.vm import VirtualMachine
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.bytecode.encoder import BytecodeEncoder
+from aayu.runtime.vm.vm import VirtualMachine
 import sys
 from io import StringIO
 
@@ -32,7 +32,7 @@ class TestMassiveCoverage(unittest.TestCase):
         lexer = Lexer(source)
         parser = Parser(lexer.tokenize(), filename="<test>")
         ast = parser.parse()
-        compiler = AAYUCompiler()
+        compiler = BytecodeEncoder()
         compiler.compile(ast)
         
         vm = VirtualMachine()

@@ -21,9 +21,9 @@ import contextlib
 
 sys.path.append(r"D:\intent-to-silicon-research\INTENT-TO-SILICON\prototype\aayu_language")
 
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.compiler import AAYUCompiler
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.bytecode.encoder import BytecodeEncoder
 from vm import VirtualMachine
 from serializer import serialize, deserialize
 from run import run_file
@@ -68,7 +68,7 @@ lexer = Lexer(source)
 parser = Parser(lexer.tokenize(), filename=filepath)
 ast = parser.parse()
 
-compiler = AAYUCompiler()
+compiler = BytecodeEncoder()
 bytecode = compiler.compile(ast)
 
 vm = VirtualMachine()

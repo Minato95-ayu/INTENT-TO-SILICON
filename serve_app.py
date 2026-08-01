@@ -1,10 +1,10 @@
-from compiler.lexer.lexer import Lexer
-from compiler.parser.parser import Parser
-from compiler.semantic.analyzer import SemanticAnalyzer
-from compiler.ir.pipeline import IRPipeline
-from compiler.bytecode.encoder import BytecodeEncoder
-from runtime.renderers.web_renderer import WebRenderer
-from runtime.session.manager import SessionManager
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.semantic.analyzer import SemanticAnalyzer
+from aayu.compiler.ir.pipeline import IRPipeline
+from aayu.compiler.bytecode.encoder import BytecodeEncoder
+from aayu.runtime.renderers.web_renderer import WebRenderer
+from aayu.runtime.session.manager import SessionManager
 import sys
 import os
 import threading

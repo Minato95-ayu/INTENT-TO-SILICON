@@ -1,8 +1,8 @@
 import unittest
-from compiler.lexer.lexer import Lexer
-from compiler.parser.parser import Parser
-from compiler.semantic.analyzer import SemanticAnalyzer
-from compiler.semantic.errors import SemanticError
+from aayu.compiler.lexer.lexer import Lexer
+from aayu.compiler.parser.parser import Parser
+from aayu.compiler.semantic.analyzer import SemanticAnalyzer
+from aayu.compiler.semantic.errors import SemanticError
 
 class TestSemanticAnalyzer(unittest.TestCase):
     def test_valid_state_declaration(self):

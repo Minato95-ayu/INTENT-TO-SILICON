@@ -14,5 +14,5 @@ To understand the project architecture, see the ARCHITECTURE_FREEZE.md file.
 
 import sys
 sys.path.append('../prototype/aayu_language')
-from compiler.frontend.lexer import Lexer
+from aayu.compiler.lexer.lexer import Lexer
 print([(t.type, t.value) for t in Lexer('return "Status: " + res.status + ", Title: " + res.body.title.').tokenize()])

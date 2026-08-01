@@ -1,0 +1,11 @@
+
+Page Notices
+    column
+        heading "Notice Board"
+        card
+            heading "Admissions Open 2026"
+            text "Date: 14-Jul-2026"
+        end
+    end
+end
+

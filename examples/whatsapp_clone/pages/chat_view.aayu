@@ -8,7 +8,7 @@ action sendMessage()
     new_message = ""
 end
 
-page ChatView
+Page ChatView
     container
         button "<- Back" onClick="navigateBack"
         heading "Chat with Alice"

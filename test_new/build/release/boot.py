@@ -1,7 +1,7 @@
 import sys
 import base64
 import json
-from runtime.vm.vm import VirtualMachine
+from aayu.runtime.vm.vm import VirtualMachine
 
 def main():
     print("AAYU App Starting...")

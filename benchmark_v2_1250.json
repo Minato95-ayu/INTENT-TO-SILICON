@@ -1,0 +1,5002 @@
+[
+  {
+    "prompt": "Mujhe peeche se control karne ka setup chahiye",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai dashboard bana dena data dekhne ke liye chahiye",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "ek CMS portal jaha se update ho sake zaroori hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "App me agar net chala jaye to bhi app kaam kare mangta hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "airplane mode me bhi details dikhe zaroori hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me page refresh ke bina update aana laga dena",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera database ke liye zyada paise nahi kharchne zaroori hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mera sirf mujhe hi backend dikhna zaroori hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mera bina register kiye sab accessible hona chahiye",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "App me storage zyada nahi lena laga dena",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mera koi loading screen nahi dikhna zaroori hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mera bina lag ke turant page khul jaye zaroori hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "database ke liye zyada paise nahi kharchne zaroori hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me app ka size bahot chhota rakhna zaroori hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe ek CMS portal jaha se update ho sake mangta hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "data leak ka risk zero hona chahiye",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mujhe live chatting feature laga dena",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe login page hata dena laga dena",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "App me halka phulka apk banna zaroori hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mera scale karne me issue nahi aana kar do",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera open for all rakhna hai isko mangta hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "no connection me data locally save ho jaye laga dena",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mujhe open for all rakhna hai isko laga dena",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Bhai data leak ka risk zero hona zaroori hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera mujhe sab manage karne ke liye ek panel laga dena",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe kam memory me chalne wala code likhna kar do",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "App me kal ko lakhon log aayenge app par handle hona kar do",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "jaise hi koi message kare instantly dikhna zaroori hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "App me bina lag ke turant page khul jaye chahiye",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "storage zyada nahi lena zaroori hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Bhai database ke liye zyada paise nahi kharchne laga dena",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "sab log bina account ke dekh sakein zaroori hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "App me role ke hisaab se page block hona kar do",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mera ek CMS portal jaha se update ho sake kar do",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe traffic badhne par server down nahi hona kar do",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera open for all rakhna hai isko laga dena",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "bina lag ke turant page khul jaye laga dena",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me bina internet ke bhi load hona mangta hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "lakho users ek sath aaye to crash nahi hona mangta hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "koi OTP ya password nahi mangna zaroori hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe data leak ka risk zero hona laga dena",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "airplane mode me bhi details dikhe mangta hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mujhe app ka size bahot chhota rakhna zaroori hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "App me bina register kiye sab accessible hona kar do",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mera phone ke storage me hi save karna laga dena",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Bhai jaldi reply aana kar do",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mera peeche se control karne ka setup kar do",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai traffic badhne par server down nahi hona laga dena",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "App me dashboard bana dena data dekhne ke liye mangta hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mera sirf mujhe hi backend dikhna mangta hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "App me koi OTP ya password nahi mangna zaroori hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "App me live tracking map dikhna zaroori hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "live tracking map dikhna laga dena",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe app ka size bahot chhota rakhna laga dena",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "traffic badhne par server down nahi hona mangta hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "storage zyada nahi lena laga dena",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mera page refresh ke bina update aana kar do",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera kaun kya dekh sakta hai uspe control laga dena",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "dashboard bana dena data dekhne ke liye laga dena",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "App me role ke hisaab se page block hona mangta hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai phone ke storage me hi save karna laga dena",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Bhai sasta aur halka data store karke rakho mangta hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mujhe koi loading screen nahi dikhna chahiye",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "phone ke storage me hi save karna kar do",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mujhe kaun kya dekh sakta hai uspe control mangta hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mujhe sab log bina account ke dekh sakein kar do",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "halka phulka apk banna laga dena",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Bhai sasta aur halka data store karke rakho laga dena",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Bhai security sabse tight rehna kar do",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me ek CMS portal jaha se update ho sake chahiye",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mera app ka size bahot chhota rakhna mangta hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe page refresh ke bina update aana kar do",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "app bahot tezi se load hona kar do",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Bhai storage zyada nahi lena zaroori hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "server ka cost bachana hai sqlite se zaroori hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me live chatting feature zaroori hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera jaldi reply aana chahiye",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "end to end encryption hona chahiye",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera sasta aur halka data store karke rakho chahiye",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mera koi OTP ya password nahi mangna mangta hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "live tracking map dikhna kar do",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Bhai sab log bina account ke dekh sakein mangta hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "sasta aur halka data store karke rakho mangta hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "lakho users ek sath aaye to crash nahi hona kar do",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Bhai offline mode add karna zaroori hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "live chatting feature kar do",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Bhai koi OTP ya password nahi mangna laga dena",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Bhai users ko admin section mat dikhana laga dena",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mera database ke liye zyada paise nahi kharchne kar do",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me kam memory me chalne wala code likhna kar do",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "local DB me kaam chala lo kar do",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me traffic badhne par server down nahi hona laga dena",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "App me kal ko lakhon log aayenge app par handle hona mangta hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mujhe mujhe sab manage karne ke liye ek panel mangta hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "App me users aur sales track karne ke liye screen kar do",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe role ke hisaab se page block hona laga dena",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "App me data leak ka risk zero hona zaroori hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera open for all rakhna hai isko chahiye",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Bhai agar net chala jaye to bhi app kaam kare laga dena",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me lakho users ek sath aaye to crash nahi hona zaroori hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera jaise hi koi message kare instantly dikhna zaroori hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "App me ek CMS portal jaha se update ho sake kar do",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe kam memory me chalne wala code likhna laga dena",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe end to end encryption hona zaroori hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai app bahot tezi se load hona mangta hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me end to end encryption hona chahiye",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera page refresh ke bina update aana zaroori hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "App me low end mobile pe bhi chal jana zaroori hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Bhai jaldi reply aana zaroori hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Bhai app ka size bahot chhota rakhna chahiye",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mera jaldi reply aana kar do",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mera lakho users ek sath aaye to crash nahi hona zaroori hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera users aur sales track karne ke liye screen chahiye",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe local DB me kaam chala lo kar do",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "offline mode add karna laga dena",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me offline mode add karna zaroori hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Bhai airplane mode me bhi details dikhe chahiye",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Bhai login page hata dena chahiye",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "local DB me kaam chala lo laga dena",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mujhe app bahot tezi se load hona laga dena",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me halka phulka apk banna mangta hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe phone ke storage me hi save karna laga dena",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mera low end mobile pe bhi chal jana zaroori hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe page refresh ke bina update aana mangta hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "App me scale karne me issue nahi aana kar do",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera kal ko lakhon log aayenge app par handle hona laga dena",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Bhai koi OTP ya password nahi mangna zaroori hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "App me users aur sales track karne ke liye screen zaroori hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "kaun kya dekh sakta hai uspe control chahiye",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "koi loading screen nahi dikhna kar do",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mera speed ekdum lightning fast hona kar do",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me app bahot tezi se load hona kar do",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me end to end encryption hona laga dena",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mujhe bina internet ke bhi load hona laga dena",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me information secure rehni laga dena",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera offline mode add karna laga dena",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mujhe open for all rakhna hai isko chahiye",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Bhai scale karne me issue nahi aana zaroori hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera jaise hi koi message kare instantly dikhna mangta hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "peeche se control karne ka setup zaroori hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "App me database ke liye zyada paise nahi kharchne chahiye",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me role ke hisaab se page block hona zaroori hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "security sabse tight rehna kar do",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera live tracking map dikhna laga dena",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "App me sasta aur halka data store karke rakho kar do",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me kam memory me chalne wala code likhna zaroori hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Bhai login page hata dena laga dena",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe phone ke storage me hi save karna mangta hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me admin power sirf selected logo ko milna chahiye",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "koi bhi hack na kar paye mere data ko mangta hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mujhe kaun kya dekh sakta hai uspe control zaroori hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mera bina register kiye sab accessible hona zaroori hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "App me traffic badhne par server down nahi hona kar do",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "real time data sync hona zaroori hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Bhai page refresh ke bina update aana zaroori hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "sirf mujhe hi backend dikhna chahiye",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "App me speed ekdum lightning fast hona zaroori hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mujhe scale karne me issue nahi aana zaroori hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Bhai jaise hi koi message kare instantly dikhna mangta hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Bhai app bahot tezi se load hona zaroori hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mera bina lag ke turant page khul jaye laga dena",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me database ke liye zyada paise nahi kharchne zaroori hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mujhe information secure rehni mangta hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me end to end encryption hona zaroori hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai live chatting feature mangta hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "lakho users ek sath aaye to crash nahi hona zaroori hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Bhai bina register kiye sab accessible hona mangta hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe database ke liye zyada paise nahi kharchne zaroori hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mujhe bina internet ke bhi load hona chahiye",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me jaise hi koi message kare instantly dikhna zaroori hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "login page hata dena zaroori hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "App me bina internet ke bhi load hona chahiye",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Bhai database ke liye zyada paise nahi kharchne zaroori hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mujhe halka phulka apk banna laga dena",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Bhai live tracking map dikhna zaroori hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe admin power sirf selected logo ko milna laga dena",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai sab log bina account ke dekh sakein kar do",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "App me sirf mujhe hi backend dikhna kar do",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "App me kaun kya dekh sakta hai uspe control laga dena",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai login page hata dena zaroori hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "kal ko lakhon log aayenge app par handle hona zaroori hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera jaldi reply aana zaroori hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mera live tracking map dikhna kar do",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera dashboard bana dena data dekhne ke liye chahiye",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mera live chatting feature chahiye",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera bina register kiye sab accessible hona mangta hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe dashboard bana dena data dekhne ke liye chahiye",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe jaise hi koi message kare instantly dikhna mangta hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe login page hata dena mangta hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mera role ke hisaab se page block hona mangta hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "halka phulka apk banna chahiye",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe traffic badhne par server down nahi hona zaroori hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mujhe users ko admin section mat dikhana chahiye",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mujhe sirf mujhe hi backend dikhna kar do",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "App me peeche se control karne ka setup laga dena",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "users ko admin section mat dikhana mangta hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai live tracking map dikhna kar do",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "App me koi loading screen nahi dikhna zaroori hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Bhai storage zyada nahi lena mangta hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe users aur sales track karne ke liye screen laga dena",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mera security sabse tight rehna kar do",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai jaldi reply aana mangta hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me scale karne me issue nahi aana mangta hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera agar net chala jaye to bhi app kaam kare chahiye",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "users ko admin section mat dikhana chahiye",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mujhe kaun kya dekh sakta hai uspe control kar do",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "App me information secure rehni chahiye",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me server ka cost bachana hai sqlite se mangta hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "database ke liye zyada paise nahi kharchne mangta hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mujhe agar net chala jaye to bhi app kaam kare laga dena",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "sirf mujhe hi backend dikhna zaroori hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "sasta aur halka data store karke rakho kar do",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "bina lag ke turant page khul jaye mangta hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Bhai low end mobile pe bhi chal jana mangta hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe login page hata dena chahiye",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe heavy load aaram se handle kar sake chahiye",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "App me server ka cost bachana hai sqlite se kar do",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mujhe sasta aur halka data store karke rakho zaroori hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me live tracking map dikhna chahiye",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera storage zyada nahi lena kar do",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "local DB me kaam chala lo zaroori hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Bhai kal ko lakhon log aayenge app par handle hona laga dena",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mujhe koi loading screen nahi dikhna mangta hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me koi OTP ya password nahi mangna chahiye",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "App me halka phulka apk banna chahiye",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe low end mobile pe bhi chal jana laga dena",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe login page hata dena zaroori hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "app ka size bahot chhota rakhna zaroori hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "app bahot tezi se load hona zaroori hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mera halka phulka apk banna laga dena",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "login page hata dena chahiye",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "mujhe sab manage karne ke liye ek panel kar do",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe live tracking map dikhna zaroori hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "App me role ke hisaab se page block hona laga dena",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai airplane mode me bhi details dikhe kar do",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mera phone ke storage me hi save karna zaroori hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "jaldi reply aana mangta hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mujhe koi bhi hack na kar paye mere data ko kar do",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mujhe data leak ka risk zero hona zaroori hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "open for all rakhna hai isko zaroori hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe users ko admin section mat dikhana zaroori hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai open for all rakhna hai isko mangta hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Bhai peeche se control karne ka setup kar do",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe peeche se control karne ka setup zaroori hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "App me no connection me data locally save ho jaye mangta hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Bhai ek CMS portal jaha se update ho sake chahiye",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "login page hata dena kar do",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe mujhe sab manage karne ke liye ek panel chahiye",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe users aur sales track karne ke liye screen mangta hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai local DB me kaam chala lo chahiye",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "scale karne me issue nahi aana kar do",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "app ka size bahot chhota rakhna laga dena",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mera admin power sirf selected logo ko milna chahiye",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "users aur sales track karne ke liye screen laga dena",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "App me jaise hi koi message kare instantly dikhna laga dena",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera local DB me kaam chala lo mangta hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Bhai speed ekdum lightning fast hona zaroori hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mujhe peeche se control karne ka setup kar do",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "storage zyada nahi lena mangta hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Bhai agar net chala jaye to bhi app kaam kare mangta hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me speed ekdum lightning fast hona laga dena",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me sasta aur halka data store karke rakho mangta hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mera admin power sirf selected logo ko milna mangta hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "App me app bahot tezi se load hona chahiye",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mera kam memory me chalne wala code likhna laga dena",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "bina lag ke turant page khul jaye kar do",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "dashboard bana dena data dekhne ke liye zaroori hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "App me app ka size bahot chhota rakhna mangta hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mera admin power sirf selected logo ko milna zaroori hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "App me app ka size bahot chhota rakhna chahiye",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "kam memory me chalne wala code likhna chahiye",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "App me heavy load aaram se handle kar sake laga dena",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera traffic badhne par server down nahi hona chahiye",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "bina internet ke bhi load hona zaroori hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mera kal ko lakhon log aayenge app par handle hona kar do",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "App me koi bhi hack na kar paye mere data ko laga dena",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai users aur sales track karne ke liye screen chahiye",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mera open for all rakhna hai isko zaroori hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "App me security sabse tight rehna laga dena",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera storage zyada nahi lena zaroori hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "server ka cost bachana hai sqlite se mangta hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "traffic badhne par server down nahi hona laga dena",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera information secure rehni zaroori hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera speed ekdum lightning fast hona laga dena",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "heavy load aaram se handle kar sake chahiye",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "traffic badhne par server down nahi hona kar do",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "jaldi reply aana zaroori hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mujhe live chatting feature kar do",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe sasta aur halka data store karke rakho laga dena",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mera lakho users ek sath aaye to crash nahi hona kar do",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "App me koi OTP ya password nahi mangna kar do",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Bhai offline mode add karna kar do",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me live tracking map dikhna laga dena",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe koi loading screen nahi dikhna kar do",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me halka phulka apk banna kar do",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Bhai koi loading screen nahi dikhna laga dena",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me login page hata dena laga dena",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "ek CMS portal jaha se update ho sake chahiye",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "low end mobile pe bhi chal jana kar do",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "koi bhi hack na kar paye mere data ko zaroori hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mujhe users ko admin section mat dikhana laga dena",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai app bahot tezi se load hona kar do",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Bhai kaun kya dekh sakta hai uspe control zaroori hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai live chatting feature kar do",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe heavy load aaram se handle kar sake laga dena",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mujhe lakho users ek sath aaye to crash nahi hona mangta hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "App me no connection me data locally save ho jaye chahiye",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me bina internet ke bhi load hona laga dena",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me server ka cost bachana hai sqlite se chahiye",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me bina lag ke turant page khul jaye mangta hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mera traffic badhne par server down nahi hona zaroori hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera dashboard bana dena data dekhne ke liye zaroori hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe offline mode add karna kar do",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mera speed ekdum lightning fast hona chahiye",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "sab log bina account ke dekh sakein laga dena",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "App me airplane mode me bhi details dikhe chahiye",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mera role ke hisaab se page block hona laga dena",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "App me agar net chala jaye to bhi app kaam kare kar do",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mujhe jaldi reply aana chahiye",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mujhe ek CMS portal jaha se update ho sake chahiye",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mera bina lag ke turant page khul jaye chahiye",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Bhai agar net chala jaye to bhi app kaam kare kar do",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mera sasta aur halka data store karke rakho mangta hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Bhai real time data sync hona chahiye",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Bhai storage zyada nahi lena chahiye",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "App me sirf mujhe hi backend dikhna zaroori hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai mujhe sab manage karne ke liye ek panel mangta hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe security sabse tight rehna kar do",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "role ke hisaab se page block hona laga dena",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mujhe bina register kiye sab accessible hona laga dena",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mera bina internet ke bhi load hona laga dena",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Bhai koi loading screen nahi dikhna chahiye",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mera page refresh ke bina update aana chahiye",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "App me sirf mujhe hi backend dikhna chahiye",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "App me heavy load aaram se handle kar sake chahiye",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "App me end to end encryption hona mangta hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera koi OTP ya password nahi mangna chahiye",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe sasta aur halka data store karke rakho mangta hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mera no connection me data locally save ho jaye mangta hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me sab log bina account ke dekh sakein mangta hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mera information secure rehni chahiye",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "mujhe sab manage karne ke liye ek panel mangta hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe speed ekdum lightning fast hona kar do",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mujhe kam memory me chalne wala code likhna chahiye",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "App me airplane mode me bhi details dikhe zaroori hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "heavy load aaram se handle kar sake zaroori hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "traffic badhne par server down nahi hona chahiye",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "App me bina lag ke turant page khul jaye zaroori hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me bina register kiye sab accessible hona zaroori hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mera end to end encryption hona chahiye",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera bina lag ke turant page khul jaye mangta hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me offline mode add karna mangta hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me bina register kiye sab accessible hona mangta hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mera server ka cost bachana hai sqlite se kar do",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mera live chatting feature mangta hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera sab log bina account ke dekh sakein chahiye",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mera role ke hisaab se page block hona chahiye",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai halka phulka apk banna kar do",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "security sabse tight rehna chahiye",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "agar net chala jaye to bhi app kaam kare kar do",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me local DB me kaam chala lo chahiye",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mera live tracking map dikhna mangta hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe storage zyada nahi lena mangta hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "dashboard bana dena data dekhne ke liye chahiye",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "App me peeche se control karne ka setup zaroori hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "dashboard bana dena data dekhne ke liye kar do",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mera login page hata dena chahiye",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mera airplane mode me bhi details dikhe laga dena",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "koi bhi hack na kar paye mere data ko laga dena",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me storage zyada nahi lena zaroori hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe halka phulka apk banna chahiye",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe mujhe sab manage karne ke liye ek panel laga dena",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai koi bhi hack na kar paye mere data ko chahiye",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me local DB me kaam chala lo zaroori hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mera open for all rakhna hai isko kar do",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe app ka size bahot chhota rakhna mangta hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mera app bahot tezi se load hona zaroori hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mujhe agar net chala jaye to bhi app kaam kare kar do",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Bhai speed ekdum lightning fast hona kar do",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mera data leak ka risk zero hona laga dena",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai koi loading screen nahi dikhna kar do",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "peeche se control karne ka setup chahiye",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "speed ekdum lightning fast hona laga dena",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me bina internet ke bhi load hona zaroori hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Bhai koi bhi hack na kar paye mere data ko laga dena",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "real time data sync hona laga dena",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera airplane mode me bhi details dikhe kar do",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mujhe heavy load aaram se handle kar sake kar do",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "scale karne me issue nahi aana chahiye",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "mujhe sab manage karne ke liye ek panel chahiye",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "App me admin power sirf selected logo ko milna laga dena",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "App me login page hata dena mangta hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mera kam memory me chalne wala code likhna kar do",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe users ko admin section mat dikhana kar do",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mera database ke liye zyada paise nahi kharchne chahiye",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "agar net chala jaye to bhi app kaam kare laga dena",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Bhai sirf mujhe hi backend dikhna chahiye",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "kal ko lakhon log aayenge app par handle hona laga dena",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera sirf mujhe hi backend dikhna chahiye",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai airplane mode me bhi details dikhe zaroori hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mera airplane mode me bhi details dikhe mangta hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "speed ekdum lightning fast hona mangta hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Bhai scale karne me issue nahi aana laga dena",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "App me ek CMS portal jaha se update ho sake zaroori hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mera sab log bina account ke dekh sakein kar do",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe koi bhi hack na kar paye mere data ko mangta hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai page refresh ke bina update aana laga dena",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "admin power sirf selected logo ko milna chahiye",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mera security sabse tight rehna zaroori hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mujhe live chatting feature chahiye",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera live chatting feature laga dena",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera halka phulka apk banna kar do",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Bhai live tracking map dikhna chahiye",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera sirf mujhe hi backend dikhna kar do",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "App me server ka cost bachana hai sqlite se laga dena",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mujhe data leak ka risk zero hona kar do",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai open for all rakhna hai isko kar do",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe no connection me data locally save ho jaye zaroori hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me open for all rakhna hai isko laga dena",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "App me data leak ka risk zero hona mangta hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "traffic badhne par server down nahi hona zaroori hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "sab log bina account ke dekh sakein mangta hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Bhai kam memory me chalne wala code likhna laga dena",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "role ke hisaab se page block hona mangta hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mujhe scale karne me issue nahi aana laga dena",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera end to end encryption hona zaroori hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me koi loading screen nahi dikhna mangta hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Bhai live tracking map dikhna laga dena",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe real time data sync hona mangta hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Bhai agar net chala jaye to bhi app kaam kare zaroori hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "server ka cost bachana hai sqlite se chahiye",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mera live tracking map dikhna chahiye",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe kal ko lakhon log aayenge app par handle hona kar do",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "App me scale karne me issue nahi aana laga dena",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera server ka cost bachana hai sqlite se mangta hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Bhai security sabse tight rehna mangta hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me sab log bina account ke dekh sakein zaroori hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Bhai kaun kya dekh sakta hai uspe control mangta hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai jaise hi koi message kare instantly dikhna kar do",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe airplane mode me bhi details dikhe kar do",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me bina internet ke bhi load hona kar do",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "bina register kiye sab accessible hona zaroori hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Bhai scale karne me issue nahi aana mangta hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "peeche se control karne ka setup laga dena",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "local DB me kaam chala lo chahiye",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "speed ekdum lightning fast hona zaroori hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me kal ko lakhon log aayenge app par handle hona laga dena",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera server ka cost bachana hai sqlite se zaroori hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me low end mobile pe bhi chal jana chahiye",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mera users aur sales track karne ke liye screen laga dena",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "jaise hi koi message kare instantly dikhna chahiye",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe koi OTP ya password nahi mangna laga dena",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "App me login page hata dena zaroori hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe mujhe sab manage karne ke liye ek panel zaroori hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai koi bhi hack na kar paye mere data ko mangta hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "information secure rehni laga dena",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera koi bhi hack na kar paye mere data ko zaroori hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera koi OTP ya password nahi mangna laga dena",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "App me open for all rakhna hai isko zaroori hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe database ke liye zyada paise nahi kharchne kar do",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Bhai live chatting feature chahiye",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "users aur sales track karne ke liye screen chahiye",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "App me open for all rakhna hai isko mangta hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "App me live chatting feature kar do",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "kam memory me chalne wala code likhna zaroori hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Bhai local DB me kaam chala lo zaroori hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "information secure rehni zaroori hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mujhe bina internet ke bhi load hona zaroori hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Bhai lakho users ek sath aaye to crash nahi hona zaroori hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Bhai koi OTP ya password nahi mangna chahiye",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe airplane mode me bhi details dikhe mangta hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me security sabse tight rehna zaroori hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mujhe kam memory me chalne wala code likhna mangta hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe live chatting feature mangta hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe page refresh ke bina update aana laga dena",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Bhai local DB me kaam chala lo mangta hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "users aur sales track karne ke liye screen kar do",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai bina lag ke turant page khul jaye laga dena",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mera halka phulka apk banna chahiye",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe users aur sales track karne ke liye screen chahiye",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe koi bhi hack na kar paye mere data ko chahiye",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai jaise hi koi message kare instantly dikhna zaroori hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe bina register kiye sab accessible hona zaroori hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mera sasta aur halka data store karke rakho kar do",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mera bina internet ke bhi load hona kar do",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "scale karne me issue nahi aana laga dena",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "App me open for all rakhna hai isko kar do",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Bhai server ka cost bachana hai sqlite se mangta hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me security sabse tight rehna mangta hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mujhe phone ke storage me hi save karna chahiye",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "sirf mujhe hi backend dikhna kar do",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mujhe traffic badhne par server down nahi hona chahiye",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "role ke hisaab se page block hona chahiye",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mujhe offline mode add karna zaroori hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mera login page hata dena kar do",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "App me real time data sync hona mangta hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "App me users aur sales track karne ke liye screen chahiye",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai admin power sirf selected logo ko milna laga dena",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "sab log bina account ke dekh sakein chahiye",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe database ke liye zyada paise nahi kharchne laga dena",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Bhai speed ekdum lightning fast hona chahiye",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Bhai bina internet ke bhi load hona chahiye",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mujhe speed ekdum lightning fast hona mangta hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Bhai peeche se control karne ka setup chahiye",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "App me security sabse tight rehna chahiye",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me storage zyada nahi lena mangta hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Bhai jaise hi koi message kare instantly dikhna chahiye",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe lakho users ek sath aaye to crash nahi hona chahiye",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "App me data leak ka risk zero hona chahiye",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai admin power sirf selected logo ko milna kar do",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "end to end encryption hona kar do",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera koi loading screen nahi dikhna mangta hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mujhe users aur sales track karne ke liye screen zaroori hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mera storage zyada nahi lena chahiye",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "App me app bahot tezi se load hona zaroori hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "lakho users ek sath aaye to crash nahi hona laga dena",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "App me airplane mode me bhi details dikhe laga dena",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mujhe sirf mujhe hi backend dikhna laga dena",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai open for all rakhna hai isko laga dena",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mera scale karne me issue nahi aana chahiye",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera login page hata dena zaroori hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "koi loading screen nahi dikhna mangta hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mujhe sab log bina account ke dekh sakein chahiye",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe koi loading screen nahi dikhna laga dena",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "security sabse tight rehna mangta hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai login page hata dena mangta hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mera real time data sync hona kar do",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera users ko admin section mat dikhana kar do",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mera sirf mujhe hi backend dikhna laga dena",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai heavy load aaram se handle kar sake laga dena",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mujhe bina lag ke turant page khul jaye kar do",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "open for all rakhna hai isko chahiye",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Bhai dashboard bana dena data dekhne ke liye zaroori hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai information secure rehni zaroori hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai kam memory me chalne wala code likhna chahiye",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "information secure rehni kar do",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mujhe sirf mujhe hi backend dikhna zaroori hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "App me phone ke storage me hi save karna laga dena",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mujhe live tracking map dikhna kar do",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "App me database ke liye zyada paise nahi kharchne kar do",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Bhai koi loading screen nahi dikhna zaroori hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mujhe dashboard bana dena data dekhne ke liye mangta hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe koi bhi hack na kar paye mere data ko laga dena",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera jaise hi koi message kare instantly dikhna kar do",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Bhai storage zyada nahi lena kar do",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe storage zyada nahi lena zaroori hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Bhai koi OTP ya password nahi mangna mangta hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "App me phone ke storage me hi save karna chahiye",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mera bina lag ke turant page khul jaye kar do",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Bhai bina lag ke turant page khul jaye kar do",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "sasta aur halka data store karke rakho laga dena",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mujhe server ka cost bachana hai sqlite se kar do",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Bhai koi OTP ya password nahi mangna kar do",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe jaldi reply aana mangta hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "peeche se control karne ka setup mangta hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai app bahot tezi se load hona laga dena",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "koi OTP ya password nahi mangna chahiye",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Bhai no connection me data locally save ho jaye mangta hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mera kal ko lakhon log aayenge app par handle hona mangta hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera kaun kya dekh sakta hai uspe control kar do",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mera traffic badhne par server down nahi hona laga dena",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "live tracking map dikhna mangta hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "lakho users ek sath aaye to crash nahi hona chahiye",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera users aur sales track karne ke liye screen mangta hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mera local DB me kaam chala lo kar do",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Bhai end to end encryption hona kar do",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me lakho users ek sath aaye to crash nahi hona chahiye",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "koi OTP ya password nahi mangna laga dena",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Bhai kal ko lakhon log aayenge app par handle hona kar do",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "App me users aur sales track karne ke liye screen laga dena",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai mujhe sab manage karne ke liye ek panel kar do",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "role ke hisaab se page block hona zaroori hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "App me local DB me kaam chala lo mangta hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mera local DB me kaam chala lo chahiye",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me speed ekdum lightning fast hona chahiye",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mujhe halka phulka apk banna zaroori hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe users ko admin section mat dikhana mangta hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mujhe bina lag ke turant page khul jaye zaroori hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mujhe mujhe sab manage karne ke liye ek panel kar do",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "login page hata dena mangta hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe admin power sirf selected logo ko milna mangta hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai information secure rehni laga dena",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me users ko admin section mat dikhana laga dena",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai lakho users ek sath aaye to crash nahi hona laga dena",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mujhe storage zyada nahi lena laga dena",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe bina lag ke turant page khul jaye laga dena",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mera sasta aur halka data store karke rakho laga dena",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "page refresh ke bina update aana laga dena",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe traffic badhne par server down nahi hona laga dena",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mujhe no connection me data locally save ho jaye kar do",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "admin power sirf selected logo ko milna laga dena",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mujhe security sabse tight rehna chahiye",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera low end mobile pe bhi chal jana laga dena",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "App me sab log bina account ke dekh sakein kar do",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Bhai no connection me data locally save ho jaye zaroori hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "bina internet ke bhi load hona laga dena",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mera heavy load aaram se handle kar sake chahiye",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "App me scale karne me issue nahi aana chahiye",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Bhai server ka cost bachana hai sqlite se laga dena",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Bhai offline mode add karna laga dena",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mera database ke liye zyada paise nahi kharchne mangta hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "page refresh ke bina update aana chahiye",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "app bahot tezi se load hona chahiye",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "offline mode add karna chahiye",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "sirf mujhe hi backend dikhna mangta hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "agar net chala jaye to bhi app kaam kare mangta hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me end to end encryption hona kar do",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me jaldi reply aana mangta hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mujhe kaun kya dekh sakta hai uspe control chahiye",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mujhe admin power sirf selected logo ko milna zaroori hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mujhe bina internet ke bhi load hona kar do",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me page refresh ke bina update aana zaroori hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Bhai users ko admin section mat dikhana zaroori hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "live chatting feature zaroori hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Bhai peeche se control karne ka setup zaroori hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai end to end encryption hona laga dena",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera information secure rehni kar do",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera ek CMS portal jaha se update ho sake mangta hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "App me security sabse tight rehna kar do",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai server ka cost bachana hai sqlite se zaroori hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Bhai phone ke storage me hi save karna zaroori hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me offline mode add karna kar do",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "sasta aur halka data store karke rakho chahiye",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me mujhe sab manage karne ke liye ek panel zaroori hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe server ka cost bachana hai sqlite se chahiye",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mujhe agar net chala jaye to bhi app kaam kare mangta hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mera real time data sync hona laga dena",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Bhai bina internet ke bhi load hona mangta hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mujhe speed ekdum lightning fast hona laga dena",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mujhe role ke hisaab se page block hona chahiye",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mera traffic badhne par server down nahi hona kar do",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera no connection me data locally save ho jaye kar do",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "admin power sirf selected logo ko milna kar do",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mera kam memory me chalne wala code likhna mangta hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "App me bina register kiye sab accessible hona chahiye",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe kal ko lakhon log aayenge app par handle hona mangta hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Bhai kal ko lakhon log aayenge app par handle hona chahiye",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "local DB me kaam chala lo mangta hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me local DB me kaam chala lo kar do",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me information secure rehni zaroori hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera role ke hisaab se page block hona kar do",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "App me live tracking map dikhna kar do",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "App me kaun kya dekh sakta hai uspe control kar do",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai app ka size bahot chhota rakhna kar do",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe jaise hi koi message kare instantly dikhna zaroori hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe role ke hisaab se page block hona mangta hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "heavy load aaram se handle kar sake laga dena",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera offline mode add karna zaroori hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "low end mobile pe bhi chal jana zaroori hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Bhai offline mode add karna chahiye",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mera live chatting feature zaroori hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "App me koi bhi hack na kar paye mere data ko kar do",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai role ke hisaab se page block hona zaroori hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "App me server ka cost bachana hai sqlite se zaroori hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me database ke liye zyada paise nahi kharchne mangta hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mujhe database ke liye zyada paise nahi kharchne mangta hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "offline mode add karna kar do",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mujhe admin power sirf selected logo ko milna chahiye",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mera kam memory me chalne wala code likhna chahiye",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mera data leak ka risk zero hona chahiye",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me mujhe sab manage karne ke liye ek panel laga dena",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mera peeche se control karne ka setup laga dena",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe offline mode add karna laga dena",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mera app bahot tezi se load hona chahiye",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me login page hata dena chahiye",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "security sabse tight rehna laga dena",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mujhe koi OTP ya password nahi mangna kar do",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mera app ka size bahot chhota rakhna kar do",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "users aur sales track karne ke liye screen zaroori hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "data leak ka risk zero hona laga dena",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me halka phulka apk banna laga dena",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "App me peeche se control karne ka setup chahiye",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "users ko admin section mat dikhana laga dena",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai users aur sales track karne ke liye screen laga dena",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "airplane mode me bhi details dikhe kar do",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mujhe jaise hi koi message kare instantly dikhna chahiye",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "App me admin power sirf selected logo ko milna kar do",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mera airplane mode me bhi details dikhe chahiye",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "bina lag ke turant page khul jaye zaroori hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mera peeche se control karne ka setup zaroori hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe information secure rehni chahiye",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mujhe end to end encryption hona mangta hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera security sabse tight rehna chahiye",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai heavy load aaram se handle kar sake zaroori hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mujhe offline mode add karna mangta hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Bhai sasta aur halka data store karke rakho kar do",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Bhai lakho users ek sath aaye to crash nahi hona mangta hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Bhai no connection me data locally save ho jaye laga dena",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "jaise hi koi message kare instantly dikhna mangta hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "bina register kiye sab accessible hona laga dena",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe kam memory me chalne wala code likhna zaroori hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Bhai traffic badhne par server down nahi hona chahiye",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "App me speed ekdum lightning fast hona kar do",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "live chatting feature laga dena",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "information secure rehni mangta hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera admin power sirf selected logo ko milna laga dena",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mera sab log bina account ke dekh sakein zaroori hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "App me airplane mode me bhi details dikhe mangta hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mera offline mode add karna chahiye",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mujhe live tracking map dikhna chahiye",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe bina register kiye sab accessible hona chahiye",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Bhai users aur sales track karne ke liye screen kar do",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe lakho users ek sath aaye to crash nahi hona laga dena",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "live chatting feature chahiye",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "storage zyada nahi lena kar do",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe bina internet ke bhi load hona mangta hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mera login page hata dena laga dena",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "agar net chala jaye to bhi app kaam kare chahiye",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Bhai traffic badhne par server down nahi hona mangta hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "App me heavy load aaram se handle kar sake kar do",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mujhe app bahot tezi se load hona chahiye",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me low end mobile pe bhi chal jana kar do",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Bhai users ko admin section mat dikhana chahiye",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mera heavy load aaram se handle kar sake mangta hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera halka phulka apk banna zaroori hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mera jaise hi koi message kare instantly dikhna chahiye",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Bhai ek CMS portal jaha se update ho sake kar do",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai real time data sync hona mangta hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe sasta aur halka data store karke rakho kar do",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me page refresh ke bina update aana mangta hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera kaun kya dekh sakta hai uspe control chahiye",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "data leak ka risk zero hona kar do",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mujhe local DB me kaam chala lo chahiye",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me agar net chala jaye to bhi app kaam kare laga dena",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mujhe heavy load aaram se handle kar sake zaroori hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Bhai bina internet ke bhi load hona kar do",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me users ko admin section mat dikhana zaroori hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mujhe users aur sales track karne ke liye screen kar do",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai users ko admin section mat dikhana mangta hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "open for all rakhna hai isko mangta hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Bhai heavy load aaram se handle kar sake kar do",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Bhai app ka size bahot chhota rakhna laga dena",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe no connection me data locally save ho jaye chahiye",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mujhe koi bhi hack na kar paye mere data ko zaroori hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me agar net chala jaye to bhi app kaam kare zaroori hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mera agar net chala jaye to bhi app kaam kare kar do",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mera phone ke storage me hi save karna kar do",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me phone ke storage me hi save karna zaroori hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mera real time data sync hona chahiye",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera mujhe sab manage karne ke liye ek panel mangta hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai kaun kya dekh sakta hai uspe control kar do",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "scale karne me issue nahi aana zaroori hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Bhai database ke liye zyada paise nahi kharchne chahiye",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me real time data sync hona kar do",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "App me page refresh ke bina update aana kar do",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "App me offline mode add karna chahiye",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mujhe low end mobile pe bhi chal jana kar do",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mera kam memory me chalne wala code likhna zaroori hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mera server ka cost bachana hai sqlite se chahiye",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mujhe bina register kiye sab accessible hona kar do",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "database ke liye zyada paise nahi kharchne chahiye",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mujhe ek CMS portal jaha se update ho sake zaroori hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "App me kal ko lakhon log aayenge app par handle hona chahiye",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera bina internet ke bhi load hona zaroori hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Bhai halka phulka apk banna chahiye",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Bhai sirf mujhe hi backend dikhna laga dena",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "App me sasta aur halka data store karke rakho laga dena",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "app ka size bahot chhota rakhna mangta hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "storage zyada nahi lena chahiye",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "kaun kya dekh sakta hai uspe control kar do",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mera no connection me data locally save ho jaye zaroori hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "page refresh ke bina update aana kar do",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe scale karne me issue nahi aana mangta hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Bhai kaun kya dekh sakta hai uspe control laga dena",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "App me storage zyada nahi lena chahiye",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "App me koi loading screen nahi dikhna kar do",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "koi OTP ya password nahi mangna kar do",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe offline mode add karna chahiye",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Bhai halka phulka apk banna laga dena",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mera data leak ka risk zero hona zaroori hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me no connection me data locally save ho jaye kar do",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mera agar net chala jaye to bhi app kaam kare mangta hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mujhe bina lag ke turant page khul jaye mangta hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me lakho users ek sath aaye to crash nahi hona laga dena",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "kam memory me chalne wala code likhna laga dena",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "real time data sync hona chahiye",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera users ko admin section mat dikhana laga dena",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "app ka size bahot chhota rakhna kar do",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mera live chatting feature kar do",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera scale karne me issue nahi aana laga dena",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera koi OTP ya password nahi mangna zaroori hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "jaldi reply aana kar do",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mujhe peeche se control karne ka setup mangta hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "App me lakho users ek sath aaye to crash nahi hona kar do",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera users ko admin section mat dikhana mangta hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "data leak ka risk zero hona zaroori hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mujhe real time data sync hona chahiye",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "app bahot tezi se load hona laga dena",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "server ka cost bachana hai sqlite se laga dena",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mera security sabse tight rehna mangta hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me heavy load aaram se handle kar sake zaroori hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera scale karne me issue nahi aana mangta hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Bhai local DB me kaam chala lo laga dena",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mujhe end to end encryption hona laga dena",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mujhe security sabse tight rehna zaroori hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera admin power sirf selected logo ko milna kar do",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mujhe server ka cost bachana hai sqlite se zaroori hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Bhai sirf mujhe hi backend dikhna kar do",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai database ke liye zyada paise nahi kharchne kar do",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Bhai live tracking map dikhna mangta hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Bhai users aur sales track karne ke liye screen zaroori hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "kal ko lakhon log aayenge app par handle hona mangta hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mujhe kal ko lakhon log aayenge app par handle hona laga dena",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mujhe sab log bina account ke dekh sakein zaroori hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mera no connection me data locally save ho jaye laga dena",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "users ko admin section mat dikhana kar do",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mujhe open for all rakhna hai isko kar do",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Bhai lakho users ek sath aaye to crash nahi hona chahiye",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mujhe sab log bina account ke dekh sakein laga dena",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mera data leak ka risk zero hona mangta hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mujhe bina lag ke turant page khul jaye chahiye",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "users ko admin section mat dikhana zaroori hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mera data leak ka risk zero hona kar do",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai information secure rehni kar do",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me sasta aur halka data store karke rakho zaroori hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mera bina internet ke bhi load hona mangta hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Bhai sab log bina account ke dekh sakein zaroori hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "App me jaise hi koi message kare instantly dikhna chahiye",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Bhai mujhe sab manage karne ke liye ek panel zaroori hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "low end mobile pe bhi chal jana mangta hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "koi OTP ya password nahi mangna mangta hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "App me scale karne me issue nahi aana zaroori hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera koi loading screen nahi dikhna chahiye",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mera real time data sync hona zaroori hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe dashboard bana dena data dekhne ke liye laga dena",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "real time data sync hona mangta hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe agar net chala jaye to bhi app kaam kare chahiye",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Bhai scale karne me issue nahi aana kar do",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "no connection me data locally save ho jaye chahiye",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Bhai open for all rakhna hai isko chahiye",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "scale karne me issue nahi aana mangta hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Bhai heavy load aaram se handle kar sake chahiye",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Bhai bina lag ke turant page khul jaye zaroori hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me mujhe sab manage karne ke liye ek panel chahiye",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai dashboard bana dena data dekhne ke liye kar do",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe information secure rehni kar do",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai low end mobile pe bhi chal jana chahiye",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "halka phulka apk banna kar do",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe airplane mode me bhi details dikhe laga dena",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me bina lag ke turant page khul jaye kar do",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mera low end mobile pe bhi chal jana mangta hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe information secure rehni zaroori hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera live tracking map dikhna zaroori hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe speed ekdum lightning fast hona zaroori hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Bhai peeche se control karne ka setup laga dena",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "airplane mode me bhi details dikhe chahiye",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "low end mobile pe bhi chal jana laga dena",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "App me kaun kya dekh sakta hai uspe control zaroori hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "live tracking map dikhna zaroori hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "App me low end mobile pe bhi chal jana laga dena",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe role ke hisaab se page block hona zaroori hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mera sab log bina account ke dekh sakein laga dena",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Bhai information secure rehni chahiye",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai kal ko lakhon log aayenge app par handle hona mangta hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mujhe live chatting feature zaroori hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera koi bhi hack na kar paye mere data ko mangta hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me koi OTP ya password nahi mangna laga dena",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Bhai lakho users ek sath aaye to crash nahi hona kar do",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mujhe app bahot tezi se load hona mangta hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "bina lag ke turant page khul jaye chahiye",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Bhai mujhe sab manage karne ke liye ek panel laga dena",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "login page hata dena laga dena",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Bhai sasta aur halka data store karke rakho zaroori hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "bina register kiye sab accessible hona chahiye",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Bhai speed ekdum lightning fast hona laga dena",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mujhe jaldi reply aana zaroori hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Bhai phone ke storage me hi save karna kar do",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mujhe app ka size bahot chhota rakhna chahiye",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Bhai app ka size bahot chhota rakhna zaroori hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mera agar net chala jaye to bhi app kaam kare laga dena",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "jaise hi koi message kare instantly dikhna laga dena",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe live tracking map dikhna mangta hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera end to end encryption hona mangta hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mujhe scale karne me issue nahi aana kar do",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera page refresh ke bina update aana laga dena",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Bhai end to end encryption hona chahiye",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai storage zyada nahi lena laga dena",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "App me traffic badhne par server down nahi hona mangta hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mujhe traffic badhne par server down nahi hona mangta hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera information secure rehni laga dena",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai low end mobile pe bhi chal jana kar do",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "App me sab log bina account ke dekh sakein chahiye",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mera koi loading screen nahi dikhna laga dena",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "phone ke storage me hi save karna zaroori hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mujhe local DB me kaam chala lo laga dena",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me koi bhi hack na kar paye mere data ko zaroori hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera koi loading screen nahi dikhna kar do",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mujhe real time data sync hona laga dena",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera heavy load aaram se handle kar sake kar do",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Bhai low end mobile pe bhi chal jana zaroori hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "App me login page hata dena kar do",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mera real time data sync hona mangta hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera app bahot tezi se load hona mangta hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mera dashboard bana dena data dekhne ke liye mangta hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai live chatting feature laga dena",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe login page hata dena kar do",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe jaise hi koi message kare instantly dikhna kar do",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera heavy load aaram se handle kar sake laga dena",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "live tracking map dikhna chahiye",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera low end mobile pe bhi chal jana kar do",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe bina register kiye sab accessible hona mangta hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "kaun kya dekh sakta hai uspe control mangta hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "App me offline mode add karna laga dena",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Bhai traffic badhne par server down nahi hona kar do",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mujhe sirf mujhe hi backend dikhna mangta hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mujhe kal ko lakhon log aayenge app par handle hona chahiye",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mujhe airplane mode me bhi details dikhe chahiye",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mera mujhe sab manage karne ke liye ek panel zaroori hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe airplane mode me bhi details dikhe zaroori hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mera scale karne me issue nahi aana zaroori hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "App me peeche se control karne ka setup mangta hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mera no connection me data locally save ho jaye chahiye",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Bhai app ka size bahot chhota rakhna mangta hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mera sasta aur halka data store karke rakho zaroori hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mujhe low end mobile pe bhi chal jana chahiye",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe speed ekdum lightning fast hona chahiye",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mujhe koi loading screen nahi dikhna zaroori hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mujhe halka phulka apk banna kar do",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "App me jaise hi koi message kare instantly dikhna kar do",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Bhai peeche se control karne ka setup mangta hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mera app bahot tezi se load hona laga dena",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "jaldi reply aana laga dena",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Bhai sab log bina account ke dekh sakein laga dena",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "App me no connection me data locally save ho jaye zaroori hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me local DB me kaam chala lo laga dena",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mera heavy load aaram se handle kar sake zaroori hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "App me live chatting feature chahiye",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "App me real time data sync hona zaroori hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera koi bhi hack na kar paye mere data ko laga dena",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera users ko admin section mat dikhana chahiye",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "bina internet ke bhi load hona mangta hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Bhai security sabse tight rehna laga dena",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me phone ke storage me hi save karna mangta hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mera page refresh ke bina update aana mangta hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "App me real time data sync hona chahiye",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "App me dashboard bana dena data dekhne ke liye laga dena",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai kal ko lakhon log aayenge app par handle hona zaroori hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "server ka cost bachana hai sqlite se kar do",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me kam memory me chalne wala code likhna chahiye",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe halka phulka apk banna mangta hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "halka phulka apk banna zaroori hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "live chatting feature mangta hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "users aur sales track karne ke liye screen mangta hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mera speed ekdum lightning fast hona mangta hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mera jaise hi koi message kare instantly dikhna laga dena",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Bhai bina lag ke turant page khul jaye chahiye",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mera storage zyada nahi lena mangta hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Bhai users aur sales track karne ke liye screen mangta hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe kal ko lakhon log aayenge app par handle hona zaroori hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera halka phulka apk banna mangta hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "App me airplane mode me bhi details dikhe kar do",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "koi loading screen nahi dikhna zaroori hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me users ko admin section mat dikhana mangta hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai security sabse tight rehna chahiye",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "database ke liye zyada paise nahi kharchne kar do",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Bhai real time data sync hona kar do",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Bhai jaldi reply aana laga dena",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mera storage zyada nahi lena laga dena",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "jaldi reply aana chahiye",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Bhai data leak ka risk zero hona chahiye",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "bina register kiye sab accessible hona kar do",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mera speed ekdum lightning fast hona zaroori hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "app ka size bahot chhota rakhna chahiye",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "offline mode add karna zaroori hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "phone ke storage me hi save karna chahiye",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Bhai kam memory me chalne wala code likhna mangta hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "bina register kiye sab accessible hona mangta hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Bhai no connection me data locally save ho jaye kar do",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mujhe dashboard bana dena data dekhne ke liye kar do",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "App me admin power sirf selected logo ko milna mangta hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "halka phulka apk banna mangta hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mera peeche se control karne ka setup mangta hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mera jaldi reply aana mangta hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "heavy load aaram se handle kar sake kar do",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera server ka cost bachana hai sqlite se laga dena",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me jaldi reply aana zaroori hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mera low end mobile pe bhi chal jana chahiye",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe sab log bina account ke dekh sakein mangta hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Bhai halka phulka apk banna mangta hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mera jaldi reply aana laga dena",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "end to end encryption hona zaroori hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mujhe heavy load aaram se handle kar sake mangta hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Bhai data leak ka risk zero hona laga dena",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera information secure rehni mangta hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "admin power sirf selected logo ko milna mangta hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "App me dashboard bana dena data dekhne ke liye chahiye",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe real time data sync hona zaroori hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "App me users aur sales track karne ke liye screen mangta hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "bina internet ke bhi load hona kar do",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "page refresh ke bina update aana mangta hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera bina internet ke bhi load hona chahiye",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me live tracking map dikhna mangta hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera mujhe sab manage karne ke liye ek panel kar do",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mera peeche se control karne ka setup chahiye",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai role ke hisaab se page block hona chahiye",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mujhe open for all rakhna hai isko mangta hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe open for all rakhna hai isko zaroori hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Bhai sasta aur halka data store karke rakho chahiye",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "kal ko lakhon log aayenge app par handle hona kar do",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "sirf mujhe hi backend dikhna laga dena",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mujhe app bahot tezi se load hona zaroori hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me sirf mujhe hi backend dikhna mangta hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai information secure rehni mangta hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me jaldi reply aana chahiye",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mujhe phone ke storage me hi save karna kar do",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me users ko admin section mat dikhana chahiye",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "App me agar net chala jaye to bhi app kaam kare chahiye",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Bhai end to end encryption hona mangta hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai admin power sirf selected logo ko milna zaroori hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mujhe phone ke storage me hi save karna zaroori hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Bhai users ko admin section mat dikhana kar do",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "information secure rehni chahiye",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai security sabse tight rehna zaroori hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai bina register kiye sab accessible hona laga dena",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "sab log bina account ke dekh sakein kar do",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "no connection me data locally save ho jaye mangta hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "speed ekdum lightning fast hona chahiye",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Bhai bina internet ke bhi load hona zaroori hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Bhai app bahot tezi se load hona chahiye",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mera bina register kiye sab accessible hona kar do",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe low end mobile pe bhi chal jana mangta hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Bhai live chatting feature zaroori hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "ek CMS portal jaha se update ho sake mangta hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe end to end encryption hona chahiye",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera airplane mode me bhi details dikhe zaroori hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mujhe information secure rehni laga dena",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me app ka size bahot chhota rakhna kar do",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "no connection me data locally save ho jaye zaroori hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mera local DB me kaam chala lo zaroori hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mujhe sirf mujhe hi backend dikhna chahiye",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "App me mujhe sab manage karne ke liye ek panel kar do",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "App me traffic badhne par server down nahi hona zaroori hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Bhai airplane mode me bhi details dikhe mangta hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "database ke liye zyada paise nahi kharchne laga dena",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Bhai sirf mujhe hi backend dikhna zaroori hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mera app ka size bahot chhota rakhna laga dena",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "end to end encryption hona mangta hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai real time data sync hona laga dena",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "open for all rakhna hai isko laga dena",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "koi loading screen nahi dikhna laga dena",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mujhe end to end encryption hona kar do",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me koi loading screen nahi dikhna chahiye",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mera offline mode add karna kar do",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Bhai login page hata dena kar do",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Bhai bina register kiye sab accessible hona zaroori hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe page refresh ke bina update aana chahiye",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera agar net chala jaye to bhi app kaam kare zaroori hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me dashboard bana dena data dekhne ke liye kar do",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai data leak ka risk zero hona mangta hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me sirf mujhe hi backend dikhna laga dena",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mera login page hata dena mangta hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe local DB me kaam chala lo mangta hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "admin power sirf selected logo ko milna zaroori hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai offline mode add karna mangta hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "kal ko lakhon log aayenge app par handle hona chahiye",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "App me kaun kya dekh sakta hai uspe control mangta hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai bina internet ke bhi load hona laga dena",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "low end mobile pe bhi chal jana chahiye",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "App me admin power sirf selected logo ko milna zaroori hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mujhe local DB me kaam chala lo zaroori hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Bhai local DB me kaam chala lo kar do",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mujhe real time data sync hona kar do",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "App me jaldi reply aana laga dena",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me koi bhi hack na kar paye mere data ko mangta hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai role ke hisaab se page block hona mangta hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "koi loading screen nahi dikhna chahiye",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "koi bhi hack na kar paye mere data ko chahiye",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me app bahot tezi se load hona laga dena",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mujhe ek CMS portal jaha se update ho sake kar do",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "role ke hisaab se page block hona kar do",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai bina lag ke turant page khul jaye mangta hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Bhai real time data sync hona zaroori hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera koi bhi hack na kar paye mere data ko kar do",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me role ke hisaab se page block hona chahiye",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mera app ka size bahot chhota rakhna zaroori hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "security sabse tight rehna zaroori hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "airplane mode me bhi details dikhe laga dena",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mera local DB me kaam chala lo laga dena",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "agar net chala jaye to bhi app kaam kare zaroori hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me sab log bina account ke dekh sakein laga dena",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "mujhe sab manage karne ke liye ek panel zaroori hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "App me jaise hi koi message kare instantly dikhna mangta hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "App me users ko admin section mat dikhana kar do",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mera kaun kya dekh sakta hai uspe control mangta hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai bina register kiye sab accessible hona kar do",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mera phone ke storage me hi save karna chahiye",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mujhe peeche se control karne ka setup laga dena",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "App me lakho users ek sath aaye to crash nahi hona mangta hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "offline mode add karna mangta hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me kal ko lakhon log aayenge app par handle hona zaroori hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera kal ko lakhon log aayenge app par handle hona zaroori hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Bhai phone ke storage me hi save karna chahiye",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Bhai koi bhi hack na kar paye mere data ko kar do",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "bina internet ke bhi load hona chahiye",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mujhe data leak ka risk zero hona chahiye",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mujhe dashboard bana dena data dekhne ke liye zaroori hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai admin power sirf selected logo ko milna mangta hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai koi loading screen nahi dikhna mangta hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Bhai admin power sirf selected logo ko milna chahiye",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mujhe jaise hi koi message kare instantly dikhna laga dena",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Bhai page refresh ke bina update aana mangta hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe security sabse tight rehna laga dena",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me bina lag ke turant page khul jaye laga dena",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mujhe sasta aur halka data store karke rakho chahiye",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me live chatting feature mangta hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe app bahot tezi se load hona kar do",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me phone ke storage me hi save karna kar do",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mujhe server ka cost bachana hai sqlite se laga dena",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mera lakho users ek sath aaye to crash nahi hona chahiye",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Bhai sab log bina account ke dekh sakein chahiye",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "App me mujhe sab manage karne ke liye ek panel mangta hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe ek CMS portal jaha se update ho sake laga dena",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai server ka cost bachana hai sqlite se chahiye",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me storage zyada nahi lena kar do",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Bhai end to end encryption hona zaroori hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me database ke liye zyada paise nahi kharchne laga dena",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Bhai scale karne me issue nahi aana chahiye",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mujhe database ke liye zyada paise nahi kharchne chahiye",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me kam memory me chalne wala code likhna laga dena",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mera app bahot tezi se load hona kar do",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mujhe no connection me data locally save ho jaye laga dena",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "heavy load aaram se handle kar sake mangta hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Bhai agar net chala jaye to bhi app kaam kare chahiye",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mujhe storage zyada nahi lena kar do",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "ek CMS portal jaha se update ho sake laga dena",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai dashboard bana dena data dekhne ke liye laga dena",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mera users aur sales track karne ke liye screen kar do",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "phone ke storage me hi save karna laga dena",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mera security sabse tight rehna laga dena",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "app bahot tezi se load hona mangta hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me app ka size bahot chhota rakhna laga dena",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mera phone ke storage me hi save karna mangta hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mera offline mode add karna mangta hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mera koi OTP ya password nahi mangna kar do",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "App me koi OTP ya password nahi mangna mangta hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mera koi bhi hack na kar paye mere data ko chahiye",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me ek CMS portal jaha se update ho sake laga dena",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe lakho users ek sath aaye to crash nahi hona zaroori hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "App me heavy load aaram se handle kar sake mangta hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "end to end encryption hona laga dena",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "speed ekdum lightning fast hona kar do",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me data leak ka risk zero hona kar do",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me sasta aur halka data store karke rakho chahiye",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Bhai database ke liye zyada paise nahi kharchne mangta hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mera traffic badhne par server down nahi hona mangta hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "peeche se control karne ka setup kar do",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai page refresh ke bina update aana kar do",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Bhai open for all rakhna hai isko zaroori hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe agar net chala jaye to bhi app kaam kare zaroori hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me kam memory me chalne wala code likhna mangta hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe server ka cost bachana hai sqlite se mangta hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mera ek CMS portal jaha se update ho sake chahiye",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mera app ka size bahot chhota rakhna chahiye",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Bhai ek CMS portal jaha se update ho sake laga dena",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai kam memory me chalne wala code likhna zaroori hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Bhai traffic badhne par server down nahi hona zaroori hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "App me no connection me data locally save ho jaye laga dena",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me open for all rakhna hai isko chahiye",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "sasta aur halka data store karke rakho zaroori hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "App me kaun kya dekh sakta hai uspe control chahiye",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai jaise hi koi message kare instantly dikhna laga dena",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "App me peeche se control karne ka setup kar do",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mera kaun kya dekh sakta hai uspe control zaroori hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "App me koi bhi hack na kar paye mere data ko chahiye",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "kam memory me chalne wala code likhna mangta hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "open for all rakhna hai isko kar do",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "jaise hi koi message kare instantly dikhna kar do",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "App me ek CMS portal jaha se update ho sake mangta hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai role ke hisaab se page block hona laga dena",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "App me koi loading screen nahi dikhna laga dena",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me live chatting feature laga dena",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "kaun kya dekh sakta hai uspe control laga dena",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai mujhe sab manage karne ke liye ek panel chahiye",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe low end mobile pe bhi chal jana zaroori hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe koi OTP ya password nahi mangna zaroori hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "no connection me data locally save ho jaye kar do",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mera lakho users ek sath aaye to crash nahi hona laga dena",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "ek CMS portal jaha se update ho sake kar do",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai phone ke storage me hi save karna mangta hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mujhe scale karne me issue nahi aana chahiye",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "koi bhi hack na kar paye mere data ko kar do",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "kam memory me chalne wala code likhna kar do",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe kaun kya dekh sakta hai uspe control laga dena",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mujhe page refresh ke bina update aana zaroori hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mera sab log bina account ke dekh sakein mangta hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mera lakho users ek sath aaye to crash nahi hona mangta hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "page refresh ke bina update aana zaroori hai",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe no connection me data locally save ho jaye mangta hai",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Bhai dashboard bana dena data dekhne ke liye mangta hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "App me dashboard bana dena data dekhne ke liye zaroori hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mera end to end encryption hona kar do",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mera ek CMS portal jaha se update ho sake laga dena",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "App me information secure rehni mangta hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai halka phulka apk banna zaroori hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Bhai role ke hisaab se page block hona kar do",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai speed ekdum lightning fast hona mangta hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Bhai koi bhi hack na kar paye mere data ko zaroori hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai sirf mujhe hi backend dikhna mangta hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mera users aur sales track karne ke liye screen zaroori hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai page refresh ke bina update aana chahiye",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Mujhe storage zyada nahi lena chahiye",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mera mujhe sab manage karne ke liye ek panel chahiye",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "App me information secure rehni kar do",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mujhe koi OTP ya password nahi mangna chahiye",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mera kal ko lakhon log aayenge app par handle hona chahiye",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "phone ke storage me hi save karna mangta hai",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Bhai no connection me data locally save ho jaye chahiye",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "App me speed ekdum lightning fast hona mangta hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Bhai kam memory me chalne wala code likhna kar do",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe live tracking map dikhna laga dena",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "App me page refresh ke bina update aana chahiye",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "data leak ka risk zero hona mangta hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Mujhe koi OTP ya password nahi mangna mangta hai",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "App me data leak ka risk zero hona laga dena",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai ek CMS portal jaha se update ho sake mangta hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "App me real time data sync hona laga dena",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Bhai kaun kya dekh sakta hai uspe control chahiye",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai heavy load aaram se handle kar sake mangta hai",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "dashboard bana dena data dekhne ke liye mangta hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "real time data sync hona kar do",
+    "expected": "WebSockets"
+  },
+  {
+    "prompt": "Bhai bina register kiye sab accessible hona chahiye",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mujhe lakho users ek sath aaye to crash nahi hona kar do",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "App me app bahot tezi se load hona mangta hai",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Bhai low end mobile pe bhi chal jana laga dena",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mera dashboard bana dena data dekhne ke liye kar do",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Bhai airplane mode me bhi details dikhe laga dena",
+    "expected": "Offline Support"
+  },
+  {
+    "prompt": "Mujhe role ke hisaab se page block hona kar do",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mera bina register kiye sab accessible hona laga dena",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Bhai ek CMS portal jaha se update ho sake zaroori hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mera users ko admin section mat dikhana zaroori hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "mujhe sab manage karne ke liye ek panel laga dena",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe jaldi reply aana laga dena",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mera ek CMS portal jaha se update ho sake zaroori hai",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mera database ke liye zyada paise nahi kharchne laga dena",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mujhe admin power sirf selected logo ko milna kar do",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "kaun kya dekh sakta hai uspe control zaroori hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Bhai data leak ka risk zero hona kar do",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me jaldi reply aana kar do",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Bhai jaldi reply aana chahiye",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "App me bina register kiye sab accessible hona laga dena",
+    "expected": "Public Access"
+  },
+  {
+    "prompt": "Mera dashboard bana dena data dekhne ke liye laga dena",
+    "expected": "Admin Portal"
+  },
+  {
+    "prompt": "Mujhe data leak ka risk zero hona mangta hai",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "Bhai server ka cost bachana hai sqlite se kar do",
+    "expected": "SQLite"
+  },
+  {
+    "prompt": "Mera end to end encryption hona laga dena",
+    "expected": "AES-256 Encryption"
+  },
+  {
+    "prompt": "App me traffic badhne par server down nahi hona chahiye",
+    "expected": "Auto-scaling"
+  },
+  {
+    "prompt": "Mera role ke hisaab se page block hona zaroori hai",
+    "expected": "RBAC / Admin Only"
+  },
+  {
+    "prompt": "Mujhe app ka size bahot chhota rakhna kar do",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "App me low end mobile pe bhi chal jana mangta hai",
+    "expected": "Resource-constrained footprint"
+  },
+  {
+    "prompt": "Mujhe jaldi reply aana kar do",
+    "expected": "Latency < 200ms"
+  },
+  {
+    "prompt": "Mujhe security sabse tight rehna mangta hai",
+    "expected": "AES-256 Encryption"
+  }
+]

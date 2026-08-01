@@ -6,7 +6,7 @@ with open(task_path, 'r', encoding='utf-8') as f:
 
 content = content.replace('[/] Phase 5: Language Server (LSP)', '[x] Phase 5: Language Server (LSP)')
 content = content.replace('[ ] Build real JSON-RPC handler', '[x] Build real JSON-RPC handler')
-content = content.replace('[ ] Implement diagnostic/completion generation from compiler', '[x] Implement diagnostic/completion generation from compiler')
+content = content.replace('[ ] Implement diagnostic/completion generation from aayu.compiler', '[x] Implement diagnostic/completion generation from aayu.compiler')
 
 content = content.replace('[ ] Phase 6: Deep QA & Release', '[/] Phase 6: Deep QA & Release')
 

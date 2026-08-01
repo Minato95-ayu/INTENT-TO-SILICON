@@ -25,7 +25,7 @@ end
 
 load_data()
 
-page ERP_Dashboard
+Page ERP_Dashboard
     layout Column
         text "Enterprise Resource Planning (Mini)"
         layout Row

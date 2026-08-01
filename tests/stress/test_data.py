@@ -1,7 +1,7 @@
 import unittest
 import time
-from runtime.kernel.core import RuntimeKernel
-from runtime.plugins.storage.runtime import StorageRuntime
+from aayu.runtime.kernel.core import RuntimeKernel
+from aayu.runtime.plugins.storage.runtime import StorageRuntime
 
 class TestDataStress(unittest.TestCase):
     def setUp(self):

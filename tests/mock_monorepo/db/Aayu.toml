@@ -1,0 +1,6 @@
+
+    [package]
+    name = "db"
+    version = "2.1.0"
+    entry = "db_main.aayu"
+    

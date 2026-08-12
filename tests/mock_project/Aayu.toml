@@ -1,0 +1,23 @@
+
+    [package]
+    name = "hospital"
+    version = "1.0.0"
+    edition = "2026"
+    entry = "main.aayu"
+
+    [compiler]
+    target = "native"
+    optimization = "release"
+    warnings_as_errors = true
+
+    [dependencies]
+    auth = "1.0"
+    db = "2.1"
+
+    [workspace]
+    members = [
+        "auth",
+        "db",
+        "ui"
+    ]
+    

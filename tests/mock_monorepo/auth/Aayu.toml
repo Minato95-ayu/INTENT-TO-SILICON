@@ -1,0 +1,6 @@
+
+    [package]
+    name = "auth"
+    version = "1.0.0"
+    entry = "auth_main.aayu"
+    

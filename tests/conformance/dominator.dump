@@ -1,0 +1,15 @@
+Function Test Dominance:
+  Immediate Dominators (idom):
+    then_2 -> entry_1
+    else_3 -> entry_1
+    merge_4 -> entry_1
+  Dominator Tree Children:
+    entry_1: ['then_2', 'else_3', 'merge_4']
+    then_2: []
+    else_3: []
+    merge_4: []
+  Dominance Frontiers (DF):
+    entry_1: []
+    then_2: ['merge_4']
+    else_3: ['merge_4']
+    merge_4: []

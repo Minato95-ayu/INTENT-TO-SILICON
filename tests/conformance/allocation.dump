@@ -1,0 +1,38 @@
+Function AllocateMe Allocation Results:
+
+--- Allocation with K = 2 ---
+Spill Count: 1
+  LiveInterval(r1: [0, 12], uses=5, cost=0.42) -> SPILL
+  LiveInterval(r2: [2, 12], uses=5, cost=0.50) -> p1
+  LiveInterval(r3: [4, 6], uses=2, cost=1.00) -> p0
+  LiveInterval(r6: [12, 16], uses=3, cost=0.75) -> p1
+  LiveInterval(r9: [8, 16], uses=3, cost=0.38) -> p0
+  LiveInterval(r13: [16, 18], uses=2, cost=1.00) -> p0
+
+--- Allocation with K = 4 ---
+Spill Count: 0
+  LiveInterval(r1: [0, 12], uses=5, cost=0.42) -> p0
+  LiveInterval(r2: [2, 12], uses=5, cost=0.50) -> p1
+  LiveInterval(r3: [4, 6], uses=2, cost=1.00) -> p2
+  LiveInterval(r6: [12, 16], uses=3, cost=0.75) -> p2
+  LiveInterval(r9: [8, 16], uses=3, cost=0.38) -> p3
+  LiveInterval(r13: [16, 18], uses=2, cost=1.00) -> p0
+
+--- Allocation with K = 8 ---
+Spill Count: 0
+  LiveInterval(r1: [0, 12], uses=5, cost=0.42) -> p0
+  LiveInterval(r2: [2, 12], uses=5, cost=0.50) -> p1
+  LiveInterval(r3: [4, 6], uses=2, cost=1.00) -> p2
+  LiveInterval(r6: [12, 16], uses=3, cost=0.75) -> p4
+  LiveInterval(r9: [8, 16], uses=3, cost=0.38) -> p3
+  LiveInterval(r13: [16, 18], uses=2, cost=1.00) -> p5
+
+--- Allocation with K = 16 ---
+Spill Count: 0
+  LiveInterval(r1: [0, 12], uses=5, cost=0.42) -> p0
+  LiveInterval(r2: [2, 12], uses=5, cost=0.50) -> p1
+  LiveInterval(r3: [4, 6], uses=2, cost=1.00) -> p2
+  LiveInterval(r6: [12, 16], uses=3, cost=0.75) -> p4
+  LiveInterval(r9: [8, 16], uses=3, cost=0.38) -> p3
+  LiveInterval(r13: [16, 18], uses=2, cost=1.00) -> p5
+

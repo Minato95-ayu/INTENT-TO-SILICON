@@ -1,0 +1,199 @@
+{
+  "actions": [
+    {
+      "body": {
+        "flags": 0,
+        "hir_node_id": 22,
+        "module_id": "local",
+        "origin_node_id": 26,
+        "statements": [
+          {
+            "flags": 0,
+            "hir_node_id": 3,
+            "module_id": "local",
+            "origin_node_id": 2,
+            "target": {
+              "flags": 0,
+              "hir_node_id": 2,
+              "is_global": true,
+              "module_id": "local",
+              "name": "i",
+              "origin_node_id": 2,
+              "type_id": "Int"
+            },
+            "type_id": "Unknown",
+            "value": {
+              "flags": 0,
+              "hir_node_id": 1,
+              "module_id": "local",
+              "origin_node_id": 1,
+              "type_id": "Int",
+              "value": 0
+            }
+          },
+          {
+            "body": {
+              "flags": 0,
+              "hir_node_id": 20,
+              "module_id": "local",
+              "origin_node_id": 25,
+              "statements": [
+                {
+                  "condition": {
+                    "flags": 0,
+                    "hir_node_id": 9,
+                    "left": {
+                      "flags": 0,
+                      "hir_node_id": 7,
+                      "is_global": true,
+                      "module_id": "local",
+                      "name": "i",
+                      "origin_node_id": 6,
+                      "type_id": "Int"
+                    },
+                    "module_id": "local",
+                    "operator": "==",
+                    "origin_node_id": 21,
+                    "right": {
+                      "flags": 0,
+                      "hir_node_id": 8,
+                      "module_id": "local",
+                      "origin_node_id": 7,
+                      "type_id": "Int",
+                      "value": 5
+                    },
+                    "type_id": "Unknown"
+                  },
+                  "else_branch": {
+                    "flags": 0,
+                    "hir_node_id": 18,
+                    "module_id": "local",
+                    "origin_node_id": 24,
+                    "statements": [
+                      {
+                        "flags": 0,
+                        "hir_node_id": 16,
+                        "module_id": "local",
+                        "origin_node_id": 23,
+                        "target": {
+                          "flags": 0,
+                          "hir_node_id": 15,
+                          "is_global": true,
+                          "module_id": "local",
+                          "name": "i",
+                          "origin_node_id": 10,
+                          "type_id": "Any"
+                        },
+                        "type_id": "Unknown",
+                        "value": {
+                          "flags": 0,
+                          "hir_node_id": 14,
+                          "left": {
+                            "flags": 0,
+                            "hir_node_id": 12,
+                            "is_global": true,
+                            "module_id": "local",
+                            "name": "i",
+                            "origin_node_id": 11,
+                            "type_id": "Int"
+                          },
+                          "module_id": "local",
+                          "operator": "+",
+                          "origin_node_id": 22,
+                          "right": {
+                            "flags": 0,
+                            "hir_node_id": 13,
+                            "module_id": "local",
+                            "origin_node_id": 12,
+                            "type_id": "Int",
+                            "value": 1
+                          },
+                          "type_id": "Unknown"
+                        }
+                      },
+                      {
+                        "flags": 0,
+                        "hir_node_id": 17,
+                        "module_id": "local",
+                        "origin_node_id": 15,
+                        "type_id": "Unknown"
+                      }
+                    ],
+                    "type_id": "Unknown"
+                  },
+                  "flags": 0,
+                  "hir_node_id": 19,
+                  "module_id": "local",
+                  "origin_node_id": 24,
+                  "then_branch": {
+                    "flags": 0,
+                    "hir_node_id": 11,
+                    "module_id": "local",
+                    "origin_node_id": 24,
+                    "statements": [
+                      {
+                        "flags": 0,
+                        "hir_node_id": 10,
+                        "module_id": "local",
+                        "origin_node_id": 9,
+                        "type_id": "Unknown"
+                      }
+                    ],
+                    "type_id": "Unknown"
+                  },
+                  "type_id": "Unknown"
+                }
+              ],
+              "type_id": "Unknown"
+            },
+            "condition": {
+              "flags": 0,
+              "hir_node_id": 6,
+              "left": {
+                "flags": 0,
+                "hir_node_id": 4,
+                "is_global": true,
+                "module_id": "local",
+                "name": "i",
+                "origin_node_id": 3,
+                "type_id": "Int"
+              },
+              "module_id": "local",
+              "operator": "<",
+              "origin_node_id": 20,
+              "right": {
+                "flags": 0,
+                "hir_node_id": 5,
+                "module_id": "local",
+                "origin_node_id": 4,
+                "type_id": "Int",
+                "value": 10
+              },
+              "type_id": "Unknown"
+            },
+            "flags": 0,
+            "hir_node_id": 21,
+            "module_id": "local",
+            "origin_node_id": 25,
+            "type_id": "Unknown"
+          }
+        ],
+        "type_id": "Unknown"
+      },
+      "flags": 0,
+      "hir_node_id": 23,
+      "module_id": "local",
+      "name": "test_loops",
+      "origin_node_id": 26,
+      "type_id": "Unknown"
+    }
+  ],
+  "enums": [],
+  "flags": 0,
+  "globals": [],
+  "hir_node_id": 24,
+  "module_id": "local",
+  "origin_node_id": 27,
+  "structs": [],
+  "type_id": "Unknown"
+}

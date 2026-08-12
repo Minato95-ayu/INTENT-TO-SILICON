@@ -1,41 +1,26 @@
 import sys
 import os
+import ctypes
 import time
+import llvmlite.binding as llvm
 
 from aayu.compiler.lexer.lexer import Lexer
 from aayu.compiler.parser.parser import Parser
-from aayu.compiler.semantic.analyzer import SemanticAnalyzer
-from aayu.compiler.ir.pipeline import IRPipeline
-from aayu.compiler.bytecode.encoder import BytecodeEncoder
-from aayu.compiler.errors import CompilerError
-from aayu.runtime.vm.vm import VirtualMachine
+from aayu.compiler.ast_resolver import resolve_ast_imports
+from aayu.compiler.semantic.pipeline import SemanticPipeline
+from aayu.compiler.hir.nodes import HIRModule
+from aayu.compiler.mir.builder import MIRBuilder
 
-from aayu.runtime.events.queue import EventQueue
-from aayu.runtime.events.scheduler import FrameScheduler
-from aayu.runtime.layout.engine import LayoutEngine
-from aayu.runtime.ui.style_resolver import StyleResolver
-from aayu.runtime.ui.painter import Painter
-from aayu.runtime.diff.engine import DiffEngine
-from aayu.runtime.renderers.console import ConsoleRenderer
-from aayu.runtime.renderers.tkinter_renderer import TkinterRenderer
+
+from aayu.compiler.backend.llvm.bridge import LLVMBridge
+from aayu.compiler.backend.llvm.serializer import LLVMSerializer
+from aayu.compiler.errors import CompilerError
 
 def handle(args):
-    renderer_type = "console"
-    backend = "tkinter"
     target = None
     
     for arg in args:
-        if arg == "--console":
-            renderer_type = "console"
-        elif arg == "--web":
-            renderer_type = "web"
-        elif arg == "--desktop":
-            renderer_type = "desktop"
-        elif arg.startswith("--renderer="):
-            renderer_type = arg.split("=")[1]
-        elif arg.startswith("--backend="):
-            backend = arg.split("=")[1]
-        elif not arg.startswith("-"):
+        if not arg.startswith("-"):
             target = arg
 
     if not target:
@@ -43,7 +28,6 @@ def handle(args):
         manifest = AayuManifest()
         if manifest.exists():
             target = manifest.get_entry()
-            renderer_type = manifest.get_build_target()
         else:
             target = "src/main.aayu"
 
@@ -51,238 +35,107 @@ def handle(args):
         print(f"Error: Target file {target} not found.")
         sys.exit(1)
         
-    print(f"[AAYU] Running {target} with renderer={renderer_type} backend={backend}...")
+    print(f"[AAYU] Compiling and running {target} via Native JIT...\n")
     try:
+        t_start = time.perf_counter()
+        
         with open(target, 'r', encoding='utf-8') as f:
             source = f.read()
             
-        # Process Assets
-        from aayu.compiler.assets.manager import AssetManager
-        project_dir = os.path.dirname(os.path.abspath(target))
-        if not project_dir: project_dir = "."
-        asset_manager = AssetManager(project_dir)
-        asset_registry = asset_manager.build()
-        
-        # Compile
+        # 1. Frontend: Lex & Parse
         lexer = Lexer(source)
         parser = Parser(lexer.tokenize())
-        analyzer = SemanticAnalyzer(asset_registry=asset_registry)
-        ir_pipeline = IRPipeline()
-        encoder = BytecodeEncoder()
-        
-        
         ast = parser.parse()
         
-        # --- MODULE LOADER PASS ---
-        from aayu.compiler.ast_resolver import resolve_ast_imports
+        # 2. Resolve Imports
         base_directory = os.path.dirname(os.path.abspath(target))
         if not base_directory:
             base_directory = "."
-            
         ast = resolve_ast_imports(ast, base_directory, set([os.path.abspath(target)]))
-        # --- END MODULE LOADER ---
-
-        semantic_ast = analyzer.analyze(ast)
         
-        # 1. Infer types
-        from aayu.compiler.semantic.type_inference import TypeInference
-        semantic_ast = TypeInference().infer(semantic_ast)
-        
-        # 2. Check types
-        from aayu.compiler.semantic.type_checker import TypeChecker
-        TypeChecker().check(semantic_ast)
-        
-        lir = ir_pipeline.to_lir(ir_pipeline.to_mir(ir_pipeline.to_hir(semantic_ast)))
-        program = encoder.encode(lir)
-        
-        # Create Virtual Machine
-        vm = VirtualMachine()
-        vm.load(program.bytecode, program.constant_pool, program.action_addresses, program.action_params)
-        print(f"DEBUG Models: {vm.database.models}")
-        vm.execute()
-        
-        if renderer_type == "server":
-            from aayu.runtime.server.api_server import APIRouter
-            print(f"[AAYU] Loaded action addresses: {vm.action_addresses}")
-            router = APIRouter(vm)
-            router.start(port=8000)
-            return
-
-        event_queue = EventQueue()
-        
-        if renderer_type == "console":
-            renderer = ConsoleRenderer(event_queue)
-        elif renderer_type == "web":
-            from aayu.runtime.renderers.web_renderer import WebRenderer
-            renderer = WebRenderer(event_queue, project_dir=project_dir, port=3000)
-        elif renderer_type == "desktop":
-            if backend == "tkinter":
-                renderer = TkinterRenderer(event_queue)
-            else:
-                raise ValueError(f"Unknown backend: {backend}")
-        else:
-            raise ValueError(f"Unknown renderer: {renderer_type}")
+        # 3. Semantic Pipeline -> HIR
+        semantic_pipeline = SemanticPipeline()
+        hir_module = semantic_pipeline.run(ast)
+        if not hir_module:
+            semantic_pipeline.diag_engine.print_all()
+            sys.exit(1)
             
-        renderer.initialize()
+        # 4. Lowering: HIR -> MIR -> SSA -> MachineLIR
+        mir_builder = MIRBuilder()
+        mir_module = mir_builder.build(hir_module)
         
-        # Render Pipeline Components
-        layout_engine = LayoutEngine(800, 600)
-        painter = Painter()
-        style_resolver = StyleResolver()
-        diff_engine = DiffEngine()
-        scheduler = FrameScheduler(fps=60)
+        from aayu.compiler.mir.ssa.pass_ import SSAPass
+        ssa_pass = SSAPass()
+        for func in mir_module.functions:
+            ssa_pass.run(func)
+        ssa_module = mir_module
         
-        import tracemalloc
-        tracemalloc.start()
+        from aayu.compiler.backend.lir_gen import LIRGenerationPass
+        from aayu.compiler.machine_lir.lowering import MachineLIRLowering
+        from aayu.compiler.machine_lir.nodes import MachineModule
         
-        # Performance Tracking
-        perf_metrics = {
-            "initial_render_time": 0.0,
-            "re_render_times": [],
-            "frame_count": 0
-        }
+        lir_pass = LIRGenerationPass()
+        machine_lowering = MachineLIRLowering()
         
-        current_render_tree = None
+        machine_module = MachineModule()
+        for func in ssa_module.functions:
+            func_lir = lir_pass.run(func)
+            machine_func = machine_lowering.lower(func_lir)
+            machine_module.functions.append(machine_func)
         
-        def render_pass():
-            nonlocal current_render_tree
-            t_start = time.perf_counter()
+        # 5. LLVM Backend
+        bridge = LLVMBridge()
+        bridge._initialize_llvm()
+        
+        from aayu.compiler.backend.llvm.lowering import LLVMBackend
+        backend = LLVMBackend()
+        artifact = backend.lower(machine_module)
+        llvm_module = artifact.llvm_module
+        
+        # 6. Serialization
+        serializer = LLVMSerializer()
+        ll_code = serializer.serialize(llvm_module)
+        
+        t_compile = time.perf_counter()
+        
+        mod = llvm.parse_assembly(ll_code)
+        mod.verify()
+        
+        # Load the runtime library
+        runtime_path = os.path.abspath("aayu_runtime.dll")
+        if os.path.exists(runtime_path):
+            llvm.load_library_permanently(runtime_path)
             
-            # 1. Ask VM to build New RenderTree
-            if vm.router.current_route:
-                # Push a new isolated scope for the page and pass the route parameters
-                instance_id = f"page_{vm.router.current_route.name}"
-                if instance_id not in vm.state_scopes_map:
-                    vm.state_scopes_map[instance_id] = {"__instance_id__": instance_id}
-                
-                # Merge route parameters as props
-                for k, v in vm.router.current_route.params.items():
-                    vm.state_scopes_map[instance_id][k] = v
-                    
-                vm.state_scopes.append(vm.state_scopes_map[instance_id])
-                
-                vm.call_action_by_name(f"__PAGE_START_{vm.router.current_route.name}")
-                vm.execute()
-                
-                vm.state_scopes.pop()
-            else:
-                vm.call_action_by_name("__PAGE_START__")
-                vm.execute()
-                
-            new_tree = vm.interpreter.render_tree
-            
-            # Check for navigation intent generated during rendering
-            nav_action = vm.state.get("__nav_action__")
-            nav_target = vm.state.get("__nav_target__")
-            if nav_action:
-                vm.state["__nav_action__"] = None
-                vm.state["__nav_target__"] = None
-                
-                # Convert action params which might be on stack if any? No, they were set into UIRouter.
-                # Actually, NAVIGATE already called vm.router.navigate() from interpreter!
-                # We don't need to do it here. The router already updated its state and called the new action.
-                pass
-
-            # 2. Diff Phase
-            changed = diff_engine.diff(current_render_tree, new_tree)
-            if not changed:
-                return # Skip render if tree is identical
-                
-            current_render_tree = new_tree
-            
-            if new_tree.root:
-                if renderer_type == "web":
-                    # Web Renderer handles its own DOM-based layout and CSS
-                    renderer.render(new_tree)
-                else:
-                    # 3. Style Resolve Phase
-                    style_resolver.resolve(new_tree.root)
-                    
-                    # 4. Layout Phase
-                    render_object_tree = layout_engine.calculate_layout(new_tree.root)
-                    
-                    # 5. Paint Phase
-                    display_list = painter.paint(render_object_tree)
-                    
-                    # 6. Render
-                    renderer.render(display_list)
-                    renderer.present()
-            else:
-                if renderer_type == "web":
-                    renderer.render(new_tree)
-                else:
-                    from aayu.runtime.ui.display_list import DisplayList
-                    renderer.render(DisplayList())
-                    renderer.present()
-            
-            t_end = time.perf_counter()
-            perf_metrics["frame_count"] += 1
-            render_duration = (t_end - t_start) * 1000 # ms
-            
-            if perf_metrics["frame_count"] == 1:
-                perf_metrics["initial_render_time"] = render_duration
-            else:
-                perf_metrics["re_render_times"].append(render_duration)
-
-        # Initial render
-        render_pass()
+        target_machine = bridge.target_machine
+        backing_mod = llvm.parse_assembly("")
+        engine = llvm.create_mcjit_compiler(backing_mod, target_machine)
+        engine.add_module(mod)
+        engine.finalize_object()
+        engine.run_static_constructors()
         
-        # Main Event Loop
-        running = True
-        while running:
-            try:
-                renderer.process_events()
-            except Exception:
-                break
-                
-            # Process AAYU events
-            while event_queue.has_events():
-                event = event_queue.pop()
-                if hasattr(event, "action_name"):
-                    action_name = event.action_name
-                    if action_name == "sys_nav_back":
-                        vm.router.back()
-                    elif "::" in action_name:
-                        instance_id, action_name = action_name.split("::")
-                        if instance_id in vm.state_scopes_map:
-                            vm.state_scopes.append(vm.state_scopes_map[instance_id])
-                            vm.call_action_by_name(action_name)
-                            vm.execute()
-                            vm.state_scopes.pop()
-                    else:
-                        vm.call_action_by_name(action_name)
-                        vm.execute()
-                    # Instead of immediate render, request a frame!
-                    scheduler.schedule_render()
-                elif hasattr(event, "target_state"):
-                    vm.state[event.target_state] = event.value
-                    scheduler.schedule_render()
-                    
-            scheduler.tick(render_pass)
+        # Find main function
+        func_ptr = engine.get_function_address("main")
+        if not func_ptr:
+            print("Error: 'main' function not found in module.")
+            sys.exit(1)
             
-        renderer.shutdown()
+        # Execute main via ctypes
+        c_main = ctypes.CFUNCTYPE(ctypes.c_int)(func_ptr)
         
-        current, peak = tracemalloc.get_traced_memory()
-        tracemalloc.stop()
+        print("--- Program Output ---")
+        exit_code = c_main()
+        print(f"\n--- Process Exited with Code {exit_code} ---")
         
-        avg_re_render = 0
-        if perf_metrics["re_render_times"]:
-            avg_re_render = sum(perf_metrics["re_render_times"]) / len(perf_metrics["re_render_times"])
-            
-        print("\n--- AAYU Performance Metrics ---")
-        print(f"Initial Render Time: {perf_metrics['initial_render_time']:.2f} ms")
-        print(f"Avg Re-Render Time:  {avg_re_render:.2f} ms")
-        print(f"Total Frames Painted: {perf_metrics['frame_count']}")
-        print(f"Peak Memory Usage:   {peak / 10**6:.2f} MB")
-        print("--------------------------------\n")
+        t_exec = time.perf_counter()
         
-        print("[AAYU] Execution completed successfully.")
+        print(f"\nCompilation Time: {(t_compile - t_start)*1000:.2f}ms")
+        print(f"Execution Time:   {(t_exec - t_compile)*1000:.2f}ms")
         
     except CompilerError as e:
         print(f"\n{e}")
         sys.exit(1)
     except Exception as e:
-        print(f"\nRuntime Error: {e}")
+        print(f"\nInternal Compiler Error: {e}")
         import traceback
         traceback.print_exc()
         sys.exit(1)

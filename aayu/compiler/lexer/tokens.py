@@ -26,15 +26,15 @@ KEYWORDS = {
     "route", "server", "task", "event", "if", "else", "for", "while",
     "return", "fn", "end", "import", "action", "in", "get", "post",
     "theme", "useTheme", "widget", "navigate", "validate",
-    "await", "bind", "animate",
+    "await", "bind", "animate", "enum", "match", "struct",
     "try", "catch", "finally", "throw", "rethrow",
     "let", "const", "break", "continue", "show", "true", "false", "null"
 }
 
 OPERATORS = {
-    "=", "+", "-", "*", "/", "%", "+=", "-=", "==", "!=", ">", "<", ">=", "<=", "&&", "||", "!"
+    "=", "+", "-", "*", "/", "%", "+=", "-=", "==", "!=", ">", "<", ">=", "<=", "&&", "||", "!", "->"
 }
 
 SYMBOLS = {
-    "(", ")", "{", "}", "[", "]", ",", ".", ":", "@"
+    "(", ")", "{", "}", "[", "]", ",", ".", ":", "@", "?", "|"
 }

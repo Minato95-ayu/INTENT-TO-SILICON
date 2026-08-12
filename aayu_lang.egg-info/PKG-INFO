@@ -21,149 +21,76 @@ Requires-Dist: black>=23.0; extra == "dev"
 Requires-Dist: flake8>=6.0; extra == "dev"
 Requires-Dist: mypy>=1.0; extra == "dev"
 Requires-Dist: pyinstaller>=5.0; extra == "dev"
+Provides-Extra: lsp
+Requires-Dist: pygls>=1.3; extra == "lsp"
+Requires-Dist: lsprotocol>=2023.0.1; extra == "lsp"
 Dynamic: license-file
 
-<div align="center">
-  <h1>AAYU</h1>
-  <p><b>Build applications from intent, not boilerplate.</b></p>
-  <p>
-    <a href="https://aayu.dev">Website</a> &bull;
-    <a href="https://aayu.dev/docs">Documentation</a> &bull;
-    <a href="https://aayu.dev/learn">Learn in 15 Min</a> &bull;
-    <a href="https://aayu.dev/examples">Examples</a>
-  </p>
-</div>
+# AAYU 
 
----
+**Inventor & Creator:** [Ayush Kaushik](https://github.com/Minato95-ayu)
 
-AAYU is an AI-native software engineering platform and programming language designed to let you focus entirely on your application's logic and design, while the compiler handles the heavy lifting of UI rendering, state management, and native builds.
+> **AAYU is a modern full-stack programming language focused on simplicity, performance, security, and AI-first development.**
 
-Whether you're building a simple counter or a full-fledged WhatsApp clone, AAYU makes development frictionless.
+AAYU's core research novelty and identity is not just "easy syntax". The true paradigm shift is:
+> **AAYU is a full-stack programming language that reduces software complexity by moving common application infrastructure (routing, CRUD, authentication, validation, APIs) from application code into the language runtime and virtual machine.**
 
-## Why AAYU?
+This allows developers to focus purely on intent and business logic.
 
-- **Intent-Driven**: Say goodbye to JSX, HTML, and CSS spaghetti. Write clean, declarative pages and widgets.
-- **Built-in State**: State management is a first-class citizen. No `useState` hooks, Redux stores, or providers.
-- **Native & Web**: One codebase compiles directly to a Windows `.exe` or a static Web App.
-- **Zero Configuration**: AAYU comes with its own compiler, VM, package manager, and LSP.
-- **Explicit Types & Casting**: AAYU prefers explicitness. Input values from forms or variables initialized with quotes are always strings. You must cast them explicitly (e.g. `float(val)` or `int(val)`) when performing mathematical operations to prevent silent concatenation bugs.
+## 🌟 The Vision: Intent-to-Silicon (Future Vision)
+The long-term vision of AAYU is the **Intent-to-Silicon** pipeline, culminating in **Brain OS**. In the future, humans will program computers using natural language, with the intent compiled into efficient executable code (via AAYU) running directly on silicon. 
 
----
+### Current Project Maturity
 
-## ⚡ Quick Start
+| Part              | Status       |
+| ----------------- | ------------ |
+| Language Design   | ✅ Strong    |
+| Parser            | ✅ Stable    |
+| Compiler          | ✅ Stable    |
+| Bytecode          | ✅ Stable    |
+| Python VM         | ✅ Stable    |
+| CLI               | ✅ Stable    |
+| Package Manager   | ✅ Stable    |
+| Web Backend       | ✅ Stable    |
+| Native Runtime    | 🟡 Prototype |
+| Garbage Collector | ❌ Planned   |
+| JIT               | ❌ Planned   |
+| LLVM Backend      | ❌ Planned   |
+| Self Hosting      | ❌ Planned   |
+| Intent Engine     | 🟡 Research  |
+| Brain OS          | 🔵 Vision    |
 
-### 1. Installation
+## 📊 Empirical Evidence & Benchmarks
+AAYU replaces arbitrary claims with empirical evidence. 
 
-Install AAYU globally using pip:
+### 1. Performance (AAYU Native vs FastAPI vs Django)
+> *Benchmark suite is currently under empirical evaluation. Results regarding Startup Time, RAM footprint, RPS, and Latency will be published after reproducible measurements are finalized locally.*
 
-```bash
-pip install aayu-lang
-```
+### 2. AI First (Intent Engine)
+> *The Intent Engine accuracy and latency metrics are under empirical evaluation.*
 
-Verify the installation:
+### 3. Security
+- **Memory safety model**
+- **Type checker**
+- **Sandbox environment**
+- **Explicit permission model**
 
-```bash
-aayu --version
-aayu doctor
-```
+## 🏗 Architecture
+For more details on the 3-layer architecture, see [ARCHITECTURE.md](./ARCHITECTURE.md) and [ROADMAP.md](./ROADMAP.md).
 
-### 2. Your First App
+## 🚀 Quick Start
+\\\ash
+# Install AAYU CLI
+git clone https://github.com/Minato95-ayu/INTENT-TO-SILICON.git
+cd INTENT-TO-SILICON
+pip install -e .
 
-Create a new project in seconds:
-
-```bash
-aayu new hello_world
-cd hello_world
-```
-
-Open `main.aayu` and you'll see this clean syntax:
-
-```aayu
-app hello_world
-
-page Home
-    title "Welcome to hello_world"
-    text "Your AAYU app is running!"
-end
-
-run
-```
-
-Run it locally:
-
-```bash
-aayu run
-```
-
-*Output:*
-```text
-Welcome to hello_world
-Your AAYU app is running!
-```
-
-Build it for production (generates a standalone `.exe`):
-
-```bash
-aayu build
-```
-
----
-
-## 🛠️ CLI Reference
-
-AAYU's CLI is designed to be simple and predictable.
-
-| Command | Description |
-|---|---|
-| `aayu new <name>` | Create a new project |
-| `aayu run` | Run the project in development mode |
-| `aayu build` | Build an optimized production binary (`app.exe`) |
-| `aayu build --target web` | Build a static web application |
-| `aayu doctor` | Check your environment for missing dependencies |
-| `aayu disassemble` | View the generated bytecode (for debugging) |
-
----
-
-## 📚 Learn AAYU
-
-Want to master AAYU? Check out our interactive guides:
-
-- [**Learn AAYU in 15 Minutes**](https://aayu.dev/learn): A 10-lesson interactive guide covering Hello World to a fully working Todo App.
-- [**Language Basics**](https://aayu.dev/docs/language_basics): Variables, State, and Control Flow.
-- [**Widget Catalog**](https://aayu.dev/docs/widgets): See screenshots and syntax for Text, Button, Container, Row, Column, Image, and more.
-- [**Examples**](https://aayu.dev/examples): Explore 10+ open-source examples including Calculators, Dashboards, and Chat UIs.
-
----
-
-## 📁 Project Structure
-
-A standard AAYU project is clean and intuitive:
-
-```text
-MyApp/
- ├── main.aayu        # Entry point of your application
- ├── aayu.json        # Project metadata and dependencies
- ├── assets/          # (Optional) Static files
- │   ├── images/
- │   └── fonts/
- └── build/           # Generated by `aayu build`
-```
-
----
-
-## 🚀 Roadmap
-
-- **v1.0 RC**: Compiler stabilization, Native Binary Backend, Typed Constant Pool. *(You are here)*
-- **v1.0 Stable**: Official Docs, Working Examples Suite, CLI Polish.
-- **v1.1**: Advanced Layout Engine (Flexbox/Grid support).
-- **v2.0**: BrainOS v2 (AI Agent orchestrator), Mobile Runtime (Android/iOS), Cloud Deployment.
-
----
+# Run the smoke tests
+python -m aayu.cli run tests/test_smoke.aayu
+\\\
 
 ## 🤝 Contributing
+AAYU welcomes contributors! Please read [CONTRIBUTING.md](./CONTRIBUTING.md) and [CONFORMANCE.md](./CONFORMANCE.md) to learn how you can help build the Intent-to-Silicon platform.
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) to get started with the compiler architecture, VM, and standard library.
-
-## 📄 License
-
-AAYU is licensed under the MIT License. See [LICENSE](LICENSE) for more information.
+---
+*AAYU is currently in active research and development.*

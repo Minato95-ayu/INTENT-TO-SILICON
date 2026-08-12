@@ -1,0 +1,6 @@
+fn main() {
+    let p = ping("127.0.0.1").
+    let d = dns_resolve("localhost").
+    let t = tcp_connect("127.0.0.1", 80).
+    return 0.
+}

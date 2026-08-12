@@ -2,6 +2,14 @@
 
 This log records major architectural decisions, ensuring that rationale is preserved as the repository evolves.
 
+## Milestone 8: High-Level Intermediate Representation (HIR-3)
+
+### Phase 8.1: HIR-3 Semantic Boundary Enforcement
+- **Decision:** Establish strict boundary: HIR nodes must rely purely on deterministic IDs (TypeID, SymbolID, FieldID, VariantID) assigned by the SemanticContext. Fallbacks to `core::Null` or raw types are strictly prohibited.
+- **Rationale:** Separating semantics from machine representation is critical. However, because the legacy MIR and lowering pipeline previously relied on AST-like type inference directly, enforcing this boundary breaks existing compilation downstream. 
+- **Status:** Approved. MIR/Lowering regression failures are explicitly documented and accepted as expected migration contract breaks. The downstream pipeline will be rewritten to consume HIR-3 in subsequent phases.
+
+
 ## Milestone 7: Production Readiness (Ecosystem & DX)
 
 ### Phase 7.2: AAYU Linter

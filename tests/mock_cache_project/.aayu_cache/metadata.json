@@ -1,0 +1,21 @@
+{
+  "compiler_version": "1.0.0",
+  "modules": {
+    "auth": {
+      "source_hash": "44251b6fee694b7ffee702ac734f86eb24f8480998dfdf5ce0c279e40da629eb",
+      "ast_hash": "mock_ast_hash",
+      "hir_hash": "",
+      "mir_hash": "",
+      "dep_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compile_state": "Done"
+    },
+    "main": {
+      "source_hash": "cab36f7a7e01de16fa5c182d0ab3428d68caf31ab44a6a6686a754627a4d59e5",
+      "ast_hash": "mock_ast_hash",
+      "hir_hash": "",
+      "mir_hash": "",
+      "dep_hash": "5afdc5b943b51ac070e8a6f4bd12010b54c4cea6720af938da285f1067e76b5e",
+      "compile_state": "Done"
+    }
+  }
+}

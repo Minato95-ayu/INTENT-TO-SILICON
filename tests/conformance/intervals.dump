@@ -1,0 +1,7 @@
+Function AllocateMe Live Intervals:
+  LiveInterval(r1: [0, 12], uses=5, cost=0.42) -> UNASSIGNED
+  LiveInterval(r2: [2, 12], uses=5, cost=0.50) -> UNASSIGNED
+  LiveInterval(r3: [4, 6], uses=2, cost=1.00) -> UNASSIGNED
+  LiveInterval(r6: [12, 16], uses=3, cost=0.75) -> UNASSIGNED
+  LiveInterval(r9: [8, 16], uses=3, cost=0.38) -> UNASSIGNED
+  LiveInterval(r13: [16, 18], uses=2, cost=1.00) -> UNASSIGNED

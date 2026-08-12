@@ -1,0 +1,72 @@
+HIRModule
+  span: None
+  HIRAction
+    span: None
+    name: Test
+    HIRAssign
+      span: None
+      HIRLocal
+        span: None
+        type_name: any
+        name: count
+      HIRConstant
+        span: None
+        PrimitiveType
+          name: Int
+        value: 10
+    HIRIf
+      span: None
+      HIRBinaryOp
+        span: None
+        type_name: any
+        operator: >
+        HIRLocal
+          span: None
+          PrimitiveType
+            name: Int
+          name: count
+        HIRConstant
+          span: None
+          PrimitiveType
+            name: Int
+          value: 5
+      HIRAssign
+        span: None
+        HIRLocal
+          span: None
+          type_name: any
+          name: count
+        HIRBinaryOp
+          span: None
+          type_name: any
+          operator: +
+          HIRLocal
+            span: None
+            PrimitiveType
+              name: Int
+            name: count
+          HIRConstant
+            span: None
+            PrimitiveType
+              name: Int
+            value: 5
+      HIRAssign
+        span: None
+        HIRLocal
+          span: None
+          type_name: any
+          name: count
+        HIRBinaryOp
+          span: None
+          type_name: any
+          operator: -
+          HIRLocal
+            span: None
+            PrimitiveType
+              name: Int
+            name: count
+          HIRConstant
+            span: None
+            PrimitiveType
+              name: Int
+            value: 5

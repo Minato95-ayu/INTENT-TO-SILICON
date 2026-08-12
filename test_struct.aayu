@@ -1,0 +1,14 @@
+struct Address {
+    city: str
+}
+
+struct User {
+    age: int
+    address: Address
+}
+
+action main() {
+    state user = User { age: 25, address: Address { city: "Delhi" } }
+    user.age = 26
+    user.address.city = "Mumbai"
+}

@@ -1,0 +1,4 @@
+import auth
+action start()
+  u = User()
+end

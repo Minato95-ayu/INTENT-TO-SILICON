@@ -1,24 +1,85 @@
 from dataclasses import dataclass, field
 from typing import List, Optional, Any, Dict
 
-@dataclass
-class SourceSpan:
-    start_line: int
-    start_col: int
-    end_line: int
-    end_col: int
-    file: str = ""
+from aayu.compiler.errors import SourceSpan
+
+import itertools
+
+_global_node_counter = itertools.count(1)
+
+def reset_node_counter():
+    global _global_node_counter
+    _global_node_counter = itertools.count(1)
 
 @dataclass(frozen=True)
 class ASTNode:
     """Base class for all immutable AST nodes."""
+    node_id: int = field(init=False)
     line: int
     column: int
     span: Optional[SourceSpan] = field(default=None, kw_only=True)
+    
+    def __post_init__(self):
+        # Deterministic integer ID for Semantic Context mappings
+        object.__setattr__(self, 'node_id', next(_global_node_counter))
+
+
+# Type System AST Nodes
+class TypeNode(ASTNode):
+    pass
+
+@dataclass(frozen=True)
+class PrimitiveTypeNode(TypeNode):
+    name: str
+
+@dataclass(frozen=True)
+class NullableTypeNode(TypeNode):
+    inner: TypeNode
+
+@dataclass(frozen=True)
+class OptionalTypeNode(TypeNode):
+    inner: TypeNode
+
+@dataclass(frozen=True)
+class UnionTypeNode(TypeNode):
+    types: List[TypeNode]
+
+@dataclass(frozen=True)
+class EnumDeclarationNode(ASTNode):
+    name: str
+    variants: List[str]
+
+@dataclass(frozen=True)
+class EnumAccessNode(ASTNode):
+    enum_name: str
+    variant: str
+
+@dataclass(frozen=True)
+class StructFieldNode(ASTNode):
+    name: str
+    field_type: TypeNode
+
+@dataclass(frozen=True)
+class StructDeclNode(ASTNode):
+    name: str
+    fields: List[StructFieldNode]
+
+@dataclass(frozen=True)
+class StructInitNode(ASTNode):
+    struct_name: str
+    args: Dict[str, ASTNode]
 
 @dataclass(frozen=True)
 class ProgramNode(ASTNode):
     statements: List[ASTNode]
+    
+@dataclass(frozen=True)
+class ProjectNode(ASTNode):
+    """
+    Root node for a multi-file project.
+    Maps absolute module IDs (e.g., 'core.math', 'auth') to their ProgramNodes.
+    """
+    modules: Dict[str, ProgramNode]
 
 @dataclass(frozen=True)
 class PropDeclarationNode(ASTNode):
@@ -33,6 +94,7 @@ class RouteDeclarationNode(ASTNode):
 class StateDeclarationNode(ASTNode):
     name: str
     value: ASTNode
+    declared_type: Optional[TypeNode] = None
 
 @dataclass(frozen=True)
 class LiteralNode(ASTNode):
@@ -55,7 +117,7 @@ class ArrayNode(ASTNode):
 
 @dataclass(frozen=True)
 class AssignmentNode(ASTNode):
-    target: str
+    target: ASTNode
     value: ASTNode
 
 @dataclass(frozen=True)
@@ -75,10 +137,16 @@ class DecoratorNode(ASTNode):
     args: List[str] = field(default_factory=list)
 
 @dataclass(frozen=True)
+class ArgNode(ASTNode):
+    name: str
+    arg_type: Optional[TypeNode] = None
+
+@dataclass(frozen=True)
 class ActionDeclarationNode(ASTNode):
     name: str
     statements: List[ASTNode]
-    args: List[str] = field(default_factory=list)
+    args: List[ArgNode] = field(default_factory=list)
+    return_type: Optional[TypeNode] = None
     decorators: List[DecoratorNode] = field(default_factory=list)
 
 @dataclass(frozen=True)
@@ -107,6 +175,14 @@ class ForNode(ASTNode):
     index_name: Optional[str] = None
 
 @dataclass(frozen=True)
+class BreakNode(ASTNode):
+    pass
+
+@dataclass(frozen=True)
+class ContinueNode(ASTNode):
+    pass
+
+@dataclass(frozen=True)
 class BinaryOpNode(ASTNode):
     left: ASTNode
     operator: str
@@ -130,7 +206,7 @@ class ModelAttributeNode(ASTNode):
 @dataclass(frozen=True)
 class ModelFieldNode(ASTNode):
     name: str
-    field_type: str
+    field_type: TypeNode
     attributes: List[ModelAttributeNode]
 
 @dataclass(frozen=True)
@@ -174,14 +250,14 @@ class BinaryOpNode(ASTNode):
     operator: str
     right: ASTNode
     def __post_init__(self):
-        super().__init__(self.line, self.column)
+        super().__post_init__()
 
 @dataclass(frozen=True)
 class UnaryOpNode(ASTNode):
     operator: str
     right: ASTNode
     def __post_init__(self):
-        super().__init__(self.line, self.column)
+        super().__post_init__()
 
 @dataclass(frozen=True)
 class ThemeNode(ASTNode):

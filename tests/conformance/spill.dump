@@ -1,0 +1,22 @@
+Function AllocateMe Spill Statistics:
+
+--- Spills with K = 2 ---
+Spills: 1
+Reloads: 3
+Stack Slots: 1
+
+--- Spills with K = 4 ---
+Spills: 0
+Reloads: 0
+Stack Slots: 0
+
+--- Spills with K = 8 ---
+Spills: 0
+Reloads: 0
+Stack Slots: 0
+
+--- Spills with K = 16 ---
+Spills: 0
+Reloads: 0
+Stack Slots: 0
+

@@ -1,4 +1,4 @@
-from .analyzer import SemanticAnalyzer
+from .hir_builder import HIRBuilder
 from .errors import SemanticError
 from .symbols import SymbolTable, Symbol
 from .nodes import (

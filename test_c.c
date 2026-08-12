@@ -1,0 +1,1 @@
+__declspec(dllexport) int test_c() { return 42; }

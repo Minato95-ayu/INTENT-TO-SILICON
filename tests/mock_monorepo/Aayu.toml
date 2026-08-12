@@ -1,0 +1,12 @@
+
+    [package]
+    name = "hospital"
+    version = "1.0.0"
+    
+    [dependencies]
+    auth = "1.0"
+    db = "2.1"
+    
+    [workspace]
+    members = ["auth", "db"]
+    

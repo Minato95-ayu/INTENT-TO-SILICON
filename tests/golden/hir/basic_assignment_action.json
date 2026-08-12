@@ -1,0 +1,94 @@
+{
+  "actions": [
+    {
+      "body": {
+        "flags": 0,
+        "hir_node_id": 9,
+        "module_id": "local",
+        "origin_node_id": 12,
+        "statements": [
+          {
+            "flags": 0,
+            "hir_node_id": 8,
+            "module_id": "local",
+            "origin_node_id": 11,
+            "target": {
+              "flags": 0,
+              "hir_node_id": 7,
+              "is_global": true,
+              "module_id": "local",
+              "name": "counter",
+              "origin_node_id": 3,
+              "symbol_id": 10184137129204589099,
+              "type_id": 10824835911276116660
+            },
+            "value": {
+              "flags": 0,
+              "hir_node_id": 6,
+              "left": {
+                "flags": 0,
+                "hir_node_id": 4,
+                "is_global": true,
+                "module_id": "local",
+                "name": "counter",
+                "origin_node_id": 4,
+                "symbol_id": 8159059725934134222,
+                "type_id": 11856594499912166874
+              },
+              "module_id": "local",
+              "operator": "+",
+              "origin_node_id": 10,
+              "right": {
+                "flags": 0,
+                "hir_node_id": 5,
+                "module_id": "local",
+                "origin_node_id": 5,
+                "type_id": 11856594499912166874,
+                "value": 1
+              },
+              "type_id": 10824835911276116660
+            }
+          }
+        ]
+      },
+      "effect": "StateMutation",
+      "flags": 0,
+      "hir_node_id": 10,
+      "module_id": "local",
+      "name": "increment",
+      "origin_node_id": 12,
+      "symbol_id": 17928500901077790123
+    }
+  ],
+  "flags": 0,
+  "functions": [],
+  "globals": [
+    {
+      "flags": 0,
+      "hir_node_id": 3,
+      "module_id": "local",
+      "origin_node_id": 2,
+      "target": {
+        "flags": 0,
+        "hir_node_id": 2,
+        "is_global": true,
+        "module_id": "local",
+        "name": "counter",
+        "origin_node_id": 2,
+        "symbol_id": 10184137129204589099,
+        "type_id": 11856594499912166874
+      },
+      "value": {
+        "flags": 0,
+        "hir_node_id": 1,
+        "module_id": "local",
+        "origin_node_id": 1,
+        "type_id": 11856594499912166874,
+        "value": 0
+      }
+    }
+  ],
+  "hir_node_id": 11,
+  "module_id": "local",
+  "origin_node_id": 13
+}

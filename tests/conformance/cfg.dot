@@ -1,0 +1,11 @@
+digraph CFG {
+  node [shape=box];
+  "entry_1" [label="entry_1\nr1 = load_const 10\nr4 = load_const 5\nr2 = cmp_gt r1, r4\nbranch r2, then_2, else_3\n"];
+  "entry_1" -> "then_2";
+  "entry_1" -> "else_3";
+  "then_2" [label="then_2\nr7 = load_const 5\nr5 = add r1, r7\njump merge_4\n"];
+  "then_2" -> "merge_4";
+  "else_3" [label="else_3\nr10 = load_const 5\nr8 = sub r1, r10\njump merge_4\n"];
+  "else_3" -> "merge_4";
+  "merge_4" [label="merge_4\nr11 = phi ('then_2', RegisterID(id=5)), ('else_3', RegisterID(id=8))\n"];
+}

@@ -6,8 +6,8 @@ from aayu.compiler.parser.parser import Parser
 from aayu.compiler.semantic.analyzer import SemanticAnalyzer
 from aayu.compiler.ir.pipeline import IRPipeline
 from aayu.compiler.bytecode.encoder import BytecodeEncoder
-from aayu.runtime.renderers.web_renderer import WebRenderer
-from aayu.runtime.session.manager import SessionManager
+from aayu.frameworks.renderers.web_renderer import WebRenderer
+from aayu.stdlib.net.session.manager import SessionManager
 
 def resolve_imports(source: str, base_dir: str, loaded=None) -> str:
     if loaded is None:

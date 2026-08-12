@@ -1,7 +1,7 @@
 import sys
 from enum import Enum
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import List, Optional, Any
 
 class DiagnosticSeverity(Enum):
     ERROR = "error"
@@ -12,13 +12,19 @@ class DiagnosticSeverity(Enum):
 @dataclass
 class Diagnostic:
     severity: DiagnosticSeverity
-    code: str
     message: str
-    line: int
-    column: int
+    code: str = "E000"
+    line: int = 0
+    column: int = 0
     file_name: str = "<unknown>"
     notes: List[str] = field(default_factory=list)
     suggestions: List[str] = field(default_factory=list)
+    span: Optional[Any] = None
+    hint: Optional[str] = None
+    
+    def __post_init__(self):
+        if self.hint:
+            self.notes.append(self.hint)
 
     def add_note(self, note: str):
         self.notes.append(note)

@@ -1,0 +1,15 @@
+FunctionLIR TestLIR:
+entry_1:
+  r1 = LIR_LOAD_CONST 1
+  r2 = LIR_LOAD_CONST 2
+  r3 = LIR_CMP_GT r1, r2
+  LIR_BRANCH r3, then_2, else_3
+then_2:
+  r6 = LIR_LOAD_CONST 100
+  r9 = LIR_MOVE r6
+  LIR_JUMP merge_4
+else_3:
+  r7 = LIR_LOAD_CONST 200
+  r9 = LIR_MOVE r7
+  LIR_JUMP merge_4
+merge_4:

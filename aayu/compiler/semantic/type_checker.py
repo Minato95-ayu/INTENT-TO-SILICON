@@ -7,6 +7,10 @@ from aayu.compiler.semantic.nodes import (
     SemanticNode
 )
 from aayu.compiler.semantic.errors import TypeError
+from aayu.compiler.semantic.types import (
+    Type, PrimitiveType, UnionType, OptionalType,
+    T_INT, T_FLOAT, T_STRING, T_BOOL, T_ANY
+)
 
 class TypeChecker:
     def __init__(self):
@@ -15,6 +19,12 @@ class TypeChecker:
     def check(self, ast: SemanticProgramNode):
         for stmt in ast.statements:
             self._check_node(stmt)
+            
+    def _get_type(self, node) -> Type:
+        # Assuming node.data_type is already populated with Type objects by type_pass
+        if hasattr(node, "data_type") and isinstance(node.data_type, Type):
+            return node.data_type
+        return T_ANY
             
     def _check_node(self, node: SemanticNode):
         if node is None:
@@ -30,42 +40,46 @@ class TypeChecker:
             if "." not in node.target:
                 sym = node.scope.resolve(node.target)
                 if sym:
-                    if sym.data_type != "Any" and getattr(node.value, "data_type", "Any") != "Any":
-                        if sym.data_type != getattr(node.value, "data_type", "Any"):
+                    sym_type = sym.data_type if isinstance(sym.data_type, Type) else T_ANY
+                    val_type = self._get_type(node.value)
+                    
+                    if sym_type != T_ANY and val_type != T_ANY:
+                        if not val_type.is_assignable_to(sym_type):
                             raise TypeError(
-                                expected=sym.data_type,
-                                received=getattr(node.value, "data_type", "Any"),
+                                expected=str(sym_type),
+                                received=str(val_type),
                                 line=node.line,
                                 column=node.column,
-                                hint=f"Cannot assign {getattr(node.value, 'data_type', 'Any')} to {sym.data_type} variable '{node.target}'. Did you mean to cast it?"
+                                hint=f"Cannot assign {val_type} to {sym_type} variable '{node.target}'. Did you mean to cast it?"
                             )
             else:
-                # Model dot-access assignment (e.g., user.age = "hello")
+                # Model dot-access assignment
                 pass
                 
         elif isinstance(node, SemanticBinaryOpNode):
             self._check_node(node.left)
             self._check_node(node.right)
             
-            lt = getattr(node.left, "data_type", "Any")
-            rt = getattr(node.right, "data_type", "Any")
+            lt = self._get_type(node.left)
+            rt = self._get_type(node.right)
             op = node.op
             
-            if lt != "Any" and rt != "Any":
+            if lt != T_ANY and rt != T_ANY:
                 if op in ["+", "-", "*", "/", "%", ">", "<", ">=", "<="]:
-                    if lt not in ["Integer", "Float"] and lt != "String":
-                        raise TypeError(expected="Number or String", received=lt, line=node.line, column=node.column)
-                    if rt not in ["Integer", "Float"] and rt != "String":
-                        raise TypeError(expected="Number or String", received=rt, line=node.line, column=node.column)
+                    num_str_union = UnionType(T_INT, T_FLOAT, T_STRING)
+                    if not lt.is_assignable_to(num_str_union):
+                        raise TypeError(expected="Number or String", received=str(lt), line=node.line, column=node.column)
+                    if not rt.is_assignable_to(num_str_union):
+                        raise TypeError(expected="Number or String", received=str(rt), line=node.line, column=node.column)
                     
-                    if (lt == "String" or rt == "String") and op != "+":
+                    if (lt.is_assignable_to(T_STRING) or rt.is_assignable_to(T_STRING)) and op != "+":
                         raise TypeError(expected="Number", received="String", line=node.line, column=node.column, hint="Only + is supported for strings.")
                             
                 elif op in ["&&", "||", "!"]:
-                    if lt != "Boolean" and op != "!":
-                        raise TypeError(expected="Boolean", received=lt, line=node.line, column=node.column)
-                    if rt != "Boolean":
-                        raise TypeError(expected="Boolean", received=rt, line=node.line, column=node.column)
+                    if not lt.is_assignable_to(T_BOOL) and op != "!":
+                        raise TypeError(expected="Bool", received=str(lt), line=node.line, column=node.column)
+                    if not rt.is_assignable_to(T_BOOL) and op != "!":
+                        raise TypeError(expected="Bool", received=str(rt), line=node.line, column=node.column)
                         
         elif isinstance(node, SemanticWidgetNode):
             for child in node.children:
@@ -75,13 +89,13 @@ class TypeChecker:
             if wtype == "image":
                 if node.children and len(node.children) > 0:
                     child = node.children[0]
-                    c_dt = getattr(child, "data_type", "Any")
-                    if c_dt != "String" and c_dt != "Any":
-                        raise TypeError(expected="String", received=c_dt, line=node.line, column=node.column, hint=f"Image expects String path, got {c_dt}.")
+                    c_dt = self._get_type(child)
+                    if not c_dt.is_assignable_to(T_STRING) and c_dt != T_ANY:
+                        raise TypeError(expected="String", received=str(c_dt), line=node.line, column=node.column, hint=f"Image expects String path, got {c_dt}.")
                         
         elif isinstance(node, SemanticActionDeclNode):
             prev_ret = self.current_function_return
-            self.current_function_return = "Any" 
+            self.current_function_return = T_ANY 
             for stmt in node.statements:
                 self._check_node(stmt)
             self.current_function_return = prev_ret
@@ -93,16 +107,16 @@ class TypeChecker:
                     
         elif isinstance(node, SemanticReturnNode):
             self._check_node(node.value)
-            val_dt = getattr(node.value, "data_type", "Any")
-            if self.current_function_return and self.current_function_return != "Any":
-                if val_dt != "Any" and val_dt != self.current_function_return:
-                    raise TypeError(expected=self.current_function_return, received=val_dt, line=node.line, column=node.column)
+            val_dt = self._get_type(node.value)
+            if self.current_function_return and self.current_function_return != T_ANY:
+                if val_dt != T_ANY and not val_dt.is_assignable_to(self.current_function_return):
+                    raise TypeError(expected=str(self.current_function_return), received=str(val_dt), line=node.line, column=node.column)
                     
         elif isinstance(node, SemanticIfNode):
             self._check_node(node.condition)
-            c_dt = getattr(node.condition, "data_type", "Any")
-            if c_dt != "Any" and c_dt != "Boolean":
-                 raise TypeError(expected="Boolean", received=c_dt, line=node.line, column=node.column, hint="If condition must be a Boolean.")
+            c_dt = self._get_type(node.condition)
+            if c_dt != T_ANY and not c_dt.is_assignable_to(T_BOOL):
+                 raise TypeError(expected="Bool", received=str(c_dt), line=node.line, column=node.column, hint="If condition must be a Boolean.")
             for stmt in node.then_branch:
                 self._check_node(stmt)
             if node.else_branch:
@@ -111,9 +125,7 @@ class TypeChecker:
                     
         elif isinstance(node, SemanticForNode):
             self._check_node(node.iterable)
-            i_dt = getattr(node.iterable, "data_type", "Any")
-            if i_dt != "Any" and not i_dt.startswith("List"):
-                 raise TypeError(expected="List", received=i_dt, line=node.line, column=node.column, hint="For loop iterable must be a List.")
+            # Future: Update this when List/Array types are implemented
             for stmt in node.body:
                 self._check_node(stmt)
                 

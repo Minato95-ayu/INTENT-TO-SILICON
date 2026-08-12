@@ -1,0 +1,13 @@
+Function AllocateMe Liveness:
+  entry_1:
+    LiveIn : []
+    LiveOut: [1, 2]
+  else_3:
+    LiveIn : [1, 2]
+    LiveOut: [9]
+  then_2:
+    LiveIn : [1, 2]
+    LiveOut: [6]
+  merge_4:
+    LiveIn : []
+    LiveOut: []

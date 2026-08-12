@@ -27,3 +27,29 @@ class SymbolTable:
         if self.parent:
             return self.parent.resolve(name)
         return None
+
+class ModuleSymbol(Symbol):
+    def __init__(self, name: str, module_id: str):
+        super().__init__(name, "module", is_mutable=False)
+        self.module_id = module_id
+        self.exports: SymbolTable = SymbolTable()
+
+class ProjectScope:
+    def __init__(self):
+        self._modules: Dict[str, ModuleSymbol] = {}
+        self._is_frozen = False
+        
+    def add_module(self, module: ModuleSymbol):
+        if self._is_frozen:
+            raise RuntimeError("Cannot add module to a frozen ProjectScope")
+        self._modules[module.module_id] = module
+        
+    def get_module(self, module_id: str) -> Optional[ModuleSymbol]:
+        return self._modules.get(module_id)
+        
+    def freeze(self):
+        self._is_frozen = True
+        
+    @property
+    def modules(self) -> Dict[str, ModuleSymbol]:
+        return dict(self._modules)

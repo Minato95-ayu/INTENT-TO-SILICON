@@ -1,0 +1,2 @@
+import db
+struct User { id: str }

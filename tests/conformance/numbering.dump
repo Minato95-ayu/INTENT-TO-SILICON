@@ -1,0 +1,15 @@
+Function AllocateMe RPO Numbering:
+  entry_1:
+    [000] r1 = load_const 10
+    [002] r2 = load_const 20
+    [004] r3 = cmp_gt r1, r2
+    [006] branch r3, then_2, else_3
+  else_3:
+    [008] r9 = sub r1, r2
+    [010] jump merge_4
+  then_2:
+    [012] r6 = add r1, r2
+    [014] jump merge_4
+  merge_4:
+    [016] r13 = phi ('then_2', RegisterID(id=6)), ('else_3', RegisterID(id=9))
+    [018] store_global global_val, r13

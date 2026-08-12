@@ -1,0 +1,17 @@
+app "TestRecovery".
+
+fn a() {
+    let x = 10.
+    let y = .
+    let z = 20.
+}.
+
+model User {
+    id: Int
+    name
+    age: Int
+}.
+
+fn b() {
+    let a = 1.
+}.

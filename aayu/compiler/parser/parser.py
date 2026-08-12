@@ -21,24 +21,46 @@ class ParserError(CompilerError):
     pass
 
 class Parser:
-    def __init__(self, tokens: List[Token]):
+    def __init__(self, tokens: List[Token], diag=None):
         self.tokens = tokens
         self.pos = 0
         self.length = len(tokens)
+        self.diag = diag
 
     def parse(self) -> ProgramNode:
         statements = []
         while not self._is_at_end():
-            stmt = self._parse_statement()
-            if isinstance(stmt, list):
-                statements.extend(stmt)
-            else:
-                statements.append(stmt)
+            try:
+                stmt = self._parse_statement()
+                if isinstance(stmt, list):
+                    statements.extend(stmt)
+                else:
+                    statements.append(stmt)
+            except CompilerError as e:
+                if self.diag:
+                    from aayu.compiler.errors import SourceSpan, DiagnosticSeverity
+                    span = SourceSpan(e.line, e.column, e.line, e.column)
+                    self.diag.report(DiagnosticSeverity.ERROR, e.message, span=span, hint=e.hint)
+                else:
+                    print(e)
+                self._synchronize()
         return ProgramNode(line=1, column=1, statements=statements)
 
+    def _synchronize(self):
+        """Error recovery: advance until the next statement boundary."""
+        self._advance()
+        while not self._is_at_end():
+            if self._previous().type == TokenType.SYMBOL and self._previous().value == ".":
+                return
+            
+            token = self._peek()
+            if token.type == TokenType.KEYWORD:
+                if token.value in ["import", "fn", "model", "action", "let", "const", "state", "if", "while", "for", "return", "page", "app"]:
+                    return
+            self._advance()
+
     def _parse_statement(self):
-        token = self._peek()
-        print(f"[PARSER DEBUG] _parse_statement at {token.line}:{token.column} token={token.value}")
+        token = self.tokens[self.pos]
         stmt = self._parse_statement_inner()
         # Consume optional statement terminator after EVERY statement
         self._match(TokenType.SYMBOL, ".")
@@ -56,6 +78,12 @@ class Parser:
             
         if self._match(TokenType.KEYWORD, "fn"):
             return self._parse_fn_declaration()
+            
+        if self._match(TokenType.KEYWORD, "enum"):
+            return self._parse_enum_declaration()
+            
+        if self._match(TokenType.KEYWORD, "struct"):
+            return self._parse_struct_declaration()
             
         if self._match(TokenType.SYMBOL, "@"):
             decorators = []
@@ -91,6 +119,11 @@ class Parser:
                 # Component names MUST be PascalCase.
                 if self.tokens[self.pos+1].value[0].isupper():
                     return self._parse_component_declaration()
+                    
+        if self._match(TokenType.KEYWORD, "page"):
+            # Put the keyword back so _parse_component_declaration can consume it as the type
+            self.pos -= 1
+            return self._parse_component_declaration()
         
         if self._match(TokenType.KEYWORD, "app"):
             return self._parse_app_declaration()
@@ -113,6 +146,14 @@ class Parser:
 
         if self._match(TokenType.KEYWORD, "for"):
             return self._parse_for_statement()
+
+        if self._match(TokenType.KEYWORD, "break"):
+            from aayu.compiler.ast.nodes import BreakNode
+            return BreakNode(line=self._previous().line, column=self._previous().column)
+            
+        if self._match(TokenType.KEYWORD, "continue"):
+            from aayu.compiler.ast.nodes import ContinueNode
+            return ContinueNode(line=self._previous().line, column=self._previous().column)
 
         if self._match(TokenType.KEYWORD, "model"):
             return self._parse_model_declaration()
@@ -210,9 +251,24 @@ class Parser:
             
         # Fallback to general widget if identifier or keyword matches lowercase widget types
         if self._check(TokenType.IDENTIFIER) or self._check(TokenType.KEYWORD):
-            # Wait, if it's an assignment like `a = 1`
-            if self.pos + 1 < self.length and self.tokens[self.pos+1].type == TokenType.OPERATOR and self.tokens[self.pos+1].value == "=":
-                return self._parse_assignment()
+            # Lookahead to see if it's an assignment (e.g. `a = 1`, `a.b = 1`)
+            lookahead = 0
+            is_assignment = False
+            while self.pos + lookahead < self.length:
+                tok = self.tokens[self.pos + lookahead]
+                if tok.type == TokenType.IDENTIFIER:
+                    lookahead += 1
+                elif tok.type == TokenType.SYMBOL and tok.value == ".":
+                    lookahead += 1
+                elif tok.type == TokenType.OPERATOR and tok.value == "=":
+                    is_assignment = True
+                    break
+                else:
+                    break
+                    
+            if is_assignment:
+                target_expr = self._parse_expression()
+                return self._parse_assignment_with_target(target_expr)
                 
             # If it's a function call like `sendMessage(text)` or `HTTP.post(url)`
             lookahead = 1
@@ -243,16 +299,65 @@ class Parser:
         raise CompilerError(f"Unexpected token '{token.value}'", token.line, token.column, token.source_line, hint=hint)
 
 
+    def _parse_type(self):
+        """Parses a TypeNode: Primitive, Nullable (T?), Optional<T>, Union (A | B)"""
+        from aayu.compiler.ast.nodes import (
+            PrimitiveTypeNode, NullableTypeNode, OptionalTypeNode, UnionTypeNode, TypeNode
+        )
+        line, col = self._peek().line, self._peek().column
+        
+        types = []
+        
+        while True:
+            t_node = None
+            if self._check(TokenType.IDENTIFIER, "Optional"):
+                self._advance()
+                self._consume(TokenType.OPERATOR, "Expect '<' after Optional", value="<")
+                inner = self._parse_type()
+                self._consume(TokenType.OPERATOR, "Expect '>' after Optional inner type", value=">")
+                t_node = OptionalTypeNode(line=line, column=col, inner=inner)
+            elif self._check(TokenType.IDENTIFIER):
+                name = self._advance().value
+                while self._match(TokenType.SYMBOL, "."):
+                    if self._check(TokenType.IDENTIFIER):
+                        name += "." + self._advance().value
+                    else:
+                        break
+                t_node = PrimitiveTypeNode(line=line, column=col, name=name)
+            else:
+                tok = self._peek()
+                raise CompilerError(f"Expected type identifier, got '{tok.value}'", tok.line, tok.column, tok.source_line)
+                
+            # Check nullable
+            if self._match(TokenType.SYMBOL, "?"):
+                t_node = NullableTypeNode(line=t_node.line, column=t_node.column, inner=t_node)
+                
+            types.append(t_node)
+            
+            # Check union
+            if self._match(TokenType.SYMBOL, "|"):
+                continue
+            break
+            
+        if len(types) == 1:
+            return types[0]
+        return UnionTypeNode(line=line, column=col, types=types)
+
+
     def _parse_let_declaration(self):
         line, col = self._previous().line, self._previous().column
         name_token = self._consume(TokenType.IDENTIFIER, "Expect variable name after 'let'.")
         
+        declared_type = None
+        if self._match(TokenType.SYMBOL, ":"):
+            declared_type = self._parse_type()
+            
         value = None
         if self._match(TokenType.OPERATOR, "="):
             value = self._parse_expression()
             
         from aayu.compiler.ast.nodes import StateDeclarationNode
-        return StateDeclarationNode(line=line, column=col, name=name_token.value, value=value)
+        return StateDeclarationNode(line=line, column=col, name=name_token.value, value=value, declared_type=declared_type)
 
     def _parse_theme_declaration(self):
         line, col = self._previous().line, self._previous().column
@@ -446,6 +551,7 @@ class Parser:
         from aayu.compiler.ast.nodes import RethrowNode
         return RethrowNode(line=line, column=col)
 
+    
     def _parse_model_declaration(self, decorators=None):
         line, col = self._previous().line, self._previous().column
         name = self._consume(TokenType.IDENTIFIER, "Expect model name.").value
@@ -535,9 +641,11 @@ class Parser:
         return RouteNode(line=line, column=col, path=path, methods=methods)
 
     def _parse_app_declaration(self):
-
         line, col = self._previous().line, self._previous().column
-        name_token = self._consume(TokenType.IDENTIFIER, "Expect app name after 'app'.")
+        if self._check(TokenType.IDENTIFIER) or self._check(TokenType.STRING):
+            name_token = self._advance()
+        else:
+            raise CompilerError("Expect app name after 'app'.", self._peek().line, self._peek().column)
         return AppDeclarationNode(line=line, column=col, name=name_token.value)
 
     def _parse_import_statement(self):
@@ -569,6 +677,8 @@ class Parser:
                 self._consume(TokenType.OPERATOR, "Expect '=' after variable name.", value="=")
                 value = self._parse_expression()
                 decls.append(StateDeclarationNode(line=name_token.line, column=name_token.column, name=name_token.value, value=value))
+                if self._match(TokenType.SYMBOL, ","):
+                    pass # consume optional comma
             self._consume(TokenType.SYMBOL, "Expect '}' after state block.", value="}")
             return decls
         else:
@@ -577,23 +687,37 @@ class Parser:
             value = self._parse_expression()
             return StateDeclarationNode(line=line, column=col, name=name_token.value, value=value)
 
-    def _parse_assignment(self):
+    def _parse_assignment_with_target(self, target):
         line, col = self._peek().line, self._peek().column
-        name_token = self._consume(TokenType.IDENTIFIER, "Expect identifier.")
         self._consume(TokenType.OPERATOR, "Expect '='.", value="=")
         value = self._parse_expression()
-        return AssignmentNode(line=line, column=col, target=name_token.value, value=value)
+        return AssignmentNode(line=line, column=col, target=target, value=value)
+
+    def _parse_assignment(self):
+        # Legacy fallback, shouldn't be called directly anymore
+        target = self._parse_expression()
+        return self._parse_assignment_with_target(target)
 
     def _parse_component_declaration(self):
         component_type = self._advance().value # e.g. Form, Page
         line, col = self._previous().line, self._previous().column
         name = self._consume(TokenType.IDENTIFIER, f"Expect {component_type} name.").value
-        
+        has_brace = False
+        if self._match(TokenType.SYMBOL, "{"):
+            has_brace = True
+
         statements = []
-        while not self._is_at_end() and not self._check(TokenType.KEYWORD, "end"):
+        while not self._is_at_end():
+            if has_brace and self._check(TokenType.SYMBOL, "}"):
+                break
+            if not has_brace and self._check(TokenType.KEYWORD, "end"):
+                break
             statements.append(self._parse_statement())
             
-        self._consume(TokenType.KEYWORD, f"Expect 'end' after {component_type} block.", value="end")
+        if has_brace:
+            self._consume(TokenType.SYMBOL, f"Expect '}}' after {component_type} block.", value="}")
+        else:
+            self._consume(TokenType.KEYWORD, f"Expect 'end' after {component_type} block.", value="end")
         from aayu.compiler.ast.nodes import ActionDeclarationNode, WidgetNode, ImportNode
         
         ui_statements = []
@@ -641,11 +765,21 @@ class Parser:
         if self._match(TokenType.SYMBOL, "("):
             if not self._check(TokenType.SYMBOL, ")"):
                 while True:
-                    arg_name = self._consume(TokenType.IDENTIFIER, "Expect argument name.").value
-                    args.append(arg_name)
+                    arg_name_tok = self._consume(TokenType.IDENTIFIER, "Expect argument name.")
+                    arg_type = None
+                    if self._match(TokenType.SYMBOL, ":"):
+                        arg_type = self._parse_type()
+                        
+                    from aayu.compiler.ast.nodes import ArgNode
+                    args.append(ArgNode(line=arg_name_tok.line, column=arg_name_tok.column, name=arg_name_tok.value, arg_type=arg_type))
+                    
                     if not self._match(TokenType.SYMBOL, ","):
                         break
             self._consume(TokenType.SYMBOL, "Expect ')' after function arguments.", value=")")
+            
+        return_type = None
+        if self._match(TokenType.OPERATOR, "->"):
+            return_type = self._parse_type()
             
         self._consume(TokenType.SYMBOL, "Expect '{' before function body.", value="{")
         statements = []
@@ -655,7 +789,7 @@ class Parser:
             
         self._consume(TokenType.SYMBOL, "Expect '}' after function body.", value="}")
         from aayu.compiler.ast.nodes import ActionDeclarationNode
-        return ActionDeclarationNode(line=line, column=col, name=name_token.value, statements=statements, args=args, decorators=[])
+        return ActionDeclarationNode(line=line, column=col, name=name_token.value, args=args, statements=statements, return_type=return_type, decorators=[])
 
     def _parse_action_call(self):
         line, col = self._peek().line, self._peek().column
@@ -681,6 +815,72 @@ class Parser:
                 
         self._consume(TokenType.SYMBOL, "Expect ')' after arguments.", value=")")
         return ActionCallNode(line=line, column=col, name=name, args=args)
+
+    def _parse_struct_init(self):
+        line, col = self._peek().line, self._peek().column
+        struct_name = self._advance().value
+        
+        while self._match(TokenType.SYMBOL, "."):
+            if self._check(TokenType.IDENTIFIER):
+                struct_name += "." + self._advance().value
+            else:
+                break
+                
+        self._consume(TokenType.SYMBOL, "Expect '{' for struct initialization.", value="{")
+        
+        args = {}
+        if not self._check(TokenType.SYMBOL, "}"):
+            field_name = self._consume(TokenType.IDENTIFIER, "Expect field name.").value
+            self._consume(TokenType.SYMBOL, "Expect ':' after field name.", value=":")
+            args[field_name] = self._parse_expression()
+            
+            while self._match(TokenType.SYMBOL, ","):
+                if self._check(TokenType.SYMBOL, "}"): break # Allow trailing comma
+                field_name = self._consume(TokenType.IDENTIFIER, "Expect field name.").value
+                self._consume(TokenType.SYMBOL, "Expect ':' after field name.", value=":")
+                args[field_name] = self._parse_expression()
+                
+        self._consume(TokenType.SYMBOL, "Expect '}' after struct arguments.", value="}")
+        from aayu.compiler.ast.nodes import StructInitNode
+        return StructInitNode(line=line, column=col, struct_name=struct_name, args=args)
+
+    def _parse_enum_declaration(self):
+        line, col = self._previous().line, self._previous().column
+        name = self._consume(TokenType.IDENTIFIER, "Expect enum name.").value
+        self._consume(TokenType.SYMBOL, "Expect '{' before enum body.", value="{")
+        
+        variants = []
+        if not self._check(TokenType.SYMBOL, "}"):
+            variants.append(self._consume(TokenType.IDENTIFIER, "Expect enum variant name.").value)
+            while self._match(TokenType.SYMBOL, ","):
+                variants.append(self._consume(TokenType.IDENTIFIER, "Expect enum variant name.").value)
+                
+        self._consume(TokenType.SYMBOL, "Expect '}' after enum body.", value="}")
+        from aayu.compiler.ast.nodes import EnumDeclarationNode
+        return EnumDeclarationNode(line=line, column=col, name=name, variants=variants)
+
+    def _parse_struct_declaration(self):
+        line, col = self._previous().line, self._previous().column
+        name = self._consume(TokenType.IDENTIFIER, "Expect struct name.").value
+        self._consume(TokenType.SYMBOL, "Expect '{' before struct body.", value="{")
+        
+        fields = []
+        while not self._is_at_end() and not self._check(TokenType.SYMBOL, "}"):
+            field_line, field_col = self._peek().line, self._peek().column
+            field_name = self._consume(TokenType.IDENTIFIER, "Expect field name.").value
+            self._consume(TokenType.SYMBOL, "Expect ':' after field name.", value=":")
+            field_type = self._parse_type()
+            
+            from aayu.compiler.ast.nodes import StructFieldNode
+            fields.append(StructFieldNode(line=field_line, column=field_col, name=field_name, field_type=field_type))
+            
+            # optional comma for struct fields, but AAYU usually uses newlines or we can consume comma
+            if self._check(TokenType.SYMBOL, ","):
+                self._advance()
+                
+        self._consume(TokenType.SYMBOL, "Expect '}' after struct body.", value="}")
+        from aayu.compiler.ast.nodes import StructDeclNode
+        return StructDeclNode(line=line, column=col, name=name, fields=fields)
 
     def _parse_expression(self):
         return self._parse_logical_or()
@@ -765,9 +965,13 @@ class Parser:
             # Check if it's an action call
             lookahead = 1
             is_call = False
+            is_struct_init = False
             while self.pos + lookahead < self.length:
                 if self.tokens[self.pos+lookahead].type == TokenType.SYMBOL and self.tokens[self.pos+lookahead].value == "(":
                     is_call = True
+                    break
+                elif self.tokens[self.pos+lookahead].type == TokenType.SYMBOL and self.tokens[self.pos+lookahead].value == "{":
+                    is_struct_init = True
                     break
                 elif self.tokens[self.pos+lookahead].type == TokenType.SYMBOL and self.tokens[self.pos+lookahead].value == ".":
                     if self.pos + lookahead + 1 < self.length and self.tokens[self.pos+lookahead].line == self.tokens[self.pos+lookahead+1].line:
@@ -779,6 +983,8 @@ class Parser:
             
             if is_call:
                 expr = self._parse_action_call()
+            elif is_struct_init:
+                expr = self._parse_struct_init()
             else:
                 id_token = self._advance()
                 name = id_token.value

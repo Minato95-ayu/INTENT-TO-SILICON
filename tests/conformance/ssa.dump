@@ -1,0 +1,16 @@
+Function Test:
+  entry_1:
+    r1 = load_const 10
+    r4 = load_const 5
+    r2 = cmp_gt r1, r4
+    branch r2, then_2, else_3
+  then_2:
+    r7 = load_const 5
+    r5 = add r1, r7
+    jump merge_4
+  else_3:
+    r10 = load_const 5
+    r8 = sub r1, r10
+    jump merge_4
+  merge_4:
+    r11 = phi(then_2: r5, else_3: r8)

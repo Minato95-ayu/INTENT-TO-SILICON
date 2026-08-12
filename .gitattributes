@@ -1,1 +1,2 @@
-*.aayu linguist-language=Rust
+*.aayu linguist-generated=false
+*.aayu text

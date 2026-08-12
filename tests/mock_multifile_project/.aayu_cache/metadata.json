@@ -1,0 +1,29 @@
+{
+  "compiler_version": "1.0.0",
+  "modules": {
+    "db": {
+      "source_hash": "3b8e9d930e9793fc06f79c0eee3c42e13aaf134ae5c8d92409b1eade9235f80d",
+      "ast_hash": "TODO_AST_HASH",
+      "hir_hash": "",
+      "mir_hash": "",
+      "dep_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compile_state": "Parsed"
+    },
+    "auth": {
+      "source_hash": "1ce14b83810293332b224081d725fc1a07e809b59550d83cca15b38c0a6bae2f",
+      "ast_hash": "TODO_AST_HASH",
+      "hir_hash": "",
+      "mir_hash": "",
+      "dep_hash": "5c19c16772927013eb52c52d0c1da04ef65a32d5b8bf1f177828fa154a26d3a5",
+      "compile_state": "Parsed"
+    },
+    "main": {
+      "source_hash": "c88bb5258d6114cabdf59cc6177ce50ee8e62875e2226a6ee3b9362b054b52e8",
+      "ast_hash": "TODO_AST_HASH",
+      "hir_hash": "",
+      "mir_hash": "",
+      "dep_hash": "53f04fd6693aba2ce1e9ca44683ee8753a70911ca96f52bd47cd28dd19910b04",
+      "compile_state": "Parsed"
+    }
+  }
+}

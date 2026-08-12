@@ -1,0 +1,29 @@
+=======================================
+ AAYU CI Verification Report (Phase 12.0)
+=======================================
+Timestamp: 2026-08-01T19:08:07.647237Z
+OS: Windows 10 (10.0.26200)
+
+============================= test session starts =============================
+platform win32 -- Python 3.11.9, pytest-8.2.0, pluggy-1.6.0 -- C:\Users\ayush\AppData\Local\Programs\Python\Python311\python.exe
+cachedir: .pytest_cache
+rootdir: D:\intent-to-silicon-research\INTENT-TO-SILICON
+configfile: pyproject.toml
+plugins: anyio-3.7.1, asyncio-0.23.6, cov-7.1.0
+asyncio: mode=Mode.STRICT
+collecting ... collected 10 items
+
+tests/compiler/test_semantic_12.py::test_valid_program PASSED            [ 10%]
+tests/compiler/test_semantic_12.py::test_undefined_variable PASSED       [ 20%]
+tests/compiler/test_semantic_12.py::test_duplicate_state PASSED          [ 30%]
+tests/compiler/test_semantic_12.py::test_constant_folding PASSED         [ 40%]
+tests/compiler/test_semantic_12.py::test_type_mismatch_binary PASSED     [ 50%]
+tests/compiler/test_semantic_12.py::test_valid_widget_tree PASSED        [ 60%]
+tests/compiler/test_semantic_12.py::test_invalid_type_assignment PASSED  [ 70%]
+tests/compiler/test_semantic_12.py::test_unknown_action_call PASSED      [ 80%]
+tests/compiler/test_semantic_12.py::test_valid_loop PASSED               [ 90%]
+tests/compiler/test_semantic_12.py::test_shadowing_warning PASSED        [100%]
+
+============================= 10 passed in 2.62s ==============================
+
+VERDICT: PASS ✅

@@ -1,0 +1,31 @@
+app DoctorSystem
+
+state msg = "Welcome to AAYU Care"
+state patient_count = 0
+
+Page Dashboard
+    Column
+        Text "🏥 AAYU Hospital Management System"
+        Text msg
+        
+        Row
+            Text "Total Patients Admitted: "
+            Text patient_count
+        end
+        
+        Row
+            Button "Admit Patient" onClick="admit"
+            Button "Discharge Patient" onClick="discharge"
+        end
+    end
+
+    action admit
+        patient_count = patient_count + 1
+        msg = "New patient admitted successfully!"
+    end
+
+    action discharge
+        patient_count = patient_count - 1
+        msg = "Patient discharged."
+    end
+end

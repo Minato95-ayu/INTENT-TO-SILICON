@@ -14,7 +14,6 @@ class ConstantPass:
     def __init__(self, diag_engine: DiagnosticEngine, scope_pass: ScopePass):
         self.diag_engine = diag_engine
         self.node_scopes = scope_pass.node_scopes
-        self.global_scope = scope_pass.global_scope
         self.node_types = getattr(scope_pass, 'node_types', {})
 
     def run(self, ast: ASTNode) -> ASTNode:
@@ -29,22 +28,47 @@ class ConstantPass:
         return visitor(node)
 
     def _default_visit(self, node: ASTNode) -> ASTNode:
-        # Recursively fold children and create a new node if any changed
         changes = {}
         for key, value in vars(node).items():
             if isinstance(value, list):
                 new_list = []
+                changed = False
                 for item in value:
                     if isinstance(item, ASTNode):
-                        new_list.append(self._visit(item))
+                        new_item = self._visit(item)
+                        if id(new_item) != id(item):
+                            changed = True
+                        new_list.append(new_item)
                     else:
                         new_list.append(item)
-                changes[key] = new_list
+                if changed:
+                    changes[key] = new_list
+            elif isinstance(value, dict):
+                new_dict = {}
+                changed = False
+                for k, v in value.items():
+                    if isinstance(v, ASTNode):
+                        new_v = self._visit(v)
+                        if id(new_v) != id(v):
+                            changed = True
+                        new_dict[k] = new_v
+                    else:
+                        new_dict[k] = v
+                if changed:
+                    changes[key] = new_dict
             elif isinstance(value, ASTNode):
-                changes[key] = self._visit(value)
+                new_val = self._visit(value)
+                if id(new_val) != id(value):
+                    changes[key] = new_val
                 
         if changes:
-            return dataclasses.replace(node, **changes)
+            new_node = dataclasses.replace(node, **changes)
+            # Migrate metadata to the new node ID
+            if id(node) in self.node_scopes:
+                self.node_scopes[id(new_node)] = self.node_scopes[id(node)]
+            if node.node_id in self.node_types:
+                self.node_types[new_node.node_id] = self.node_types[node.node_id]
+            return new_node
         return node
 
     def _visit_LiteralNode(self, node: LiteralNode) -> ASTNode:
@@ -71,7 +95,7 @@ class ConstantPass:
                     return dataclasses.replace(node, left=left, right=right)
                     
                 type_name = "float" if isinstance(val, float) else ("int" if isinstance(val, int) else "any")
-                folded = LiteralNode(line=node.line, column=node.column, value=val, type_name=type_name)
+                folded = LiteralNode(line=node.line, column=node.column, value=val)
                 # Keep track of type for HIR builder
                 self.node_types[id(folded)] = type_name
                 return folded

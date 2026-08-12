@@ -1,0 +1,110 @@
+{
+  "actions": [
+    {
+      "body": {
+        "flags": 0,
+        "hir_node_id": 13,
+        "module_id": "local",
+        "origin_node_id": 20,
+        "statements": [
+          {
+            "flags": 0,
+            "hir_node_id": 12,
+            "module_id": "local",
+            "origin_node_id": 19,
+            "target": {
+              "flags": 0,
+              "hir_node_id": 11,
+              "is_global": true,
+              "module_id": "local",
+              "name": "u",
+              "origin_node_id": 13,
+              "symbol_id": 11584021026841269165,
+              "type_id": 10824835911276116660
+            },
+            "value": {
+              "args": [
+                {
+                  "flags": 0,
+                  "hir_node_id": 7,
+                  "module_id": "local",
+                  "origin_node_id": 14,
+                  "type_id": 11856594499912166874,
+                  "value": 1
+                },
+                {
+                  "flags": 0,
+                  "hir_node_id": 9,
+                  "module_id": "local",
+                  "origin_node_id": 17,
+                  "type_id": 4733732753398898000
+                }
+              ],
+              "flags": 0,
+              "hir_node_id": 10,
+              "module_id": "local",
+              "origin_node_id": 18,
+              "struct_type_id": 3760375625083576498,
+              "type_id": 3760375625083576498
+            }
+          }
+        ]
+      },
+      "effect": "StateMutation",
+      "flags": 0,
+      "hir_node_id": 14,
+      "module_id": "local",
+      "name": "create",
+      "origin_node_id": 20,
+      "symbol_id": 14606976970306182793
+    }
+  ],
+  "flags": 0,
+  "functions": [],
+  "globals": [
+    {
+      "flags": 0,
+      "hir_node_id": 6,
+      "module_id": "local",
+      "origin_node_id": 12,
+      "target": {
+        "flags": 0,
+        "hir_node_id": 5,
+        "is_global": true,
+        "module_id": "local",
+        "name": "u",
+        "origin_node_id": 12,
+        "symbol_id": 11584021026841269165,
+        "type_id": 3760375625083576498
+      },
+      "value": {
+        "args": [
+          {
+            "flags": 0,
+            "hir_node_id": 1,
+            "module_id": "local",
+            "origin_node_id": 7,
+            "type_id": 11856594499912166874,
+            "value": 0
+          },
+          {
+            "flags": 0,
+            "hir_node_id": 3,
+            "module_id": "local",
+            "origin_node_id": 10,
+            "type_id": 4733732753398898000
+          }
+        ],
+        "flags": 0,
+        "hir_node_id": 4,
+        "module_id": "local",
+        "origin_node_id": 11,
+        "struct_type_id": 3760375625083576498,
+        "type_id": 3760375625083576498
+      }
+    }
+  ],
+  "hir_node_id": 15,
+  "module_id": "local",
+  "origin_node_id": 21
+}

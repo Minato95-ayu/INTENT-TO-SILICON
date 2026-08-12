@@ -1,0 +1,25 @@
+app EcosystemTester
+
+model SystemLog {
+    id: String
+    level: String
+    message: String
+}
+
+state app_status = "Booting..."
+
+route "/api/ping"
+    get
+        return "pong"
+    end
+end
+
+Page Dashboard
+    Column
+        Text "AAYU Ecosystem Integration Tester"
+    end
+end
+
+fn main() {
+    return 0
+}

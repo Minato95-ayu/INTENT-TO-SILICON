@@ -1,0 +1,33 @@
+{
+  "build_timestamp": 1786084179.395025,
+  "compile_time_ms": 15.0,
+  "compiler": {
+    "version": "1.0.0",
+    "edition": "2026",
+    "ir_version": "1",
+    "bytecode_version": "1",
+    "abi_version": "1"
+  },
+  "diagnostics": {
+    "warnings": 0,
+    "errors": 0
+  },
+  "modules": {
+    "main": {
+      "source_hash": "cab36f7a7e01de16fa5c182d0ab3428d68caf31ab44a6a6686a754627a4d59e5",
+      "dep_hash": "5afdc5b943b51ac070e8a6f4bd12010b54c4cea6720af938da285f1067e76b5e",
+      "ast_hash": "mock_ast_hash",
+      "hir_hash": "",
+      "mir_hash": "",
+      "compile_state": "Done"
+    },
+    "auth": {
+      "source_hash": "44251b6fee694b7ffee702ac734f86eb24f8480998dfdf5ce0c279e40da629eb",
+      "dep_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ast_hash": "mock_ast_hash",
+      "hir_hash": "",
+      "mir_hash": "",
+      "compile_state": "Done"
+    }
+  }
+}

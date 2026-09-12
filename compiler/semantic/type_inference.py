@@ -1,10 +1,10 @@
 
 from compiler.semantic.nodes import (
-    SemanticProgramNode, SemanticStateDeclNode, SemanticLiteralNode,
+    SemanticProgramNode, SemanticStateDeclNode, SemanticLetDeclNode, SemanticLiteralNode,
     SemanticAssignmentNode, SemanticWidgetNode, SemanticImportNode,
     SemanticActionDeclNode, SemanticActionCallNode, SemanticIdentifierNode,
     SemanticIfNode, SemanticForNode, SemanticBinaryOpNode,
-    SemanticModelNode, SemanticRouteNode, SemanticReturnNode, SemanticMethodNode,
+    SemanticModelDeclNode, SemanticRouteNode, SemanticReturnNode, SemanticMethodNode,
     SemanticNode
 )
 
@@ -53,14 +53,18 @@ class TypeInference:
                 data_type = sym.data_type
             else:
                 data_type = "Any"
-                
+        elif isinstance(node, SemanticLetDeclNode):
+            val_type = self._infer_node(node.value)
+            sym = node.scope.resolve(node.name)
+            if sym:
+                sym.data_type = "Any" if val_type == "Null" else val_type
+            data_type = "Void"
         elif isinstance(node, SemanticStateDeclNode):
             val_type = self._infer_node(node.value)
             sym = node.scope.resolve(node.name)
             if sym:
-                sym.data_type = val_type
+                sym.data_type = "Any" if val_type == "Null" else val_type
             data_type = "Void"
-            
         elif isinstance(node, SemanticAssignmentNode):
             self._infer_node(node.value)
             data_type = "Void"
@@ -112,7 +116,7 @@ class TypeInference:
                 self._infer_node(stmt)
             data_type = "Void"
             
-        elif isinstance(node, SemanticModelNode):
+        elif isinstance(node, SemanticModelDeclNode):
             sym = node.scope.parent.resolve(node.name) if node.scope.parent else None
             if sym:
                 sym.data_type = "Model"
@@ -130,3 +134,4 @@ class TypeInference:
             
         node.data_type = data_type
         return data_type
+

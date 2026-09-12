@@ -21,5 +21,6 @@ def register_map_lib(registry: StdLibRegistry):
     registry.register("map::length", map_length)
     registry.register("map::remove", map_remove)
     registry.register("map::contains", map_contains)
-    registry.register("map::keys", lambda args, vm: ListValue(vm.memory.heap.allocate("list", [StringValue(vm.memory.heap.allocate("string", k).id, vm.memory.heap) for k in args[0]._get_payload().keys()]).id, vm.memory.heap))
-    registry.register("map::values", lambda args, vm: ListValue(vm.memory.heap.allocate("list", list(args[0]._get_payload().values())).id, vm.memory.heap))
+    registry.register("map::keys", lambda args, vm: ListValue(vm.heap.allocate("list", [StringValue(vm.heap.allocate("string", k).id, vm.heap) for k in args[0]._get_payload().keys()]).id, vm.heap))
+    registry.register("map::values", lambda args, vm: ListValue(vm.heap.allocate("list", list(args[0]._get_payload().values())).id, vm.heap))
+

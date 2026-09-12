@@ -219,8 +219,12 @@ class Interpreter:
                 # Find function in registry
                 if func_name in stdlib.registry.functions:
                     func = stdlib.registry.functions[func_name]
-                    result = func(args, self.vm)
-                    self.vm.value_stack.push(result)
+                    try:
+                        result = func(args, self.vm)
+                        self.vm.value_stack.push(result)
+                    except Exception as e:
+                        self._throw_exception(e)
+                        return
                 elif isinstance(func_name, str) and "." in func_name:
                     parts = func_name.split(".")
                     target_name = parts[0]
@@ -235,8 +239,12 @@ class Interpreter:
                         args.insert(0, target)
                         if dispatch_name in stdlib.registry.functions:
                             func = stdlib.registry.functions[dispatch_name]
-                            result = func(args, self.vm)
-                            self.vm.value_stack.push(result)
+                            try:
+                                result = func(args, self.vm)
+                                self.vm.value_stack.push(result)
+                            except Exception as e:
+                                self._throw_exception(e)
+                                return
                         else:
                             print(f"[VM Warning] Unresolved native method call: {func_name}")
                             self.vm.value_stack.push(None)
@@ -385,3 +393,4 @@ class Interpreter:
     def _run_assertions(self):
         assert self.vm.value_stack.depth() >= 0, "ASSERT Stack Underflow"
         assert self.vm.registers.ip >= 0, "ASSERT Instruction Pointer"
+

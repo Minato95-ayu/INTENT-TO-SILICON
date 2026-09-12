@@ -17,6 +17,11 @@ class SemanticPropDeclNode(SemanticNode):
     name: str
 
 @dataclass
+class SemanticLetDeclNode(SemanticNode):
+    name: str
+    value: SemanticNode
+
+@dataclass
 class SemanticStateDeclNode(SemanticNode):
     name: str
     value: SemanticNode
@@ -203,3 +208,4 @@ class SemanticLifecycleNode(SemanticNode):
 class SemanticClosureNode(SemanticNode):
     action_name: str
     args: List[SemanticNode]
+

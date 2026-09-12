@@ -42,3 +42,14 @@ Documentation = "https://aayu-lang.github.io"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["compiler*", "runtime*", "tools*", "brainos*", "intent_engine*"]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests/compiler",
+    "tests/integration",
+    "tests/runtime",
+    "tests/unit",
+    "tests/vm",
+]
+norecursedirs = ["legacy", "experiments", "scripts", "apm-test"]
+addopts = "-ra"

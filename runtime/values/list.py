@@ -17,14 +17,14 @@ from .base import RuntimeValue
 from .number import NumberValue
 from .boolean import BooleanValue
 from .null import NullValue
-from ..memory.heap import Heap
+from runtime.vm.heap import Heap
 
 class ListValue(CollectionValue):
     def __init__(self, heap_id: int, heap: Heap):
         super().__init__(heap_id, "list", heap)
 
     def _get_payload(self) -> list:
-        return self.heap.get(self.heap_id).payload
+        return self.heap.read(self.heap_id)['value']
 
     def length(self) -> RuntimeValue:
         return NumberValue(len(self._get_payload()))
@@ -36,7 +36,7 @@ class ListValue(CollectionValue):
         lst = self._get_payload()
         if 0 <= idx < len(lst):
             return lst[idx]
-        import compiler.frontend.errors
+        import compiler.errors
         raise errors.IndexOutOfBoundsError(f"List index out of range: {idx}.", 0)
         
     def set(self, key: RuntimeValue, value: RuntimeValue):
@@ -86,3 +86,6 @@ class ListValue(CollectionValue):
         
     def clone(self) -> 'RuntimeValue':
         return ListValue(self.heap_id, self.heap)
+
+
+

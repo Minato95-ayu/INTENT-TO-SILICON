@@ -17,14 +17,14 @@ from .base import RuntimeValue
 from .number import NumberValue
 from .boolean import BooleanValue
 from .null import NullValue
-from ..memory.heap import Heap
+from runtime.vm.heap import Heap
 
 class StringValue(CollectionValue):
     def __init__(self, heap_id: int, heap: Heap):
         super().__init__(heap_id, "string", heap)
 
     def _get_payload(self) -> str:
-        return self.heap.get(self.heap_id).payload
+        return self.heap.read(self.heap_id)['value']
 
     def length(self) -> RuntimeValue:
         return NumberValue(len(self._get_payload()))
@@ -37,7 +37,7 @@ class StringValue(CollectionValue):
         if 0 <= idx < len(s):
             # Need to allocate a new string on the heap for the single char
             new_heap_obj = self.heap.allocate("string", s[idx])
-            return StringValue(new_heap_obj.id, self.heap)
+            return StringValue(new_heap_obj, self.heap)
         return NullValue()
         
     def set(self, key: RuntimeValue, value: RuntimeValue):
@@ -88,7 +88,7 @@ class StringValue(CollectionValue):
         if isinstance(other, StringValue):
             new_str = self._get_payload() + other._get_payload()
             new_obj = self.heap.allocate("string", new_str)
-            return StringValue(new_obj.id, self.heap)
+            return StringValue(new_obj, self.heap)
         return super().add(other)
 
     def truthy(self) -> bool:
@@ -96,3 +96,6 @@ class StringValue(CollectionValue):
         
     def clone(self) -> 'RuntimeValue':
         return StringValue(self.heap_id, self.heap)
+
+
+

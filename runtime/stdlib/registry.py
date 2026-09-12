@@ -19,12 +19,44 @@ from ..values.null import NullValue
 class StdLibRegistry:
     def __init__(self):
         self.functions: Dict[str, Callable] = {}
+        self.external_functions: Dict[str, tuple[str, Callable]] = {}
         
     def register(self, name: str, func: Callable):
         self.functions[name] = func
+
+    def register_external(self, name: str, provider: str, func: Callable):
+        """Register an explicitly approved host callback for an external API."""
+        if provider != "native":
+            raise ValueError(
+                f"Provider '{provider}' is not executable yet; only native callbacks are supported"
+            )
+        if not name or "." not in name:
+            raise ValueError("External callback names must be qualified, for example 'sqlite.open'")
+        self.external_functions[name] = (provider, func)
+
+    def register_python_external(self, name: str, func: Callable):
+        """Register an explicitly selected Python ecosystem adapter."""
+        if not name or "." not in name:
+            raise ValueError("External callback names must be qualified, for example 'numpy.array'")
+        self.external_functions[name] = ("python", func)
+
+    def register_rust_external(self, name: str, func: Callable):
+        """Register a Rust function exported through a stable C ABI."""
+        if not name or "." not in name:
+            raise ValueError("External callback names must be qualified, for example 'crypto.hash'")
+        self.external_functions[name] = ("rust", func)
+
+    def register_js_external(self, name: str, func: Callable):
+        """Register an explicitly selected Node.js ecosystem adapter."""
+        if not name or "." not in name:
+            raise ValueError("External callback names must be qualified, for example 'path.basename'")
+        self.external_functions[name] = ("js", func)
         
     def lookup(self, name: str) -> bool:
         return name in self.functions
+
+    def lookup_external(self, name: str):
+        return self.external_functions.get(name)
         
     def _create_method_dispatcher(self, method_name: str):
         def dispatcher(args, vm):

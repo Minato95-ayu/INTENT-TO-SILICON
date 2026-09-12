@@ -9,6 +9,7 @@ from compiler.ir.pipeline import IRPipeline
 from compiler.bytecode.encoder import BytecodeEncoder
 from compiler.errors import CompilerError
 from runtime.vm.vm import VirtualMachine
+from runtime.vm.config import VMConfig
 
 from runtime.events.queue import EventQueue
 from runtime.events.scheduler import FrameScheduler
@@ -23,6 +24,7 @@ def handle(args):
     renderer_type = "desktop"
     backend = "tkinter"
     target = "main.aayu"
+    debug = False
     
     for arg in args:
         if arg == "--console":
@@ -33,6 +35,8 @@ def handle(args):
             renderer_type = arg.split("=")[1]
         elif arg.startswith("--backend="):
             backend = arg.split("=")[1]
+        elif arg == "--debug":
+            debug = True
         elif not arg.startswith("-"):
             target = arg
 
@@ -40,7 +44,8 @@ def handle(args):
         print(f"Error: Target file {target} not found.")
         sys.exit(1)
         
-    print(f"[AAYU] Running {target} with renderer={renderer_type} backend={backend}...")
+    if debug:
+        print(f"[AAYU] Running {target} with renderer={renderer_type} backend={backend}...")
     try:
         with open(target, 'r', encoding='utf-8') as f:
             source = f.read()
@@ -58,6 +63,8 @@ def handle(args):
         analyzer = SemanticAnalyzer(asset_registry=asset_registry)
         ir_pipeline = IRPipeline()
         encoder = BytecodeEncoder()
+        ir_pipeline.debug = debug
+        encoder.debug = debug
         
         
         ast = parser.parse()
@@ -71,6 +78,8 @@ def handle(args):
             new_statements = []
             for stmt in program_node.statements:
                 if isinstance(stmt, ImportNode):
+                    if stmt.module.split(".", 1)[0] in {"math", "json", "http", "file", "crypto", "string", "time"}:
+                        continue
                     mod_path = stmt.module.replace(".", "/") + ".aayu"
                     full_path = os.path.join(base_dir, mod_path)
                     
@@ -110,7 +119,7 @@ def handle(args):
         program = encoder.encode(lir)
         
         # Init VM
-        vm = VirtualMachine()
+        vm = VirtualMachine(VMConfig.development() if debug else VMConfig.production())
         vm.load(program.bytecode, program.constant_pool.values(), program.action_addresses)
         vm.execute()
         
@@ -167,13 +176,16 @@ def handle(args):
                     
                 vm.state_scopes.append(vm.state_scopes_map[instance_id])
                 
-                vm.call_action_by_name(f"__PAGE_START_{vm.router.current_route.name}")
-                vm.execute()
+                action_name = f"__PAGE_START_{vm.router.current_route.name}"
+                if action_name in vm.action_addresses:
+                    vm.call_action_by_name(action_name)
+                    vm.execute()
                 
                 vm.state_scopes.pop()
             else:
-                vm.call_action_by_name("__PAGE_START__")
-                vm.execute()
+                if "__PAGE_START__" in vm.action_addresses:
+                    vm.call_action_by_name("__PAGE_START__")
+                    vm.execute()
                 
             new_tree = vm.interpreter.render_tree
             
@@ -232,6 +244,10 @@ def handle(args):
 
         # Initial render
         render_pass()
+
+        if renderer_type == "console":
+            renderer.shutdown()
+            return
         
         # Main Event Loop
         running = True

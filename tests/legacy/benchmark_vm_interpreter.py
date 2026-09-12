@@ -1,3 +1,6 @@
+import pytest
+pytestmark = pytest.mark.skip(reason='Obsolete API: AAYUCompiler removed in favor of IRPipeline')
+
 """
 =============================================================================
 FILE: benchmark_vm_interpreter.py
@@ -23,10 +26,10 @@ import sqlite3
 # Ensure we import from aayu_language directory
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "aayu_language"))
 
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.compiler import AAYUCompiler
-from vm import VirtualMachine
+from compiler.lexer.lexer import Lexer
+from compiler.parser.parser import Parser
+# # from compiler.frontend.compiler import AAYUCompiler
+from runtime.vm.vm import VirtualMachine
 from serializer import serialize, deserialize
 from interpreter import Interpreter
 

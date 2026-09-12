@@ -8,8 +8,8 @@ from ...values.number import NumberValue
 from ...values.boolean import BooleanValue
 
 def create_string(vm, text):
-    obj = vm.memory.heap.allocate("string", text)
-    return StringValue(obj.id, vm.memory.heap)
+    obj = vm.heap.allocate("string", text)
+    return StringValue(obj, vm.heap)
 
 def py_to_aayu(py_val, vm, depth=0):
     if depth > 200:
@@ -17,12 +17,12 @@ def py_to_aayu(py_val, vm, depth=0):
         
     if isinstance(py_val, dict):
         d = {k: py_to_aayu(v, vm, depth+1) for k, v in py_val.items()}
-        obj = vm.memory.heap.allocate("map", d)
-        return MapValue(obj.id, vm.memory.heap)
+        obj = vm.heap.allocate("map", d)
+        return MapValue(obj, vm.heap)
     elif isinstance(py_val, list):
         l = [py_to_aayu(x, vm, depth+1) for x in py_val]
-        obj = vm.memory.heap.allocate("list", l)
-        return ListValue(obj.id, vm.memory.heap)
+        obj = vm.heap.allocate("list", l)
+        return ListValue(obj, vm.heap)
     elif isinstance(py_val, str):
         return create_string(vm, py_val)
     elif isinstance(py_val, (int, float)):
@@ -76,3 +76,5 @@ def register_json_lib(registry: StdLibRegistry):
     registry.register("json::stringify", fn_stringify)
     registry.register("json::decode", fn_parse)
     registry.register("json::encode", fn_stringify)
+
+

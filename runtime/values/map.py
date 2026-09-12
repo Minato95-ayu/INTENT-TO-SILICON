@@ -18,18 +18,18 @@ from .number import NumberValue
 from .string import StringValue
 from .boolean import BooleanValue
 from .null import NullValue
-from ..memory.heap import Heap
+from runtime.vm.heap import Heap
 
 class MapValue(CollectionValue):
     def __init__(self, heap_id: int, heap: Heap):
         super().__init__(heap_id, "map", heap)
 
     def _get_payload(self) -> dict:
-        obj = self.heap.get(self.heap_id)
+        obj = self.heap.read(self.heap_id)
         if obj is None:
             print(f'[FATAL] MapValue heap_id={self.heap_id} not found in heap with keys: {list(self.heap.objects.keys())}')
             raise Exception("Heap object not found!")
-        return obj.payload
+        return obj['value']
 
     def length(self) -> RuntimeValue:
         return NumberValue(len(self._get_payload()))
@@ -40,7 +40,7 @@ class MapValue(CollectionValue):
         dct = self._get_payload()
         k_str = key.stringify()
         if k_str not in dct:
-            import compiler.frontend.errors
+            import compiler.errors
             raise errors.IndexOutOfBoundsError(f"Key '{k_str}' not found in map.", 0)
         return dct[k_str]
         
@@ -84,3 +84,6 @@ class MapValue(CollectionValue):
         
     def clone(self) -> 'RuntimeValue':
         return MapValue(self.heap_id, self.heap)
+
+
+

@@ -118,6 +118,19 @@ class StdLib:
         # Register common method dispatchers
         for method in ["append", "length", "get", "set", "remove", "contains", "clear"]:
             self.registry.register_method(method)
+
+    def register_external(self, name: str, provider: str, func):
+        """Expose a host callback through the explicit AAYU interop boundary."""
+        self.registry.register_external(name, provider, func)
+
+    def register_python_external(self, name: str, func):
+        self.registry.register_python_external(name, func)
+
+    def register_rust_external(self, name: str, func):
+        self.registry.register_rust_external(name, func)
+
+    def register_js_external(self, name: str, func):
+        self.registry.register_js_external(name, func)
         
     def populate_globals(self, globals_dict):
         from ..values.function import NativeFunctionValue

@@ -6,7 +6,7 @@ from runtime.stdlib.modules.crypto_lib import register_crypto_lib
 from runtime.stdlib.modules.database_lib import register_database_lib
 from runtime.stdlib.modules.regex_lib import register_regex_lib
 from runtime.values.string import StringValue
-from runtime.memory.heap import Heap
+from runtime.vm.heap import Heap
 
 class MockVM:
     def __init__(self):
@@ -14,7 +14,7 @@ class MockVM:
 
 def create_string(vm, text):
     obj = vm.heap.allocate("string", text)
-    return StringValue(obj.id, vm.heap)
+    return StringValue(obj, vm.heap)
 
 class TestStdLibE2E(unittest.TestCase):
     def setUp(self):
@@ -64,3 +64,4 @@ class TestStdLibE2E(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+

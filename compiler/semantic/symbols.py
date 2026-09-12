@@ -12,6 +12,7 @@ class Symbol:
         self.is_parameter: bool = False
         self.is_function: bool = False
         self.is_constant: bool = not is_mutable
+        self.signature_args: int = -1
 
 class SymbolTable:
     def __init__(self, parent: Optional['SymbolTable'] = None):
@@ -27,3 +28,4 @@ class SymbolTable:
         if self.parent:
             return self.parent.resolve(name)
         return None
+

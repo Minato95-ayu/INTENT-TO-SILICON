@@ -39,9 +39,30 @@ class Parser:
     def _parse_statement(self):
         if self._match(TokenType.KEYWORD, "import"):
             return self._parse_import_statement()
+
+        if self._match(TokenType.KEYWORD, "extern"):
+            return self._parse_extern_library()
         
+        if self._match(TokenType.KEYWORD, "let"):
+            return self._parse_let_declaration()
+
         if self._match(TokenType.KEYWORD, "state"):
             return self._parse_state_declaration()
+
+        if self._match(TokenType.KEYWORD, "print"):
+            line, col = self._previous().line, self._previous().column
+            if self._match(TokenType.SYMBOL, "("):
+                value = self._parse_expression()
+                self._consume(TokenType.SYMBOL, "Expect ')' after print value.", value=")")
+            else:
+                value = self._parse_expression()
+            self._match(TokenType.SYMBOL, ".")
+            return ActionCallNode(
+                line=line,
+                column=col,
+                name="print",
+                args=[value],
+            )
         
         if self._match(TokenType.KEYWORD, "action"):
             return self._parse_action_declaration()
@@ -441,11 +462,51 @@ class Parser:
         module_token = self._consume(TokenType.IDENTIFIER, "Expect module name after 'import'.")
         module_path = module_token.value
         
-        while self._match(TokenType.SYMBOL, "."):
+        while (
+            self._check(TokenType.SYMBOL, ".")
+            and self.pos + 1 < self.length
+            and self.tokens[self.pos + 1].type == TokenType.IDENTIFIER
+        ):
+            self._advance()
             next_part = self._consume(TokenType.IDENTIFIER, "Expect identifier after '.'.")
             module_path += "." + next_part.value
-            
+
+        self._match(TokenType.SYMBOL, ".")
         return ImportNode(line=line, column=col, module=module_path)
+
+    def _parse_extern_library(self):
+        line, col = self._previous().line, self._previous().column
+        name = self._consume(TokenType.IDENTIFIER, "Expect library name after 'extern'.").value
+        self._consume(TokenType.KEYWORD, "Expect 'as' after external library name.", value="as")
+        provider_token = self._consume(
+            TokenType.IDENTIFIER,
+            "Expect external library provider after 'as'."
+        )
+        provider = provider_token.value.lower()
+        if provider not in {"native", "rust", "python", "js"}:
+            raise CompilerError(
+                f"Unsupported external library provider '{provider}'. "
+                "Use native, rust, python, or js.",
+                provider_token.line,
+                provider_token.column,
+                provider_token.source_line,
+            )
+        self._match(TokenType.SYMBOL, ".")
+        from compiler.ast.nodes import ExternLibraryNode
+        return ExternLibraryNode(
+            line=line,
+            column=col,
+            name=name,
+            provider=provider
+        )
+
+    def _parse_let_declaration(self):
+        line, col = self._previous().line, self._previous().column
+        name = self._consume(TokenType.IDENTIFIER, "Expect variable name after 'let'.").value
+        self._consume(TokenType.OPERATOR, "Expect '=' after variable name.", value="=")
+        value = self._parse_expression()
+        from compiler.ast.nodes import LetDeclarationNode
+        return LetDeclarationNode(line=line, column=col, name=name, value=value)
 
     def _parse_state_declaration(self):
         line, col = self._previous().line, self._previous().column
@@ -524,11 +585,12 @@ class Parser:
     def _parse_action_call(self):
         line, col = self._peek().line, self._peek().column
         name = self._consume(TokenType.IDENTIFIER, "Expect function name.").value
-        while self._match(TokenType.SYMBOL, "."):
+        while self._check(TokenType.SYMBOL, ".") or self._check(TokenType.OPERATOR, "::"):
+            separator = self._advance().value
             if not (self._check(TokenType.IDENTIFIER) or self._check(TokenType.KEYWORD)):
                 raise CompilerError(f"Expect property name after '.', got {self._peek().value}", self._peek().line, self._peek().column)
             prop = self._advance().value
-            name = f"{name}.{prop}"
+            name = f"{name}{separator}{prop}"
             
         self._consume(TokenType.SYMBOL, "Expect '(' after function name.", value="(")
         
@@ -614,7 +676,13 @@ class Parser:
                 if self.tokens[self.pos+lookahead].type == TokenType.SYMBOL and self.tokens[self.pos+lookahead].value == "(":
                     is_call = True
                     break
-                elif self.tokens[self.pos+lookahead].type == TokenType.SYMBOL and self.tokens[self.pos+lookahead].value == ".":
+                elif (
+                    self.tokens[self.pos + lookahead].type == TokenType.SYMBOL
+                    and self.tokens[self.pos + lookahead].value == "."
+                ) or (
+                    self.tokens[self.pos + lookahead].type == TokenType.OPERATOR
+                    and self.tokens[self.pos + lookahead].value == "::"
+                ):
                     lookahead += 2
                 else:
                     break
@@ -624,11 +692,19 @@ class Parser:
             else:
                 id_token = self._advance()
                 name = id_token.value
-                while self._match(TokenType.SYMBOL, "."):
+                while (
+                    (
+                        self._check(TokenType.SYMBOL, ".")
+                        and self.pos + 1 < self.length
+                        and self.tokens[self.pos + 1].type in {TokenType.IDENTIFIER, TokenType.KEYWORD}
+                    )
+                    or self._check(TokenType.OPERATOR, "::")
+                ):
+                    separator = self._advance().value
                     if not (self._check(TokenType.IDENTIFIER) or self._check(TokenType.KEYWORD)):
                         raise CompilerError(f"Expect property name after '.', got {self._peek().value}", self._peek().line, self._peek().column)
                     prop = self._advance().value
-                    name = f"{name}.{prop}"
+                    name = f"{name}{separator}{prop}"
                 expr = IdentifierNode(line=id_token.line, column=id_token.column, name=name)
         elif self._match(TokenType.SYMBOL, "["):
             line, col = self._previous().line, self._previous().column
@@ -788,3 +864,5 @@ class Parser:
             return self._advance()
         peek = self._peek()
         raise CompilerError(message, peek.line, peek.column, peek.source_line)
+
+

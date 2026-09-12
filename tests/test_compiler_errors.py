@@ -12,7 +12,7 @@ from compiler.errors import CompilerError
 def test_compiler_error_formatting():
     err = CompilerError("Expected string after title", line=4, column=15, source_line='title button')
     formatted = str(err)
-    assert "Expected string after title (Line 4, Col 15)" in formatted
+    assert "4 | title button" in formatted
     assert "title button" in formatted
     assert "              ^" in formatted
 
@@ -49,3 +49,4 @@ def test_parser_recovery_and_errors():
 
 if __name__ == '__main__':
     pytest.main(['-v', __file__])
+

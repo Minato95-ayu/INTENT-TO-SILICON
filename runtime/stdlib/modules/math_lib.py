@@ -15,19 +15,23 @@ from ...values.boolean import BooleanValue
 
 import math
 
+
+def _value(value):
+    return value.to_python() if hasattr(value, "to_python") else value
+
 def register_math_lib(registry: StdLibRegistry):
     def fn_sin(args, vm):
-        return NumberValue(math.sin(args[0].to_python()))
+        return NumberValue(math.sin(_value(args[0])))
     def fn_cos(args, vm):
-        return NumberValue(math.cos(args[0].to_python()))
+        return NumberValue(math.cos(_value(args[0])))
     def fn_tan(args, vm):
-        return NumberValue(math.tan(args[0].to_python()))
+        return NumberValue(math.tan(_value(args[0])))
     def fn_sqrt(args, vm):
-        return NumberValue(math.sqrt(args[0].to_python()))
+        return NumberValue(math.sqrt(_value(args[0])))
     def fn_pow(args, vm):
-        return NumberValue(math.pow(args[0].to_python(), args[1].to_python()))
+        return NumberValue(math.pow(_value(args[0]), _value(args[1])))
     def fn_abs(args, vm):
-        return NumberValue(abs(args[0].to_python()))
+        return NumberValue(abs(_value(args[0])))
     def fn_round(args, vm):
         return NumberValue(round(args[0].to_python()))
     def fn_min(args, vm):

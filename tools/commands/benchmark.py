@@ -1,7 +1,7 @@
 import sys
-from runtime.vm_next.config import VMConfig
-from runtime.vm_next.vm import VirtualMachine
-from runtime.vm_next.instructions import Opcode
+from runtime.vm.config import VMConfig
+from runtime.vm.vm import VirtualMachine
+from runtime.vm.instructions import Opcode
 
 def handle(args):
     """

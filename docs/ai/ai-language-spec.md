@@ -80,6 +80,18 @@ import http.
 import storage.
 ```
 
+External libraries can be selected by provider without changing application code:
+```aayu
+extern sqlite as native.
+extern image_tools as rust.
+extern numpy as python.
+extern charts as js.
+```
+
+Supported providers are `native`, `rust`, `python`, and `js`. The provider is an
+interop boundary selected by the package/runtime layer; it does not change AAYU's
+source-level API.
+
 ## Chapter 10 — UI
 The Native UI Framework replaces HTML/CSS. It provides native elements for layout and design.
 - **Elements:** `page`, `window`, `layout`, `row`, `column`, `stack`, `grid`, `card`, `button`, `text`, `heading`, `image`, `icon`, `table`, `list`, `tabs`, `dialog`, `drawer`, `sidebar`.

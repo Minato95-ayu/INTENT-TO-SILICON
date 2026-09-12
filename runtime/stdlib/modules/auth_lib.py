@@ -5,10 +5,22 @@ import hmac
 import hashlib
 import time
 
-# Simple V1 JWT Secret (Zero-dependency)
-JWT_SECRET = b"aayu_super_secret_v1"
+_DEVELOPMENT_SECRET = b"aayu-development-only-secret"
 
-def mint_jwt(payload: dict) -> str:
+
+def get_jwt_secret(require_configured: bool = False) -> bytes:
+    """Return the configured signing secret without shipping a production secret."""
+    configured = os.environ.get("AAYU_JWT_SECRET")
+    if configured:
+        if len(configured) < 32:
+            raise RuntimeError("AAYU_JWT_SECRET must contain at least 32 characters")
+        return configured.encode("utf-8")
+    if require_configured:
+        raise RuntimeError("AAYU_JWT_SECRET is required in production mode")
+    return _DEVELOPMENT_SECRET
+
+
+def mint_jwt(payload: dict, secret: bytes = None) -> str:
     header = {"alg": "HS256", "typ": "JWT"}
     header_b64 = base64.urlsafe_b64encode(json.dumps(header).encode()).decode().rstrip("=")
     
@@ -18,19 +30,19 @@ def mint_jwt(payload: dict) -> str:
         
     payload_b64 = base64.urlsafe_b64encode(json.dumps(payload).encode()).decode().rstrip("=")
     
-    signature = hmac.new(JWT_SECRET, f"{header_b64}.{payload_b64}".encode(), hashlib.sha256).digest()
+    signature = hmac.new(secret or get_jwt_secret(), f"{header_b64}.{payload_b64}".encode(), hashlib.sha256).digest()
     signature_b64 = base64.urlsafe_b64encode(signature).decode().rstrip("=")
     
     return f"{header_b64}.{payload_b64}.{signature_b64}"
 
-def verify_jwt(token: str) -> dict:
+def verify_jwt(token: str, secret: bytes = None) -> dict:
     parts = token.split(".")
     if len(parts) != 3:
         return None
         
     header_b64, payload_b64, signature_b64 = parts
     
-    expected_sig = hmac.new(JWT_SECRET, f"{header_b64}.{payload_b64}".encode(), hashlib.sha256).digest()
+    expected_sig = hmac.new(secret or get_jwt_secret(), f"{header_b64}.{payload_b64}".encode(), hashlib.sha256).digest()
     expected_sig_b64 = base64.urlsafe_b64encode(expected_sig).decode().rstrip("=")
     
     if not hmac.compare_digest(signature_b64, expected_sig_b64):
@@ -78,7 +90,7 @@ def register_auth_lib(registry):
                     "email": email,
                     "roles": json.loads(user[0]["roles"]),
                     "permissions": json.loads(user[0]["permissions"])
-                })
+                }, secret=get_jwt_secret(not getattr(vm.config, "debug_mode", False)))
                 # Inject directly into state
                 if vm.state_scopes:
                     vm.state_scopes[-1]["authToken"] = token
@@ -110,7 +122,7 @@ def register_auth_lib(registry):
                 "email": email,
                 "roles": json.loads(user[0].get("roles", "[]")),
                 "permissions": json.loads(user[0].get("permissions", "[]"))
-            })
+            }, secret=get_jwt_secret(not getattr(vm.config, "debug_mode", False)))
             if vm.state_scopes:
                 vm.state_scopes[-1]["authToken"] = token
             vm.state["authToken"] = token

@@ -22,18 +22,19 @@ class Token:
         return f"Token({self.type.name}, '{self.value}', Line: {self.line})"
 
 KEYWORDS = {
-    "app", "run", "state", "model", "page", "component",
+    "app", "run", "state", "let", "model", "page", "component",
     "route", "server", "task", "event", "if", "else", "for", "while",
     "return", "fn", "end", "import", "action", "in", "get", "post",
     "theme", "useTheme", "widget", "navigate", "validate",
     "await", "bind", "animate",
-    "try", "catch", "finally", "throw", "rethrow"
+    "try", "catch", "finally", "throw", "rethrow", "extern", "as", "print"
 }
 
 OPERATORS = {
-    "=", "+", "-", "*", "/", "%", "+=", "-=", "==", "!=", ">", "<", ">=", "<=", "&&", "||"
+    "=", "+", "-", "*", "/", "%", "+=", "-=", "==", "!=", ">", "<", ">=", "<=", "&&", "||", "::"
 }
 
 SYMBOLS = {
     "(", ")", "{", "}", "[", "]", ",", ".", ":", "@"
 }
+

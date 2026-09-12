@@ -4,8 +4,8 @@ from ...values.string import StringValue
 from ...values.null import NullValue
 
 def create_string(vm, text):
-    obj = vm.memory.heap.allocate("string", text)
-    return StringValue(obj.id, vm.memory.heap)
+    obj = vm.heap.allocate("string", text)
+    return StringValue(obj, vm.heap)
 
 def register_process_lib(registry: StdLibRegistry):
     def fn_exec(args, vm):
@@ -17,3 +17,5 @@ def register_process_lib(registry: StdLibRegistry):
             return NullValue()
             
     registry.register("process::exec", fn_exec)
+
+

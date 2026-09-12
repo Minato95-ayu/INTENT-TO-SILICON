@@ -9,6 +9,9 @@ class DatabaseEngine:
         self.cursor = self.conn.cursor()
         self.models = {}
 
+    def close(self):
+        self.conn.close()
+
     def create_model(self, model_name: str, fields: list, decorators: list = None):
         table_name = model_name.lower() + "s"
         if not table_name.endswith('s'): table_name += "s"

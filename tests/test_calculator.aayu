@@ -1,0 +1,9 @@
+app CalculatorApp
+
+Component Calculator
+    state current_value = "0"
+    
+    Page
+        Text current_value
+    end
+end

@@ -48,15 +48,17 @@ end'''
         self.assertEqual(len(tokens), 5) # state, a, =, 1, EOF
 
     def test_symbols(self):
-        code = "a += 1; ( ) { }"
+        code = "a += 1, ( ) { }"
         lexer = Lexer(code)
         tokens = lexer.tokenize()
         
         vals = [t.value for t in tokens]
         self.assertIn("+=", vals)
-        self.assertIn(";", vals)
+        self.assertIn(",", vals)
         self.assertIn("(", vals)
         self.assertIn("{", vals)
 
 if __name__ == '__main__':
     unittest.main()
+
+

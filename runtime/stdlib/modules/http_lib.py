@@ -20,8 +20,7 @@ def http_get(args, vm):
             except json.JSONDecodeError:
                 return data
     except Exception as e:
-        print(f'[HTTP Error] GET {url}: {e}')
-        return None
+        raise Exception(f"HTTP request failed: {e}")
 
 def http_post(args, vm):
     if len(args) < 2: return None
@@ -45,9 +44,9 @@ def http_post(args, vm):
             except json.JSONDecodeError:
                 return data
     except Exception as e:
-        print(f'[HTTP Error] POST {url}: {e}')
-        return None
+        raise Exception(f"HTTP request failed: {e}")
 
 def register_http_lib(registry):
     registry.register('HTTP.get', http_get)
     registry.register('HTTP.post', http_post)
+

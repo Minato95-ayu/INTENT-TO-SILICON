@@ -9,9 +9,9 @@ def test_builder_windows():
     exe_path = os.path.join("build", "release", "app.exe")
     assert os.path.exists(exe_path)
     
-    with open(exe_path, "r") as f:
+    with open(exe_path, "rb") as f:
         content = f.read()
-    assert content == "MOCK_WINDOWS_EXE_CONTENT"
+    assert content.startswith(b"MZ")
     
 def test_builder_web():
     builder = Builder(mode="release")
@@ -22,8 +22,11 @@ def test_builder_web():
     
     with open(html_path, "r") as f:
         content = f.read()
-    assert "<div id=\"app\"></div>" in content
+    assert '<div id="app">' in content
     assert "<title>AAYU Web App</title>" in content
 
 if __name__ == '__main__':
     pytest.main(['-v', __file__])
+
+
+

@@ -19,9 +19,9 @@ from ..values.map import MapValue
 from ..values.null import NullValue
 
 def _make_string(vm, text: str) -> RuntimeValue:
-    obj = vm.memory.heap.allocate("string", text)
+    obj = vm.heap.allocate("string", text)
     from ..values.string import StringValue
-    return StringValue(obj.id, vm.memory.heap)
+    return StringValue(obj.id, vm.heap)
 
 def reflect_type_of(args, vm) -> RuntimeValue:
     if not args:
@@ -46,9 +46,9 @@ def reflect_attributes_of(args, vm) -> RuntimeValue:
         pass
         
     attrs_list = [_make_string(vm, a) for a in attrs]
-    obj = vm.memory.heap.allocate("list", attrs_list)
+    obj = vm.heap.allocate("list", attrs_list)
     from ..values.list import ListValue
-    return ListValue(obj.id, vm.memory.heap)
+    return ListValue(obj.id, vm.heap)
 
 def reflect_module_of(args, vm) -> RuntimeValue:
     if not args:
@@ -87,12 +87,13 @@ def reflect_inspect(args, vm) -> RuntimeValue:
         if info.parameter_count is not None:
             meta_map["parameter_count"] = NumberValue(float(info.parameter_count))
             
-    obj = vm.memory.heap.allocate("map", meta_map)
+    obj = vm.heap.allocate("map", meta_map)
     from ..values.map import MapValue
-    return MapValue(obj.id, vm.memory.heap)
+    return MapValue(obj.id, vm.heap)
 
 def register_reflect_lib(registry):
     registry.register("reflect_type_of", reflect_type_of)
     registry.register("reflect_attributes_of", reflect_attributes_of)
     registry.register("reflect_module_of", reflect_module_of)
     registry.register("reflect_inspect", reflect_inspect)
+

@@ -21,6 +21,11 @@ class ProgramNode(ASTNode):
     statements: List[ASTNode]
 
 @dataclass(frozen=True)
+class LetDeclarationNode(ASTNode):
+    name: str
+    value: ASTNode
+
+@dataclass(frozen=True)
 class PropDeclarationNode(ASTNode):
     name: str
 
@@ -68,6 +73,12 @@ class WidgetNode(ASTNode):
 @dataclass(frozen=True)
 class ImportNode(ASTNode):
     module: str
+
+@dataclass(frozen=True)
+class ExternLibraryNode(ASTNode):
+    """Declares an external library provider used through AAYU interop."""
+    name: str
+    provider: str
 
 @dataclass(frozen=True)
 class DecoratorNode(ASTNode):
@@ -225,3 +236,4 @@ class AnimateNode(ASTNode):
 class LifecycleNode(ASTNode):
     hook: str
     body: List[ASTNode]
+

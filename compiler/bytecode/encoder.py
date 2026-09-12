@@ -111,6 +111,7 @@ class BytecodeEncoder:
 
         # Pass 2: emit actual bytecode
         for node in lir_nodes:
+            print(f"LIRNode: {node.opcode} {node.operands}")
             self._encode_node(node)
 
         # Append HALT
@@ -198,6 +199,10 @@ class BytecodeEncoder:
         elif opcode == "PRINT_STACK":
             # Value is already on stack — just emit PRINT
             self._emit(Opcode.PRINT, 0)
+        elif opcode == "RETURN_VALUE":
+            self._encode_return_value(node)
+        elif opcode == "RET":
+            self._emit(Opcode.RET, 0)
         elif opcode == "PUSH_CONST":
             self._encode_push_const(node)
         elif opcode == "ACTION_DECL":
@@ -280,11 +285,13 @@ class BytecodeEncoder:
             self._emit(Opcode.PUSH_CONST, keys_idx)
             self._emit(Opcode.NAVIGATE, len(keys))
         elif opcode == "BUILD_DICT":
-            keys_idx = self.pool.add(node.operands[0])
+            keys = node.operands[0]
+            keys_idx = self.pool.add(keys)
             self._emit(Opcode.PUSH_CONST, keys_idx)
-            self._emit(Opcode.BUILD_DICT, 0)
+            self._emit(Opcode.BUILD_DICT, len(keys))
         elif opcode == "OP_ASYNC_CALL":
-            print(f"[DEBUG ENCODER] Encoding OP_ASYNC_CALL: {node.operands[0]}")
+            if getattr(self, "debug", False):
+                print(f"[DEBUG ENCODER] Encoding OP_ASYNC_CALL: {node.operands[0]}")
             name = node.operands[0]
             num_args = node.operands[1]
             name_idx = self.pool.add(name)
@@ -370,16 +377,21 @@ class BytecodeEncoder:
         # Extract widget type from opcode: BUILD_TEXT -> TEXT
         widget_type_str = node.opcode[6:]  # strip "BUILD_"
         widget_type_id = WIDGET_TYPES.get(widget_type_str, 0)
-
         # Push widget content/props onto stack
         props = node.operands[0] if node.operands else {}
+        dynamic_prop_count = 0
         if isinstance(props, dict):
-            # Removing text to value mapping as it duplicates $STACK markers and causes underflow
+            # Count $STACK markers exactly
+            dynamic_prop_count = sum(1 for v in props.values() if v == "$STACK")
+            if dynamic_prop_count > 255:
+                from compiler.errors import CompilerError
+                raise CompilerError(f"Widget has too many dynamic properties: {dynamic_prop_count} (max 255)")
+                
             idx = self.pool.add(props)
             self._emit(Opcode.PUSH_CONST, idx)
         elif isinstance(props, str):
             if props == "__DYNAMIC__":
-                pass # Skip pushing, value is already on stack
+                dynamic_prop_count = 1
             else:
                 text_idx = self.pool.add(props)
                 self._emit(Opcode.PUSH_CONST, text_idx)
@@ -398,11 +410,12 @@ class BytecodeEncoder:
                 self.relocations.append(Relocation(
                     offset=len(self.bytecode),
                     symbol=widget_type_str,
-                    type="CALL" # We can just keep type as CALL for relocation patching
+                    type="CALL_COMPONENT"
                 ))
                 self._emit(Opcode.CALL_COMPONENT, 0xFFFF)
         else:
-            self._emit(Opcode.BUILD_WIDGET, widget_type_id)
+            operand = (widget_type_id << 8) | (dynamic_prop_count & 0xFF)
+            self._emit(Opcode.BUILD_WIDGET, operand)
 
     def _encode_print(self, node: LIRNode):
         """PRINT [value] → PUSH_CONST value_idx + PRINT"""
@@ -432,7 +445,7 @@ class BytecodeEncoder:
             args = node.operands[2]
             for arg in reversed(args):
                 arg_idx = self.pool.add(arg)
-                self._emit(Opcode.STORE_STATE, arg_idx)
+                self._emit(Opcode.INIT_STATE, arg_idx)
 
         # Encode body statements
         if len(node.operands) > 1:
@@ -451,9 +464,17 @@ class BytecodeEncoder:
         self.bytecode[jmp_addr + 1] = end_addr & 0xFF
 
     def _encode_call_action(self, node: LIRNode):
-        """CALL_ACTION [name] → CALL target_address"""
+        """CALL_ACTION [name, arg_count, return_count] → PREPARE_CALL + CALL target_address"""
         action_name = node.operands[0]
-        print(f"[DEBUG ENCODER] Encoding CALL_ACTION: {action_name}")
+        arg_count = node.operands[1] if len(node.operands) > 1 else 0
+        return_count = node.operands[2] if len(node.operands) > 2 else 1
+        
+        # Emit: PREPARE_CALL (arg_count << 8) | return_count
+        operand = (arg_count << 8) | return_count
+        self._emit(Opcode.PREPARE_CALL, operand)
+        
+        if getattr(self, "debug", False):
+            print(f"[DEBUG ENCODER] Encoding CALL_ACTION: {action_name}")
         if action_name in self._action_addresses:
             target = self._action_addresses[action_name]
             self._emit(Opcode.CALL, target)
@@ -476,9 +497,11 @@ class BytecodeEncoder:
         elif opcode == "PRINT":
             return 6  # PUSH_CONST + PRINT
         elif opcode == "ACTION_DECL":
-            return 3  # RET only (body nodes counted separately)
+            return 3  # RET only
         elif opcode == "REGISTER_ROUTE":
             return 6  # PUSH_CONST + REGISTER_ROUTE (methods counted recursively)
+        elif opcode == "CALL_ACTION":
+            return 6  # PREPARE_CALL + CALL
         else:
             return 3  # single instruction
 
@@ -512,7 +535,9 @@ class BytecodeEncoder:
                 self._encode_node(sub_node)
             
             # Implicit return at the end of the route method
-            self._emit(Opcode.RET, 0)
+            idx = self.pool.add(None)
+            self._emit(Opcode.PUSH_CONST, idx)
+            self._emit(Opcode.RETURN_VALUE, 0)
             
             # Patch jump
             end_addr = len(self.bytecode)

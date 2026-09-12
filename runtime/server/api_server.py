@@ -310,10 +310,51 @@ class APIRouter:
     def __init__(self, vm):
         self.vm = vm
         self.server = None
+        self._shutdown_requested = False
 
     def start(self, port=8000):
         if not self.server:
             AAYUAPIHandler.vm = self.vm
             self.server = HTTPServer(('0.0.0.0', port), AAYUAPIHandler)
             print(f"[API Server] Starting on port {port}...")
-            self.server.serve_forever()
+
+            # Register signal handlers for graceful shutdown
+            import signal
+            signal.signal(signal.SIGINT, self._signal_handler)
+            signal.signal(signal.SIGTERM, self._signal_handler)
+
+            try:
+                self.server.serve_forever()
+            except KeyboardInterrupt:
+                pass
+            finally:
+                self.shutdown()
+
+    def _signal_handler(self, signum, frame):
+        """Handle SIGINT/SIGTERM for graceful shutdown."""
+        if self._shutdown_requested:
+            return  # Prevent double-shutdown
+        self._shutdown_requested = True
+        signal_name = "SIGINT" if signum == 2 else "SIGTERM"
+        print(f"\n[API Server] Received {signal_name} — shutting down gracefully...")
+        self.shutdown()
+
+    def shutdown(self):
+        """Gracefully shutdown the server, drain connections, and close resources."""
+        if self.server:
+            print("[API Server] Draining active connections...")
+            self.server.shutdown()
+            self.server.server_close()
+            self.server = None
+
+        # Close database connections cleanly
+        if hasattr(self.vm, 'database') and self.vm.database:
+            try:
+                if hasattr(self.vm.database, 'conn') and self.vm.database.conn:
+                    self.vm.database.conn.close()
+                    print("[API Server] Database connections closed.")
+            except Exception as e:
+                print(f"[API Server] Warning: Error closing database: {e}")
+
+        print("[API Server] Shutdown complete.")
+

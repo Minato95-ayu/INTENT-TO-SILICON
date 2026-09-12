@@ -10,6 +10,8 @@ class ConsoleRenderer(RendererInterface):
         pass
         
     def render(self, display_list: DisplayList):
+        if not display_list.commands:
+            return
         print("=== Console Display List ===")
         for cmd in display_list.commands:
             print(f"- {cmd}")

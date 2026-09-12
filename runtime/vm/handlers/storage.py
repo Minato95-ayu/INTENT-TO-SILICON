@@ -1,5 +1,5 @@
 from compiler.frontend.ir import Opcode
-from compiler.frontend.ast_nodes import InsertNode, FindNode, UpdateNode, DeleteNode
+from compiler.ast.nodes import InsertNode, FindNode, UpdateNode, DeleteNode
 from runtime.values.list import ListValue
 from runtime.values.map import MapValue
 from runtime.values.string import StringValue
@@ -40,13 +40,13 @@ def handle_storage(opcode, current_frame, vm):
                     if isinstance(v, (int, float)):
                         py_dict[str(k)] = NumberValue(v)
                     else:
-                        s_obj = vm.memory.heap.allocate("string", str(v))
-                        py_dict[str(k)] = StringValue(s_obj.id, vm.memory.heap)
-                map_obj = vm.memory.heap.allocate("map", py_dict)
-                aayu_list.append(MapValue(map_obj.id, vm.memory.heap))
+                        s_obj = vm.heap.allocate("string", str(v))
+                        py_dict[str(k)] = StringValue(s_obj.id, vm.heap)
+                map_obj = vm.heap.allocate("map", py_dict)
+                aayu_list.append(MapValue(map_obj.id, vm.heap))
             
-        list_obj = vm.memory.heap.allocate("list", aayu_list)
-        current_frame.stack.append(ListValue(list_obj.id, vm.memory.heap))
+        list_obj = vm.heap.allocate("list", aayu_list)
+        current_frame.stack.append(ListValue(list_obj.id, vm.heap))
         
     elif opcode == Opcode.DB_UPDATE:
         fields_map = current_frame.stack.pop()
@@ -64,3 +64,4 @@ def handle_storage(opcode, current_frame, vm):
         current_frame.stack.append(NullValue())
     
     return False
+

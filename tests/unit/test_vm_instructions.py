@@ -1,12 +1,8 @@
 import unittest
-from compiler.frontend.ir import Opcode
+from runtime.vm.instructions import Opcode, opcode_to_str
 
 class TestVMInstructions(unittest.TestCase):
     def test_instructions(self):
-        # Access all opcodes to trigger coverage of the enum
-        for op in Opcode:
-            self.assertIsNotNone(op.name)
-            self.assertIsNotNone(op.value)
-
-if __name__ == '__main__':
-    unittest.main()
+        for k, v in Opcode.__dict__.items():
+            if not k.startswith("__"):
+                self.assertEqual(opcode_to_str(v), k)

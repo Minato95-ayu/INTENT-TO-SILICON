@@ -4,18 +4,20 @@ import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
-from runtime.vm_next.vm import VirtualMachine
-from runtime.vm_next.config import VMConfig
-from runtime.vm_next.instructions import Opcode
-from runtime.vm_next.exceptions import StackOverflowError, InvalidBytecodeError
-from runtime.vm_next.frame import CallFrame
+from runtime.vm.vm import VirtualMachine
+from runtime.vm.config import VMConfig
+from runtime.vm.instructions import Opcode
+from runtime.vm.exceptions import StackOverflowError, InvalidBytecodeError, KernelError
+from runtime.vm.frame import CallFrame
+from runtime.vm.result import RuntimeResult
 
 def test_10m_instructions():
-    # Construct 100k instructions to test throughput (10M takes too long in python pytest usually without JIT)
+    # Construct 100k instructions to test throughput
     bytecode = bytearray()
     for _ in range(100000):
-        bytecode.extend([Opcode.PUSH_CONST, 0, 0, Opcode.POP])
-    bytecode.append(Opcode.HALT)
+        # All instructions are 3 bytes! (1 opcode + 2 bytes padding)
+        bytecode.extend([Opcode.PUSH_CONST, 0, 0, Opcode.POP, 0, 0])
+    bytecode.extend([Opcode.HALT, 0, 0])
     
     vm = VirtualMachine(VMConfig.production())
     vm.load(bytecode, [1])
@@ -26,34 +28,33 @@ def test_10m_instructions():
 
 def test_stack_overflow():
     vm = VirtualMachine(VMConfig.development())
-    vm.load(bytearray([Opcode.HALT]), [])
+    vm.call_stack.max_depth = 1
     
+    frame1 = CallFrame("func1", 0)
+    frame2 = CallFrame("func2", 0)
+    
+    vm.call_stack.push(frame1)
     with pytest.raises(StackOverflowError):
-        for _ in range(5000):
-            vm.call_stack.push(CallFrame("func", 0))
+        vm.call_stack.push(frame2)
 
 def test_invalid_opcode():
-    vm = VirtualMachine()
-    bytecode = bytearray([0xFE]) # Unknown
-    
-    with pytest.raises(InvalidBytecodeError) as exc:
-        vm.load(bytecode)
-    assert "Unknown opcode" in str(exc.value)
+    vm = VirtualMachine(VMConfig.development())
+    # 0x00 is invalid
+    bytecode = bytearray([0x00, 0x00, 0x00])
+    with pytest.raises(InvalidBytecodeError):
+        vm.load(bytecode, [])
 
 def test_plugin_recovery():
-    from runtime.vm_next.result import RuntimeResult, ResultStatus
-    
     vm = VirtualMachine()
-    # Mocking a dispatch instruction
-    bytecode = bytearray([Opcode.DISPATCH, Opcode.HALT])
-    vm.load(bytecode)
+    bytecode = bytearray([Opcode.DISPATCH, 0, 0, Opcode.HALT, 0, 0])
+    vm.load(bytecode, [])
     
-    # Mock kernel_dispatch to return ERROR
     vm.kernel_dispatch = lambda: RuntimeResult.error("Mock Plugin Error")
     
-    # Execution should not crash, because interpreter catches KernelError and pushes None
-    vm.execute()
-    assert vm.value_stack.pop() is None
+    with pytest.raises(KernelError):
+        vm.execute()
 
-if __name__ == '__main__':
-    pytest.main(['-v', __file__])
+if __name__ == "__main__":
+    pytest.main(["-v", __file__])
+
+

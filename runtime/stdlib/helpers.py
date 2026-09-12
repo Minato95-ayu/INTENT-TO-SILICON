@@ -17,13 +17,14 @@ from ..values.list import ListValue
 from ..values.map import MapValue
 
 def make_string(vm, text: str) -> StringValue:
-    obj = vm.memory.heap.allocate("string", text)
-    return StringValue(obj.id, vm.memory.heap)
+    obj = vm.heap.allocate("string", text)
+    return StringValue(obj.id, vm.heap)
 
 def make_list(vm, elements: list) -> ListValue:
-    obj = vm.memory.heap.allocate("list", elements)
-    return ListValue(obj.id, vm.memory.heap)
+    obj = vm.heap.allocate("list", elements)
+    return ListValue(obj.id, vm.heap)
 
 def make_map(vm, elements: dict) -> MapValue:
-    obj = vm.memory.heap.allocate("map", elements)
-    return MapValue(obj.id, vm.memory.heap)
+    obj = vm.heap.allocate("map", elements)
+    return MapValue(obj.id, vm.heap)
+

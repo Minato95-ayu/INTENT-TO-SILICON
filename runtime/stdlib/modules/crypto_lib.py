@@ -5,8 +5,8 @@ from ...values.string import StringValue
 from ...values.null import NullValue
 
 def create_string(vm, text):
-    obj = vm.memory.heap.allocate("string", text)
-    return StringValue(obj.id, vm.memory.heap)
+    obj = vm.heap.allocate("string", text)
+    return StringValue(obj, vm.heap)
 
 def register_crypto_lib(registry: StdLibRegistry):
     def fn_sha256(args, vm):
@@ -25,3 +25,5 @@ def register_crypto_lib(registry: StdLibRegistry):
 
     registry.register("crypto::sha256", fn_sha256)
     registry.register("crypto::random_hex", fn_random_hex)
+
+

@@ -6,8 +6,8 @@ from ...values.null import NullValue
 from ...values.boolean import BooleanValue
 
 def create_string(vm, text):
-    obj = vm.memory.heap.allocate("string", text)
-    return StringValue(obj.id, vm.memory.heap)
+    obj = vm.heap.allocate("string", text)
+    return StringValue(obj, vm.heap)
 
 def register_file_lib(registry: StdLibRegistry):
     def fn_read(args, vm):
@@ -27,11 +27,11 @@ def register_file_lib(registry: StdLibRegistry):
                 with open(path, mode, encoding=encoding) as f:
                     return create_string(vm, f.read())
         except FileNotFoundError:
-            return create_string(vm, "error: file not found")
+            raise Exception("file not found")
         except PermissionError:
-            return create_string(vm, "error: permission denied")
+            raise Exception("permission denied")
         except Exception as e:
-            return create_string(vm, f"error: {str(e)}")
+            raise e
             
     def fn_write(args, vm):
         try:
@@ -41,9 +41,9 @@ def register_file_lib(registry: StdLibRegistry):
                 f.write(content)
             return BooleanValue(True)
         except PermissionError:
-            return create_string(vm, "error: permission denied")
+            raise Exception("permission denied")
         except Exception as e:
-            return create_string(vm, f"error: {str(e)}")
+            raise e
             
     def fn_append(args, vm):
         try:
@@ -53,9 +53,9 @@ def register_file_lib(registry: StdLibRegistry):
                 f.write(content)
             return BooleanValue(True)
         except PermissionError:
-            return create_string(vm, "error: permission denied")
+            raise Exception("permission denied")
         except Exception as e:
-            return create_string(vm, f"error: {str(e)}")
+            raise e
             
     def fn_delete(args, vm):
         try:
@@ -66,11 +66,11 @@ def register_file_lib(registry: StdLibRegistry):
                 os.remove(path)
             return BooleanValue(True)
         except FileNotFoundError:
-            return create_string(vm, "error: file not found")
+            raise Exception("file not found")
         except PermissionError:
-            return create_string(vm, "error: permission denied")
+            raise Exception("permission denied")
         except Exception as e:
-            return create_string(vm, f"error: {str(e)}")
+            raise e
 
     def fn_mkdir(args, vm):
         try:
@@ -78,9 +78,9 @@ def register_file_lib(registry: StdLibRegistry):
             os.makedirs(path, exist_ok=True)
             return BooleanValue(True)
         except PermissionError:
-            return create_string(vm, "error: permission denied")
+            raise Exception("permission denied")
         except Exception as e:
-            return create_string(vm, f"error: {str(e)}")
+            raise e
 
     def fn_exists(args, vm):
         return BooleanValue(os.path.exists(args[0].to_python()))
@@ -91,3 +91,6 @@ def register_file_lib(registry: StdLibRegistry):
     registry.register("file::delete", fn_delete)
     registry.register("file::mkdir", fn_mkdir)
     registry.register("file::exists", fn_exists)
+
+
+

@@ -27,8 +27,9 @@ class Opcode:
     CMP_LTE = 0x2B
     CMP_GTE = 0x2C
     
-    # Components
+    # Components / Calls
     CALL_COMPONENT = 0x28
+    PREPARE_CALL = 0x2D
     
     # State & Memory
     STORE_STATE = 0x30

@@ -30,8 +30,8 @@ class AutoCoverageTest(unittest.TestCase):
         except: pass
 
         try:
-            from tools.package_manager import AAYUPackageManager
-            pm = AAYUPackageManager()
+            from tools.package_manager.manager import PackageManager
+            pm = PackageManager()
             try: pm.init_project("T")
             except: pass
             try: pm.install("pkg")

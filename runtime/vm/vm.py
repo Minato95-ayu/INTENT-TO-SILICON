@@ -47,13 +47,13 @@ class VirtualMachine:
         return self.state_scopes[-1]
 
     def update_state(self, name: str, value: Any):
-        # Lexical scoping traversal
+        # Traverse scopes from top to bottom
         for scope in reversed(self.state_scopes):
             if name in scope:
                 scope[name] = value
                 return
-        
-        # If not found, assign to the local scope
+                
+        # If not found, set in current scope (local)
         self.state_scopes[-1][name] = value
 
     def load(self, bytecode, constant_pool=None, action_addresses=None, action_params=None):
@@ -63,6 +63,68 @@ class VirtualMachine:
         Validator.validate(bytecode, self.constant_pool)
         self.decoder = Decoder(bytecode, self.constant_pool)
         self.registers.reset()
+
+    def register_external(self, name: str, provider: str, func):
+        """Register a host implementation for a qualified AAYU external call."""
+        self.stdlib.register_external(name, provider, func)
+
+    def bind_native_function(
+        self,
+        library: str,
+        symbol: str,
+        aayu_name: str,
+        return_type: str,
+        argument_types,
+    ):
+        """Bind one explicitly selected C-ABI function to an AAYU name."""
+        from runtime.interop.native import bind_native_function
+
+        bind_native_function(
+            self,
+            library,
+            symbol,
+            aayu_name,
+            return_type,
+            argument_types,
+        )
+
+    def bind_python_function(self, module: str, symbol: str, aayu_name: str):
+        """Bind one explicit Python module function to an AAYU name."""
+        from runtime.interop.python import bind_python_function
+
+        bind_python_function(self, module, symbol, aayu_name)
+
+    def bind_rust_function(
+        self,
+        library: str,
+        symbol: str,
+        aayu_name: str,
+        return_type: str,
+        argument_types,
+    ):
+        """Bind a Rust cdylib symbol exported with ``extern \"C\"``."""
+        from runtime.interop.native import NativeLibrary
+
+        native_library = NativeLibrary(library)
+        callback = native_library.bind(symbol, return_type, argument_types)
+        self.stdlib.register_rust_external(aayu_name, callback)
+        if not hasattr(self, "native_libraries"):
+            self.native_libraries = []
+        self.native_libraries.append(native_library)
+
+    def bind_javascript_function(self, module: str, symbol: str, aayu_name: str):
+        """Bind a Node.js module export through an isolated JSON subprocess."""
+        from runtime.interop.javascript import bind_javascript_function
+
+        bind_javascript_function(self, module, symbol, aayu_name)
+
+    def shutdown(self):
+        """Release VM-owned servers, native handles, and database resources."""
+        self.api_router.stop()
+        if hasattr(self, "database") and self.database is not None:
+            self.database.close()
+        if hasattr(self, "native_libraries"):
+            self.native_libraries.clear()
         
     def call_action_by_name(self, action_name: str):
         args_to_push = []
@@ -78,7 +140,7 @@ class VirtualMachine:
                 self.interpreter.node_stack.clear()
                 self.interpreter.render_tree.root = None
                 
-            self.call_stack.push((self.registers.ip, False))
+            self.call_stack.push((self.registers.ip, False, None, len(args_to_push), self.value_stack.depth()))
             self.registers.ip = target_ip
             for arg in args_to_push:
                 self.value_stack.push(arg)
@@ -86,30 +148,27 @@ class VirtualMachine:
         else:
             print(f"[VM] Error: Action '{action_name}' not found.")
 
-    def execute_subroutine(self, target_ip: int):
+    def execute_subroutine(self, target_ip: int, args=None):
         """Executes a bytecode subroutine synchronously and returns the value on top of stack."""
-        # Save current VM state
+        if args is None:
+            args = []
         old_ip = self.registers.ip
-        # In a real async VM, we would use a separate context/coroutine.
-        # Here we just push the current IP and run until RET (or HALT)
-        self.call_stack.push((old_ip, False))
+        base_depth = self.value_stack.depth()
+        halt_ip = max(0, len(self.decoder.bytecode) - 3)
+        self.call_stack.push((halt_ip, False, 1, len(args), base_depth))
         self.registers.ip = target_ip
-        
-        # We need the interpreter to stop exactly when it returns from THIS call.
-        # But for now, since RET restores IP from call_stack, we can just run
-        # until the call_stack depth is back to what it was before this call!
+
+        for arg in args:
+            self.value_stack.push(arg)
         target_depth = self.call_stack.depth() - 1
-        
+
         try:
-            while True:
-                if self.call_stack.depth() == target_depth:
-                    break
-                self.interpreter.step()
+            self.interpreter.run()
         except Exception as e:
             self.registers.ip = old_ip
             raise e
-            
-        # The result should be on top of the value stack
+
+        return self.value_stack.pop() if self.value_stack.depth() > base_depth else None
 
     def get_stacktrace(self) -> list:
         trace = []
@@ -123,8 +182,10 @@ class VirtualMachine:
         trace.append(f"at {current_action}")
         
         # Walk down call stack
-        for i in range(self.call_stack.depth() - 1, -1, -1):
-            ip, is_comp = self.call_stack.items[i]
+        for i in range(len(self.call_stack.frames) - 1, -1, -1):
+            frame = self.call_stack.frames[i]
+            ip = frame[0]
+            is_comp = frame[1]
             # Try to resolve IP to action name
             action_name = "<unknown>"
             for name, addr in self.action_addresses.items():
@@ -140,7 +201,10 @@ class VirtualMachine:
         from runtime.vm.exceptions import AayuException
         
         if not isinstance(exception_obj, AayuException):
-            exception_obj = AayuException("RuntimeError", str(exception_obj))
+            if isinstance(exception_obj, str):
+                exception_obj = AayuException(exception_obj, "AYU-1001")
+            else:
+                exception_obj = AayuException("RuntimeError", str(exception_obj))
             
         exception_obj.stacktrace = self.get_stacktrace()
         

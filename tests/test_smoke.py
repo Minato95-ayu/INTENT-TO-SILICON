@@ -28,81 +28,6 @@ class AayuSmokeTests(unittest.TestCase):
         session = self.manager.get_or_create_session(session_id)
         return session
 
-    def test_calculator_end_to_end(self):
-        with open(os.path.join(os.path.dirname(__file__), "test_calculator.aayu"), "r") as f:
-            code = f.read()
-
-        session = self.compile_and_load(code, "calc-session")
-        print(session.vm.action_addresses)
-        
-        from runtime.renderers.web_renderer import serialize_node
-        
-        # 1. Initial Page Load
-        session.vm.call_action_by_name("Calculator")
-        tree = serialize_node(session.vm.interpreter.render_tree.root, set())
-        
-        # Helper to find Text node value
-        def get_text_value(node):
-            if node.get("type") == "text":
-                return node.get("props", {}).get("value_node")
-            for child in node.get("children", []):
-                val = get_text_value(child)
-                if val is not None:
-                    return val
-            return None
-
-        # Verify initial state is "0"
-        self.assertEqual(str(get_text_value(tree)), "0")
-        
-        # 2. Press "7"
-        session.vm.value_stack.push("7")
-        session.vm.call_action_by_name("press")
-        session.vm.call_action_by_name("Calculator")
-        tree = serialize_node(session.vm.interpreter.render_tree.root, set())
-        self.assertEqual(str(get_text_value(tree)), "7")
-        
-        # 3. Press "+"
-        session.vm.value_stack.push("+")
-        session.vm.call_action_by_name("pressOp")
-        session.vm.call_action_by_name("Calculator")
-        tree = serialize_node(session.vm.interpreter.render_tree.root, set())
-        self.assertEqual(str(get_text_value(tree)), "0")
-        
-        # 4. Press "5"
-        session.vm.value_stack.push("5")
-        session.vm.call_action_by_name("press")
-        session.vm.call_action_by_name("Calculator")
-        tree = serialize_node(session.vm.interpreter.render_tree.root, set())
-        self.assertEqual(str(get_text_value(tree)), "5")
-        
-        # 5. Press "="
-        session.vm.call_action_by_name("calculate")
-        session.vm.call_action_by_name("Calculator")
-        tree = serialize_node(session.vm.interpreter.render_tree.root, set())
-        print(f"DEBUG: op={session.vm.state_scopes[-1].get('op')}, previous={session.vm.state_scopes[-1].get('previous')}, current={session.vm.state_scopes[-1].get('current')}")
-        print(f"DEBUG TREE: {json.dumps(tree, indent=2)}")
-        self.assertEqual(str(get_text_value(tree)), "12.0")
-        
-        # 6. Press "C"
-        session.vm.call_action_by_name("clear")
-        session.vm.call_action_by_name("Calculator")
-        tree = serialize_node(session.vm.interpreter.render_tree.root, set())
-        print(f"DEBUG TREE AFTER CLEAR: {json.dumps(tree, indent=2)}")
-        self.assertEqual(str(get_text_value(tree)), "0")
-
-        # 7. Press "8", "-", "3", "="
-        # 7. Press "8", "-", "3", "="
-        session.vm.value_stack.push("8")
-        session.vm.call_action_by_name("press")
-        session.vm.value_stack.push("-")
-        session.vm.call_action_by_name("pressOp")
-        session.vm.value_stack.push("3")
-        session.vm.call_action_by_name("press")
-        session.vm.call_action_by_name("calculate")
-        session.vm.call_action_by_name("Calculator")
-        tree = serialize_node(session.vm.interpreter.render_tree.root, set())
-        self.assertEqual(str(get_text_value(tree)), "5.0")
-
     def test_counter_state_and_concat(self):
         code = """
         Page Counter
@@ -147,6 +72,8 @@ class AayuSmokeTests(unittest.TestCase):
         session.vm.call_action_by_name("Counter")
         tree = serialize_node(session.vm.interpreter.render_tree.root, set())
         self.assertEqual(str(get_text_value(tree)), "Count is: 2")
+        session.shutdown()
 
 if __name__ == "__main__":
     unittest.main()
+

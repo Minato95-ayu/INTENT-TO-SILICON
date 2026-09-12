@@ -1,9 +1,20 @@
 import json
-from typing import Dict, Any, List
-from compiler.frontend.ast_nodes import (
-    Node, ProgramNode, ProjectDefNode, PageDefNode, TitleDefNode, ButtonDefNode, UIServeNode,
-    ThemeNode, StateDefNode, RouteDefNode, EventNode, LayoutNode, ComponentNode, TextNode, VariableNode,
-    StorageNode, ModelNode, ServiceNode, SecurityNode
+from typing import Any, Dict
+
+from compiler.ast.nodes import (
+    ASTNode,
+    AppDeclarationNode,
+    ArrayNode,
+    BinaryOpNode,
+    ExternLibraryNode,
+    IdentifierNode,
+    LiteralNode,
+    ModelDeclNode,
+    ProgramNode,
+    RouteNode,
+    StateDeclarationNode,
+    ThemeNode,
+    WidgetNode,
 )
 
 class AppIRBuilder:
@@ -39,99 +50,104 @@ class AppIRBuilder:
 
     def build(self) -> Dict[str, Any]:
         for stmt in self.ast.statements:
-            if isinstance(stmt, ProjectDefNode):
+            if isinstance(stmt, AppDeclarationNode):
                 self.ir["project"] = stmt.name
-            
+
             elif isinstance(stmt, ThemeNode):
-                self.ir["theme_tree"] = {
+                self.ir["ui_ir"]["themes"].append({
                     "name": stmt.name,
-                    "properties": {prop["name"]: self._serialize_val(prop["value"]) for prop in stmt.properties}
-                }
-                
-            elif isinstance(stmt, StateDefNode):
-                self.ir["state_tree"].append({
-                    "name": stmt.name,
-                    "initial_value": self._serialize_val(stmt.initial_value)
+                    "properties": {name: self._serialize_val(value) for name, value in stmt.properties.items()}
                 })
-                
-            elif isinstance(stmt, RouteDefNode):
-                self.ir["route_tree"].append({
+
+            elif isinstance(stmt, StateDeclarationNode):
+                self.ir["ui_ir"]["state"].append({
+                    "name": stmt.name,
+                    "initial_value": self._serialize_val(stmt.value)
+                })
+
+            elif isinstance(stmt, RouteNode):
+                self.ir["ui_ir"]["routes"].append({
                     "path": stmt.path,
-                    "target_page": stmt.target_page
+                    "methods": [
+                        {"method": method.method, "body": [type(node).__name__ for node in method.body]}
+                        for method in stmt.methods
+                    ]
                 })
-                
-            elif isinstance(stmt, PageDefNode):
+
+            elif isinstance(stmt, WidgetNode) and stmt.widget_type.lower() == "page":
                 page_ir = {
                     "type": "page",
-                    "name": stmt.name,
+                    "name": stmt.props.get("name", "Home"),
                     "children": []
                 }
-                if stmt.children:
-                    for child in stmt.children:
-                        page_ir["children"].append(self._build_component_node(child))
-                self.ir["ui_tree"].append(page_ir)
-                
-            elif isinstance(stmt, UIServeNode):
-                self.ir["serve"] = True
+                page_ir["children"] = [self._build_component_node(child) for child in stmt.children]
+                self.ir["ui_ir"]["pages"].append(page_ir)
+
+            elif isinstance(stmt, ModelDeclNode):
+                self.ir["data_ir"]["models"].append({
+                    "name": stmt.name,
+                    "fields": [{"name": field.name, "type": field.field_type} for field in stmt.fields],
+                    "decorators": stmt.decorators,
+                })
+
+            elif isinstance(stmt, ExternLibraryNode):
+                self.ir.setdefault("interop_ir", {"libraries": []})["libraries"].append({
+                    "name": stmt.name,
+                    "provider": stmt.provider,
+                })
+
+        self._add_generator_compatibility_views()
 
         return self.ir
 
-    def _build_component_node(self, node: Node) -> Dict[str, Any]:
-        if isinstance(node, StateDefNode):
+    def _build_component_node(self, node: ASTNode) -> Dict[str, Any]:
+        if isinstance(node, StateDeclarationNode):
             # If state is defined inside a page, bubble it up to the global/page state
-            self.ir["state_tree"].append({
+            self.ir["ui_ir"]["state"].append({
                 "name": node.name,
-                "initial_value": self._serialize_val(node.initial_value)
+                "initial_value": self._serialize_val(node.value)
             })
             return {"type": "state_binding", "name": node.name}
 
-        comp_ir = {}
-        if isinstance(node, LayoutNode):
-            comp_ir["type"] = node.layout_type
-            comp_ir["category"] = "layout"
-            comp_ir["properties"] = self._build_properties(node.properties)
-            comp_ir["children"] = [self._build_component_node(c) for c in node.children]
-        elif isinstance(node, ComponentNode):
-            comp_ir["type"] = node.component_type
-            comp_ir["category"] = "component"
-            comp_ir["properties"] = self._build_properties(node.properties)
-            comp_ir["children"] = [self._build_component_node(c) for c in node.children] if node.children else []
-        elif isinstance(node, TitleDefNode):
-             comp_ir = {"type": "heading", "category": "component", "properties": {"text": node.text}, "children": []}
-        elif isinstance(node, ButtonDefNode):
-             comp_ir = {"type": "button", "category": "component", "properties": {"text": node.text}, "children": []}
-        return comp_ir
+        if not isinstance(node, WidgetNode):
+            return {"type": type(node).__name__, "properties": {}, "children": []}
 
-    def _build_properties(self, properties: list) -> Dict[str, Any]:
-        props = {}
-        for prop in properties:
-            name = prop["name"]
-            val = prop["value"]
-            if name == "event" and isinstance(val, EventNode):
-                # We could register it in event_tree or embed it. Embedding is easier for now.
-                props["on_" + val.event_type] = self._serialize_action_block(val.action_block)
-            else:
-                props[name] = self._serialize_val(val)
-        return props
+        properties = {key: self._serialize_val(value) for key, value in node.props.items()}
+        if "value_node" in node.props:
+            properties["text"] = self._serialize_val(node.props["value_node"])
 
-    def _serialize_val(self, val_node: Node) -> Any:
-        if isinstance(val_node, TextNode):
+        return {
+            "type": node.widget_type.lower(),
+            "category": "component",
+            "properties": properties,
+            "children": [self._build_component_node(child) for child in node.children],
+        }
+
+    def _serialize_val(self, val_node: Any) -> Any:
+        if isinstance(val_node, LiteralNode):
             return val_node.value
-        elif type(val_node).__name__ == 'NumberNode':
-            return val_node.value
-        elif isinstance(val_node, VariableNode):
+        if isinstance(val_node, IdentifierNode):
             return {"__bind__": val_node.name}
-        return str(val_node)
+        if isinstance(val_node, ArrayNode):
+            return [self._serialize_val(value) for value in val_node.elements]
+        if isinstance(val_node, BinaryOpNode):
+            return {
+                "left": self._serialize_val(val_node.left),
+                "operator": val_node.operator,
+                "right": self._serialize_val(val_node.right),
+            }
+        if isinstance(val_node, ASTNode):
+            return {"__node__": type(val_node).__name__}
+        return val_node
 
-    def _serialize_action_block(self, block_node: Node) -> str:
-        # Simplistic AST serialization to JS code for React generator
-        # Normally, we'd use a full backend compiler to transpile AAYU AST to JS.
-        # For now, we'll extract binary expressions for state updates.
-        code = []
-        for stmt in block_node.statements:
-            if type(stmt).__name__ == "BinaryExpressionNode" and stmt.operator == "+=":
-                code.append(f"set{stmt.left.name.capitalize()}((prev: any) => prev + {self._serialize_val(stmt.right)});")
-        return " ".join(code)
+    def _add_generator_compatibility_views(self) -> None:
+        """Expose legacy generator keys while adapters migrate to the canonical IR."""
+        ui_ir = self.ir["ui_ir"]
+        self.ir["theme_tree"] = ui_ir["themes"][0] if ui_ir["themes"] else None
+        self.ir["state_tree"] = ui_ir["state"]
+        self.ir["route_tree"] = ui_ir["routes"]
+        self.ir["ui_tree"] = ui_ir["pages"]
+        self.ir["serve"] = ui_ir["serve"]
 
     def dump_json(self) -> str:
         return json.dumps(self.build(), indent=2)

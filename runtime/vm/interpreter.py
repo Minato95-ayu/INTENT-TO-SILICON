@@ -15,7 +15,9 @@ class Interpreter:
         
     def build_stacktrace(self):
         trace = []
-        for ip, is_comp in reversed(self.vm.call_stack.stack):
+        for frame in reversed(self.vm.call_stack.frames):
+            ip = frame[0]
+            is_comp = frame[1]
             trace.append({
                 "action": "component" if is_comp else "function",
                 "ip": ip,
@@ -32,7 +34,7 @@ class Interpreter:
         handled = False
         
         if hasattr(self.vm, 'block_stack'):
-            while self.vm.block_stack.depth() > 0:
+            while len(self.vm.block_stack) > 0:
                 block = self.vm.block_stack.pop()
                 if block["type"] == "TRY":
                     while self.vm.value_stack.depth() > block["stack_depth"]:
@@ -67,7 +69,8 @@ class Interpreter:
             self.vm.debugger.check_breakpoint()
             
             opcode = self.vm.decoder.fetch8(self.vm.registers.ip)
-            print(f"[VM TRACE] IP={self.vm.registers.ip} Opcode={opcode:02X} depth={self.vm.call_stack.depth()}")
+            if self.vm.config.debug_mode:
+                print(f"[VM TRACE] IP={self.vm.registers.ip} Opcode={opcode:02X} depth={self.vm.call_stack.depth()}")
             
             # Profiler tick
             self.vm.profiler.tick(len(self.vm.heap.allocator.pool.pool) * 64)
@@ -165,10 +168,21 @@ class Interpreter:
                 self.vm.registers.ip += 3
                 name = self.vm.constant_pool[idx]
                 val = None
+                
+                # Check scopes from top to bottom
+                found = False
                 for scope in reversed(self.vm.state_scopes):
                     if name in scope:
                         val = scope[name]
+                        found = True
                         break
+                        
+                if not found:
+                    if hasattr(self.vm, 'action_addresses') and name in self.vm.action_addresses:
+                        val = name
+                    else:
+                        val = None
+                
                 self.vm.value_stack.push(val)
                 
             elif opcode == Opcode.INIT_STATE:
@@ -176,17 +190,18 @@ class Interpreter:
                 self.vm.registers.ip += 3
                 name = self.vm.constant_pool[idx]
                 val = self.vm.value_stack.pop()
-                found = False
-                for scope in reversed(self.vm.state_scopes):
-                    if name in scope:
-                        found = True
-                        break
-                if not found:
-                    self.vm.state[name] = val
+                if not self.vm.state_scopes:
+                    raise KernelError(f"state_scopes is empty at IP {self.vm.registers.ip - 3}")
+                
+                # Only initialize if not found in current scope
+                if name not in self.vm.state_scopes[-1]:
+                    self.vm.state_scopes[-1][name] = val
                 
             elif opcode == Opcode.CALL_COMPONENT:
                 target = self.vm.decoder.fetch16(self.vm.registers.ip + 1)
-                self.vm.call_stack.push((self.vm.registers.ip + 3, True))
+                # metadata for component: ret_ip, is_comp, expected_returns=0, args=1, base_stack_depth
+                base_depth = self.vm.value_stack.depth()
+                self.vm.call_stack.push((self.vm.registers.ip + 3, True, 0, 1, base_depth))
                 props = self.vm.value_stack.pop()
                 scope = {}
                 if isinstance(props, dict):
@@ -196,9 +211,24 @@ class Interpreter:
                     self.vm.state_scopes.append(scope)
                 self.vm.registers.ip = target
 
+            elif opcode == Opcode.PREPARE_CALL:
+                # Purely structural validator boundary in runtime
+                self.vm.registers.ip += 3
+
             elif opcode == Opcode.CALL:
+                # Lookback to PREPARE_CALL for metadata
+                if self.vm.registers.ip >= 3 and self.vm.decoder.fetch8(self.vm.registers.ip - 3) == Opcode.PREPARE_CALL:
+                    args = self.vm.decoder.fetch8(self.vm.registers.ip - 2)
+                    returns = self.vm.decoder.fetch8(self.vm.registers.ip - 1)
+                else:
+                    self.vm.raise_exception("Runtime security violation: Naked CALL without PREPARE_CALL")
+                    return False
+                
                 target = self.vm.decoder.fetch16(self.vm.registers.ip + 1)
-                self.vm.call_stack.push((self.vm.registers.ip + 3, False))
+                base_depth = self.vm.value_stack.depth()
+                self.vm.call_stack.push((self.vm.registers.ip + 3, False, returns, args, base_depth))
+                if hasattr(self.vm, 'state_scopes'):
+                    self.vm.state_scopes.append({})
                 self.vm.registers.ip = target
 
             elif opcode == Opcode.MARK_BLOCK_START:
@@ -216,17 +246,29 @@ class Interpreter:
                 self.vm.value_stack.push(closure)
 
             elif opcode == Opcode.BUILD_WIDGET:
-                widget_type = self.vm.decoder.fetch16(self.vm.registers.ip + 1)
+                operand = self.vm.decoder.fetch16(self.vm.registers.ip + 1)
                 self.vm.registers.ip += 3
+                
+                widget_type = (operand >> 8) & 0xFF
+                dynamic_prop_count = operand & 0xFF
+                
                 props = self.vm.value_stack.pop()
                 
-                # Resolve $STACK markers in props
+                # Consume exactly dynamic_prop_count values
+                dynamic_values = []
+                for _ in range(dynamic_prop_count):
+                    dynamic_values.append(self.vm.value_stack.pop())
+                    
+                # Re-insert into props dictionary
                 if isinstance(props, dict):
+                    props = props.copy()
                     stack_keys = [k for k, v in props.items() if v == "$STACK"]
-                    if stack_keys:
-                        props = props.copy()
+                    if len(stack_keys) == dynamic_prop_count:
                         for key in reversed(stack_keys):
-                            props[key] = self.vm.value_stack.pop()
+                            props[key] = dynamic_values.pop(0)
+                elif isinstance(props, str) and props == "__DYNAMIC__":
+                    if dynamic_prop_count == 1:
+                        props = dynamic_values.pop(0)
                 
                 from compiler.bytecode.encoder import WIDGET_TYPES
                 widget_name = next((k for k, v in WIDGET_TYPES.items() if v == widget_type), "UNKNOWN")
@@ -274,8 +316,15 @@ class Interpreter:
                 idx = self.vm.decoder.fetch16(self.vm.registers.ip + 1)
                 self.vm.registers.ip += 3
                 model_name = self.vm.value_stack.pop()
-                fields = self.vm.constant_pool[idx]
-                self.vm.database.create_model(model_name, fields)
+                payload = self.vm.constant_pool[idx]
+                if isinstance(payload, dict) and "fields" in payload:
+                    self.vm.database.create_model(
+                        model_name,
+                        payload.get("fields", []),
+                        payload.get("decorators", []),
+                    )
+                else:
+                    self.vm.database.create_model(model_name, payload)
                 
             elif opcode == Opcode.REGISTER_ROUTE:
                 idx = self.vm.decoder.fetch16(self.vm.registers.ip + 1)
@@ -320,10 +369,27 @@ class Interpreter:
                 if opcode == Opcode.RETURN_VALUE:
                     self.vm.registers.ip += 3
                 if self.vm.call_stack.depth() > 0:
-                    ret_ip, is_comp = self.vm.call_stack.pop()
+                    ret_ip, is_comp, expected_returns, args, base_depth = self.vm.call_stack.pop()
+                    
+                    if opcode == Opcode.RETURN_VALUE:
+                        if expected_returns is not None and expected_returns != 1:
+                            self.vm.raise_exception(f"Runtime ABI violation: RETURN_VALUE expected 1 return but action was declared with {expected_returns} returns")
+                            return False
+                        expected_exit_depth = base_depth - args + 1
+                    else:
+                        if expected_returns is not None and expected_returns != 0:
+                            self.vm.raise_exception(f"Runtime ABI violation: RET expected 0 returns but action was declared with {expected_returns} returns")
+                            return False
+                        expected_exit_depth = base_depth - args
+                        
+                    current_depth = self.vm.value_stack.depth()
+                    if current_depth != expected_exit_depth:
+                        self.vm.raise_exception(f"Runtime ABI violation: Stack depth mismatch on return. Expected {expected_exit_depth}, got {current_depth}")
+                        return False
+                        
+                    if hasattr(self.vm, 'state_scopes') and len(self.vm.state_scopes) > 1:
+                        self.vm.state_scopes.pop()
                     if is_comp:
-                        if hasattr(self.vm, 'state_scopes') and self.vm.state_scopes:
-                            self.vm.state_scopes.pop()
                         if self.node_stack:
                             self.node_stack.pop()
                     self.vm.registers.ip = ret_ip
@@ -367,12 +433,14 @@ class Interpreter:
                 self.vm.registers.ip += 3
                 keys = self.vm.value_stack.pop()
                 d = {}
-                print(f"[DEBUG BUILD_DICT] keys: {keys}, stack depth: {self.vm.value_stack.depth()}")
+                if self.vm.config.debug_mode:
+                    print(f"[DEBUG BUILD_DICT] keys: {keys}, stack depth: {self.vm.value_stack.depth()}")
                 for key in reversed(keys):
                     try:
                         d[key] = self.vm.value_stack.pop()
                     except Exception as e:
-                        print(f"[DEBUG BUILD_DICT ERROR] Failed popping for key: {key}. Current stack: {self.vm.value_stack.stack}")
+                        if self.vm.config.debug_mode:
+                            print(f"[DEBUG BUILD_DICT ERROR] Failed popping for key: {key}. Current stack: {self.vm.value_stack.stack}")
                         raise e
                 self.vm.value_stack.push(d)
                 
@@ -394,6 +462,13 @@ class Interpreter:
                     func = stdlib.registry.functions[func_name]
                     result = func(args, self.vm)
                     self.vm.value_stack.push(result)
+                elif isinstance(func_name, str) and (external := stdlib.registry.lookup_external(func_name)):
+                    provider, func = external
+                    if provider not in {"native", "python", "rust", "js"}:
+                        raise RuntimeError(
+                            f"External provider '{provider}' for '{func_name}' is not executable yet"
+                        )
+                    self.vm.value_stack.push(func(args, self.vm))
                 elif isinstance(func_name, str) and "." in func_name:
                     parts = func_name.split(".")
                     target_name = parts[0]
@@ -486,26 +561,26 @@ class Interpreter:
                 if not hasattr(self.vm, 'block_stack'):
                     from runtime.vm.stack import Stack
                     self.vm.block_stack = Stack(max_depth=64)
-                self.vm.block_stack.push({
+                self.vm.block_stack.append({
                     "type": "TRY",
                     "handler_ip": offset,
                     "stack_depth": self.vm.value_stack.depth()
                 })
                 
             elif opcode == Opcode.POP_EXCEPT:
-                self.vm.registers.ip += 1
-                if hasattr(self.vm, 'block_stack') and self.vm.block_stack.depth() > 0:
+                self.vm.registers.ip += 3
+                if hasattr(self.vm, 'block_stack') and len(self.vm.block_stack) > 0:
                     block = self.vm.block_stack.pop()
                     if block["type"] != "TRY":
                         raise KernelError("POP_EXCEPT called but top block is not TRY")
                         
             elif opcode == Opcode.THROW:
-                self.vm.registers.ip += 1
+                self.vm.registers.ip += 3
                 exc = self.vm.value_stack.pop()
                 self._throw_exception(exc)
                 
             elif opcode == Opcode.RETHROW:
-                self.vm.registers.ip += 1
+                self.vm.registers.ip += 3
                 exc = self.vm.value_stack.pop()
                 self._throw_exception(exc)
                 
@@ -515,16 +590,16 @@ class Interpreter:
                 if not hasattr(self.vm, 'block_stack'):
                     from runtime.vm.stack import Stack
                     self.vm.block_stack = Stack(max_depth=64)
-                self.vm.block_stack.push({
+                self.vm.block_stack.append({
                     "type": "FINALLY",
                     "handler_ip": offset,
                     "stack_depth": self.vm.value_stack.depth()
                 })
                 
             elif opcode == Opcode.EXEC_FINALLY:
-                self.vm.registers.ip += 1
+                self.vm.registers.ip += 3
                 # Execute finally logic (handled by compiler mostly, this just pops the block)
-                if hasattr(self.vm, 'block_stack') and self.vm.block_stack.depth() > 0:
+                if hasattr(self.vm, 'block_stack') and len(self.vm.block_stack) > 0:
                     block = self.vm.block_stack.pop()
                     if block["type"] != "FINALLY":
                         pass

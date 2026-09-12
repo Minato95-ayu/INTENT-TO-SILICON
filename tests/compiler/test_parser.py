@@ -19,7 +19,7 @@ class TestParser(unittest.TestCase):
         self.assertIsInstance(stmt, StateDeclarationNode)
         self.assertEqual(stmt.name, "counter")
         self.assertIsInstance(stmt.value, LiteralNode)
-        self.assertEqual(stmt.value.value, "0")
+        self.assertEqual(str(stmt.value.value), "0")
 
     def test_parse_widget(self):
         code = '''
@@ -48,3 +48,4 @@ class TestParser(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+

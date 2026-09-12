@@ -15,10 +15,10 @@ To understand the project architecture, see the ARCHITECTURE_FREEZE.md file.
 import sys
 import json
 import logging
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.ast_nodes import RecordDeclarationNode, EntityDeclarationNode, TaskNode
-from compiler.frontend.errors import AAYUSyntaxError
+from compiler.lexer.lexer import Lexer
+from compiler.parser.parser import Parser
+from compiler.ast.nodes import RecordDeclarationNode, EntityDeclarationNode, TaskNode
+from compiler.errors import AAYUSyntaxError
 
 # Set up logging to a file so it doesn't corrupt stdout (which is used for LSP)
 logging.basicConfig(filename='aayu_lsp.log', level=logging.DEBUG, 

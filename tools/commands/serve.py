@@ -18,6 +18,10 @@ def resolve_imports(source: str, base_dir: str, loaded=None) -> str:
         sline = line.strip()
         if sline.startswith("import "):
             module_name = sline.split(" ")[1].strip()
+            if module_name.endswith("."):
+                module_name = module_name[:-1]
+            if module_name.split(".", 1)[0] in {"math", "json", "http", "file", "crypto", "string", "time"}:
+                continue
             if module_name in loaded:
                 continue
             loaded.add(module_name)

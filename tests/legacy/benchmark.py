@@ -1,3 +1,6 @@
+import pytest
+pytestmark = pytest.mark.skip(reason='Obsolete API: AAYUCompiler removed in favor of IRPipeline')
+
 """
 =============================================================================
 FILE: benchmark.py
@@ -21,10 +24,10 @@ import contextlib
 
 sys.path.append(r"D:\intent-to-silicon-research\INTENT-TO-SILICON\prototype\aayu_language")
 
-from compiler.frontend.lexer import Lexer
-from compiler.frontend.parser import Parser
-from compiler.frontend.compiler import AAYUCompiler
-from vm import VirtualMachine
+from compiler.lexer.lexer import Lexer
+from compiler.parser.parser import Parser
+# # from compiler.frontend.compiler import AAYUCompiler
+from runtime.vm.vm import VirtualMachine
 from serializer import serialize, deserialize
 from run import run_file
 

@@ -1,9 +1,9 @@
 from compiler.semantic.nodes import (
-    SemanticProgramNode, SemanticStateDeclNode, SemanticLiteralNode,
+    SemanticProgramNode, SemanticStateDeclNode, SemanticLetDeclNode, SemanticLiteralNode,
     SemanticAssignmentNode, SemanticWidgetNode, SemanticImportNode,
     SemanticActionDeclNode, SemanticActionCallNode, SemanticIdentifierNode,
     SemanticIfNode, SemanticForNode, SemanticBinaryOpNode,
-    SemanticModelNode, SemanticRouteNode, SemanticReturnNode, SemanticMethodNode,
+    SemanticModelDeclNode, SemanticRouteNode, SemanticReturnNode, SemanticMethodNode,
     SemanticNode
 )
 from compiler.semantic.errors import TypeError
@@ -20,7 +20,10 @@ class TypeChecker:
         if node is None:
             return
             
-        if isinstance(node, SemanticStateDeclNode):
+        if isinstance(node, SemanticLetDeclNode):
+            self._check_node(node.value)
+            
+        elif isinstance(node, SemanticStateDeclNode):
             self._check_node(node.value)
             
         elif isinstance(node, SemanticAssignmentNode):
@@ -120,3 +123,4 @@ class TypeChecker:
         elif hasattr(node, "statements"):
             for stmt in getattr(node, "statements"):
                 self._check_node(stmt)
+

@@ -1,8 +1,7 @@
 import json
-from typing import Dict, Any, List
-from compiler.frontend.ast_nodes import (
-    ProgramNode, ProjectDefNode, PageDefNode, TitleDefNode, ButtonDefNode, UIServeNode
-)
+from typing import Any, Dict
+
+from compiler.ast.nodes import AppDeclarationNode, ProgramNode, WidgetNode
 
 class UIIRBuilder:
     """
@@ -21,39 +20,47 @@ class UIIRBuilder:
         current_page = None
 
         for stmt in self.ast.statements:
-            if isinstance(stmt, ProjectDefNode):
+            if isinstance(stmt, AppDeclarationNode):
                 self.ir["project"] = stmt.name
-            
-            elif isinstance(stmt, PageDefNode):
+
+            elif isinstance(stmt, WidgetNode) and stmt.widget_type.lower() == "page":
                 current_page = {
-                    "name": stmt.name,
+                    "name": stmt.props.get("name", "Home"),
                     "components": []
                 }
                 self.ir["pages"].append(current_page)
-                
-            elif isinstance(stmt, TitleDefNode):
-                if current_page is None:
-                    # Default page if none specified
-                    current_page = {"name": "Home", "components": []}
-                    self.ir["pages"].append(current_page)
-                current_page["components"].append({
-                    "type": "title",
-                    "text": stmt.text
-                })
-                
-            elif isinstance(stmt, ButtonDefNode):
+
+                current_page["components"].extend(
+                    self._serialize_widget(child) for child in stmt.children
+                )
+
+            elif isinstance(stmt, WidgetNode):
                 if current_page is None:
                     current_page = {"name": "Home", "components": []}
                     self.ir["pages"].append(current_page)
-                current_page["components"].append({
-                    "type": "button",
-                    "text": stmt.text
-                })
-                
-            elif isinstance(stmt, UIServeNode):
+                current_page["components"].append(self._serialize_widget(stmt))
+
+            elif type(stmt).__name__ == "RunNode":
                 self.ir["serve"] = True
 
         return self.ir
+
+    def _serialize_widget(self, widget: WidgetNode) -> Dict[str, Any]:
+        properties = {key: self._serialize_value(value) for key, value in widget.props.items()}
+        if "value_node" in widget.props:
+            properties["text"] = self._serialize_value(widget.props["value_node"])
+        return {
+            "type": widget.widget_type.lower(),
+            "properties": properties,
+            "children": [self._serialize_widget(child) for child in widget.children],
+        }
+
+    def _serialize_value(self, value: Any) -> Any:
+        if hasattr(value, "value"):
+            return value.value
+        if hasattr(value, "name"):
+            return {"__bind__": value.name}
+        return value
 
     def dump_json(self) -> str:
         return json.dumps(self.build(), indent=2)

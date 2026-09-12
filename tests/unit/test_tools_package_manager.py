@@ -1,27 +1,35 @@
 import unittest
 import os
 import tempfile
-from tools.package_manager import AAYUPackageManager
+import shutil
+from tools.package_manager.manager import PackageManager
 
 class TestPackageManager(unittest.TestCase):
+    def setUp(self):
+        self.temp_dir = tempfile.TemporaryDirectory(ignore_cleanup_errors=True)
+        self.old_cwd = os.getcwd()
+        os.chdir(self.temp_dir.name)
+        
+    def tearDown(self):
+        os.chdir(self.old_cwd)
+        try:
+            self.temp_dir.cleanup()
+        except:
+            pass
+
     def test_init(self):
-        with tempfile.TemporaryDirectory() as temp_dir:
-            os.chdir(temp_dir)
-            pm = AAYUPackageManager()
-            pm.init_project("TestProject")
-            self.assertTrue(os.path.exists("aayu.toml"))
+        pm = PackageManager(root_dir=".", mock_home=self.temp_dir.name)
+        pm.init()
+        self.assertTrue(os.path.exists("aayu.json"))
             
     def test_install(self):
-        with tempfile.TemporaryDirectory() as temp_dir:
-            os.chdir(temp_dir)
-            pm = AAYUPackageManager()
-            pm.init_project("TestProject")
-            # Mocking install
-            # Just calling it to see if it runs
-            try:
-                pm.install("dummy_package")
-            except Exception:
-                pass
+        pm = PackageManager(root_dir=".", mock_home=self.temp_dir.name)
+        pm.init()
+        # Mocking install
+        try:
+            pm.install("dummy_package")
+        except Exception:
+            pass
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -1,5 +1,5 @@
 from compiler.ast.nodes import (
-    ProgramNode, StateDeclarationNode, LiteralNode,
+    ProgramNode, StateDeclarationNode, LetDeclarationNode, LiteralNode,
     AssignmentNode, WidgetNode, ImportNode,
     ActionDeclarationNode, ActionCallNode, IdentifierNode,
     AppDeclarationNode, RunNode, IfNode, ForNode, BinaryOpNode,
@@ -11,7 +11,7 @@ from compiler.ast.nodes import (
 from compiler.semantic.symbols import SymbolTable, Symbol
 from compiler.semantic.errors import SemanticError
 from compiler.semantic.nodes import (
-    SemanticProgramNode, SemanticStateDeclNode, SemanticLiteralNode,
+    SemanticProgramNode, SemanticStateDeclNode, SemanticLetDeclNode, SemanticLiteralNode,
     SemanticAssignmentNode, SemanticWidgetNode, SemanticImportNode,
     SemanticActionDeclNode, SemanticActionCallNode, SemanticIdentifierNode,
     SemanticIfNode, SemanticForNode, SemanticBinaryOpNode,
@@ -29,6 +29,42 @@ class SemanticAnalyzer:
         self.current_scope = self.global_scope
         self.visiting_modules = visiting_modules or set()
         self.asset_registry = asset_registry or {}
+        self._init_stdlib()
+
+    def _init_stdlib(self):
+        # Inject core stdlib functions so they pass resolution
+        builtins = [
+            ("print", -1),
+            ("HTTP.get", 1), ("HTTP.post", 2),
+            ("file::read", 1), ("file::write", 2),
+            ("Regex.match", 2),
+            ("json::parse", 1), ("json::stringify", 1),
+            ("Storage.insert", 2), ("Storage.find", 2),
+            ("len", 1), ("append", 2), ("push", 2), ("remove", 2), ("has", 2), ("keys", 1), ("values", 1), ("typeof", 1), ("db::query", 1), ("auth::login", 2),
+            ("math::sin", 1), ("math::cos", 1), ("math::tan", 1), ("math::sqrt", 1), ("math::pow", 2),
+            ("math::abs", 1), ("math::round", 1), ("math::min", 2), ("math::max", 2),
+            ("math::floor", 1), ("math::ceil", 1)
+        ]
+        for name, arity in builtins:
+            sym = Symbol(name, "function")
+            sym.signature_args = arity
+            self.global_scope.define(sym)
+
+                # Inject true, false, null constants
+        sym_true = Symbol("true", "boolean")
+        sym_true.is_constant = True
+        sym_true.data_type = "Boolean"
+        self.global_scope.define(sym_true)
+
+        sym_false = Symbol("false", "boolean")
+        sym_false.is_constant = True
+        sym_false.data_type = "Boolean"
+        self.global_scope.define(sym_false)
+
+        sym_null = Symbol("null", "Null")
+        sym_null.is_constant = True
+        sym_null.data_type = "Null"
+        self.global_scope.define(sym_null)
 
     def _analyze_if(self, node: IfNode):
         condition = self._analyze_node(node.condition)
@@ -110,7 +146,9 @@ class SemanticAnalyzer:
 
 
     def _analyze_node(self, node):
-        if isinstance(node, StateDeclarationNode):
+        if isinstance(node, LetDeclarationNode):
+            return self._analyze_let_decl(node)
+        elif isinstance(node, StateDeclarationNode):
             return self._analyze_state_decl(node)
         elif isinstance(node, AssignmentNode):
             return self._analyze_assignment(node)
@@ -204,6 +242,22 @@ class SemanticAnalyzer:
             raise SemanticError(f"Unknown node type: {type(node).__name__}", getattr(node, 'line', 0), getattr(node, 'column', 0))
 
     def _analyze_action_decl(self, node: ActionDeclarationNode):
+        if self.current_scope.resolve(node.name) is not None:
+            raise SemanticError(f"Duplicate declaration of '{node.name}'", node.line, node.column)
+        sym = Symbol(node.name, "function")
+        sym.signature_args = len(node.args)
+        self.current_scope.define(sym)
+
+        # Create lexical scope for the function body
+        parent_scope = self.current_scope
+        self.current_scope = SymbolTable(parent=parent_scope)
+        
+        # Inject arguments into local scope
+        for arg_name in node.args:
+            arg_sym = Symbol(arg_name, "local")
+            arg_sym.is_parameter = True
+            self.current_scope.define(arg_sym)
+
         statements = []
         for stmt in node.statements:
             statements.append(self._analyze_node(stmt))
@@ -213,8 +267,12 @@ class SemanticAnalyzer:
         for d in getattr(node, "decorators", []):
             sem_decorators.append(SemanticDecoratorNode(name=d.name, args=d.args))
             
+        # Restore scope
+        action_scope = self.current_scope
+        self.current_scope = parent_scope
+
         return SemanticActionDeclNode(
-            line=node.line, column=node.column, scope=self.current_scope,
+            line=node.line, column=node.column, scope=action_scope,
             name=node.name, statements=statements, args=node.args,
             decorators=sem_decorators
         )
@@ -235,6 +293,14 @@ class SemanticAnalyzer:
                 widget_type=node.name, props=props, children=[]
             )
             
+        sym = self.current_scope.resolve(node.name)
+        if sym is None:
+            raise SemanticError(f"Undeclared function '{node.name}'", node.line, node.column)
+        if sym.symbol_type != "function":
+            raise SemanticError(f"Identifier '{node.name}' is not a function", node.line, node.column)
+        if sym.signature_args != -1 and sym.signature_args != len(args):
+            raise SemanticError(f"Function '{node.name}' expects {sym.signature_args} arguments, but got {len(args)}", node.line, node.column)
+
         return SemanticActionCallNode(
             line=node.line, column=node.column, scope=self.current_scope,
             name=node.name, args=args
@@ -264,9 +330,27 @@ class SemanticAnalyzer:
                 line=node.line, column=node.column, scope=self.current_scope,
                 value=css_var, type_name="String"
             )
+        if self.current_scope.resolve(node.name.split('.')[0]) is None:
+            raise SemanticError(f"Undeclared identifier '{node.name}'", node.line, node.column)
         return SemanticIdentifierNode(
             line=node.line, column=node.column, scope=self.current_scope,
             name=node.name
+        )
+
+    def _analyze_let_decl(self, node: LetDeclarationNode):
+        if self.current_scope.resolve(node.name) is not None:
+            raise SemanticError(f"Duplicate declaration of '{node.name}'", node.line, node.column)
+
+        sym = Symbol(node.name, "local")
+        self.current_scope.define(sym)
+
+        val_node = self._analyze_node(node.value)
+        return SemanticLetDeclNode(
+            line=node.line,
+            column=node.column,
+            scope=self.current_scope,
+            name=node.name,
+            value=val_node
         )
 
     def _analyze_state_decl(self, node: StateDeclarationNode):
@@ -286,9 +370,8 @@ class SemanticAnalyzer:
         )
 
     def _analyze_assignment(self, node: AssignmentNode):
-        if self.current_scope.resolve(node.target) is None:
-            sym = Symbol(node.target, "local")
-            self.current_scope.define(sym)
+        if "." not in node.target and self.current_scope.resolve(node.target) is None:
+            raise SemanticError(f"Undeclared identifier '{node.target}'", node.line, node.column)
             
         val_node = self._analyze_node(node.value)
         return SemanticAssignmentNode(
@@ -478,11 +561,12 @@ class SemanticAnalyzer:
         
         catch_block = []
         if node.catch_block:
-            self._enter_scope()
+            prev = self.current_scope
+            self.current_scope = SymbolTable(parent=prev)
             if node.catch_var:
                 self.current_scope.define(Symbol(node.catch_var, "Any"))
             catch_block = [self._analyze_node(stmt) for stmt in node.catch_block]
-            self._exit_scope()
+            self.current_scope = prev
             
         finally_block = []
         if node.finally_block:
@@ -503,3 +587,15 @@ class SemanticAnalyzer:
     def _analyze_rethrow(self, node: RethrowNode):
         from compiler.semantic.nodes import SemanticRethrowNode
         return SemanticRethrowNode(line=node.line, column=node.column, scope=self.current_scope)
+
+
+
+
+
+
+
+
+
+
+
+

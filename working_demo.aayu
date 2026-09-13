@@ -1,9 +1,0 @@
-# working_demo.aayu
-let version = "AAYU Full Stack is Live!"
-print(version)
-
-route "/api"
-    get
-        return "Hello from AAYU Backend API! Your Server is running."
-    end
-end

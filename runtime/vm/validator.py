@@ -124,6 +124,7 @@ class Validator:
             elif opcode == Opcode.OP_ASYNC_CALL:
                 num_args = (bytecode[ip+1] << 8) | bytecode[ip+2]
                 new_depth -= num_args
+                new_depth += 1  # OP_ASYNC_CALL pushes a result
             elif opcode in (Opcode.DECLARE_THEME, Opcode.SET_THEME):
                 new_depth -= 1
             elif opcode in (Opcode.SET_BINDING, Opcode.DECLARE_VALIDATION, Opcode.SET_ANIMATION, Opcode.DECLARE_LIFECYCLE):

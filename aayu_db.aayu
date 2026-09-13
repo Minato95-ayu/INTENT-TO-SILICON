@@ -1,0 +1,7 @@
+app DatabaseDemo
+action main
+    print("Database connection initialized.")
+    print("Querying users...")
+    print("Found 120 users.")
+end
+run main

@@ -1,0 +1,6 @@
+app UIDemo
+action main
+    print("UI rendering initialized.")
+    print("Waiting for user input...")
+end
+run main

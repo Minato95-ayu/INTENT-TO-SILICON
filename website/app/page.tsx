@@ -288,7 +288,7 @@ export default function HomePage() {
             {/* Install command */}
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
               <div className="flex-1 max-w-md bg-[#0a0a0a] border border-white/10 rounded-xl px-5 py-3.5 flex items-center justify-between group hover:border-purple-500/40 transition-colors">
-                <code className="text-sm text-green-400 font-mono">pip install aayu-lang</code>
+                <code className="text-sm text-green-400 font-mono">git clone ... && pip install -e .</code>
                 <button onClick={handleCopy} className="text-zinc-500 hover:text-white transition-colors ml-3">
                   {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
                 </button>
@@ -662,7 +662,7 @@ export default function HomePage() {
           <div className="bg-black border border-white/10 rounded-xl p-6 max-w-lg mx-auto text-left font-mono text-sm mb-10 space-y-3">
             <div className="flex items-center gap-3">
               <span className="text-zinc-600 select-none">$</span>
-              <span className="text-green-400">pip install aayu-lang</span>
+              <span className="text-green-400">git clone ... && pip install -e .</span>
             </div>
             <div className="flex items-center gap-3">
               <span className="text-zinc-600 select-none">$</span>
@@ -702,7 +702,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4 max-w-5xl">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
-              { value: "v1.0.0", label: "Latest Release" },
+              { value: "v1.1.0", label: "Latest Release" },
               { value: "8", label: "Stdlib Modules" },
               { value: "0", label: "Dependencies" },
               { value: "12ms", label: "Avg Compile" },

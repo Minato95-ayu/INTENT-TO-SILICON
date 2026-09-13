@@ -158,14 +158,18 @@ def handle(args):
             renderer = WebRenderer(session_manager, project_dir=project_dir, port=3000)
         elif renderer_type == "desktop":
             if backend == "tkinter":
-                from runtime.renderers.tkinter_renderer import TkinterRenderer
-                renderer = TkinterRenderer(event_queue)
+                if "--ui" in args:
+                    from runtime.renderers.tkinter_renderer import TkinterRenderer
+                    renderer = TkinterRenderer(event_queue)
+                else:
+                    renderer = None
             else:
                 raise ValueError(f"Unknown backend: {backend}")
         else:
             raise ValueError(f"Unknown renderer: {renderer_type}")
             
-        renderer.initialize()
+        if renderer:
+            renderer.initialize()
         
         # Render Pipeline Components
         layout_engine = LayoutEngine(800, 600)
@@ -269,47 +273,52 @@ def handle(args):
             else:
                 perf_metrics["re_render_times"].append(render_duration)
 
-        # Initial render
-        render_pass()
+        if not renderer:
+            # Headless mode, no UI to render, skip frame loop
+            pass
+        else:
+            # --- First Render Pass ---
+            render_pass()
 
         if renderer_type == "console":
             renderer.shutdown()
             return
         
         # Main Event Loop
-        running = True
-        while running:
-            try:
-                renderer.process_events()
-            except Exception:
-                break
-                
-            # Process AAYU events
-            while event_queue.has_events():
-                event = event_queue.pop()
-                if hasattr(event, "action_name"):
-                    action_name = event.action_name
-                    if action_name == "sys_nav_back":
-                        vm.router.back()
-                    elif "::" in action_name:
-                        instance_id, action_name = action_name.split("::")
-                        if instance_id in vm.state_scopes_map:
-                            vm.state_scopes.append(vm.state_scopes_map[instance_id])
+        if renderer:
+            running = True
+            while running:
+                try:
+                    renderer.process_events()
+                except Exception:
+                    break
+                    
+                # Process AAYU events
+                while event_queue.has_events():
+                    event = event_queue.pop()
+                    if hasattr(event, "action_name"):
+                        action_name = event.action_name
+                        if action_name == "sys_nav_back":
+                            vm.router.back()
+                        elif "::" in action_name:
+                            instance_id, action_name = action_name.split("::")
+                            if instance_id in vm.state_scopes_map:
+                                vm.state_scopes.append(vm.state_scopes_map[instance_id])
+                                vm.call_action_by_name(action_name)
+                                vm.execute()
+                                vm.state_scopes.pop()
+                        else:
                             vm.call_action_by_name(action_name)
                             vm.execute()
-                            vm.state_scopes.pop()
-                    else:
-                        vm.call_action_by_name(action_name)
-                        vm.execute()
-                    # Instead of immediate render, request a frame!
-                    scheduler.schedule_render()
-                elif hasattr(event, "target_state"):
-                    vm.state[event.target_state] = event.value
-                    scheduler.schedule_render()
-                    
-            scheduler.tick(render_pass)
-            
-        renderer.shutdown()
+                        # Instead of immediate render, request a frame!
+                        scheduler.schedule_render()
+                    elif hasattr(event, "target_state"):
+                        vm.state[event.target_state] = event.value
+                        scheduler.schedule_render()
+                        
+                scheduler.tick(render_pass)
+                
+            renderer.shutdown()
         
         current, peak = tracemalloc.get_traced_memory()
         tracemalloc.stop()

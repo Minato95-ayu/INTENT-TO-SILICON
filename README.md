@@ -1,124 +1,120 @@
-﻿<div align="center">
-  <h1>AAYU Programming Language</h1>
-  <p><b>Intent To Silicon: One Language to Rule the Full-Stack.</b></p>
-  <p>
-    <a href="https://intent-to-silicon.vercel.app/">Official Website</a> &bull;
-    <a href="https://intent-to-silicon.vercel.app/docs">Documentation</a> &bull;
-    <a href="https://intent-to-silicon.vercel.app/learn">Learn in 15 Min</a> &bull;
-    <a href="https://intent-to-silicon.vercel.app/examples">Examples</a>
-  </p>
-</div>
+# AAYU — Intent-to-Silicon Programming Language
 
----
+> Write your intent. AAYU compiles it to silicon-ready bytecode.
 
-AAYU is a revolutionary, AI-native software engineering platform and programming language. It is designed to let **Students, Developers, Engineers, and Tech Companies** focus entirely on building projects without the friction of learning multiple languages.
+AAYU is a **single-file full-stack programming language** with built-in Database, Backend Server, Frontend UI, and AI/ML — all zero-dependency, zero-config.
 
-With AAYU, you can build **everything** in one file, using **100% pure AAYU code**.
-- **No HTML**
-- **No CSS**
-- **No JavaScript**
-- **No Python/C++ boilerplate**
+## ✨ What Makes AAYU Different
 
-The AAYU compiler automatically handles your Backend Server, Database Models, Frontend UI/UX, and Styling.
+- **Single-file full-stack**: Database models, API routes, UI pages, and AI/ML — all in one `.aayu` file
+- **Zero dependencies**: No npm, no pip, no package managers needed for core features
+- **Real compiler pipeline**: Lexer → Parser → AST → HIR → MIR → LIR → Bytecode → Stack-based VM
+- **Memory safe**: Mark-and-sweep garbage collector with reference counting
+- **Built-in database**: SQLite with schema engine, query planner, transaction manager, migration engine
+- **Built-in web server**: REST API routes with middleware, auth, and session management
+- **Built-in UI**: Declarative widget-tree (Flutter-like) with reactive state
+- **AI/ML stdlib**: Native model training, inference, clustering — no external libraries
 
-## Why AAYU is Perfect for Companies and Students
+## 🚀 Quick Start
 
-- **All-In-One Full-Stack**: Define your database schema (`model`), backend endpoints (`route`), and frontend UI (`Page`) in the same file seamlessly.
-- **Zero Boilerplate: AAYU applications minimize framework boilerplate. The compiler/runtime manages its own state and dependencies.
-- **Colorful Native UI/UX**: Style your UI directly via widget properties (`backgroundColor`, `shadow`, `borderRadius`) without writing a single line of CSS.
-- **Built-in State**: State management is a first-class citizen. No hooks, stores, or providers needed.
+```bash
+# Clone and install
+git clone https://github.com/Minato95-ayu/INTENT-TO-SILICON.git
+cd INTENT-TO-SILICON
+pip install -e .
 
----
+# Run your first program
+aayu run hello.aayu
 
-## The Power of AAYU (AAYUGram Example)
+# Run with web server
+aayu run aayugram.aayu --web
+```
 
-Want to see what AAYU can do? Here is a mini Instagram clone built entirely in AAYU. It features a Database Model, Backend Route, Actions, and a beautifully styled UI—all in under 50 lines of code!
+## 📝 Hello World
+
+```aayu
+app Hello
+action main
+    print("Hello, AAYU!")
+end
+run main
+```
+
+## 🏗️ Full-Stack Example (AAYUGram)
 
 ```aayu
 app AAYUGram
 
-# 1. Database Model
-model Post {
-    username: String
-    content: String
-    likes: Int
-}
+model Post
+    id Int
+    content String
+    likes Int = 0
+end
 
-# 2. State variables
-state appName = "AAYUGram"
-
-# 3. Backend API Route
 route "/api/feed"
     get
-        return "{'status': 'success', 'posts': []}"
+        let posts = Post.all()
+        respond(posts)
     end
 end
 
-# 4. Logic / Actions
-action createPost
-    print("New Post Created!")
-end
-
-# 5. Colorful UI / UX (100% Pure AAYU, NO CSS/HTML)
 Page Home
-    # Navbar
-    Row backgroundColor="#FFFFFF" padding="15px" shadow="true"
-        Heading appName color="#E1306C"
-    end
-    
-    # Main Feed Container
-    Column padding="20px"
-        Form id="newPost" backgroundColor="#FFFFFF" padding="20px" borderRadius="10px" shadow="true" margin="10px"
-            Heading "Create Post" color="#262626"
-            Input placeholder="What's on your mind?" name="content"
-            Button "Share to AAYUGram" onClick="createPost" backgroundColor="#0095F6" color="#FFFFFF" borderRadius="5px"
-        end
+    Column
+        Text("Welcome to AAYUGram")
+        Button("Create Post", onClick: createPost)
     end
 end
+
+run Home
 ```
 
-To run this:
-```bash
-python -m tools.cli run aayugram.aayu --web
+## 🏛️ Architecture
+
 ```
-Then visit `http://localhost:3000` to see your fully colorful, full-stack app in action!
-
----
-
-## Quick Start
-
-### 1. Installation
-
-Install AAYU globally:
-
-```bash
-Download AayuInstaller.exe from the official website (or build from source with `pip install -e .`)
-```
-
-Verify the installation:
-
-```bash
-aayu --version
-aayu doctor
+┌─────────────────────────────────────────┐
+│              AAYU Source (.aayu)         │
+├──────┬──────┬──────┬──────┬─────────────┤
+│Lexer │Parser│ AST  │Seman-│   IR        │
+│      │      │      │tic   │Pipeline     │
+├──────┴──────┴──────┴──────┼─────────────┤
+│         HIR → MIR → LIR  │  Bytecode   │
+├───────────────────────────┼─────────────┤
+│     Stack-based VM        │   GC Heap   │
+├───────────────────────────┴─────────────┤
+│  stdlib: math | ai | ml | db | http     │
+└─────────────────────────────────────────┘
 ```
 
-### 2. Create Your First Project
+## 🧪 Testing
 
 ```bash
-aayu new my_project
-cd my_project
-aayu run
+# Run all tests
+python -m pytest tests/ -v
+
+# Run compiler tests
+python -m pytest tests/compiler/ -v
 ```
 
----
+## 📊 Project Status
 
-## For Developers & Companies
+**Current Version**: v1.1.0
 
-AAYU enables companies to prototype rapidly and scale easily. It gives students an intuitive way to understand the full lifecycle of software development—from database to DOM—without getting bogged down by 10 different frameworks. 
+| Feature | Status |
+|---------|--------|
+| Compiler Pipeline (Lexer → LIR) | ✅ Working |
+| Stack-based VM + Bytecode | ✅ Working |
+| Garbage Collector (Mark & Sweep) | ✅ Working |
+| Database / Storage Engine | ✅ Working |
+| Web Server / REST Routes | ✅ Working |
+| CLI Tools (`aayu run`, `aayu doctor`) | ✅ Working |
+| Frontend UI (Declarative Widgets) | 🔨 In Progress |
+| AI/ML Standard Library | 🔨 In Progress |
+| Package Manager (APM) | 📋 Planned |
 
-Visit [**Intent To Silicon**](https://intent-to-silicon.vercel.app/) to join the movement, download the compiler, and start building the future of software today!
+## 📄 License
 
-## License
+MIT License — see [LICENSE](LICENSE)
 
-AAYU is licensed under the MIT License. See [LICENSE](LICENSE) for more information.
+## 🤝 Contributing
 
+See [CONTRIBUTING.md](CONTRIBUTING.md)

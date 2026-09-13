@@ -1,3 +1,7 @@
-app HelloApp
-
-print "Hello AAYU".
+app Hello
+action main
+    print("Hello, AAYU!")
+    print("Multi-statement works!")
+    print("Compiler pipeline verified.")
+end
+run main

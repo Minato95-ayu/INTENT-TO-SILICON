@@ -47,6 +47,9 @@ class Opcode:
     REGISTER_ROUTE = 0x61
     RETURN_VALUE = 0x62
     CHECK_AUTH = 0x63
+    DB_INSERT = 0x64
+    DB_FIND = 0x65
+    RESPOND = 0x66
     
     # UI Engine
     SET_THEME = 0x70

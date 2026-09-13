@@ -42,6 +42,9 @@ class Interpreter:
         self.dispatch_table[Opcode.CREATE_MODEL] = self.op_CREATE_MODEL
         self.dispatch_table[Opcode.REGISTER_ROUTE] = self.op_REGISTER_ROUTE
         self.dispatch_table[Opcode.CHECK_AUTH] = self.op_CHECK_AUTH
+        self.dispatch_table[Opcode.DB_INSERT] = self.op_DB_INSERT
+        self.dispatch_table[Opcode.DB_FIND] = self.op_DB_FIND
+        self.dispatch_table[Opcode.RESPOND] = self.op_RESPOND
         self.dispatch_table[Opcode.RETURN_VALUE] = self.op_RETURN_VALUE
         self.dispatch_table[Opcode.RET] = self.op_RET
         self.dispatch_table[Opcode.DECLARE_THEME] = self.op_DECLARE_THEME
@@ -671,3 +674,51 @@ class Interpreter:
             if block['type'] != 'FINALLY':
                 pass
         return True
+    def op_DB_INSERT(self, frame, instruction):
+        import sqlite3
+        import json
+        model_name = self.vm.constants[instruction.arg1]
+        fields_count = instruction.arg2
+        fields = {}
+        for _ in range(fields_count):
+            val = frame.stack.pop()
+            key = frame.stack.pop()
+            fields[key] = val
+        
+        # Actual Database Hook (SQLite)
+        try:
+            conn = sqlite3.connect("aayu_db.sqlite")
+            c = conn.cursor()
+            cols = ", ".join(fields.keys())
+            placeholders = ", ".join(["?"] * len(fields))
+            vals = tuple(fields.values())
+            c.execute(f"CREATE TABLE IF NOT EXISTS {model_name} (id INTEGER PRIMARY KEY AUTOINCREMENT, {cols})")
+            c.execute(f"INSERT INTO {model_name} ({cols}) VALUES ({placeholders})", vals)
+            conn.commit()
+            conn.close()
+            print(f"[VM-DB] Successfully inserted into {model_name}: {fields}")
+        except Exception as e:
+            print(f"[VM-DB-ERROR] Insert failed: {e}")
+        return ResultStatus.OK
+
+    def op_DB_FIND(self, frame, instruction):
+        import sqlite3
+        model_name = self.vm.constants[instruction.arg1]
+        try:
+            conn = sqlite3.connect("aayu_db.sqlite")
+            c = conn.cursor()
+            c.execute(f"SELECT * FROM {model_name}")
+            rows = c.fetchall()
+            conn.close()
+            # Push result to stack
+            frame.stack.append(rows)
+            print(f"[VM-DB] Found {len(rows)} records in {model_name}")
+        except Exception as e:
+            frame.stack.append([])
+        return ResultStatus.OK
+
+    def op_RESPOND(self, frame, instruction):
+        val = frame.stack.pop()
+        print(f"[VM-SERVER] Responding with: {val}")
+        frame.stack.append(val)
+        return ResultStatus.OK

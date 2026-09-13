@@ -297,7 +297,12 @@ class WebRendererHandler(BaseHTTPRequestHandler):
                 self.end_headers()
             
     def log_message(self, format, *args):
-        pass
+        import sys
+        sys.stderr.write(format % args + "\\n")
+        
+    def log_error(self, format, *args):
+        import sys
+        sys.stderr.write("ERROR: " + format % args + "\\n")
 
 
 class WebRenderer:
@@ -421,6 +426,12 @@ function createElementFromNode(node) {
         if (t === "passwordinput") el.type = "password";
         el.placeholder = node.props.placeholder || "";
         el.className = "widget-input";
+        if (node.props.name) el.name = node.props.name;
+        if (node.props.required) el.required = true;
+        if (node.props.minLength) el.minLength = node.props.minLength;
+        if (node.props.maxLength) el.maxLength = node.props.maxLength;
+        if (node.props.pattern) el.pattern = node.props.pattern;
+        
         if (node.props.value) el.value = node.props.value;
         
         if (node.props.bind) {
@@ -450,6 +461,36 @@ function createElementFromNode(node) {
         el.style.height = "1px";
         el.style.width = "100%";
         el.style.backgroundColor = node.props.color || "#ccc";
+    } else if (t === "form") {
+        el = document.createElement("form");
+        el.className = "widget-form";
+        el.onsubmit = (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            if (node.props.onSubmit) {
+                // Here we would ideally send the data payload.
+                // For now, AAYU events only take string values. We serialize it.
+                sendEvent("ACTION", node.props.onSubmit, JSON.stringify(data));
+            }
+        };
+    } else if (t === "fileinput") {
+        el = document.createElement("input");
+        el.type = "file";
+        el.className = "widget-fileinput";
+        if (node.props.name) el.name = node.props.name;
+        if (node.props.accept) el.accept = node.props.accept;
+        el.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (re) => {
+                const base64 = re.target.result;
+                if (node.props.bind) sendEvent("INPUT", node.props.bind, base64);
+                if (node.props.onUpload) sendEvent("ACTION", node.props.onUpload, base64);
+            };
+            reader.readAsDataURL(file);
+        };
     } else if (t === "row") {
         el = document.createElement("div");
         el.className = "widget-row";
@@ -498,6 +539,21 @@ function createElementFromNode(node) {
         node.children.forEach(child => {
             el.appendChild(createElementFromNode(child));
         });
+    }
+    
+    // ARIA Attributes mapping
+    if (node.props) {
+        for (const key in node.props) {
+            if (key.startsWith("aria-")) {
+                el.setAttribute(key, node.props[key]);
+            } else if (key === "role") {
+                el.setAttribute("role", node.props[key]);
+            } else if (key === "tabIndex") {
+                el.tabIndex = node.props[key];
+            } else if (key === "alt") {
+                el.alt = node.props[key];
+            }
+        }
     }
     
     el._vnode = node; 
@@ -612,17 +668,25 @@ window.addEventListener('popstate', (event) => {
     sendEvent("ACTION", "sys_nav_back", "");
 });
 
-const evtSource = new EventSource('/api/stream');
-evtSource.onmessage = function(event) {
-    const data = JSON.parse(event.data);
-    if (data.type === 'theme') {
-        for (const key in data.cssVars) {
-            document.documentElement.style.setProperty(key, data.cssVars[key]);
+function connectSSE() {
+    const evtSource = new EventSource('/api/stream');
+    evtSource.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        if (data.type === 'theme') {
+            for (const key in data.cssVars) {
+                document.documentElement.style.setProperty(key, data.cssVars[key]);
+            }
+            return;
         }
-        return;
-    }
-    renderTree(data);
-};
+        renderTree(data);
+    };
+    evtSource.onerror = function(err) {
+        console.error("SSE connection lost. Reconnecting in 3 seconds...", err);
+        evtSource.close();
+        setTimeout(connectSSE, 3000);
+    };
+}
+connectSSE();
 ''')
             
         from runtime.ui.theme import ThemeManager

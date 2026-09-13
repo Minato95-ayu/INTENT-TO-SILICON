@@ -116,44 +116,9 @@ class AAYUPackageManager:
         return self._read_toml(index_path)
 
     def _resolve_graph(self, root_deps: Dict[str, str]) -> Dict[str, str]:
-        resolved = {}
-        visited = set()
-        queue = list(root_deps.items())
-        
-        while queue:
-            pkg_name, req_ver = queue.pop(0)
-            if pkg_name in visited:
-                continue
-                
-            idx = self._get_registry_index(pkg_name)
-            if not idx or "versions" not in idx:
-                print(f"Error: Package '{pkg_name}' not found in registry.")
-                sys.exit(1)
-                
-            versions = idx["versions"]
-            
-            # Simple resolution: pick required version or latest if '*'
-            target_ver = req_ver
-            if target_ver == "*":
-                target_ver = list(versions.keys())[-1] # Simplistic sort
-            
-            if target_ver not in versions:
-                print(f"Error: Version '{target_ver}' for '{pkg_name}' not found.")
-                sys.exit(1)
-                
-            resolved[pkg_name] = target_ver
-            visited.add(pkg_name)
-            
-            # Queue nested dependencies
-            pkg_meta = versions[target_ver]
-            if "dependencies" in pkg_meta:
-                for nested_pkg, nested_ver in pkg_meta["dependencies"].items():
-                    if nested_pkg not in resolved:
-                        queue.append((nested_pkg, nested_ver))
-                    elif resolved[nested_pkg] != nested_ver and nested_ver != "*":
-                        print(f"Conflict: {pkg_name} requires {nested_pkg}@{nested_ver} but {resolved[nested_pkg]} is selected.")
-                        
-        return resolved
+        from tools.pubgrub import PubGrubResolver
+        resolver = PubGrubResolver(self._get_registry_index)
+        return resolver.resolve(root_deps)
 
     def _verify_hash(self, filepath: str, expected_hash: str) -> bool:
         sha256 = hashlib.sha256()
@@ -162,7 +127,15 @@ class AAYUPackageManager:
                 sha256.update(block)
         return sha256.hexdigest() == expected_hash
 
-    def _install_from_cache(self, package_name: str, version: str, expected_hash: str):
+    def _verify_signature(self, filepath: str, signature: str) -> bool:
+        # TODO: Implement actual cryptographic signature verification (e.g. Ed25519)
+        # For now, it's stubbed out to always succeed if no signature is required.
+        if not signature:
+            return True
+        print(f"[WARN] Signature verification is currently stubbed out.")
+        return True
+
+    def _install_from_cache(self, package_name: str, version: str, expected_hash: str, expected_sig: str = ""):
         tarball = os.path.join(self.cache_dir, f"{package_name}-{version}.zip")
         if not os.path.exists(tarball):
             print(f"Error: {tarball} not found in cache. Ensure offline registry is populated.")
@@ -170,6 +143,10 @@ class AAYUPackageManager:
             
         if not self._verify_hash(tarball, expected_hash):
             print(f"Error: Hash mismatch for {package_name}@{version}. Rejecting.")
+            sys.exit(1)
+            
+        if not self._verify_signature(tarball, expected_sig):
+            print(f"Error: Invalid cryptographic signature for {package_name}@{version}. Rejecting.")
             sys.exit(1)
             
         # Extract to local .aayu/packages/
@@ -205,7 +182,8 @@ class AAYUPackageManager:
             idx = self._get_registry_index(pkg)
             if not idx: continue
             expected_hash = idx["versions"][ver].get("hash", "")
-            self._install_from_cache(pkg, ver, expected_hash)
+            expected_sig = idx["versions"][ver].get("signature", "")
+            self._install_from_cache(pkg, ver, expected_hash, expected_sig)
             
         self._write_lock(resolved)
         print("Installation complete. Lockfile generated.")

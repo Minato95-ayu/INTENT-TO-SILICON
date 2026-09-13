@@ -317,6 +317,8 @@ class IRPipeline:
                 
             for stmt in hir.body:
                 self._hir_to_mir(stmt, body_mir)
+                if isinstance(stmt, HIRActionCall):
+                    body_mir.append(MIRInstruction("POP", []))
             mir_list.append(MIRInstruction("ACTION_DECL", [hir.name, body_mir, hir.args]))
             
             # Alias component as __PAGE_START__ if it has @entry decorator, or is named 'App', or fallback to first capitalized if none found yet
@@ -463,6 +465,8 @@ class IRPipeline:
                 body_mir = []
                 for stmt in m.body:
                     self._hir_to_mir(stmt, body_mir)
+                    if isinstance(stmt, HIRActionCall):
+                        body_mir.append(MIRInstruction("POP", []))
                 methods_mir.append({"method": m.method, "body": body_mir})
             mir_list.append(MIRInstruction("REGISTER_ROUTE", [hir.path, methods_mir]))
         elif isinstance(hir, HIRReturn):
@@ -580,7 +584,7 @@ class IRPipeline:
         elif mir.opcode == "BINARY_OP":
             lir_list.append(LIRNode("BINARY_OP", [mir.operands[0]]))
             
-        elif mir.opcode in ["JUMP", "JUMP_IF_FALSE", "LABEL", "GET_ITER", "FOR_ITER", "GET_LENGTH", "LOAD_SUBSCR", "STORE_SUBSCR", "CREATE_CLOSURE", "SETUP_EXCEPT", "POP_EXCEPT", "THROW", "RETHROW"]:
+        elif mir.opcode in ["POP", "JUMP", "JUMP_IF_FALSE", "LABEL", "GET_ITER", "FOR_ITER", "GET_LENGTH", "LOAD_SUBSCR", "STORE_SUBSCR", "CREATE_CLOSURE", "SETUP_EXCEPT", "POP_EXCEPT", "THROW", "RETHROW"]:
             lir_list.append(LIRNode(mir.opcode, mir.operands))
         elif mir.opcode == "CREATE_ARRAY":
             lir_list.append(LIRNode("CREATE_ARRAY", [mir.operands[0]]))

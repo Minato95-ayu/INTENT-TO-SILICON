@@ -18,7 +18,7 @@ class Session:
         class DummyRenderer:
             pass
         self.vm.renderer = DummyRenderer()
-        self.vm.load(prog.bytecode, prog.constant_pool, prog.action_addresses)
+        self.vm.load(prog.bytecode, list(prog.constant_pool.values()), prog.action_addresses)
         self.vm.execute()
         self.vm.call_action_by_name("__PAGE_START__")
         self.last_accessed = time.time()
@@ -89,8 +89,14 @@ class SessionManager:
         with self.lock:
             if not session_id or session_id not in self.sessions:
                 session_id = str(uuid.uuid4())
-                self.sessions[session_id] = Session(session_id, self.prog)
-                print(f"[SessionManager] Created new session: {session_id}")
+                try:
+                    self.sessions[session_id] = Session(session_id, self.prog)
+                    print(f"[SessionManager] Created new session: {session_id}")
+                except Exception as e:
+                    import traceback
+                    print(f"[SessionManager] ERROR creating session: {e}")
+                    traceback.print_exc()
+                    raise e
             
             session = self.sessions[session_id]
             session.touch()

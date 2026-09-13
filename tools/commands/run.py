@@ -40,6 +40,31 @@ def handle(args):
         elif not arg.startswith("-"):
             target = arg
 
+    import urllib.request
+    import hashlib
+    
+    if target.startswith("http://") or target.startswith("https://"):
+        url = target
+        print(f"[AAYU] Downloading remote source from {url} ...")
+        
+        # Isolated cache
+        cache_dir = os.path.expanduser("~/.aayu/cache/urls")
+        os.makedirs(cache_dir, exist_ok=True)
+        
+        url_hash = hashlib.sha256(url.encode()).hexdigest()[:12]
+        filename = url.split("/")[-1]
+        if not filename.endswith(".aayu"):
+            filename = "main.aayu"
+            
+        cached_file = os.path.join(cache_dir, f"{url_hash}_{filename}")
+        
+        try:
+            urllib.request.urlretrieve(url, cached_file)
+            target = cached_file
+        except Exception as e:
+            print(f"Error downloading {url}: {e}")
+            sys.exit(1)
+            
     if not os.path.exists(target):
         print(f"Error: Target file {target} not found.")
         sys.exit(1)
@@ -129,7 +154,9 @@ def handle(args):
             renderer = ConsoleRenderer(event_queue)
         elif renderer_type == "web":
             from runtime.renderers.web_renderer import WebRenderer
-            renderer = WebRenderer(event_queue, project_dir=project_dir, port=3000)
+            from runtime.session.manager import SessionManager
+            session_manager = SessionManager(program)
+            renderer = WebRenderer(session_manager, project_dir=project_dir, port=3000)
         elif renderer_type == "desktop":
             if backend == "tkinter":
                 renderer = TkinterRenderer(event_queue)

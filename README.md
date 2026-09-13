@@ -1,35 +1,95 @@
-<div align="center">
-  <h1>AAYU</h1>
-  <p><b>Build applications from intent, not boilerplate.</b></p>
+﻿<div align="center">
+  <h1>AAYU Programming Language</h1>
+  <p><b>Intent To Silicon: One Language to Rule the Full-Stack.</b></p>
   <p>
-    <a href="https://aayu.dev">Website</a> &bull;
-    <a href="https://aayu.dev/docs">Documentation</a> &bull;
-    <a href="https://aayu.dev/learn">Learn in 15 Min</a> &bull;
-    <a href="https://aayu.dev/examples">Examples</a>
+    <a href="https://intent-to-silicon.vercel.app/">Official Website</a> &bull;
+    <a href="https://intent-to-silicon.vercel.app/docs">Documentation</a> &bull;
+    <a href="https://intent-to-silicon.vercel.app/learn">Learn in 15 Min</a> &bull;
+    <a href="https://intent-to-silicon.vercel.app/examples">Examples</a>
   </p>
 </div>
 
 ---
 
-AAYU is an AI-native software engineering platform and programming language designed to let you focus entirely on your application's logic and design, while the compiler handles the heavy lifting of UI rendering, state management, and native builds.
+AAYU is a revolutionary, AI-native software engineering platform and programming language. It is designed to let **Students, Developers, Engineers, and Tech Companies** focus entirely on building projects without the friction of learning multiple languages.
 
-Whether you're building a simple counter or a full-fledged WhatsApp clone, AAYU makes development frictionless.
+With AAYU, you can build **everything** in one file, using **100% pure AAYU code**.
+- **No HTML**
+- **No CSS**
+- **No JavaScript**
+- **No Python/C++ boilerplate**
 
-## Why AAYU?
+The AAYU compiler automatically handles your Backend Server, Database Models, Frontend UI/UX, and Styling.
 
-- **Intent-Driven**: Say goodbye to JSX, HTML, and CSS spaghetti. Write clean, declarative pages and widgets.
-- **Built-in State**: State management is a first-class citizen. No `useState` hooks, Redux stores, or providers.
-- **Native & Web**: One codebase compiles directly to a Windows `.exe` or a static Web App.
-- **Zero Configuration**: AAYU comes with its own compiler, VM, package manager, and LSP.
-- **Explicit Types & Casting**: AAYU prefers explicitness. Input values from forms or variables initialized with quotes are always strings. You must cast them explicitly (e.g. `float(val)` or `int(val)`) when performing mathematical operations to prevent silent concatenation bugs.
+## Why AAYU is Perfect for Companies and Students
+
+- **All-In-One Full-Stack**: Define your database schema (`model`), backend endpoints (`route`), and frontend UI (`Page`) in the same file seamlessly.
+- **Zero Configuration**: AAYU comes with its own compiler, Virtual Machine (VM), package manager, and Web Renderer built-in.
+- **Colorful Native UI/UX**: Style your UI directly via widget properties (`backgroundColor`, `shadow`, `borderRadius`) without writing a single line of CSS.
+- **Built-in State**: State management is a first-class citizen. No hooks, stores, or providers needed.
 
 ---
 
-## ⚡ Quick Start
+## The Power of AAYU (AAYUGram Example)
+
+Want to see what AAYU can do? Here is a mini Instagram clone built entirely in AAYU. It features a Database Model, Backend Route, Actions, and a beautifully styled UI—all in under 50 lines of code!
+
+```aayu
+app AAYUGram
+
+# 1. Database Model
+model Post {
+    username: String
+    content: String
+    likes: Int
+}
+
+# 2. State variables
+state appName = "AAYUGram"
+
+# 3. Backend API Route
+route "/api/feed"
+    get
+        return "{'status': 'success', 'posts': []}"
+    end
+end
+
+# 4. Logic / Actions
+action createPost
+    print("New Post Created!")
+end
+
+# 5. Colorful UI / UX (100% Pure AAYU, NO CSS/HTML)
+Page Home
+    # Navbar
+    Row backgroundColor="#FFFFFF" padding="15px" shadow="true"
+        Heading appName color="#E1306C"
+    end
+    
+    # Main Feed Container
+    Column padding="20px"
+        Form id="newPost" backgroundColor="#FFFFFF" padding="20px" borderRadius="10px" shadow="true" margin="10px"
+            Heading "Create Post" color="#262626"
+            Input placeholder="What's on your mind?" name="content"
+            Button "Share to AAYUGram" onClick="createPost" backgroundColor="#0095F6" color="#FFFFFF" borderRadius="5px"
+        end
+    end
+end
+```
+
+To run this:
+```bash
+python -m tools.cli run aayugram.aayu --web
+```
+Then visit `http://localhost:3000` to see your fully colorful, full-stack app in action!
+
+---
+
+## Quick Start
 
 ### 1. Installation
 
-Install AAYU globally using pip:
+Install AAYU globally:
 
 ```bash
 pip install aayu-lang
@@ -42,103 +102,23 @@ aayu --version
 aayu doctor
 ```
 
-### 2. Your First App
-
-Create a new project in seconds:
+### 2. Create Your First Project
 
 ```bash
-aayu new hello_world
-cd hello_world
-```
-
-Open `main.aayu` and you'll see this clean syntax:
-
-```aayu
-app hello_world
-
-page Home
-    title "Welcome to hello_world"
-    text "Your AAYU app is running!"
-end
-
-run
-```
-
-Run it locally:
-
-```bash
+aayu new my_project
+cd my_project
 aayu run
 ```
 
-*Output:*
-```text
-Welcome to hello_world
-Your AAYU app is running!
-```
-
-Build it for production (generates a standalone `.exe`):
-
-```bash
-aayu build
-```
-
 ---
 
-## 🛠️ CLI Reference
+## For Developers & Companies
 
-AAYU's CLI is designed to be simple and predictable.
+AAYU enables companies to prototype rapidly and scale easily. It gives students an intuitive way to understand the full lifecycle of software development—from database to DOM—without getting bogged down by 10 different frameworks. 
 
-| Command | Description |
-|---|---|
-| `aayu new <name>` | Create a new project |
-| `aayu run` | Run the project in development mode |
-| `aayu build` | Build an optimized production binary (`app.exe`) |
-| `aayu build --target web` | Build a static web application |
-| `aayu doctor` | Check your environment for missing dependencies |
-| `aayu disassemble` | View the generated bytecode (for debugging) |
+Visit [**Intent To Silicon**](https://intent-to-silicon.vercel.app/) to join the movement, download the compiler, and start building the future of software today!
 
----
-
-## 📚 Learn AAYU
-
-Want to master AAYU? Check out our interactive guides:
-
-- [**Learn AAYU in 15 Minutes**](https://aayu.dev/learn): A 10-lesson interactive guide covering Hello World to a fully working Todo App.
-- [**Language Basics**](https://aayu.dev/docs/language_basics): Variables, State, and Control Flow.
-- [**Widget Catalog**](https://aayu.dev/docs/widgets): See screenshots and syntax for Text, Button, Container, Row, Column, Image, and more.
-- [**Examples**](https://aayu.dev/examples): Explore 10+ open-source examples including Calculators, Dashboards, and Chat UIs.
-
----
-
-## 📁 Project Structure
-
-A standard AAYU project is clean and intuitive:
-
-```text
-MyApp/
- ├── main.aayu        # Entry point of your application
- ├── aayu.json        # Project metadata and dependencies
- ├── assets/          # (Optional) Static files
- │   ├── images/
- │   └── fonts/
- └── build/           # Generated by `aayu build`
-```
-
----
-
-## 🚀 Roadmap
-
-- **v1.0 RC**: Compiler stabilization, Native Binary Backend, Typed Constant Pool. *(You are here)*
-- **v1.0 Stable**: Official Docs, Working Examples Suite, CLI Polish.
-- **v1.1**: Advanced Layout Engine (Flexbox/Grid support).
-- **v2.0**: BrainOS v2 (AI Agent orchestrator), Mobile Runtime (Android/iOS), Cloud Deployment.
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) to get started with the compiler architecture, VM, and standard library.
-
-## 📄 License
+## License
 
 AAYU is licensed under the MIT License. See [LICENSE](LICENSE) for more information.
+

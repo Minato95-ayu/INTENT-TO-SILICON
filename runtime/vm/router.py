@@ -191,6 +191,30 @@ class APIRouter:
                     self._send_error(429, "Rate limit exceeded", request_id, {"Retry-After": str(router.rate_window_seconds)})
                     return
                 request = urlsplit(self.path)
+                
+                # Built-in Prometheus metrics endpoint
+                if request.path == "/metrics" and self.command == "GET":
+                    metrics = router.metrics_snapshot()
+                    prom = []
+                    prom.append(f'# HELP aayu_requests_total Total number of HTTP requests processed.')
+                    prom.append(f'# TYPE aayu_requests_total counter')
+                    prom.append(f'aayu_requests_total {metrics["requests_total"]}')
+                    prom.append(f'# HELP aayu_responses_2xx Total number of 2xx HTTP responses.')
+                    prom.append(f'# TYPE aayu_responses_2xx counter')
+                    prom.append(f'aayu_responses_2xx {metrics["responses_2xx"]}')
+                    prom.append(f'# HELP aayu_responses_4xx Total number of 4xx HTTP responses.')
+                    prom.append(f'# TYPE aayu_responses_4xx counter')
+                    prom.append(f'aayu_responses_4xx {metrics["responses_4xx"]}')
+                    prom.append(f'# HELP aayu_responses_5xx Total number of 5xx HTTP responses.')
+                    prom.append(f'# TYPE aayu_responses_5xx counter')
+                    prom.append(f'aayu_responses_5xx {metrics["responses_5xx"]}')
+                    prom.append(f'# HELP aayu_uptime_seconds Server uptime in seconds.')
+                    prom.append(f'# TYPE aayu_uptime_seconds gauge')
+                    prom.append(f'aayu_uptime_seconds {metrics["uptime_seconds"]}')
+                    payload = "\\n".join(prom).encode("utf-8") + b"\\n"
+                    self._write(200, payload, "text/plain; version=0.0.4; charset=utf-8", request_id)
+                    return
+                
                 methods = router.routes.get(request.path)
                 route = (methods or {}).get(self.command.lower())
                 if route is None:

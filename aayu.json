@@ -5,5 +5,7 @@
   "author": "Unknown",
   "license": "MIT",
   "entry": "main.aayu",
-  "dependencies": {}
+  "dependencies": {
+    "dummy": "^1.0.0"
+  }
 }

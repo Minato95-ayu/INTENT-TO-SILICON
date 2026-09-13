@@ -27,7 +27,8 @@ KEYWORDS = {
     "return", "fn", "end", "import", "action", "in", "get", "post",
     "theme", "useTheme", "widget", "navigate", "validate",
     "await", "bind", "animate",
-    "try", "catch", "finally", "throw", "rethrow", "extern", "as", "print"
+    "try", "catch", "finally", "throw", "rethrow", "extern", "as", "print",
+    "insert", "find", "respond"
 }
 
 OPERATORS = {

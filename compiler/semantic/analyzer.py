@@ -1,4 +1,4 @@
-from compiler.ast.nodes import (
+from compiler.ast.nodes import (InsertNode, FindNode, RespondNode, 
     ProgramNode, StateDeclarationNode, LetDeclarationNode, LiteralNode,
     AssignmentNode, WidgetNode, ImportNode,
     ActionDeclarationNode, ActionCallNode, IdentifierNode,
@@ -146,6 +146,14 @@ class SemanticAnalyzer:
 
 
     def _analyze_node(self, node):
+        if isinstance(node, InsertNode):
+            fields = {k: self._analyze_node(v) for k, v in node.fields.items()}
+            return SemanticInsertNode(node.model_name, fields)
+        if isinstance(node, FindNode):
+            return SemanticFindNode(node.model_name)
+        if isinstance(node, RespondNode):
+            return SemanticRespondNode(self._analyze_node(node.value))
+
         if isinstance(node, LetDeclarationNode):
             return self._analyze_let_decl(node)
         elif isinstance(node, StateDeclarationNode):

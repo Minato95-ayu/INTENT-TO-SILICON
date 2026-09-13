@@ -1,6 +1,6 @@
 from typing import List, Optional
 from compiler.lexer.tokens import Token, TokenType
-from compiler.ast.nodes import (
+from compiler.ast.nodes import (InsertNode, FindNode, RespondNode, 
     ProgramNode,
     StateDeclarationNode,
     LiteralNode,
@@ -37,6 +37,24 @@ class Parser:
         return ProgramNode(line=1, column=1, statements=statements)
 
     def _parse_statement(self):
+        if self._match(TokenType.KEYWORD, "insert"):
+            line, col = self._previous().line, self._previous().column
+            model_name = self._consume(TokenType.IDENTIFIER, "Expect model name after insert.").value
+            self._consume(TokenType.SYMBOL, "Expect '{'", value="{")
+            fields = {}
+            while not self._check(TokenType.SYMBOL) or self._peek().value != "}":
+                key = self._consume(TokenType.IDENTIFIER, "Expect field name in insert.").value
+                self._consume(TokenType.OPERATOR, "Expect '=' after field name.", value="=")
+                value = self._parse_expression()
+                fields[key] = value
+            self._consume(TokenType.SYMBOL, "Expect '}' after insert fields.", value="}")
+            return InsertNode(line=line, column=col, model_name=model_name, fields=fields)
+
+        if self._match(TokenType.KEYWORD, "respond"):
+            line, col = self._previous().line, self._previous().column
+            value = self._parse_expression()
+            return RespondNode(line=line, column=col, value=value)
+
         if self._match(TokenType.KEYWORD, "import"):
             return self._parse_import_statement()
 
@@ -604,6 +622,11 @@ class Parser:
         return ActionCallNode(line=line, column=col, name=name, args=args)
 
     def _parse_expression(self):
+        if self._match(TokenType.KEYWORD, "find"):
+            line, col = self._previous().line, self._previous().column
+            model_name = self._consume(TokenType.IDENTIFIER, "Expect model name after find.").value
+            return FindNode(line=line, column=col, model_name=model_name)
+
         return self._parse_logical_or()
 
     def _parse_logical_or(self):

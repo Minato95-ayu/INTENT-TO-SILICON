@@ -154,6 +154,21 @@ class RouteNode(ASTNode):
     methods: List[MethodNode]
 
 @dataclass(frozen=True)
+
+@dataclass(frozen=True)
+class InsertNode(ASTNode):
+    model_name: str
+    fields: dict
+
+@dataclass(frozen=True)
+class FindNode(ASTNode):
+    model_name: str
+
+@dataclass(frozen=True)
+class RespondNode(ASTNode):
+    value: ASTNode
+
+@dataclass(frozen=True)
 class ReturnNode(ASTNode):
     value: ASTNode
 

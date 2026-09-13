@@ -1,4 +1,4 @@
-﻿/* eslint-disable */
+/* eslint-disable */
 
 "use client";
 
@@ -232,14 +232,14 @@ export default function HomePage() {
 
   /* â”€â”€â”€â”€ Stdlib data â”€â”€â”€â”€ */
   const stdlibModules = [
-    { name: "math", desc: "Arithmetic, trigonometry, random" },
+    { name: "ai", desc: "Native Model Training & Inference" },
+    { name: "ml", desc: "Clustering, Regression & Data Science" },
+    { name: "math", desc: "Advanced mathematics, calculations" },
     { name: "json", desc: "Parse and serialize JSON" },
     { name: "fs", desc: "File system operations" },
     { name: "crypto", desc: "Hashing, encryption, tokens" },
-    { name: "http", desc: "HTTP client utilities" },
+    { name: "http", desc: "Secure HTTPS client utilities" },
     { name: "database", desc: "Query builder, transactions" },
-    { name: "process", desc: "System processes, signals" },
-    { name: "env", desc: "Environment variables" },
   ];
 
   /* â”€â”€â”€â”€ Production examples â”€â”€â”€â”€ */
@@ -264,12 +264,12 @@ export default function HomePage() {
 
         {/* Hero content */}
         <div className="relative z-10 grid lg:grid-cols-2 gap-16 items-center">
-          {/* Left â€” tagline */}
+          {/* Left — tagline */}
           <div>
-            <Link href="/releases/0.7.3">
+            <Link href="/releases/1.1.0">
               <div className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-4 py-1.5 mb-8 hover:bg-purple-500/20 transition-colors cursor-pointer">
                 <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-                <span className="text-xs font-semibold text-purple-300">New in v1.0.0: Custom Flutter-style UI Render Engine & Diff Pipeline ðŸš€</span>
+                <span className="text-xs font-semibold text-purple-300">New in v1.1.0: Native AI, ML, Data Science & Advanced Math Engines 🚀</span>
                 <ChevronRight className="w-3.5 h-3.5 text-purple-400" />
               </div>
             </Link>

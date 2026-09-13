@@ -86,13 +86,14 @@ class StdLib:
             register_math_lib, register_string_lib, register_list_lib, register_map_lib,
             register_file_lib, register_path_lib, register_json_lib, register_time_lib,
             register_random_lib, register_http_lib, register_crypto_lib, register_core_lib, register_database_lib, register_regex_lib, register_env_lib, register_process_lib, register_logging_lib, register_testing_lib, register_compression_lib, register_concurrency_lib, register_networking_lib, register_encoding_lib,
-            register_storage_lib, register_auth_lib
+            register_storage_lib, register_auth_lib, register_data_lib
         )
         
         register_core_lib(self.registry)
         
         register_math_lib(self.registry)
         register_ai_lib(self.registry)
+        register_data_lib(self.registry)
 
         # Register ML explicitly
         self.registry.register("ml_kmeans_fit", self.ml_kmeans_fit)

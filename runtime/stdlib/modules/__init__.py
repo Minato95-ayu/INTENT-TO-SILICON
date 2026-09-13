@@ -34,3 +34,5 @@ __all__ = [
     "register_concurrency_lib", "register_networking_lib", "register_encoding_lib",
     "register_storage_lib", "register_auth_lib"
 ]
+
+from .data_lib import register_data_lib

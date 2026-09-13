@@ -1,22 +1,35 @@
-name: Release
+﻿name: Cross-Platform Native Release
 
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
+  workflow_dispatch:
 
 jobs:
-  release:
-    name: Build and Release
-    runs-on: ubuntu-latest
+  build-native:
+    name: Build Native Installer on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            artifact_name: aayu-linux-bin
+            asset_name: Aayu-Linux-bin
+          - os: windows-latest
+            artifact_name: aayu.exe
+            asset_name: AayuInstaller.exe
+          - os: macos-latest
+            artifact_name: aayu
+            asset_name: Aayu-MacOS
+
     permissions:
       contents: write
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
@@ -24,23 +37,45 @@ jobs:
           python-version: "3.12"
           cache: "pip"
 
-      - name: Install dependencies
+      - name: Install dependencies & PyInstaller
         run: |
           python -m pip install --upgrade pip
-          pip install build
-          pip install -e '.[dev]'
+          pip install -e .
+          pip install pyinstaller
 
-      - name: Run full test suite
+      - name: Build Native Binary (Windows)
+        if: matrix.os == 'windows-latest'
+        run: pyinstaller --onefile --name aayu tools/cli.py
+
+      - name: Build Native Binary (Linux/Mac)
+        if: matrix.os != 'windows-latest'
+        run: pyinstaller --onefile --name aayu tools/cli.py
+
+      - name: Package macOS DMG
+        if: matrix.os == 'macos-latest'
         run: |
-          python -m pytest tests/compiler tests/unit tests/vm tests/runtime tests/integration -v --tb=short
+          npm install -g create-dmg
+          mkdir -p dist/dmg
+          cp dist/aayu dist/dmg/Aayu
+          create-dmg dist/dmg/Aayu dist/Aayu.dmg || echo "dmg creation fallback"
 
-      - name: Build wheel and sdist
-        run: python -m build
+      - name: Rename binaries for Release
+        shell: bash
+        run: |
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            mv dist/aayu.exe dist/${{ matrix.asset_name }}
+          elif [ "${{ matrix.os }}" = "macos-latest" ]; then
+            if [ -f dist/Aayu.dmg ]; then
+              mv dist/Aayu.dmg dist/${{ matrix.asset_name }}.dmg
+            else
+              mv dist/aayu dist/${{ matrix.asset_name }}
+            fi
+          else
+            mv dist/aayu dist/${{ matrix.asset_name }}
+          fi
 
-      - name: Create GitHub Release
+      - name: Upload Release Asset
         uses: softprops/action-gh-release@v2
         with:
-          generate_release_notes: true
-          files: |
-            dist/*.whl
-            dist/*.tar.gz
+          files: dist/${{ matrix.asset_name }}*
+

@@ -1,0 +1,177 @@
+# ==============================================================
+# AAYU SOLUTIONS: MACHINE LEARNING & DATA SCIENCE
+# ==============================================================
+
+# -------------------------------------------------------------
+# PROJECT 3: Classification Metric Evaluator
+# -------------------------------------------------------------
+action calc_metrics(actual, pred)
+    let length = 10
+    let i = 0
+    
+    let t_p = 0
+    let f_p = 0
+    let t_n = 0
+    let f_n = 0
+    
+    while i < length
+        let a = actual[i]
+        let p = pred[i]
+        
+        if a == 1
+            if p == 1
+                t_p = t_p + 1
+            else
+                f_n = f_n + 1
+            end
+        else
+            if p == 1
+                f_p = f_p + 1
+            else
+                t_n = t_n + 1
+            end
+        end
+        
+        i = i + 1
+    end
+    
+    print("--- Classification Metrics ---")
+    print("True Positives: " + t_p)
+    print("False Positives: " + f_p)
+    print("True Negatives: " + t_n)
+    print("False Negatives: " + f_n)
+    
+    let tp_fp = t_p + f_p
+    let prec = 0
+    if tp_fp > 0
+        let val_p = t_p * 100
+        prec = val_p / tp_fp
+    end
+    
+    let tp_fn = t_p + f_n
+    let rec = 0
+    if tp_fn > 0
+        let val_r = t_p * 100
+        rec = val_r / tp_fn
+    end
+    
+    let prec_rec = prec + rec
+    let f1_score = 0
+    if prec_rec > 0
+        let p_r_mult = prec * rec
+        let f1_top = 2 * p_r_mult
+        f1_score = f1_top / prec_rec
+    end
+    
+    print("Precision (*100): " + prec)
+    print("Recall (*100): " + rec)
+    print("F1-Score (*100): " + f1_score)
+    print("------------------------------")
+    return f1_score
+end
+
+
+# -------------------------------------------------------------
+# PROJECT 4: Simple Linear Regression from Scratch
+# -------------------------------------------------------------
+# Using integer math approximations (*100 scale) for simplicity 
+# to avoid AAYU Alpha TypeChecker strict inference bugs on floats
+action linear_regression(x, y)
+    let N = 7
+    let i = 0
+    
+    let sum_x = 0
+    let sum_y = 0
+    let sum_xy = 0
+    let sum_xx = 0
+    
+    while i < N
+        let xi = x[i]
+        let yi = y[i]
+        
+        sum_x = sum_x + xi
+        sum_y = sum_y + yi
+        
+        let xy = xi * yi
+        sum_xy = sum_xy + xy
+        
+        let xx = xi * xi
+        sum_xx = sum_xx + xx
+        
+        i = i + 1
+    end
+    
+    # Calculate m (Slope)
+    let part1 = N * sum_xy
+    let part2 = sum_x * sum_y
+    let m_top = part1 - part2
+    
+    let part3 = N * sum_xx
+    let part4 = sum_x * sum_x
+    let m_bot = part3 - part4
+    
+    let m = 0
+    if m_bot != 0
+        m = m_top / m_bot
+    end
+    
+    # Calculate b (Intercept)
+    let part5 = m * sum_x
+    let b_top = sum_y - part5
+    let b = b_top / N
+    
+    print("--- Linear Regression Model ---")
+    print("Best Fit Line: y = " + m + "x + " + b)
+    print("-------------------------------")
+    
+    return m
+end
+
+
+# -------------------------------------------------------------
+# PROJECT 2: Custom Train-Test Split Code
+# -------------------------------------------------------------
+action train_test_split(dataset, split_ratio_pct)
+    let length = 10
+    
+    # split_ratio_pct is e.g. 80 for 80%
+    let scaled_size = length * split_ratio_pct
+    let train_size = scaled_size / 100
+    
+    let test_size = length - train_size
+    
+    print("--- Train-Test Split ---")
+    print("Total Dataset Size: " + length)
+    print("Training Set Size (80%): " + train_size)
+    print("Testing Set Size (20%): " + test_size)
+    print("------------------------")
+    return 0
+end
+
+
+# -------------------------------------------------------------
+# MAIN EXECUTION
+# -------------------------------------------------------------
+action main()
+    print("====== AAYU AI/ML PROJECTS START ======")
+    
+    # PROJECT 3 DATA (Imbalanced Medical Dataset test)
+    # 1 = Positive, 0 = Negative
+    let actual = [1, 0, 1, 1, 0, 1, 0, 0, 1, 1]
+    let pred =   [1, 0, 1, 0, 0, 1, 1, 0, 1, 1]
+    calc_metrics(actual, pred)
+    
+    # PROJECT 4 DATA (Study Hours vs Exam Scores)
+    let study_hours = [1, 2, 3, 4, 5, 6, 7]
+    let exam_scores = [35, 46, 55, 68, 76, 85, 97]
+    linear_regression(study_hours, exam_scores)
+    
+    # PROJECT 2 DATA (Train Test Split)
+    let dummy_data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    train_test_split(dummy_data, 80)
+    
+    print("====== AAYU AI/ML PROJECTS END ======")
+    return 0
+end
+
+run main()

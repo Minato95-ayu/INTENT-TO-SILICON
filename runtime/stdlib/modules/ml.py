@@ -121,3 +121,84 @@ def ml_linear_regression_predict(model_id: int, X: list) -> list:
         predictions.append(pred)
         
     return predictions
+
+
+class NeuralNet:
+    def __init__(self, layers, lr=0.01):
+        self.layers = layers
+        self.lr = lr
+        self.weights = []
+        self.biases = []
+        # Initialize random weights
+        for i in range(len(layers)-1):
+            w = [[random.uniform(-1, 1) for _ in range(layers[i+1])] for _ in range(layers[i])]
+            b = [0.0 for _ in range(layers[i+1])]
+            self.weights.append(w)
+            self.biases.append(b)
+
+    def _sigmoid(self, x):
+        return 1.0 / (1.0 + math.exp(-x))
+
+    def _sigmoid_deriv(self, x):
+        return x * (1.0 - x)
+
+    def forward(self, X):
+        self.activations = [X]
+        curr = X
+        for w, b in zip(self.weights, self.biases):
+            next_act = []
+            for j in range(len(w[0])):
+                s = sum(curr[k] * w[k][j] for k in range(len(w))) + b[j]
+                next_act.append(self._sigmoid(s))
+            curr = next_act
+            self.activations.append(curr)
+        return curr
+
+    def train_step(self, X, y):
+        pred = self.forward(X)
+        
+        # Backprop
+        errors = [y[i] - pred[i] for i in range(len(y))]
+        deltas = [errors[i] * self._sigmoid_deriv(pred[i]) for i in range(len(pred))]
+        
+        for layer in range(len(self.weights)-1, -1, -1):
+            prev_act = self.activations[layer]
+            next_deltas = [0.0 for _ in range(len(prev_act))]
+            
+            for j in range(len(self.weights[layer][0])):
+                # Update bias
+                self.biases[layer][j] += self.lr * deltas[j]
+                # Update weights and calculate next delta
+                for k in range(len(prev_act)):
+                    next_deltas[k] += deltas[j] * self.weights[layer][k][j]
+                    self.weights[layer][k][j] += self.lr * deltas[j] * prev_act[k]
+                    
+            deltas = [next_deltas[k] * self._sigmoid_deriv(prev_act[k]) for k in range(len(prev_act))]
+
+def ml_nn_create(layers: list, lr: float = 0.01) -> int:
+    MLState._model_id_counter += 1
+    model_id = MLState._model_id_counter
+    MLState._models[model_id] = {"type": "nn", "model": NeuralNet(layers, lr)}
+    return model_id
+
+def ml_nn_train(model_id: int, X: list, y: list, epochs: int = 100):
+    model = MLState._models.get(model_id)
+    if not model or model["type"] != "nn":
+        return
+    nn = model["model"]
+    for _ in range(epochs):
+        for i in range(len(X)):
+            pt_x = X[i] if isinstance(X[i], (list, tuple)) else [X[i]]
+            pt_y = y[i] if isinstance(y[i], (list, tuple)) else [y[i]]
+            nn.train_step(pt_x, pt_y)
+
+def ml_nn_predict(model_id: int, X: list) -> list:
+    model = MLState._models.get(model_id)
+    if not model or model["type"] != "nn":
+        return []
+    nn = model["model"]
+    preds = []
+    for point in X:
+        pt = point if isinstance(point, (list, tuple)) else [point]
+        preds.append(nn.forward(pt))
+    return preds

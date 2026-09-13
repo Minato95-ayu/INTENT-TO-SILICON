@@ -99,6 +99,11 @@ class StdLib:
         self.registry.register("ml_kmeans_predict", self.ml_kmeans_predict)
         self.registry.register("ml_linear_regression_fit", self.ml_linear_regression_fit)
         self.registry.register("ml_linear_regression_predict", self.ml_linear_regression_predict)
+
+        self.registry.register("ml_nn_create", self.ml_nn_create)
+        self.registry.register("ml_nn_train", self.ml_nn_train)
+        self.registry.register("ml_nn_predict", self.ml_nn_predict)
+
         register_http_lib(self.registry)
         register_string_lib(self.registry)
         register_list_lib(self.registry)
@@ -366,6 +371,16 @@ class StdLib:
 
     def ml_linear_regression_predict(self, model_id: int, X: list) -> list:
         return ml_linear_regression_predict(model_id, X)
+
+
+    def ml_nn_create(self, layers: list, lr: float = 0.01) -> int:
+        return ml_nn_create(layers, lr)
+    
+    def ml_nn_train(self, model_id: int, X: list, y: list, epochs: int = 100):
+        ml_nn_train(model_id, X, y, epochs)
+        
+    def ml_nn_predict(self, model_id: int, X: list) -> list:
+        return ml_nn_predict(model_id, X)
 
     def json_serialize(self, data) -> AayuJSONResponse:
         """Serializes data to JSON response."""

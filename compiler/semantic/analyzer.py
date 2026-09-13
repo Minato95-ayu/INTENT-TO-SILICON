@@ -35,6 +35,7 @@ class SemanticAnalyzer:
         # Inject core stdlib functions so they pass resolution
         builtins = [
             ("print", -1),
+            ("math_sqrt", 1), ("tensor_matmul", 2), ("ml_kmeans_fit", 3), ("ml_kmeans_predict", 2),
             ("HTTP.get", 1), ("HTTP.post", 2),
             ("file::read", 1), ("file::write", 2),
             ("Regex.match", 2),

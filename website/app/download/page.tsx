@@ -149,9 +149,9 @@ export default function DownloadCenter() {
             <div className="text-xs font-mono text-zinc-500 mb-2">Build from source:</div>
             <div className="space-y-1">
               {[
-                "wget /downloads/aayu-source.zip",
-                "cd AAYU && cmake -B build -DCMAKE_BUILD_TYPE=Release",
-                "cmake --build build --parallel",
+                "git clone https://github.com/Minato95-ayu/INTENT-TO-SILICON.git",
+                "cd INTENT-TO-SILICON",
+                "pip install -e .",
               ].map((cmd) => (
                 <div key={cmd} className="flex items-center">
                   <span className="text-zinc-600 mr-2 text-sm font-mono select-none">$</span>

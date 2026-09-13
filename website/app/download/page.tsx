@@ -60,16 +60,16 @@ export default function DownloadCenter() {
               </div>
               <Link href="/downloads/aayu-v1.0.0-windows-x64.zip" target="_blank" rel="noopener">
                 <Button variant="outline" className="border-blue-500/30 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 gap-2">
-                  <Download className="w-4 h-4" /> Download for Windows
+                  <Download className="w-4 h-4" /> Download Windows (.exe)
                 </Button>
               </Link>
             </div>
             <div className="space-y-3">
               <div className="flex items-center gap-3 text-sm text-zinc-300">
-                <Monitor className="w-4 h-4 text-zinc-500 shrink-0" /> macOS (Apple Silicon / Intel)
+                <Monitor className="w-4 h-4 text-zinc-500 shrink-0" /> macOS (.pkg Installer / Apple Silicon & Intel)
               </div>
               <div className="flex items-center gap-3 text-sm text-zinc-300">
-                <Terminal className="w-4 h-4 text-zinc-500 shrink-0" /> Linux (x86_64 / aarch64)
+                <Terminal className="w-4 h-4 text-zinc-500 shrink-0" /> Linux (.sh / x86_64 & aarch64)
               </div>
               <div className="flex items-center gap-3 text-sm text-zinc-300">
                 <Box className="w-4 h-4 text-zinc-500 shrink-0" /> Windows (WSL2 recommended)

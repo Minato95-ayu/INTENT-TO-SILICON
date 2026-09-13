@@ -35,7 +35,7 @@ const phases: Phase[] = [
   {
     id: "A",
     title: "Language Core",
-    status: "in-progress",
+    status: "completed",
     description:
       "The foundational compiler pipeline — from source text to executing bytecode. Every layer hand-built from scratch.",
     items: [
@@ -55,7 +55,7 @@ const phases: Phase[] = [
   {
     id: "B",
     title: "Native HTTP Runtime",
-    status: "in-progress",
+    status: "completed",
     description:
       "A zero-dependency HTTP server built directly into the language runtime. No Express, no Koa — pure AAYU.",
     items: [
@@ -72,7 +72,7 @@ const phases: Phase[] = [
   {
     id: "C",
     title: "Native Storage Runtime",
-    status: "in-progress",
+    status: "completed",
     description:
       "A full relational storage engine embedded in the runtime — schema definitions, migrations, query planning, and optimization without ORMs.",
     items: [
@@ -92,7 +92,7 @@ const phases: Phase[] = [
   {
     id: "CLI",
     title: "CLI & Tooling",
-    status: "in-progress",
+    status: "completed",
     description:
       "Developer experience tools — build, run, manage packages, and write code with first-class editor support.",
     items: [
@@ -106,7 +106,7 @@ const phases: Phase[] = [
   {
     id: "STD",
     title: "Standard Library",
-    status: "in-progress",
+    status: "completed",
     description:
       "Production-grade standard modules shipping with every AAYU installation.",
     items: [

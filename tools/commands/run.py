@@ -18,7 +18,6 @@ from runtime.ui.style_resolver import StyleResolver
 from runtime.ui.painter import Painter
 from runtime.diff.engine import DiffEngine
 from runtime.renderers.console import ConsoleRenderer
-from runtime.renderers.tkinter_renderer import TkinterRenderer
 
 def handle(args):
     renderer_type = "desktop"
@@ -159,6 +158,7 @@ def handle(args):
             renderer = WebRenderer(session_manager, project_dir=project_dir, port=3000)
         elif renderer_type == "desktop":
             if backend == "tkinter":
+                from runtime.renderers.tkinter_renderer import TkinterRenderer
                 renderer = TkinterRenderer(event_queue)
             else:
                 raise ValueError(f"Unknown backend: {backend}")

@@ -24,7 +24,7 @@ The AAYU compiler automatically handles your Backend Server, Database Models, Fr
 ## Why AAYU is Perfect for Companies and Students
 
 - **All-In-One Full-Stack**: Define your database schema (`model`), backend endpoints (`route`), and frontend UI (`Page`) in the same file seamlessly.
-- **Zero Configuration**: AAYU comes with its own compiler, Virtual Machine (VM), package manager, and Web Renderer built-in.
+- **Zero Boilerplate: AAYU applications minimize framework boilerplate. The compiler/runtime manages its own state and dependencies.
 - **Colorful Native UI/UX**: Style your UI directly via widget properties (`backgroundColor`, `shadow`, `borderRadius`) without writing a single line of CSS.
 - **Built-in State**: State management is a first-class citizen. No hooks, stores, or providers needed.
 
@@ -92,7 +92,7 @@ Then visit `http://localhost:3000` to see your fully colorful, full-stack app in
 Install AAYU globally:
 
 ```bash
-pip install aayu-lang
+Download AayuInstaller.exe from the official website (or build from source with `pip install -e .`)
 ```
 
 Verify the installation:

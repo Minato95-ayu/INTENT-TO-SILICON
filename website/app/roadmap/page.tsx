@@ -25,7 +25,7 @@ import {
 type Phase = {
   id: string;
   title: string;
-  status: "in-progress" | "in-progress" | "planned";
+  status: "completed" | "in-progress" | "planned";
   description: string;
   items: string[];
   icon: React.ReactNode;

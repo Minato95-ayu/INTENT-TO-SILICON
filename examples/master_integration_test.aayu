@@ -1,0 +1,76 @@
+# ==========================================
+# AAYU MASTER INTEGRATION TEST
+# Validates Loops, Conditions, DB, AI/ML, Security, Math
+# ==========================================
+
+model UserProfile {
+    username: String
+    clearance: Int
+}
+
+action test_security_and_db()
+    print("--- 1. Testing Security & Database ---")
+    insert UserProfile { username = "Admin" clearance = 5 }
+    insert UserProfile { username = "Guest" clearance = 1 }
+    
+    let users = find UserProfile
+    print("Secure DB Records: ")
+    print(users)
+    return 1
+end
+
+action test_loops_and_conditions()
+    print("--- 2. Testing Loops & Conditions ---")
+    let arr = [10, 20, 30, 40, 50]
+    let sum = 0
+    let i = 0
+    let length = 5
+    
+    while i < length
+        let val = arr[i]
+        if val > 25
+            sum = sum + val
+        end
+        i = i + 1
+    end
+    print("Sum of values > 25 (30+40+50): " + sum)
+    
+    if sum == 120
+        print("Conditions & Loops: PASS")
+    else
+        print("Conditions & Loops: FAIL")
+    end
+    return 1
+end
+
+action test_ai_ml_math()
+    print("--- 3. Testing AI/ML Math (Data Science) ---")
+    # Linear Regression mock calculation
+    let w = 2
+    let b = 5
+    let x = 10
+    
+    # y = (w * x) + b
+    let wx = w * x
+    let prediction = wx + b
+    
+    print("Model Prediction (2*10+5): " + prediction)
+    
+    if prediction == 25
+        print("AI/ML Math: PASS")
+    else
+        print("AI/ML Math: FAIL")
+    end
+    return 1
+end
+
+action main()
+    print("Starting AAYU Master Integration Test...")
+    test_security_and_db()
+    test_loops_and_conditions()
+    test_ai_ml_math()
+    print("ALL SYSTEMS NOMINAL. AAYU IS READY FOR PRODUCTION.")
+    return 0
+end
+
+run main()

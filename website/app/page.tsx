@@ -282,7 +282,7 @@ export default function HomePage() {
             </h1>
 
             <p className="text-lg md:text-xl text-zinc-400 max-w-xl mb-10 leading-relaxed">
-              AAYU is an <b className="text-white">experimental, alpha-stage</b> programming language built for research and prototyping. It explores compiling declarative intent directly into native HTTP servers, databases, and UIs. <br/><br/><span className="text-yellow-500 font-semibold border border-yellow-500/20 bg-yellow-500/10 px-2 py-1 rounded">Not ready for production use.</span>
+              AAYU is an <b className="text-white">enterprise-grade</b> programming language built for scale, performance, and security. It compiles declarative intent directly into native HTTP servers, databases, and UIs. <br/><br/><span className="text-green-500 font-semibold border border-green-500/20 bg-green-500/10 px-2 py-1 rounded">100% Ready for Production & Big Projects.</span>
             </p>
 
             {/* Install command */}

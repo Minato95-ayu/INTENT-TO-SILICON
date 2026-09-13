@@ -1,0 +1,73 @@
+# ==============================================================
+# AAYU - ZERO-DEPENDENCY AI LANGUAGE
+# OFFICIAL TUTORIAL PROOF SCRIPT
+# This script covers: OOP (Models), Control Flow, and Loops.
+# ==============================================================
+
+# 1. OOP & Database (AAYU uses 'model' instead of 'class')
+# This automatically creates a secure Database table and an Object structure.
+model Developer {
+    name: String
+    level: String
+    experience: Int
+}
+
+# 2. Control Flow & Conditions
+# AAYU uses 'if / else / end' for branching logic.
+action check_level(level)
+    print("Checking level: " + level)
+    
+    if level == "Beginner"
+        print("Welcome! You will learn fast.")
+    else
+        if level == "Pro"
+            print("You are a Pro! AAYU is built for you.")
+        else
+            print("Keep coding!")
+        end
+    end
+    return 0
+end
+
+# 3. Loops and Variables
+# AAYU uses 'while' loops for iteration.
+action count_up()
+    print("Counting using while loop:")
+    let count = 1
+    
+    while count <= 3
+        print(count)
+        # Variable update
+        count = count + 1
+    end
+    return 0
+end
+
+
+# --- MAIN EXECUTION ---
+action main()
+    print("=== AAYU TUTORIAL DEMO ===")
+    
+    # OOP: Creating an Object (which automatically inserts into the Native DB)
+    insert Developer { name = "Miinato" level = "Pro" experience = 10 }
+    
+    # Querying the Objects
+    let devs = find Developer
+    print("Developers in System:")
+    print(devs)
+    
+    print("---------------------------------")
+    
+    # Run Control Flow
+    check_level("Pro")
+    
+    print("---------------------------------")
+    
+    # Run Loops
+    count_up()
+    
+    print("=== DEMO SUCCESS ===")
+    return 0
+end
+
+run main()

@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+﻿from dataclasses import dataclass, field
 from typing import List, Optional, Any, Dict
 
 @dataclass
@@ -152,8 +152,6 @@ class MethodNode(ASTNode):
 class RouteNode(ASTNode):
     path: str
     methods: List[MethodNode]
-
-@dataclass(frozen=True)
 
 @dataclass(frozen=True)
 class InsertNode(ASTNode):

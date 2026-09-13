@@ -210,13 +210,13 @@ class SemanticClosureNode(SemanticNode):
     args: List[SemanticNode]
 
 
-@dataclass(frozen=True)
+@dataclass
 class SemanticInsertNode(SemanticNode):
     model_name: str
     fields: dict
-@dataclass(frozen=True)
+@dataclass
 class SemanticFindNode(SemanticNode):
     model_name: str
-@dataclass(frozen=True)
+@dataclass
 class SemanticRespondNode(SemanticNode):
     value: SemanticNode

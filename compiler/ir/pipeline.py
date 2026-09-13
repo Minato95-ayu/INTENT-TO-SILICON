@@ -9,7 +9,7 @@ from compiler.semantic.nodes import (
     SemanticUseThemeNode, SemanticDictionaryNode, SemanticAwaitNode, SemanticBindNode, SemanticValidateNode,
     SemanticValidateFieldNode, SemanticValidationRuleNode, SemanticAnimateNode,
     SemanticLifecycleNode, SemanticArrayNode, SemanticSubscriptNode,
-    SemanticTryNode, SemanticThrowNode, SemanticRethrowNode
+    SemanticTryNode, SemanticThrowNode, SemanticRethrowNode, SemanticInsertNode, SemanticFindNode, SemanticRespondNode
 )
 from compiler.ir.hir import (
     HIRNode, HIRStateDecl, HIRWidget, HIRAssignment,
@@ -18,7 +18,7 @@ from compiler.ir.hir import (
     HIRModel, HIRModelField, HIRModelAttribute, HIRRoute, HIRMethod, HIRReturn,
     HIRTheme, HIRNavigate, HIRUseTheme, HIRDictionary, HIRAwait, HIRBind, HIRValidate, HIRAnimate, HIRLifecycle,
     HIRArrayNode, HIRSubscript,
-    HIRTry, HIRThrow, HIRRethrow
+    HIRTry, HIRThrow, HIRRethrow, HIRInsert, HIRFind, HIRRespond
 )
 from compiler.ir.mir import MIRNode, MIRInstruction
 from compiler.ir.lir import LIRNode
@@ -122,6 +122,17 @@ class IRPipeline:
                 fields.append(HIRModelField(f.name, f.field_type, attrs))
             return HIRModel(node.name, fields, decorators=node.decorators)
             
+        elif isinstance(node, SemanticInsertNode):
+            fields_hir = {}
+            for k, v in node.fields.items():
+                val_hir = self._semantic_to_hir(v)
+                if isinstance(val_hir, HIRPrint): val_hir = HIRLoadConst(val_hir.value)
+                fields_hir[k] = val_hir
+            return HIRInsert(node.model_name, fields_hir)
+        elif isinstance(node, SemanticFindNode):
+            return HIRFind(node.model_name)
+        elif isinstance(node, SemanticRespondNode):
+            return HIRRespond(self._semantic_to_hir(node.value))
         elif isinstance(node, SemanticReturnNode):
             val_hir = self._semantic_to_hir(node.value)
             if isinstance(val_hir, HIRPrint): val_hir = HIRLoadConst(val_hir.value)
@@ -147,6 +158,17 @@ class IRPipeline:
                 methods.append(HIRMethod(m.method, body_hir))
             return HIRRoute(node.path, methods)
             
+        elif isinstance(node, SemanticInsertNode):
+            fields_hir = {}
+            for k, v in node.fields.items():
+                val_hir = self._semantic_to_hir(v)
+                if isinstance(val_hir, HIRPrint): val_hir = HIRLoadConst(val_hir.value)
+                fields_hir[k] = val_hir
+            return HIRInsert(node.model_name, fields_hir)
+        elif isinstance(node, SemanticFindNode):
+            return HIRFind(node.model_name)
+        elif isinstance(node, SemanticRespondNode):
+            return HIRRespond(self._semantic_to_hir(node.value))
         elif isinstance(node, SemanticReturnNode):
             val_hir = self._semantic_to_hir(node.value)
             if isinstance(val_hir, HIRPrint): val_hir = HIRLoadConst(val_hir.value)
@@ -469,6 +491,17 @@ class IRPipeline:
                         body_mir.append(MIRInstruction("POP", []))
                 methods_mir.append({"method": m.method, "body": body_mir})
             mir_list.append(MIRInstruction("REGISTER_ROUTE", [hir.path, methods_mir]))
+        elif isinstance(hir, HIRInsert):
+            for k, v in hir.fields.items():
+                self._hir_to_mir(v, mir_list)
+                mir_list.append(MIRInstruction("PUSH_CONST", [k]))
+            mir_list.append(MIRInstruction("DB_INSERT", [hir.model_name, len(hir.fields)]))
+            mir_list.append(MIRInstruction("PUSH_CONST", [0])) # Dummy push to balance stack
+        elif isinstance(hir, HIRFind):
+            mir_list.append(MIRInstruction("DB_FIND", [hir.model_name]))
+        elif isinstance(hir, HIRRespond):
+            self._hir_to_mir(hir.value, mir_list)
+            mir_list.append(MIRInstruction("RESPOND", []))
         elif isinstance(hir, HIRReturn):
             self._hir_to_mir(hir.value, mir_list)
             mir_list.append(MIRInstruction("RETURN_VALUE", []))
@@ -623,3 +656,5 @@ class IRPipeline:
             for sub_mir in mir.operands[1]:
                 self._mir_to_lir(sub_mir, body_lir)
             lir_list.append(LIRNode("DECLARE_LIFECYCLE", [mir.operands[0], body_lir]))
+        elif mir.opcode in ("DB_INSERT", "DB_FIND", "RESPOND"):
+            lir_list.append(LIRNode(mir.opcode, mir.operands))

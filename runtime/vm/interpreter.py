@@ -674,18 +674,18 @@ class Interpreter:
             if block['type'] != 'FINALLY':
                 pass
         return True
-    def op_DB_INSERT(self, frame, instruction):
-        import sqlite3
-        import json
-        model_name = self.vm.constants[instruction.arg1]
-        fields_count = instruction.arg2
+    def op_DB_INSERT(self, opcode):
+        idx = self.vm.decoder.fetch16(self.vm.registers.ip + 1)
+        self.vm.registers.ip += 3
+        info = self.vm.constant_pool[idx]
+        model_name = info["model"]
+        fields_count = info["fields_count"]
         fields = {}
         for _ in range(fields_count):
-            val = frame.stack.pop()
-            key = frame.stack.pop()
+            val = self.vm.value_stack.pop()
+            key = self.vm.value_stack.pop()
             fields[key] = val
-        
-        # Actual Database Hook (SQLite)
+        import sqlite3
         try:
             conn = sqlite3.connect("aayu_db.sqlite")
             c = conn.cursor()
@@ -696,29 +696,30 @@ class Interpreter:
             c.execute(f"INSERT INTO {model_name} ({cols}) VALUES ({placeholders})", vals)
             conn.commit()
             conn.close()
-            print(f"[VM-DB] Successfully inserted into {model_name}: {fields}")
+            print(f"[DB] Inserted into {model_name}: {fields}")
         except Exception as e:
-            print(f"[VM-DB-ERROR] Insert failed: {e}")
-        return ResultStatus.OK
+            print(f"[DB ERROR] Insert failed: {e}")
+        return True
 
-    def op_DB_FIND(self, frame, instruction):
+    def op_DB_FIND(self, opcode):
+        idx = self.vm.decoder.fetch16(self.vm.registers.ip + 1)
+        self.vm.registers.ip += 3
+        model_name = self.vm.constant_pool[idx]
         import sqlite3
-        model_name = self.vm.constants[instruction.arg1]
         try:
             conn = sqlite3.connect("aayu_db.sqlite")
             c = conn.cursor()
             c.execute(f"SELECT * FROM {model_name}")
             rows = c.fetchall()
             conn.close()
-            # Push result to stack
-            frame.stack.append(rows)
-            print(f"[VM-DB] Found {len(rows)} records in {model_name}")
+            self.vm.value_stack.push(rows)
+            print(f"[DB] Found {len(rows)} records in {model_name}")
         except Exception as e:
-            frame.stack.append([])
-        return ResultStatus.OK
+            self.vm.value_stack.push([])
+        return True
 
-    def op_RESPOND(self, frame, instruction):
-        val = frame.stack.pop()
-        print(f"[VM-SERVER] Responding with: {val}")
-        frame.stack.append(val)
-        return ResultStatus.OK
+    def op_RESPOND(self, opcode):
+        self.vm.registers.ip += 3
+        val = self.vm.value_stack.pop()
+        print(f"[HTTP RESPONSE] {val}")
+        return True

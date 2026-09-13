@@ -1,0 +1,11 @@
+app AayuWeb
+
+state visitors = 0
+
+page Home
+    heading "AAYU Studio"
+    text "A complete webpage written only in AAYU."
+    text "Simple syntax. Native performance. Safe interop."
+    button "Explore AAYU"
+    text visitors
+end

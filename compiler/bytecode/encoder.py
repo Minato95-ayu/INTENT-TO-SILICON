@@ -45,7 +45,9 @@ WIDGET_TYPES = {
     "FORM": 36,
     "PASSWORDINPUT": 37,
     "CHATBUBBLE": 38,
-    "SCAFFOLD": 39
+    "SCAFFOLD": 39,
+    "CHART": 100,
+    "DATAFRAMEWIDGET": 101
 }
 
 @dataclass
@@ -343,6 +345,14 @@ class BytecodeEncoder:
             # Actually, to make it simpler, we just emit DECLARE_LIFECYCLE with start_offset!
             self._emit(Opcode.DECLARE_LIFECYCLE, start_offset)
             
+        elif opcode == "DB_INSERT":
+            idx = self.pool.add({"model": node.operands[0], "fields_count": node.operands[1]})
+            self._emit(Opcode.DB_INSERT, idx)
+        elif opcode == "DB_FIND":
+            idx = self.pool.add(node.operands[0])
+            self._emit(Opcode.DB_FIND, idx)
+        elif opcode == "RESPOND":
+            self._emit(Opcode.RESPOND, 0)
         else:
             # Unknown LIR opcode — emit as DISPATCH for extensibility
             self._emit(Opcode.DISPATCH, 0)

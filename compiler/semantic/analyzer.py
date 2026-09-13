@@ -1,4 +1,4 @@
-from compiler.ast.nodes import (InsertNode, FindNode, RespondNode, 
+﻿from compiler.ast.nodes import (InsertNode, FindNode, RespondNode, 
     ProgramNode, StateDeclarationNode, LetDeclarationNode, LiteralNode,
     AssignmentNode, WidgetNode, ImportNode,
     ActionDeclarationNode, ActionCallNode, IdentifierNode,
@@ -11,7 +11,7 @@ from compiler.ast.nodes import (InsertNode, FindNode, RespondNode,
 from compiler.semantic.symbols import SymbolTable, Symbol
 from compiler.semantic.errors import SemanticError
 from compiler.semantic.nodes import (
-    SemanticProgramNode, SemanticStateDeclNode, SemanticLetDeclNode, SemanticLiteralNode,
+    SemanticInsertNode, SemanticFindNode, SemanticRespondNode, SemanticProgramNode, SemanticStateDeclNode, SemanticLetDeclNode, SemanticLiteralNode,
     SemanticAssignmentNode, SemanticWidgetNode, SemanticImportNode,
     SemanticActionDeclNode, SemanticActionCallNode, SemanticIdentifierNode,
     SemanticIfNode, SemanticForNode, SemanticBinaryOpNode,
@@ -148,11 +148,11 @@ class SemanticAnalyzer:
     def _analyze_node(self, node):
         if isinstance(node, InsertNode):
             fields = {k: self._analyze_node(v) for k, v in node.fields.items()}
-            return SemanticInsertNode(node.model_name, fields)
+            return SemanticInsertNode(node.line, node.column, self.current_scope, node.model_name, fields)
         if isinstance(node, FindNode):
-            return SemanticFindNode(node.model_name)
+            return SemanticFindNode(node.line, node.column, self.current_scope, node.model_name)
         if isinstance(node, RespondNode):
-            return SemanticRespondNode(self._analyze_node(node.value))
+            return SemanticRespondNode(node.line, node.column, self.current_scope, self._analyze_node(node.value))
 
         if isinstance(node, LetDeclarationNode):
             return self._analyze_let_decl(node)
@@ -206,10 +206,10 @@ class SemanticAnalyzer:
         elif isinstance(node, RouteNode):
             return self._analyze_route(node)
         elif isinstance(node, AppDeclarationNode):
-            # App declaration is metadata — pass through as-is
+            # App declaration is metadata â€” pass through as-is
             return None
         elif isinstance(node, RunNode):
-            # Run is a control marker — skip in semantic analysis
+            # Run is a control marker â€” skip in semantic analysis
             return None
         elif isinstance(node, ThemeNode):
             return SemanticThemeNode(line=node.line, column=node.column, scope=self.current_scope, name=node.name, properties=node.properties)

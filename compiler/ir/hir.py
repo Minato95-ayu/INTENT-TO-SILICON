@@ -173,3 +173,14 @@ class HIRForNode(HIRNode):
     iterator: str
     iterable: HIRNode
     body: List[HIRNode]
+
+class HIRInsert(HIRNode):
+    def __init__(self, model_name, fields):
+        self.model_name = model_name
+        self.fields = fields
+class HIRFind(HIRNode):
+    def __init__(self, model_name):
+        self.model_name = model_name
+class HIRRespond(HIRNode):
+    def __init__(self, value):
+        self.value = value

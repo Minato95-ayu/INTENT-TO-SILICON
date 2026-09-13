@@ -81,6 +81,7 @@ class StdLib:
         register_map_stdlib(self.registry)
         register_reflect_lib(self.registry)
 
+        from .modules.ai_lib import register_ai_lib
         from .modules import (
             register_math_lib, register_string_lib, register_list_lib, register_map_lib,
             register_file_lib, register_path_lib, register_json_lib, register_time_lib,
@@ -91,6 +92,7 @@ class StdLib:
         register_core_lib(self.registry)
         
         register_math_lib(self.registry)
+        register_ai_lib(self.registry)
         register_http_lib(self.registry)
         register_string_lib(self.registry)
         register_list_lib(self.registry)

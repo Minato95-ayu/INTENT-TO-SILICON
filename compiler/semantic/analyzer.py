@@ -43,7 +43,7 @@ class SemanticAnalyzer:
             ("len", 1), ("append", 2), ("push", 2), ("remove", 2), ("has", 2), ("keys", 1), ("values", 1), ("typeof", 1), ("db::query", 1), ("auth::login", 2),
             ("math::sin", 1), ("math::cos", 1), ("math::tan", 1), ("math::sqrt", 1), ("math::pow", 2),
             ("math::abs", 1), ("math::round", 1), ("math::min", 2), ("math::max", 2),
-            ("math::floor", 1), ("math::ceil", 1)
+            ("math::floor", 1), ("math::ceil", 1), ("ai::train", 1), ("ai::predict", 1), ("ml::kmeans", 2)
         ]
         for name, arity in builtins:
             sym = Symbol(name, "function")

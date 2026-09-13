@@ -1,0 +1,203 @@
+# ==============================================================
+# AAYU SOLUTIONS: C PROGRAMMING HANDBOOK
+# This file contains AAYU equivalents for popular C exercises
+# showcasing AAYU's syntax, control flow, functions, and OOP.
+# ==============================================================
+
+# -------------------------------------------------------------
+# CHAPTER 1 & 2: Variables, Constants, and Basic Arithmetic
+# -------------------------------------------------------------
+
+# Problem: Area of a Rectangle
+action calc_area_rectangle(length, width)
+    let area = length * width
+    print("Area of Rectangle (Length: " + length + ", Width: " + width + ") = " + area)
+    return area
+end
+
+# Problem: Celsius to Fahrenheit
+action celsius_to_fahrenheit(celsius)
+    # Formula: (C * 9/5) + 32
+    let f1 = celsius * 1.8
+    let f = f1 + 32.0
+    print(celsius + " Celsius is " + f + " Fahrenheit")
+    return f
+end
+
+
+# -------------------------------------------------------------
+# CHAPTER 3: Conditional Instructions
+# -------------------------------------------------------------
+
+# Problem: Student Pass / Fail
+action check_pass_fail(marks1, marks2, marks3)
+    let m12 = marks1 + marks2
+    let total = m12 + marks3
+    let percentage = total / 3.0
+    
+    print("Student Percentage: " + percentage)
+    
+    if percentage >= 40.0
+        if marks1 >= 33.0
+            if marks2 >= 33.0
+                if marks3 >= 33.0
+                    print("Result: PASSED!")
+                else
+                    print("Result: FAILED (Subject 3 < 33)")
+                end
+            else
+                print("Result: FAILED (Subject 2 < 33)")
+            end
+        else
+            print("Result: FAILED (Subject 1 < 33)")
+        end
+    else
+        print("Result: FAILED (Overall < 40)")
+    end
+    
+    return 0
+end
+
+
+# -------------------------------------------------------------
+# CHAPTER 4: Loop Control Instructions
+# -------------------------------------------------------------
+
+# Problem: Multiplication Table of 'n'
+action multiplication_table(n)
+    print("Multiplication Table of " + n + ":")
+    let i = 1
+    while i <= 10
+        let result = n * i
+        print(n + " x " + i + " = " + result)
+        i = i + 1
+    end
+    return 0
+end
+
+# Problem: Check if a number is Prime
+action is_prime(n)
+    if n <= 1
+        print(n + " is NOT a prime number.")
+        return 0
+    end
+    
+    let i = 2
+    let is_p = 1
+    
+    while i < n
+        # Math workaround to check if 'i' divides 'n' without modulo '%'
+        let current_sum = 0
+        while current_sum < n
+            current_sum = current_sum + i
+        end
+        if current_sum == n
+            is_p = 0
+        end
+        i = i + 1
+    end
+    
+    if is_p == 1
+        print(n + " IS a prime number!")
+    else
+        print(n + " is NOT a prime number.")
+    end
+    
+    return is_p
+end
+
+
+# -------------------------------------------------------------
+# CHAPTER 5: Functions and Recursion
+# -------------------------------------------------------------
+
+# Problem: Fibonacci Sequence (Recursion)
+action fibonacci(n)
+    if n == 0
+        return 0
+    end
+    
+    if n == 1
+        return 1
+    end
+    
+    # Recursive calls
+    let n1 = n - 1
+    let n2 = n - 2
+    let a = fibonacci(n1)
+    let b = fibonacci(n2)
+    let c = a + b
+    return c
+end
+
+action print_fibonacci_up_to(n)
+    print("Fibonacci series up to " + n + " terms:")
+    let i = 0
+    while i < n
+        let val = fibonacci(i)
+        print("Fib(" + i + ") = " + val)
+        i = i + 1
+    end
+    return 0
+end
+
+
+# -------------------------------------------------------------
+# CHAPTER 9: Structures (AAYU Models)
+# -------------------------------------------------------------
+
+# Problem: Create a Structure for Bank Account
+model BankAccount {
+    account_number: Int
+    customer_name: String
+    balance: Int
+}
+
+action test_bank_account()
+    print("Creating Bank Accounts (Using Native AAYU DB Models)...")
+    
+    insert BankAccount { account_number = 1001 customer_name = "Rahul" balance = 5000 }
+    insert BankAccount { account_number = 1002 customer_name = "Harry" balance = 12500 }
+    
+    let accounts = find BankAccount
+    print("Bank Accounts in System:")
+    print(accounts)
+    
+    return 0
+end
+
+
+# -------------------------------------------------------------
+# MAIN EXECUTION
+# -------------------------------------------------------------
+action main()
+    print("====== AAYU C-HANDBOOK SOLUTIONS START ======")
+    
+    # 1. Basics
+    calc_area_rectangle(15, 8)
+    celsius_to_fahrenheit(37.0)
+    print("-----------------------------------")
+    
+    # 2. Conditionals
+    check_pass_fail(45.0, 50.0, 42.0)  # Should Pass
+    check_pass_fail(80.0, 90.0, 20.0)  # Should Fail (subject 3)
+    print("-----------------------------------")
+    
+    # 3. Loops
+    multiplication_table(7)
+    is_prime(29)
+    is_prime(30)
+    print("-----------------------------------")
+    
+    # 4. Recursion
+    print_fibonacci_up_to(6)
+    print("-----------------------------------")
+    
+    # 5. Structures/Models
+    test_bank_account()
+    
+    print("====== AAYU C-HANDBOOK SOLUTIONS END ======")
+    return 0
+end
+
+run main()

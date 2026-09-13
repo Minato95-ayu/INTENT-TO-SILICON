@@ -25,7 +25,7 @@ import {
 type Phase = {
   id: string;
   title: string;
-  status: "completed" | "in-progress" | "planned";
+  status: "in-progress" | "in-progress" | "planned";
   description: string;
   items: string[];
   icon: React.ReactNode;
@@ -35,7 +35,7 @@ const phases: Phase[] = [
   {
     id: "A",
     title: "Language Core",
-    status: "completed",
+    status: "in-progress",
     description:
       "The foundational compiler pipeline — from source text to executing bytecode. Every layer hand-built from scratch.",
     items: [
@@ -55,7 +55,7 @@ const phases: Phase[] = [
   {
     id: "B",
     title: "Native HTTP Runtime",
-    status: "completed",
+    status: "in-progress",
     description:
       "A zero-dependency HTTP server built directly into the language runtime. No Express, no Koa — pure AAYU.",
     items: [
@@ -72,7 +72,7 @@ const phases: Phase[] = [
   {
     id: "C",
     title: "Native Storage Runtime",
-    status: "completed",
+    status: "in-progress",
     description:
       "A full relational storage engine embedded in the runtime — schema definitions, migrations, query planning, and optimization without ORMs.",
     items: [
@@ -92,7 +92,7 @@ const phases: Phase[] = [
   {
     id: "CLI",
     title: "CLI & Tooling",
-    status: "completed",
+    status: "in-progress",
     description:
       "Developer experience tools — build, run, manage packages, and write code with first-class editor support.",
     items: [
@@ -106,7 +106,7 @@ const phases: Phase[] = [
   {
     id: "STD",
     title: "Standard Library",
-    status: "completed",
+    status: "in-progress",
     description:
       "Production-grade standard modules shipping with every AAYU installation.",
     items: [
@@ -124,7 +124,7 @@ const phases: Phase[] = [
   {
     id: "D",
     title: "Native State Runtime",
-    status: "in-progress",
+    status: "planned",
     description:
       "First-class application state management woven into the language — reactive, observable, and deterministic.",
     items: ["Application state management"],
@@ -133,7 +133,7 @@ const phases: Phase[] = [
   {
     id: "E",
     title: "UI Runtime v2",
-    status: "in-progress",
+    status: "planned",
     description:
       "A native rendering pipeline that bypasses the traditional DOM bottleneck with a custom layout engine.",
     items: ["Render Tree", "Layout Engine", "Event System", "DOM Bridge"],

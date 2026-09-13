@@ -26,7 +26,11 @@ export default function BrainOSPortal() {
     <main className="min-h-screen bg-[#050505] text-white pt-24 pb-24">
       <div className="container mx-auto px-4 max-w-6xl">
         
+        
         <div className="mb-16">
+          <div className="inline-block bg-yellow-500/20 border border-yellow-500/50 text-yellow-300 px-4 py-3 rounded-lg font-semibold mb-6">
+            WARNING: This feature is strictly a CONCEPT and is NOT implemented in the current Alpha release.
+          </div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-bold mb-6">
             <Brain className="w-4 h-4" /> The Orchestrator <span className="ml-2 text-[10px] text-yellow-500 bg-yellow-500/20 border border-yellow-500/30 px-1.5 py-0.5 rounded">Simulation</span>
           </div>

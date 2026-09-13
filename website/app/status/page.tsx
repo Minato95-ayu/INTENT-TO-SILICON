@@ -5,15 +5,17 @@
 import { CheckCircle2, Construction, Activity } from "lucide-react";
 
 const STATUS_ITEMS = [
-  { name: "AAYU Language", status: "stable" },
-  { name: "Compiler", status: "stable" },
-  { name: "Runtime", status: "stable" },
-  { name: "Package Manager", status: "stable" },
-  { name: "Formatter", status: "stable" },
-  { name: "Linter", status: "stable" },
-  { name: "VS Code Extension", status: "wip" },
-  { name: "BrainOS", status: "wip" },
-  { name: "Intent Engine", status: "wip" },
+  { name: "AAYU Language", status: "alpha" },
+  { name: "Compiler", status: "alpha" },
+  { name: "Runtime (VM)", status: "alpha" },
+  { name: "HTTP Server & Router", status: "alpha" },
+  { name: "Database Engine", status: "experimental" },
+  { name: "Package Manager", status: "not-started" },
+  { name: "Formatter", status: "not-started" },
+  { name: "Linter", status: "not-started" },
+  { name: "VS Code Extension", status: "not-started" },
+  { name: "BrainOS", status: "concept" },
+  { name: "Intent Engine", status: "concept" },
   { name: "Documentation", status: "wip" },
   { name: "Developer Website", status: "wip" },
 ];

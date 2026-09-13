@@ -23,6 +23,9 @@ from compiler.ir.hir import (
 from compiler.ir.mir import MIRNode, MIRInstruction
 from compiler.ir.lir import LIRNode
 class IRPipeline:
+    def _needs_pop(self, stmt):
+        from compiler.ir.hir import HIRActionCall, HIRInsert, HIRFind, HIRBinaryOp, HIRLoadVar, HIRLoadConst, HIRArrayNode, HIRSubscript, HIRDictionary, HIRAwait
+        return isinstance(stmt, (HIRActionCall, HIRInsert, HIRFind, HIRBinaryOp, HIRLoadVar, HIRLoadConst, HIRArrayNode, HIRSubscript, HIRDictionary, HIRAwait))
     """Three-stage IR lowering: Semantic AST → HIR → MIR → LIR"""
     # ── HIR Stage ──────────────────────────────────────────────
     def to_hir(self, semantic_ast: SemanticProgramNode) -> List[HIRNode]:
@@ -105,6 +108,14 @@ class IRPipeline:
                     h = self._semantic_to_hir(stmt)
                     if h is not None: else_hir.append(h)
             return HIRIf(cond_hir, then_hir, else_hir)
+        elif type(node).__name__ == "SemanticWhileNode":
+            cond_hir = self._semantic_to_hir(node.condition)
+            body_hir = []
+            for stmt in node.body:
+                h = self._semantic_to_hir(stmt)
+                if h is not None: body_hir.append(h)
+            from compiler.ir.hir import HIRWhile
+            return HIRWhile(condition=cond_hir, body=body_hir)
         elif isinstance(node, SemanticForNode):
             iter_hir = self._semantic_to_hir(node.iterable)
             if isinstance(iter_hir, HIRPrint): iter_hir = HIRLoadConst(iter_hir.value)
@@ -339,7 +350,7 @@ class IRPipeline:
                 
             for stmt in hir.body:
                 self._hir_to_mir(stmt, body_mir)
-                if isinstance(stmt, HIRActionCall):
+                if self._needs_pop(stmt):
                     body_mir.append(MIRInstruction("POP", []))
             mir_list.append(MIRInstruction("ACTION_DECL", [hir.name, body_mir, hir.args]))
             
@@ -425,11 +436,32 @@ class IRPipeline:
             mir_list.append(MIRInstruction("JUMP_IF_FALSE", [else_label]))
             for stmt in hir.then_branch:
                 self._hir_to_mir(stmt, mir_list)
+                if self._needs_pop(stmt):
+                    mir_list.append(MIRInstruction("POP", []))
             mir_list.append(MIRInstruction("JUMP", [end_label]))
             mir_list.append(MIRInstruction("LABEL", [else_label]))
             if hir.else_branch:
                 for stmt in hir.else_branch:
                     self._hir_to_mir(stmt, mir_list)
+                    if self._needs_pop(stmt):
+                        mir_list.append(MIRInstruction("POP", []))
+            mir_list.append(MIRInstruction("LABEL", [end_label]))
+        elif type(hir).__name__ == "HIRWhile":
+            import uuid
+            uid = uuid.uuid4().hex[:8]
+            start_label = f"while_start_{uid}"
+            end_label = f"while_end_{uid}"
+            
+            mir_list.append(MIRInstruction("LABEL", [start_label]))
+            self._hir_to_mir(hir.condition, mir_list)
+            mir_list.append(MIRInstruction("JUMP_IF_FALSE", [end_label]))
+            
+            for stmt in hir.body:
+                self._hir_to_mir(stmt, mir_list)
+                if self._needs_pop(stmt):
+                    mir_list.append(MIRInstruction("POP", []))
+                    
+            mir_list.append(MIRInstruction("JUMP", [start_label]))
             mir_list.append(MIRInstruction("LABEL", [end_label]))
         elif isinstance(hir, HIRFor):
             import uuid
@@ -467,6 +499,8 @@ class IRPipeline:
             # Body
             for stmt in hir.body:
                 self._hir_to_mir(stmt, mir_list)
+                if self._needs_pop(stmt):
+                    mir_list.append(MIRInstruction("POP", []))
             # Increment index
             mir_list.append(MIRInstruction("LOAD_VAR", [idx_var]))
             mir_list.append(MIRInstruction("PUSH_CONST", [1]))
@@ -487,7 +521,7 @@ class IRPipeline:
                 body_mir = []
                 for stmt in m.body:
                     self._hir_to_mir(stmt, body_mir)
-                    if isinstance(stmt, HIRActionCall):
+                    if self._needs_pop(stmt):
                         body_mir.append(MIRInstruction("POP", []))
                 methods_mir.append({"method": m.method, "body": body_mir})
             mir_list.append(MIRInstruction("REGISTER_ROUTE", [hir.path, methods_mir]))
@@ -565,6 +599,8 @@ class IRPipeline:
             body_mir = []
             for stmt in hir.body:
                 self._hir_to_mir(stmt, body_mir)
+                if self._needs_pop(stmt):
+                    body_mir.append(MIRInstruction("POP", []))
             mir_list.append(MIRInstruction("DECLARE_LIFECYCLE", [hir.hook, body_mir]))
     # ── LIR Stage ──────────────────────────────────────────────
     def to_lir(self, mir_list: List[MIRNode]) -> List[LIRNode]:

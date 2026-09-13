@@ -130,6 +130,9 @@ class Parser:
         if self._match(TokenType.KEYWORD, "if"):
             return self._parse_if_statement()
 
+
+        if self._match(TokenType.KEYWORD, "while"):
+            return self._parse_while_statement()
         if self._match(TokenType.KEYWORD, "for"):
             return self._parse_for_statement()
 
@@ -327,6 +330,17 @@ class Parser:
         from compiler.ast.nodes import IfNode
         return IfNode(line=line, column=col, condition=condition, then_branch=then_branch, else_branch=else_branch)
         
+    
+    def _parse_while_statement(self):
+        line, col = self._previous().line, self._previous().column
+        condition = self._parse_expression()
+        body = []
+        while not self._is_at_end() and not self._check(TokenType.KEYWORD, "end"):
+            body.append(self._parse_statement())
+        self._consume(TokenType.KEYWORD, "Expect 'end' after while body.", value="end")
+        from compiler.ast.nodes import WhileNode
+        return WhileNode(line=line, column=col, condition=condition, body=body)
+
     def _parse_for_statement(self):
         line, col = self._previous().line, self._previous().column
         first_ident = self._consume(TokenType.IDENTIFIER, "Expect iterator name after 'for'.").value

@@ -9,11 +9,10 @@ AAYU is a **single-file full-stack programming language** with built-in Database
 - **Single-file full-stack**: Database models, API routes, UI pages, and AI/ML — all in one `.aayu` file
 - **Zero dependencies**: No npm, no pip, no package managers needed for core features
 - **Real compiler pipeline**: Lexer → Parser → AST → HIR → MIR → LIR → Bytecode → Stack-based VM
-- **Memory safe**: Mark-and-sweep garbage collector with reference counting
-- **Built-in database**: SQLite with schema engine, query planner, transaction manager, migration engine
-- **Built-in web server**: REST API routes with middleware, auth, and session management
-- **Built-in UI**: Declarative widget-tree (Flutter-like) with reactive state
-- **AI/ML stdlib**: Native model training, inference, clustering — no external libraries
+- **Memory**: Basic reference counting (Mark-and-sweep GC planned)
+- **Built-in database**: Basic SQLite wrapper with automatic model table generation (Query planner & migrations planned)
+- **Built-in web server**: Basic HTTP server with routing (Middleware & auth planned)
+- **Built-in UI**: Declarative widget-tree (Proof of concept)
 
 ## 🚀 Quick Start
 

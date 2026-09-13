@@ -8,12 +8,15 @@ export default function BenchmarksPage() {
   return (
     <main className="min-h-screen bg-black text-white pt-24 pb-20">
       <div className="container mx-auto px-4 max-w-5xl">
-        <div className="mb-16 text-center">
+                <div className="mb-16 text-center">
           <h1 className="text-4xl font-extrabold tracking-tight mb-4 flex items-center justify-center gap-4">
             <BarChart3 className="w-10 h-10 text-green-500" />
             Performance Benchmarks
           </h1>
           <p className="text-xl text-zinc-400">Comparing AAYU against industry standards across compilation, runtime, and memory usage.</p>
+          <div className="mt-4 inline-block bg-yellow-500/20 border border-yellow-500/50 text-yellow-300 px-4 py-2 rounded-lg font-semibold">
+            WARNING: These benchmarks are ASPIRATIONAL PROJECTIONS for the final v1.0 release. They do NOT represent the current Alpha state of the language, which is still running on an unoptimized Python-based Virtual Machine.
+          </div>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 mb-12">

@@ -2,7 +2,7 @@
     ProgramNode, StateDeclarationNode, LetDeclarationNode, LiteralNode,
     AssignmentNode, WidgetNode, ImportNode,
     ActionDeclarationNode, ActionCallNode, IdentifierNode,
-    AppDeclarationNode, RunNode, IfNode, ForNode, BinaryOpNode,
+    AppDeclarationNode, RunNode, IfNode, ForNode, WhileNode, BinaryOpNode,
     ModelDeclNode, RouteNode, ReturnNode, ThemeNode, UseThemeNode, NavigateNode,
     PropDeclarationNode, DictionaryNode, AwaitNode, BindNode, ValidateNode,
     AnimateNode, LifecycleNode, ArrayNode, SubscriptNode,
@@ -82,6 +82,20 @@ class SemanticAnalyzer:
                 if res is not None: else_branch.append(res)
                 
         return SemanticIfNode(line=node.line, column=node.column, scope=self.current_scope, condition=condition, then_branch=then_branch, else_branch=else_branch)
+
+    
+    def _analyze_while(self, node):
+        condition = self._analyze_node(node.condition)
+        prev_scope = self.current_scope
+        loop_scope = SymbolTable(parent=prev_scope)
+        self.current_scope = loop_scope
+        body = []
+        for stmt in node.body:
+            s = self._analyze_node(stmt)
+            if s is not None: body.append(s)
+        self.current_scope = prev_scope
+        from compiler.semantic.nodes import SemanticWhileNode
+        return SemanticWhileNode(line=node.line, column=node.column, scope=loop_scope, condition=condition, body=body)
 
     def _analyze_for(self, node: ForNode):
         iterable = self._analyze_node(node.iterable)
@@ -183,6 +197,8 @@ class SemanticAnalyzer:
             return self._analyze_identifier(node)
         elif isinstance(node, IfNode):
             return self._analyze_if(node)
+        elif isinstance(node, WhileNode):
+            return self._analyze_while(node)
         elif isinstance(node, ForNode):
             return self._analyze_for(node)
         elif isinstance(node, BinaryOpNode):

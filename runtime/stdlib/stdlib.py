@@ -612,6 +612,7 @@ class StdLib:
         except ImportError:
             from http.server import HTTPServer as HTTPServerClass
         HTTPServerClass.request_queue_size = 256
+        HTTPServerClass.allow_reuse_address = True
         server = HTTPServerClass(("", port), AayuVMHTTPRequestHandler)
         # Store http_server on the VM so tests can shutdown programmatically
         vm_instance.http_server = server

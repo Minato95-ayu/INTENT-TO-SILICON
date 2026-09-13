@@ -293,7 +293,10 @@ class APIRouter:
             def log_message(self, *_args):
                 return
 
-        self.server = ThreadingHTTPServer((self.host, self.port), RequestHandler)
+        class AayuHTTPServer(ThreadingHTTPServer):
+            allow_reuse_address = True
+
+        self.server = AayuHTTPServer((self.host, self.port), RequestHandler)
         self.port = self.server.server_address[1]
         import threading
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True, name="aayu-api-router")

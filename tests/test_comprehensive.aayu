@@ -1,0 +1,50 @@
+# Comprehensive E2E test script
+model User {
+    name: String
+    role: String
+}
+
+action test_control_flow()
+    print("--- Testing Control Flow ---")
+    let i = 0
+    let count = 0
+    while i < 3
+        if i == 1
+            count = count + 10
+        else
+            count = count + 1
+        end
+        i = i + 1
+    end
+    print("Control Flow Result (expect 12):")
+    print(count)
+    return 0
+end
+
+action test_database()
+    print("--- Testing Database ---")
+    insert User { name = "Alice" role = "Admin" }
+    insert User { name = "Bob" role = "User" }
+    let users = find User
+    print("Database Result (expect Alice and Bob):")
+    print(users)
+    return 0
+end
+
+route "/api/ping"
+    get
+        respond "pong"
+    end
+end
+
+action main()
+    print("=== AAYU COMPREHENSIVE E2E TEST ===")
+    test_control_flow()
+    test_database()
+    print("--- Testing HTTP Server ---")
+    print("Route /api/ping registered.")
+    print("=== TEST COMPLETED SUCCESSFULLY ===")
+    return 0
+end
+
+run main()

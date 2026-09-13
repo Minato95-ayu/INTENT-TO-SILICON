@@ -136,8 +136,8 @@ const runtimes: RuntimeGroup[] = [
       { label: "Server", icon: <Server className="w-4 h-4" /> },
       { label: "Router", icon: <Route className="w-4 h-4" /> },
       { label: "Request / Response", icon: <ArrowLeftRight className="w-4 h-4" /> },
-      { label: "Middleware", icon: <Plug className="w-4 h-4" /> },
-      { label: "WebSocket", icon: <Radio className="w-4 h-4" /> },
+      { label: "Middleware (Planned)", icon: <Plug className="w-4 h-4" /> },
+      { label: "WebSocket (Planned)", icon: <Radio className="w-4 h-4" /> },
     ],
   },
   {
@@ -147,12 +147,12 @@ const runtimes: RuntimeGroup[] = [
     accent: "orange",
     items: [
       { label: "Schema Engine", icon: <TableProperties className="w-4 h-4" /> },
-      { label: "Migration Engine", icon: <GitBranch className="w-4 h-4" /> },
+      { label: "Migration Engine (Planned)", icon: <GitBranch className="w-4 h-4" /> },
       { label: "Query AST", icon: <Search className="w-4 h-4" /> },
-      { label: "Planner", icon: <ClipboardList className="w-4 h-4" /> },
-      { label: "Optimizer", icon: <Gauge className="w-4 h-4" /> },
-      { label: "Transaction Manager", icon: <Lock className="w-4 h-4" /> },
-      { label: "SQLite / Postgres Adapter", icon: <Columns2 className="w-4 h-4" /> },
+      { label: "Planner (Planned)", icon: <ClipboardList className="w-4 h-4" /> },
+      { label: "Optimizer (Planned)", icon: <Gauge className="w-4 h-4" /> },
+      { label: "Transaction Manager (Planned)", icon: <Lock className="w-4 h-4" /> },
+      { label: "SQLite (Basic) / Postgres (Planned)", icon: <Columns2 className="w-4 h-4" /> },
     ],
   },
   {

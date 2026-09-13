@@ -184,3 +184,8 @@ class HIRFind(HIRNode):
 class HIRRespond(HIRNode):
     def __init__(self, value):
         self.value = value
+
+@dataclass
+class HIRWhile(HIRNode):
+    condition: HIRNode
+    body: list[HIRNode]

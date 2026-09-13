@@ -8,7 +8,11 @@ export default function IntentEnginePortal() {
   return (
     <main className="min-h-screen bg-[#050505] text-white pt-24 pb-24">
       <div className="container mx-auto px-4 max-w-6xl">
+        
         <div className="mb-16">
+          <div className="inline-block bg-yellow-500/20 border border-yellow-500/50 text-yellow-300 px-4 py-3 rounded-lg font-semibold mb-6">
+            WARNING: This feature is strictly a CONCEPT and is NOT implemented in the current Alpha release.
+          </div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold mb-6">
             <Network className="w-4 h-4" /> The NLP Core
           </div>

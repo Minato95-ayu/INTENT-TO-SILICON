@@ -250,3 +250,8 @@ class LifecycleNode(ASTNode):
     hook: str
     body: List[ASTNode]
 
+
+@dataclass(frozen=True)
+class WhileNode(ASTNode):
+    condition: ASTNode
+    body: list[ASTNode]

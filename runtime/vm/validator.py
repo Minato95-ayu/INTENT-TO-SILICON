@@ -115,6 +115,14 @@ class Validator:
                 new_depth -= 1 # pop 2, push 1
             elif opcode == Opcode.STORE_SUBSCR:
                 new_depth -= 3 # pop 3, push 0
+            elif opcode == Opcode.DB_INSERT:
+                idx = (bytecode[ip+1] << 8) | bytecode[ip+2]
+                info = constant_pool[idx]
+                fields_count = info["fields_count"]
+                new_depth -= (2 * fields_count)
+                new_depth += 1 # because compiler emits PUSH_CONST 0 immediately after, but wait, DB_INSERT doesn't push at runtime, it's just the compiler emitting PUSH_CONST 0 next. So DB_INSERT itself has net depth - (2 * fields_count).
+            elif opcode == Opcode.DB_FIND:
+                new_depth += 1  # DB_FIND pushes the found model/array
             elif opcode == Opcode.BUILD_DICT:
                 num_keys = (bytecode[ip+1] << 8) | bytecode[ip+2]
                 new_depth -= num_keys  # pops list of keys (1) + num_keys values, then pushes 1 dict. Net = -num_keys

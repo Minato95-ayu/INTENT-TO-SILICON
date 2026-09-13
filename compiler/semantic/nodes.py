@@ -220,3 +220,8 @@ class SemanticFindNode(SemanticNode):
 @dataclass
 class SemanticRespondNode(SemanticNode):
     value: SemanticNode
+
+@dataclass
+class SemanticWhileNode(SemanticNode):
+    condition: SemanticNode
+    body: list[SemanticNode]

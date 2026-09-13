@@ -13,9 +13,9 @@ const PIPELINE = [
   { id: "parser", label: "Parser", icon: Settings, desc: "Syntax analysis" },
   { id: "ast", label: "AST", icon: FileJson, desc: "Abstract Syntax Tree" },
   { id: "semantic", label: "Semantic Analysis", icon: Brain, desc: "Type checking & intent validation" },
-  { id: "optimizer", label: "Optimizer", icon: Zap, desc: "Dead code elimination & loop unrolling" },
+  { id: "optimizer", label: "Optimizer", icon: Zap, desc: "Basic Dead code elimination (Loop unrolling planned)" },
   { id: "bytecode", label: "Bytecode", icon: Cpu, desc: "AAYU IR generation" },
-  { id: "runtime", label: "Runtime", icon: PlayCircle, desc: "VM execution with deterministic ARC" }
+  { id: "runtime", label: "Runtime", icon: PlayCircle, desc: "VM execution (ARC/GC planned)" }
 ];
 
 export default function CompilerPipelinePage() {
@@ -27,7 +27,7 @@ export default function CompilerPipelinePage() {
         <div className="mb-16 text-center">
           <Link href="/language" className="text-sm text-blue-400 hover:text-blue-300 mb-4 inline-block">&larr; Back to Language Portal</Link>
           <h1 className="text-4xl font-extrabold mb-4">Interactive Compiler Pipeline</h1>
-          <p className="text-zinc-400 text-lg max-w-2xl mx-auto">Explore how AAYU transforms your high-level human intent into heavily optimized, safe machine code.</p>
+          <p className="text-zinc-400 text-lg max-w-2xl mx-auto">Explore how AAYU transforms your high-level human intent into bytecode (Note: Optimizer is currently minimal).</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-12 items-center">

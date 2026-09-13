@@ -682,8 +682,8 @@ class Interpreter:
         fields_count = info["fields_count"]
         fields = {}
         for _ in range(fields_count):
-            val = self.vm.value_stack.pop()
             key = self.vm.value_stack.pop()
+            val = self.vm.value_stack.pop()
             fields[key] = val
         import sqlite3
         try:

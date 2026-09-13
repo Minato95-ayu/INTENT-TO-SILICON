@@ -255,8 +255,7 @@ class Interpreter:
         val = self.vm.value_stack.pop()
         if not self.vm.state_scopes:
             raise KernelError(f'state_scopes is empty at IP {self.vm.registers.ip - 3}')
-        if name not in self.vm.state_scopes[-1]:
-            self.vm.state_scopes[-1][name] = val
+        self.vm.state_scopes[-1][name] = val
         return True
 
     def op_CALL_COMPONENT(self, opcode):

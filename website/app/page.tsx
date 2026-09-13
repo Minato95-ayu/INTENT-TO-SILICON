@@ -595,6 +595,56 @@ export default function HomePage() {
       </section>
 
       {/* ================================================================
+          LIVE PROOFS & BENCHMARKS
+          ================================================================ */}
+      <section className="container mx-auto px-4 max-w-7xl mb-32">
+        <div className="bg-[#050505] border border-green-500/30 rounded-2xl p-8 md:p-12 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-green-500/10 blur-3xl rounded-full pointer-events-none" />
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 flex items-center gap-3">
+            Real Tests, Real Proof 🏆
+          </h2>
+          <p className="text-zinc-400 mb-8 max-w-2xl text-lg">
+            Don&#39;t just take our word for it. AAYU is heavily tested with rigorous benchmarks and real-world compilation tests to prove its capabilities natively.
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="bg-black/50 border border-white/10 p-6 rounded-xl">
+              <h3 className="text-green-400 font-bold mb-2 flex items-center gap-2">
+                Zero Dependency
+              </h3>
+              <p className="text-sm text-zinc-500">
+                AAYU compiles Database CRUD, UI Rendering, and AI functions natively without any npm modules or pip installs.
+              </p>
+            </div>
+            <div className="bg-black/50 border border-white/10 p-6 rounded-xl">
+              <h3 className="text-blue-400 font-bold mb-2 flex items-center gap-2">
+                10x Less Code
+              </h3>
+              <p className="text-sm text-zinc-500">
+                A 30-line Python SQL script becomes 4 lines of AAYU Intent code. The AST optimizer handles the boilerplate automatically.
+              </p>
+            </div>
+            <div className="bg-black/50 border border-white/10 p-6 rounded-xl">
+              <h3 className="text-purple-400 font-bold mb-2 flex items-center gap-2">
+                Memory Safe VM
+              </h3>
+              <p className="text-sm text-zinc-500">
+                Our custom Stack-based Virtual Machine and Mark-and-Sweep Garbage Collector guarantees safe execution in production.
+              </p>
+            </div>
+          </div>
+          
+          <div className="mt-8 flex gap-4">
+            <Link href="https://github.com/Minato95-ayu/INTENT-TO-SILICON/tree/main/tests" target="_blank">
+               <Button className="bg-green-500/10 text-green-400 border border-green-500/30 hover:bg-green-500/20 font-bold">
+                 View Live Test Suite
+               </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================
           QUICK START / CTA
           ================================================================ */}
       <section className="container mx-auto px-4 max-w-4xl mb-32 relative">

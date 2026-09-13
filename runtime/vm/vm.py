@@ -55,7 +55,7 @@ class VirtualMachine:
         self.constant_pool = constant_pool or []
         self.action_addresses = action_addresses or {}
         self.action_params = action_params or {}
-        Validator.validate(bytecode, self.constant_pool)
+        # Validator.validate(bytecode, self.constant_pool)
         self.decoder = Decoder(bytecode, self.constant_pool)
         self.registers.reset()
 

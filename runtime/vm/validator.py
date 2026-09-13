@@ -90,6 +90,8 @@ class Validator:
             visited[state_key] = depth
             opcode = bytecode[ip]
             new_depth = depth
+            from runtime.vm.instructions import opcode_to_str
+            print(f"[VAL TRACE] ip={ip} {opcode_to_str(opcode)} {depth} -> {new_depth}")
             
             if opcode in (Opcode.PUSH_CONST, Opcode.DUP, Opcode.LOAD_STATE, Opcode.CREATE_MODEL):
                 new_depth += 1

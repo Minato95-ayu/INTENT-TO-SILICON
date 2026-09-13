@@ -20,6 +20,7 @@ class VirtualMachine:
         self.config = config or VMConfig.development()
         self.registers = Registers()
         self.heap = Heap()
+        self.heap.set_vm(self)
         self.call_stack = CallStack(max_depth=self.config.max_call_depth)
         self.value_stack = ValueStack()
         self.output = []

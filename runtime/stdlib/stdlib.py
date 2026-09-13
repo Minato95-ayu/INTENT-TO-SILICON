@@ -93,6 +93,12 @@ class StdLib:
         
         register_math_lib(self.registry)
         register_ai_lib(self.registry)
+
+        # Register ML explicitly
+        self.registry.register("ml_kmeans_fit", self.ml_kmeans_fit)
+        self.registry.register("ml_kmeans_predict", self.ml_kmeans_predict)
+        self.registry.register("ml_linear_regression_fit", self.ml_linear_regression_fit)
+        self.registry.register("ml_linear_regression_predict", self.ml_linear_regression_predict)
         register_http_lib(self.registry)
         register_string_lib(self.registry)
         register_list_lib(self.registry)
@@ -347,6 +353,19 @@ class StdLib:
             self.vm.db_cursor.execute(sql, [condition_value])
             self.vm.db_conn.commit()
         self._profiled_db(_exec)
+
+
+    def ml_kmeans_fit(self, data: list, k: int = 3, max_iters: int = 100) -> int:
+        return ml_kmeans_fit(data, k, max_iters)
+
+    def ml_kmeans_predict(self, model_id: int, data: list) -> list:
+        return ml_kmeans_predict(model_id, data)
+
+    def ml_linear_regression_fit(self, X: list, y: list, lr: float = 0.01, epochs: int = 1000) -> int:
+        return ml_linear_regression_fit(X, y, lr, epochs)
+
+    def ml_linear_regression_predict(self, model_id: int, X: list) -> list:
+        return ml_linear_regression_predict(model_id, X)
 
     def json_serialize(self, data) -> AayuJSONResponse:
         """Serializes data to JSON response."""

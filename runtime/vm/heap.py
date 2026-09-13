@@ -9,6 +9,9 @@ class Heap:
         self.allocator = Allocator()
         self.gc = GarbageCollector(self.allocator)
 
+    def set_vm(self, vm):
+        self.gc.vm = vm
+
     def allocate(self, type_name: str, value: any) -> int:
         return self.allocator.pool.allocate(type_name, value)
 

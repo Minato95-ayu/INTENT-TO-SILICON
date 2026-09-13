@@ -1,0 +1,25 @@
+action test_ml()
+    print("--- Testing Native ML Stdlib (K-Means) ---")
+    let data = [
+        [1.0, 1.0], [1.5, 2.0], [3.0, 4.0],
+        [5.0, 7.0], [3.5, 5.0], [4.5, 5.0],
+        [3.5, 4.5]
+    ]
+    let model = ml_kmeans_fit(data, 2, 50)
+    let predictions = ml_kmeans_predict(model, data)
+    print("K-Means Model ID:")
+    print(model)
+    print("Predictions:")
+    print(predictions)
+
+    print("--- Testing Native ML Stdlib (Linear Regression) ---")
+    let x_data = [[1.0], [2.0], [3.0], [4.0]]
+    let y_data = [2.0, 4.0, 6.0, 8.0]
+    let lr_model = ml_linear_regression_fit(x_data, y_data, 0.01, 1000)
+    let preds = ml_linear_regression_predict(lr_model, [[5.0], [6.0]])
+    print("LR Predictions (expecting ~10 and ~12):")
+    print(preds)
+    return 0
+end
+
+run test_ml()

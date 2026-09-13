@@ -1,4 +1,4 @@
-/* eslint-disable */
+﻿/* eslint-disable */
 
 "use client";
 
@@ -36,9 +36,9 @@ import {
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 
-/* ─────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    Animated typing hook
-   ───────────────────────────────────────────── */
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function useTypingEffect(lines: string[], speed = 35, lineDelay = 400) {
   const [displayed, setDisplayed] = useState<string[]>([]);
   const [done, setDone] = useState(false);
@@ -67,9 +67,9 @@ function useTypingEffect(lines: string[], speed = 35, lineDelay = 400) {
   return { displayed, done };
 }
 
-/* ─────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    Pipeline stage component
-   ───────────────────────────────────────────── */
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function PipelineStage({ label, icon: Icon, color, delay }: { label: string; icon: any; color: string; delay: number }) {
   const [visible, setVisible] = useState(false);
   useEffect(() => {
@@ -86,9 +86,9 @@ function PipelineStage({ label, icon: Icon, color, delay }: { label: string; ico
   );
 }
 
-/* ─────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    Connector arrow between pipeline stages
-   ───────────────────────────────────────────── */
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function PipelineArrow({ delay }: { delay: number }) {
   const [visible, setVisible] = useState(false);
   useEffect(() => {
@@ -102,9 +102,9 @@ function PipelineArrow({ delay }: { delay: number }) {
   );
 }
 
-/* ═════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    MAIN PAGE COMPONENT
-   ═════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 export default function HomePage() {
   const [copied, setCopied] = useState(false);
 
@@ -127,7 +127,7 @@ export default function HomePage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  /* ──── Pipeline stages data ──── */
+  /* â”€â”€â”€â”€ Pipeline stages data â”€â”€â”€â”€ */
   const pipelineStages = [
     { label: "Source", icon: Code2, color: "border-blue-500/50 bg-blue-500/10 text-blue-400" },
     { label: "Lexer", icon: Braces, color: "border-cyan-500/50 bg-cyan-500/10 text-cyan-400" },
@@ -144,7 +144,7 @@ export default function HomePage() {
     { label: "UI", icon: Monitor, color: "border-pink-500/50 bg-pink-500/10 text-pink-400" },
   ];
 
-  /* ──── Syntax highlighting helper ──── */
+  /* â”€â”€â”€â”€ Syntax highlighting helper â”€â”€â”€â”€ */
   function highlightLine(line: string) {
     if (!line) return <span>&nbsp;</span>;
 
@@ -189,7 +189,7 @@ export default function HomePage() {
     return <>{parts}</>;
   }
 
-  /* ──── Core products data ──── */
+  /* â”€â”€â”€â”€ Core products data â”€â”€â”€â”€ */
   const coreProducts = [
     {
       title: "AAYU Language",
@@ -198,11 +198,11 @@ export default function HomePage() {
       color: "from-purple-500 to-violet-600",
       borderColor: "border-purple-500/30",
       glowColor: "bg-purple-500/20",
-      features: ["Lexer → Parser → AST → Bytecode", "Stack-based Virtual Machine", "Mark-and-Sweep GC", "Static Type System", "Standard Library"],
+      features: ["Lexer â†’ Parser â†’ AST â†’ Bytecode", "Stack-based Virtual Machine", "Mark-and-Sweep GC", "Static Type System", "Standard Library"],
     },
     {
       title: "AAYU Runtime",
-      description: "Native HTTP server, Storage Operating System, and UI engine — all built from scratch with zero external dependencies.",
+      description: "Native HTTP server, Storage Operating System, and UI engine â€” all built from scratch with zero external dependencies.",
       icon: Server,
       color: "from-blue-500 to-cyan-500",
       borderColor: "border-blue-500/30",
@@ -230,7 +230,7 @@ export default function HomePage() {
     },
   ];
 
-  /* ──── Stdlib data ──── */
+  /* â”€â”€â”€â”€ Stdlib data â”€â”€â”€â”€ */
   const stdlibModules = [
     { name: "math", desc: "Arithmetic, trigonometry, random" },
     { name: "json", desc: "Parse and serialize JSON" },
@@ -242,15 +242,15 @@ export default function HomePage() {
     { name: "env", desc: "Environment variables" },
   ];
 
-  /* ──── Production examples ──── */
+  /* â”€â”€â”€â”€ Production examples â”€â”€â”€â”€ */
   const productionExamples = [
-    { name: "CRM System", desc: "Contacts, deals, pipeline management", lines: 280, icon: "📊" },
-    { name: "Hospital ERP", desc: "Patient records, scheduling, billing", lines: 420, icon: "🏥" },
-    { name: "E-Commerce Platform", desc: "Products, cart, checkout, payments", lines: 350, icon: "🛒" },
-    { name: "Portfolio App", desc: "Projects, blog, contact form", lines: 120, icon: "💼" },
+    { name: "CRM System", desc: "Contacts, deals, pipeline management", lines: 280, icon: "ðŸ“Š" },
+    { name: "Hospital ERP", desc: "Patient records, scheduling, billing", lines: 420, icon: "ðŸ¥" },
+    { name: "E-Commerce Platform", desc: "Products, cart, checkout, payments", lines: 350, icon: "ðŸ›’" },
+    { name: "Portfolio App", desc: "Projects, blog, contact form", lines: 120, icon: "ðŸ’¼" },
   ];
 
-  /* ═══════════════════════════════ RENDER ═══════════════════════════════ */
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• RENDER â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   return (
     <main className="min-h-screen bg-[#000000] text-white pt-20 selection:bg-purple-500/30 overflow-hidden">
 
@@ -264,12 +264,12 @@ export default function HomePage() {
 
         {/* Hero content */}
         <div className="relative z-10 grid lg:grid-cols-2 gap-16 items-center">
-          {/* Left — tagline */}
+          {/* Left â€” tagline */}
           <div>
             <Link href="/releases/0.7.3">
               <div className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-4 py-1.5 mb-8 hover:bg-purple-500/20 transition-colors cursor-pointer">
                 <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-                <span className="text-xs font-semibold text-purple-300">New in v0.7.3: Custom Flutter-style UI Render Engine & Diff Pipeline 🚀</span>
+                <span className="text-xs font-semibold text-purple-300">New in v1.0.0: Custom Flutter-style UI Render Engine & Diff Pipeline ðŸš€</span>
                 <ChevronRight className="w-3.5 h-3.5 text-purple-400" />
               </div>
             </Link>
@@ -282,7 +282,7 @@ export default function HomePage() {
             </h1>
 
             <p className="text-lg md:text-xl text-zinc-400 max-w-xl mb-10 leading-relaxed">
-              Write apps, not configurations. AAYU compiles your intent into native HTTP servers, databases, and UIs — with zero dependencies.
+              Write apps, not configurations. AAYU compiles your intent into native HTTP servers, databases, and UIs â€” with zero dependencies.
             </p>
 
             {/* Install command */}
@@ -315,7 +315,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Right — Code showcase */}
+          {/* Right â€” Code showcase */}
           <div className="relative">
             <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-cyan-500/20 rounded-2xl blur-xl pointer-events-none" />
             <div className="relative bg-[#0a0a0a] border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
@@ -363,7 +363,7 @@ export default function HomePage() {
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">From Source to Runtime.</span>
           </h2>
           <p className="text-zinc-500 max-w-2xl mx-auto">
-            AAYU compiles your code through a complete pipeline — Lexer, Parser, AST, Semantic Analysis, Bytecode Generation — then executes on a stack-based VM with garbage collection.
+            AAYU compiles your code through a complete pipeline â€” Lexer, Parser, AST, Semantic Analysis, Bytecode Generation â€” then executes on a stack-based VM with garbage collection.
           </p>
         </div>
 
@@ -398,7 +398,7 @@ export default function HomePage() {
       </section>
 
       {/* ================================================================
-          AAYU CODE EXAMPLES — Side-by-side
+          AAYU CODE EXAMPLES â€” Side-by-side
           ================================================================ */}
       <section className="container mx-auto px-4 max-w-7xl mb-32">
         <div className="text-center mb-14">
@@ -526,7 +526,7 @@ export default function HomePage() {
       </section>
 
       {/* ================================================================
-          ARCHITECTURE DEEP DIVE — Storage Runtime
+          ARCHITECTURE DEEP DIVE â€” Storage Runtime
           ================================================================ */}
       <section className="container mx-auto px-4 max-w-6xl mb-32 relative">
         <div className="absolute inset-0 bg-gradient-to-b from-orange-900/5 via-transparent to-transparent rounded-3xl blur-3xl pointer-events-none" />
@@ -537,7 +537,7 @@ export default function HomePage() {
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-400">Operating System.</span>
           </h2>
           <p className="text-zinc-500 max-w-2xl mx-auto">
-            Not an ORM wrapper. AAYU&apos;s Storage Runtime is a full database operating system — Schema Engine, Migration Engine, Query AST, Planner, Optimizer, Transaction Manager, with SQLite and Postgres adapters.
+            Not an ORM wrapper. AAYU&apos;s Storage Runtime is a full database operating system â€” Schema Engine, Migration Engine, Query AST, Planner, Optimizer, Transaction Manager, with SQLite and Postgres adapters.
           </p>
         </div>
 
@@ -547,7 +547,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-6">
             {[
               { title: "Schema Engine", desc: "Declarative model definitions with automatic migrations, constraints, indexes, and relations.", icon: Layers },
-              { title: "Query Planner", desc: "Query AST → Logical Plan → Optimized Physical Plan. Cost-based optimization with index awareness.", icon: Workflow },
+              { title: "Query Planner", desc: "Query AST â†’ Logical Plan â†’ Optimized Physical Plan. Cost-based optimization with index awareness.", icon: Workflow },
               { title: "Transaction Manager", desc: "ACID transactions with savepoints, rollback, isolation levels. Connection pooling built in.", icon: ShieldCheck },
               { title: "Migration Engine", desc: "Automatic schema diffing, versioned migrations, rollback support. Zero-downtime schema evolution.", icon: GitBranch },
               { title: "Storage Adapters", desc: "SQLite for development, Postgres for production. Same AAYU code, swap with one line.", icon: HardDrive },
@@ -623,10 +623,10 @@ export default function HomePage() {
               <span className="text-purple-400">aayu run myapp/main.aayu</span>
             </div>
             <div className="border-t border-white/5 pt-3 mt-3">
-              <span className="text-emerald-400">✓ Compiled in 12ms</span>
+              <span className="text-emerald-400">âœ“ Compiled in 12ms</span>
             </div>
             <div>
-              <span className="text-emerald-400">✓ VM started — Hello from AAYU</span>
+              <span className="text-emerald-400">âœ“ VM started â€” Hello from AAYU</span>
             </div>
           </div>
 
@@ -652,7 +652,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4 max-w-5xl">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
-              { value: "v2.0.0", label: "Latest Release" },
+              { value: "v1.0.0", label: "Latest Release" },
               { value: "8", label: "Stdlib Modules" },
               { value: "0", label: "Dependencies" },
               { value: "12ms", label: "Avg Compile" },
@@ -672,9 +672,9 @@ export default function HomePage() {
   );
 }
 
-/* ─────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    CheckCircle icon (inline SVG)
-   ───────────────────────────────────────────── */
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function CheckCircle(props: any) {
   return (
     <svg {...props} fill="none" viewBox="0 0 24 24" stroke="currentColor">

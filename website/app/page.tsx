@@ -293,6 +293,11 @@ export default function HomePage() {
                   {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
                 </button>
               </div>
+              <Link href="/download">
+                <Button className="h-full px-6 bg-cyan-500 text-black hover:bg-cyan-400 font-bold rounded-xl gap-2">
+                  <Download className="w-4 h-4" /> Download AAYU
+                </Button>
+              </Link>
               <Link href="https://github.com/Minato95-ayu/INTENT-TO-SILICON" target="_blank">
                 <Button className="h-full px-6 bg-white text-black hover:bg-zinc-200 font-bold rounded-xl gap-2">
                   <GitBranch className="w-4 h-4" /> GitHub

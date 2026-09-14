@@ -1,0 +1,64 @@
+# ==============================================================================
+# AAYU MIT Admission Project: Nexus AI Engine
+# 
+# Demonstrating:
+# 1. Native UI Generation (Virtual DOM -> HTML/SSE)
+# 2. Secure Local Database (Storage Preserver)
+# 3. High-Speed Compute Engine (Simulating LLM Token Processing)
+# ==============================================================================
+
+model ChatMemory {
+    session_id: String
+    user_query: String
+    ai_response: String
+    compute_time_ms: Int
+}
+
+Page NexusChat
+    state user_input = ""
+    state chat_history = "System: Nexus AI Initialized. Ready for inference."
+    state is_computing = "false"
+    
+    action compute_inference()
+        is_computing = "Computing..."
+        
+        # Simulating LLM Attention / Matrix Math Compute using nested loops
+        let total_weights = 0
+        let outer_i = 0
+        
+        while outer_i < 10
+            let inner_j = 0
+            while inner_j < 50
+                total_weights = total_weights + outer_i * inner_j
+                inner_j = inner_j + 1
+            end
+            outer_i = outer_i + 1
+        end
+        
+        # Store history securely
+        insert ChatMemory { session_id = "mit_demo_01" user_query = "user_input" ai_response = "Calculated token weights securely." compute_time_ms = total_weights }
+        
+        # Update UI Reactively
+        chat_history = "User: Compute Done"
+        user_input = ""
+        is_computing = "Done. Weights generated."
+    end
+    
+    Container class="nexus-container"
+        Column padding="40px"
+            Heading "Nexus AI (AAYU Engine)" size="32"
+            Text chat_history
+            
+            Text "---------------------------------------------------"
+            
+            Form id="chatForm"
+                Input placeholder="Enter your prompt..."
+                    bind user_input
+                end
+                Button "Generate Response" onClick="compute_inference"
+            end
+            
+            Text is_computing
+        end
+    end
+end

@@ -91,11 +91,11 @@ class Validator:
             opcode = bytecode[ip]
             new_depth = depth
             from runtime.vm.instructions import opcode_to_str
-            print(f"[VAL TRACE] ip={ip} {opcode_to_str(opcode)} {depth} -> {new_depth}")
             
-            if opcode in (Opcode.PUSH_CONST, Opcode.DUP, Opcode.LOAD_STATE, Opcode.CREATE_MODEL):
+            
+            if opcode in (Opcode.PUSH_CONST, Opcode.DUP, Opcode.LOAD_STATE):
                 new_depth += 1
-            elif opcode in (Opcode.POP, Opcode.STORE_STATE, Opcode.INIT_STATE, Opcode.PRINT, Opcode.THROW, Opcode.RETHROW):
+            elif opcode in (Opcode.POP, Opcode.STORE_STATE, Opcode.INIT_STATE, Opcode.CREATE_MODEL, Opcode.PRINT, Opcode.THROW, Opcode.RETHROW):
                 new_depth -= 1
             elif opcode in (Opcode.ADD, Opcode.SUB, Opcode.MUL, Opcode.DIV, Opcode.CMP_EQ, Opcode.CMP_NEQ, Opcode.CMP_LT, Opcode.CMP_GT, Opcode.CMP_LTE, Opcode.CMP_GTE):
                 new_depth -= 1 # pop 2, push 1
@@ -120,7 +120,7 @@ class Validator:
                 info = constant_pool[idx]
                 fields_count = info["fields_count"]
                 new_depth -= (2 * fields_count)
-                new_depth += 1 # because compiler emits PUSH_CONST 0 immediately after, but wait, DB_INSERT doesn't push at runtime, it's just the compiler emitting PUSH_CONST 0 next. So DB_INSERT itself has net depth - (2 * fields_count).
+                
             elif opcode == Opcode.DB_FIND:
                 new_depth += 1  # DB_FIND pushes the found model/array
             elif opcode == Opcode.BUILD_DICT:
@@ -131,12 +131,12 @@ class Validator:
                 new_depth -= (num_args + 1)
             elif opcode == Opcode.OP_ASYNC_CALL:
                 num_args = (bytecode[ip+1] << 8) | bytecode[ip+2]
-                new_depth -= num_args
+                new_depth -= (num_args + 1)
                 new_depth += 1  # OP_ASYNC_CALL pushes a result
             elif opcode in (Opcode.DECLARE_THEME, Opcode.SET_THEME):
                 new_depth -= 1
             elif opcode in (Opcode.SET_BINDING, Opcode.DECLARE_VALIDATION, Opcode.SET_ANIMATION, Opcode.DECLARE_LIFECYCLE):
-                new_depth -= 2
+                new_depth -= 1
             elif opcode == Opcode.CALL:
                 args = bytecode[ip-2]
                 returns = bytecode[ip-1]
@@ -149,7 +149,7 @@ class Validator:
                 pass # No-op
             elif opcode == Opcode.MARK_BLOCK_START:
                 pass # Modifies node_stack
-            elif opcode in (Opcode.REGISTER_ROUTE, Opcode.CHECK_AUTH, Opcode.SETUP_EXCEPT, Opcode.POP_EXCEPT, Opcode.SETUP_FINALLY, Opcode.EXEC_FINALLY):
+            elif opcode in (Opcode.REGISTER_ROUTE, Opcode.CHECK_AUTH, Opcode.SETUP_EXCEPT, Opcode.POP_EXCEPT, Opcode.SETUP_FINALLY, Opcode.EXEC_FINALLY, Opcode.ENTER_SCOPE, Opcode.EXIT_SCOPE):
                 pass # Assuming 0 delta
             elif opcode == Opcode.RETURN_VALUE:
                 if expected_returns is not None and expected_returns != 1:
@@ -184,6 +184,10 @@ class Validator:
             elif opcode in (Opcode.GET_ITER, Opcode.FOR_ITER):
                 # FOR_ITER will be replaced in R6.1-D, for now assume 0 stack effect conceptually for iteration
                 pass
+            elif opcode == Opcode.DISPATCH:
+                pass # Assuming 0 delta for dispatch in abstract validation
+            else:
+                raise InvalidBytecodeError(f"Unknown or unhandled opcode 0x{opcode:02X}", ip)
                 
             if new_depth < 0:
                 raise InvalidBytecodeError("Stack underflow", ip)

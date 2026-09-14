@@ -1,8 +1,0 @@
-project APITest.
-
-service UserService {
-    get "/users".
-    get "/users/{id}".
-}
-
-serve.

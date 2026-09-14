@@ -17,20 +17,25 @@ action main
     print(absolute)
     
     print("\n--- 2. Artificial Intelligence (AI) and ML ---")
-    let training_status = ai::train(500)
-    print(training_status)
+    let mydata = [[1, 2], [1, 4], [1, 0], [10, 2], [10, 4], [10, 0]]
+    print("Training K-Means Model on raw data...")
+    let cluster_model = ml::kmeans_fit(mydata, 2, 100)
+    print("Model ID Generated:")
+    print(cluster_model)
     
-    let prediction = ai::predict("Image_0023.png")
+    print("Predicting cluster for point [10, 3]...")
+    let prediction = ml::kmeans_predict(cluster_model, [10, 3])
+    print("Cluster Assignment:")
     print(prediction)
     
-    let cluster = ml::kmeans(10000, 5)
-    print(cluster)
-    
-    print("\n--- 3. Data Science and Big Data ---")
-    print("Data structures natively support map/filter patterns.")
+    print("\n--- 3. Database & Storage Engine ---")
+    print("Connecting to local SQLite DB...")
+    let db_conn = db::connect(":memory:")
+    print("Connection ID:")
+    print(db_conn)
     
     print("\n--- 4. Secure Networking and Server ---")
-    print("AAYU natively supports HTTPS client calls.")
+    print("AAYU natively supports HTTP GET/POST.")
     
     print("\n========================================")
     print(" ALL SYSTEMS VERIFIED FAST AND SECURE.")

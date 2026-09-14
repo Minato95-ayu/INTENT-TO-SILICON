@@ -1,0 +1,11 @@
+action main
+    let x = 10
+    if x > 15
+        print("big")
+    elif x > 5
+        print("medium")
+    else
+        print("small")
+    end
+end
+run main

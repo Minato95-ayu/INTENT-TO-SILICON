@@ -22,19 +22,20 @@ def register_database_lib(registry: StdLibRegistry):
     
     def fn_connect(args, vm):
         try:
-            path = args[0].to_python()
+            path = (args[0].to_python() if hasattr(args[0], 'to_python') else args[0])
             conn = sqlite3.connect(path)
             conn.row_factory = sqlite3.Row
             cid = str(id(conn))
             connections[cid] = conn
             return create_string(vm, cid)
-        except Exception:
+        except Exception as e:
+            print(f'DB Error: {e}')
             return NullValue()
             
     def fn_query(args, vm):
         try:
-            cid = args[0].to_python()
-            query = args[1].to_python()
+            cid = (args[0].to_python() if hasattr(args[0], 'to_python') else args[0])
+            query = (args[1].to_python() if hasattr(args[1], 'to_python') else args[1])
             conn = connections.get(cid)
             if not conn: return NullValue()
             
@@ -55,8 +56,8 @@ def register_database_lib(registry: StdLibRegistry):
 
     def fn_execute(args, vm):
         try:
-            cid = args[0].to_python()
-            query = args[1].to_python()
+            cid = (args[0].to_python() if hasattr(args[0], 'to_python') else args[0])
+            query = (args[1].to_python() if hasattr(args[1], 'to_python') else args[1])
             conn = connections.get(cid)
             if not conn: return NumberValue(0)
             

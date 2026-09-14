@@ -23,7 +23,7 @@ class Token:
 
 KEYWORDS = {
     "app", "run", "state", "let", "model", "page", "component",
-    "route", "server", "task", "event", "if", "else", "for", "while",
+    "route", "server", "task", "event", "if", "elif", "else", "for", "while",
     "return", "fn", "end", "import", "action", "in", "get", "post",
     "theme", "useTheme", "widget", "navigate", "validate",
     "await", "bind", "animate",

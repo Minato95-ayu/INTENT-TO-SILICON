@@ -1,0 +1,7 @@
+action main()
+    print("Test Math")
+    let x = math_sqrt(16.0)
+    print("Done")
+    return 0
+end
+run main()

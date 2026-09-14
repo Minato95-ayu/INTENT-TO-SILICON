@@ -52,7 +52,24 @@ def register_database_lib(registry: StdLibRegistry):
         except Exception as e:
             return NullValue()
             
+
+    def fn_execute(args, vm):
+        try:
+            cid = args[0].to_python()
+            query = args[1].to_python()
+            conn = connections.get(cid)
+            if not conn: return NumberValue(0)
+            
+            cursor = conn.cursor()
+            cursor.execute(query)
+            conn.commit()
+            return NumberValue(float(cursor.rowcount))
+        except Exception as e:
+            return NumberValue(-1)
+            
+    registry.register("db::execute", fn_execute)
     registry.register("db::connect", fn_connect)
+
     registry.register("db::query", fn_query)
 
 

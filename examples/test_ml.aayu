@@ -1,0 +1,7 @@
+action main
+    let mydata = [[1, 2], [1, 4], [1, 0], [10, 2], [10, 4], [10, 0]]
+    let mymodel = ml::kmeans_fit(mydata, 2, 100)
+    print("K-Means Model ID:")
+    print(mymodel)
+end
+run main

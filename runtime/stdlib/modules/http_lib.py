@@ -49,4 +49,6 @@ def http_post(args, vm):
 def register_http_lib(registry):
     registry.register('HTTP.get', http_get)
     registry.register('HTTP.post', http_post)
+    registry.register('http::get', http_get)
+    registry.register('http::post', http_post)
 

@@ -1,0 +1,5 @@
+action main()
+    print("hello world")
+    return 0
+end
+run main()

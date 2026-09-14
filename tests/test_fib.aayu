@@ -1,0 +1,20 @@
+action fib(n)
+    if n == 0
+        return 0
+    end
+    if n == 1
+        return 1
+    end
+    let a = fib(n - 1)
+    let b = fib(n - 2)
+    return a + b
+end
+
+action main()
+    print("Fib 5 is:")
+    let x = fib(5)
+    print(x)
+    return 0
+end
+
+run main()

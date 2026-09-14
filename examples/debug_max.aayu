@@ -1,0 +1,26 @@
+action find_max(arr)
+    print("Array is: " + arr)
+    let length = 5
+    let max_val = arr[0]
+    let i = 1
+    while i < length
+        let current = arr[i]
+        print("i: " + i)
+        print("current: " + current)
+        if current > max_val
+            max_val = current
+            print("new max: " + max_val)
+        end
+        i = i + 1
+    end
+    print("Max element is: " + max_val)
+    return max_val
+end
+
+action main()
+    let nums = [10, 45, 2, 99, 33]
+    find_max(nums)
+    return 0
+end
+
+run main()

@@ -1,0 +1,13 @@
+action test_arrays()
+    let arr = [10, 20, 30]
+    let val = arr[1]
+    print(val)
+    return 0
+end
+
+action main()
+    test_arrays()
+    return 0
+end
+
+run main()

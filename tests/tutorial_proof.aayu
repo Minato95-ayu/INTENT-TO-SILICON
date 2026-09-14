@@ -1,0 +1,80 @@
+# ---------------------------------------------------------
+# AAYU ZERO-DEPENDENCY AI LANGUAGE - TUTORIAL PROOF
+# Features Tested: Control Flow, Models (OOP), Math, ML
+# ---------------------------------------------------------
+
+# 1. Models (AAYU's version of OOP/Classes and Database Models)
+model Developer {
+    name: String
+    level: String
+    experience: Int
+}
+
+# 2. Control Flow (If, Else, While)
+action test_control_flow(level)
+    print("Checking level: " + level)
+    if level == "Beginner"
+        print("Welcome to AAYU! You will learn fast.")
+    else
+        if level == "Pro"
+            print("You are a Pro! AAYU is built for you.")
+        else
+            print("Level unknown, keep coding!")
+        end
+    end
+    
+    print("Counting to 3 using while loop:")
+    let count = 1
+    while count <= 3
+        print(count)
+        count = count + 1
+    end
+    return 0
+end
+
+# 3. Native Math & AI/ML (Zero-Dependency)
+action test_ai_math()
+    print("--- Testing Native Math & ML ---")
+    
+    # Standard Math
+    let s = math_sqrt(16.0)
+    print("Square root of 16:")
+    print(s)
+    
+    # Native Tensors (Matrix Math)
+    let A = [[1.0, 2.0], [3.0, 4.0]]
+    let B = [[2.0, 0.0], [1.0, 2.0]]
+    let C = tensor_matmul(A, B)
+    print("Tensor Matmul Result:")
+    print(C)
+    
+    # Native Machine Learning (K-Means Clustering)
+    let data = [[1.0, 1.0], [1.5, 2.0], [8.0, 8.0], [9.0, 8.5]]
+    let ml_model = ml_kmeans_fit(data, 2, 50)
+    let predictions = ml_kmeans_predict(ml_model, data)
+    print("ML K-Means Predictions (First 2 should be in one cluster, last 2 in another):")
+    print(predictions)
+    return 0
+end
+
+# Main Execution Entrypoint
+action main()
+    print("=== AAYU TUTORIAL START ===")
+    
+    # Create an object (Model)
+    insert Developer { name = "Miinato" level = "Pro" experience = 10 }
+    let devs = find Developer
+    print("Developers in DB:")
+    print(devs)
+    
+    # Run Control Flow
+    test_control_flow("Pro")
+    
+    # Run AI & Math
+    test_ai_math()
+    
+    print("=== AAYU TUTORIAL SUCCESS ===")
+    return 0
+end
+
+run main()

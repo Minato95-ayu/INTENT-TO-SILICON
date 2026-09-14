@@ -376,7 +376,7 @@ class WebRenderer:
 .widget-input { border: 1px solid #ccc; outline: none; box-sizing: border-box; padding: 0 15px; font-family: inherit; }
 .widget-icon { display: flex; align-items: center; justify-content: center; }
 .widget-page, .widget-scaffold { width: 100vw; height: 100vh; overflow: hidden; box-sizing: border-box; display: flex; flex-direction: column; background-color: var(--background, #111b21); }
-.widget-text { font-family: inherit; color: var(--text, #e9edef); }
+.widget-text { font-family: inherit; color: var(--text, #e9edef); white-space: pre-wrap; }
 .widget-avatar { object-fit: cover; overflow: hidden; background-color: #ccc; }
 .widget-chatbubble { max-width: 85%; font-size: 14.2px; }
 .chat-time { font-size: 11px; color: rgba(255,255,255,0.6); align-self: flex-end; margin-top: 4px; }

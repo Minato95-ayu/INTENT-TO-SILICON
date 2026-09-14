@@ -24,6 +24,7 @@ def handle(args):
     backend = "tkinter"
     target = "main.aayu"
     debug = False
+    port = 3000
     
     for arg in args:
         if arg == "--console":
@@ -34,6 +35,8 @@ def handle(args):
             renderer_type = arg.split("=")[1]
         elif arg.startswith("--backend="):
             backend = arg.split("=")[1]
+        elif arg.startswith("--port="):
+            port = int(arg.split("=")[1])
         elif arg == "--debug":
             debug = True
         elif not arg.startswith("-"):
@@ -155,7 +158,7 @@ def handle(args):
             from runtime.renderers.web_renderer import WebRenderer
             from runtime.session.manager import SessionManager
             session_manager = SessionManager(program)
-            renderer = WebRenderer(session_manager, project_dir=project_dir, port=3000)
+            renderer = WebRenderer(session_manager, project_dir=project_dir, port=port)
         elif renderer_type == "desktop":
             if backend == "tkinter":
                 if "--ui" in args:

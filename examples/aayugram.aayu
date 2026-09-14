@@ -1,0 +1,70 @@
+app AAYUGram
+
+# 1. Database Model
+model Post {
+    username: String
+    content: String
+    likes: Int
+}
+
+# 2. State variables
+state appName = "AAYUGram"
+
+# 3. Backend API Route
+route "/api/feed"
+    get
+        return "{'status': 'success', 'posts': []}"
+    end
+end
+
+# 4. Logic / Actions
+action likePost
+    print("Post Liked in Database!")
+end
+
+action createPost
+    print("New Post Created!")
+end
+
+# 5. Colorful UI / UX (100% Pure AAYU, NO CSS/HTML)
+Page Home
+    
+    # Navbar (Instagram Style)
+    Row backgroundColor="#FFFFFF" padding="15px" shadow="true"
+        Heading appName color="#E1306C"
+    end
+    
+    # Main Feed Container
+    Column padding="20px"
+        
+        # Post Creation Box
+        Form id="newPost" backgroundColor="#FFFFFF" padding="20px" borderRadius="10px" shadow="true" margin="10px"
+            Heading "Create Post" color="#262626"
+            Input placeholder="What's on your mind?" name="content"
+            Button "Share to AAYUGram" onClick="createPost" backgroundColor="#0095F6" color="#FFFFFF" borderRadius="5px"
+        end
+
+        # Feed Post 1
+        Column backgroundColor="#FFFFFF" padding="20px" borderRadius="10px" shadow="true" margin="10px"
+            Row
+                Heading "@aayu_founder" color="#262626"
+            end
+            Text "Just launched AAYUGram! 100% pure AAYU code. No HTML, No CSS, No JS needed!" color="#262626" margin="10px"
+            Row
+                Button "Like (102)" onClick="likePost" backgroundColor="#FFFFFF" color="#ED4956" borderRadius="5px"
+            end
+        end
+
+        # Feed Post 2
+        Column backgroundColor="#FFFFFF" padding="20px" borderRadius="10px" shadow="true" margin="10px"
+            Row
+                Heading "@developer_bro" color="#262626"
+            end
+            Text "Bhai, ye language toh sach me magic hai. Backend, Frontend sab ek file me chal raha hai!" color="#262626" margin="10px"
+            Row
+                Button "Like (45)" onClick="likePost" backgroundColor="#FFFFFF" color="#ED4956" borderRadius="5px"
+            end
+        end
+
+    end
+end

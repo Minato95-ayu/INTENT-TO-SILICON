@@ -1,0 +1,13 @@
+action fibonacci(n)
+    if n <= 1
+        return n
+    end
+    return fibonacci(n - 1) + fibonacci(n - 2)
+end
+
+let i = 0
+while i < 15
+    let val = fibonacci(i)
+    i = i + 1
+end
+print("Fibonacci computed up to 14")

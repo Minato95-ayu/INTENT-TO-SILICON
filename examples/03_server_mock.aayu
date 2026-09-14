@@ -1,0 +1,14 @@
+model BenchmarkUser {
+    username: String
+    score: Int
+}
+
+let i = 0
+while i < 100
+    insert BenchmarkUser { username = "User" score = i }
+    i = i + 1
+end
+
+let users = find BenchmarkUser
+print("Inserted and retrieved users:")
+print(i)

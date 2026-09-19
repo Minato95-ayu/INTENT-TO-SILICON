@@ -4,7 +4,7 @@
 
 import Link from "next/link";
 import React from "react";
-import { Activity, ArrowRight, Braces, Briefcase, Check, CheckCircle, ChevronRight, CircuitBoard, Code2, Copy, Cpu, Database, Download, ExternalLink, Folder, GitBranch, Globe, HardDrive, Icon, Layers, Monitor, Package, Server, ShieldCheck, ShoppingCart, Sparkles, Terminal, Workflow, Zap } from 'lucide-react';
+import { Activity, ArrowRight, Braces, Briefcase, Check, ChevronRight, CircuitBoard, Code2, Copy, Cpu, Database, Download, ExternalLink, Folder, GitBranch, Globe, HardDrive, Icon, Layers, Monitor, Package, Server, ShieldCheck, ShoppingCart, Sparkles, Terminal, Workflow, Zap } from 'lucide-react';
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -471,7 +471,7 @@ export default function HomePage() {
               <ul className="space-y-2.5">
                 {product.features.map((feat, j) => (
                   <li key={j} className="flex items-center gap-2.5 text-sm text-zinc-400">
-                    <CheckCircle className="w-4 h-4 text-green-500 shrink-0" />
+                    <CustomCheckCircle className="w-4 h-4 text-green-500 shrink-0" />
                     <span className={feat.startsWith("aayu ") || feat.startsWith("apm ") ? "font-mono text-xs" : ""}>{feat}</span>
                   </li>
                 ))}
@@ -720,7 +720,7 @@ export default function HomePage() {
 /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    CheckCircle icon (inline SVG)
    â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-function CheckCircle(props: any) {
+function CustomCheckCircle(props: any) {
   return (
     <svg {...props} fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />

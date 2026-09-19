@@ -26,36 +26,22 @@ export function Navbar() {
             <Image src="/aayu-logo.png" alt="AAYU Logo" width={32} height={32} className="object-contain group-hover:scale-110 transition-transform" />
             <span className="font-bold text-xl tracking-tight text-white">AAYU</span>
           </Link>
-          <nav className="hidden lg:flex gap-6 text-sm font-medium text-zinc-400 items-center">
+                    <nav className="hidden lg:flex gap-6 text-sm font-medium text-zinc-400 items-center">
             <Link href="/" className="hover:text-white transition-colors">Home</Link>
-            <Link href="/learn" className="hover:text-white transition-colors flex items-center gap-1">
-              Learn <span className="text-[10px] bg-purple-500 text-white px-1.5 py-0.5 rounded-full font-bold leading-none">15m</span>
-            </Link>
-            <Link href="/docs" className="hover:text-white transition-colors">Docs</Link>
-            <Link href="/examples" className="hover:text-white transition-colors">Examples</Link>
-            <Link href="/docs/cli" className="hover:text-white transition-colors">CLI</Link>
-            <Link href="/packages" className="hover:text-white transition-colors">Packages</Link>
-            <Link href="/roadmap" className="hover:text-white transition-colors">Roadmap</Link>
+            <Link href="https://github.com/Minato95-ayu/INTENT-TO-SILICON" target="_blank" className="hover:text-white transition-colors">Documentation</Link>
+            <Link href="https://github.com/Minato95-ayu/INTENT-TO-SILICON/tree/main/examples" target="_blank" className="hover:text-white transition-colors">Examples</Link>
           </nav>
         </div>
-        <div className="flex items-center gap-4">
-          <button className="hidden md:flex items-center gap-2 px-3 py-1.5 text-sm text-zinc-400 bg-white/5 border border-white/10 rounded-md hover:bg-white/10 transition-colors" onClick={() => document.dispatchEvent(new KeyboardEvent('keydown', {'key': 'k', 'ctrlKey': true}))}>
-            <Search className="w-4 h-4" />
-            <span>Search...</span>
-            <kbd className="hidden sm:inline-block ml-2 px-1.5 py-0.5 text-xs font-mono bg-white/10 rounded">Ctrl K</kbd>
-          </button>
-          <Link href="/download" className="hidden sm:block text-sm font-medium text-zinc-400 hover:text-white transition-colors">
-            Download
-          </Link>
+                <div className="flex items-center gap-4">
           <Link href="https://github.com/Minato95-ayu/INTENT-TO-SILICON" target="_blank" rel="noreferrer">
             <div className="flex h-9 w-9 items-center justify-center rounded-md border border-white/10 hover:bg-white/10 transition-colors">
               <GitBranch className="h-4 w-4 text-white" />
               <span className="sr-only">GitHub</span>
             </div>
           </Link>
-          <Link href="/docs/installation">
+          <Link href="https://github.com/Minato95-ayu/INTENT-TO-SILICON" target="_blank">
             <Button className="bg-white text-black hover:bg-zinc-200 hidden sm:flex font-semibold shadow-[0_0_15px_rgba(255,255,255,0.3)]">
-              Get Started
+              View on GitHub
             </Button>
           </Link>
         </div>

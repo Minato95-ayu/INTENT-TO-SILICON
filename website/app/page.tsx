@@ -4,25 +4,7 @@
 
 import Link from "next/link";
 import React from "react";
-import {
-  ArrowRight,
-  Code2,
-  Terminal,
-  Database,
-  FileJson,
-  Play,
-  Search,
-  Download,
-  ChevronRight,
-  Zap,
-  ShieldCheck,
-  Layers,
-  Server,
-  Briefcase,
-  Activity,
-  ShoppingCart,
-  Folder
-} from "lucide-react";
+import { Activity, ArrowRight, Braces, Briefcase, Check, CheckCircle, ChevronRight, CircuitBoard, Code2, Copy, Cpu, Database, Download, ExternalLink, Folder, GitBranch, Globe, HardDrive, Icon, Layers, Monitor, Package, Server, ShieldCheck, ShoppingCart, Sparkles, Terminal, Workflow, Zap } from 'lucide-react';
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 

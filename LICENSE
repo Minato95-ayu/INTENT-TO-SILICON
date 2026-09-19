@@ -1,7 +1,30 @@
-MIT License
+AAYU PROGRAMMING LANGUAGE - PROPRIETARY AND CONFIDENTIAL
+Copyright (c) 2026 Ayush Ghrit Kaushik. All Rights Reserved.
 
-Copyright (c) 2026 Ayush / Intent to Silicon Research
+Creator & Owner: Ayush Ghrit Kaushik
+GitHub: https://github.com/Minato95-ayu
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction...\n
+1. OWNERSHIP: 
+This software, including all source code, architecture, virtual machine design, 
+compilation pipelines, and related documentation (collectively, "AAYU"), is the 
+exclusive intellectual property of Ayush Ghrit Kaushik.
+
+2. RESTRICTIONS ON USE AND COPYING:
+- You MAY NOT copy, clone, distribute, or modify this software or any part of it 
+  without explicit written permission from Ayush Ghrit Kaushik.
+- You MAY NOT use this source code to create a competing programming language, 
+  framework, or derivative work.
+- You MAY NOT use this software for commercial purposes without a commercial license.
+
+3. WATERMARKS & DIGITAL FINGERPRINTS:
+This software contains proprietary watermarks, architectural fingerprints, and 
+metadata designed to prove origin and ownership. Any attempt to remove or alter 
+these watermarks is a violation of international copyright laws.
+
+4. LEGAL ACTION:
+Any unauthorized cloning, copying, reverse engineering, or commercial use of 
+AAYU will be met with immediate legal action under applicable Intellectual 
+Property and Copyright laws.
+
+By viewing, downloading, or using this source code, you agree to be bound by 
+the terms of this license.

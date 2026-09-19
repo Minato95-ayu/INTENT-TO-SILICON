@@ -18,20 +18,10 @@ import {
   ShieldCheck,
   Layers,
   Server,
-  Globe,
-  Package,
-  Cpu,
-  HardDrive,
-  Monitor,
-  GitBranch,
-  Box,
-  Workflow,
-  Braces,
-  CircuitBoard,
-  Sparkles,
-  Check,
-  Copy,
-  ExternalLink,
+  Briefcase,
+  Activity,
+  ShoppingCart,
+  Folder
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
@@ -244,10 +234,10 @@ export default function HomePage() {
 
   /* â”€â”€â”€â”€ Production examples â”€â”€â”€â”€ */
   const productionExamples = [
-    { name: "CRM System", desc: "Contacts, deals, pipeline management", lines: 280, icon: "ðŸ“Š" },
-    { name: "Hospital ERP", desc: "Patient records, scheduling, billing", lines: 420, icon: "ðŸ¥" },
-    { name: "E-Commerce Platform", desc: "Products, cart, checkout, payments", lines: 350, icon: "ðŸ›’" },
-    { name: "Portfolio App", desc: "Projects, blog, contact form", lines: 120, icon: "ðŸ’¼" },
+    { name: "CRM System", desc: "Contacts, deals, pipeline management", lines: 280, icon: <Briefcase className="w-8 h-8 text-purple-400" /> },
+    { name: "Hospital ERP", desc: "Patient records, scheduling, billing", lines: 420, icon: <Activity className="w-8 h-8 text-blue-400" /> },
+    { name: "E-Commerce Platform", desc: "Products, cart, checkout, payments", lines: 350, icon: <ShoppingCart className="w-8 h-8 text-green-400" /> },
+    { name: "Portfolio App", desc: "Projects, blog, contact form", lines: 120, icon: <Folder className="w-8 h-8 text-orange-400" /> },
   ];
 
   /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• RENDER â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
@@ -288,7 +278,7 @@ export default function HomePage() {
             {/* Install command */}
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
               <div className="flex-1 max-w-md bg-[#0a0a0a] border border-white/10 rounded-xl px-5 py-3.5 flex items-center justify-between group hover:border-purple-500/40 transition-colors">
-                <code className="text-sm text-green-400 font-mono">git clone ... && pip install -e .</code>
+                <code className="text-sm text-green-400 font-mono">pip install aayu-lang</code>
                 <button onClick={handleCopy} className="text-zinc-500 hover:text-white transition-colors ml-3">
                   {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
                 </button>
@@ -667,7 +657,7 @@ export default function HomePage() {
           <div className="bg-black border border-white/10 rounded-xl p-6 max-w-lg mx-auto text-left font-mono text-sm mb-10 space-y-3">
             <div className="flex items-center gap-3">
               <span className="text-zinc-600 select-none">$</span>
-              <span className="text-green-400">git clone ... && pip install -e .</span>
+              <span className="text-green-400">pip install aayu-lang</span>
             </div>
             <div className="flex items-center gap-3">
               <span className="text-zinc-600 select-none">$</span>
@@ -719,6 +709,24 @@ export default function HomePage() {
                 <div className="text-xs text-zinc-600 mt-1 font-medium uppercase tracking-wider">{stat.label}</div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+    
+      {/* ================================================================
+          LEGAL & LICENSE
+          ================================================================ */}
+      <section className="container mx-auto px-4 max-w-5xl mb-24">
+        <div className="bg-red-950/20 border border-red-500/30 rounded-2xl p-8 md:p-12 relative overflow-hidden text-center">
+          <ShieldCheck className="w-12 h-12 text-red-500 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold mb-4 text-white">Proprietary Software</h2>
+          <p className="text-zinc-400 max-w-2xl mx-auto mb-6">
+            AAYU is the exclusive intellectual property of <strong>Ayush Ghrit Kaushik</strong> (@Minato95-ayu). 
+            This programming language, its compiler, VM architecture, and ecosystem are strictly protected by international copyright laws.
+          </p>
+          <div className="inline-block bg-black border border-red-500/30 px-6 py-3 rounded-lg text-sm text-red-400 font-mono">
+            UNAUTHORIZED REPRODUCTION OR CLONING IS STRICTLY PROHIBITED.
           </div>
         </div>
       </section>

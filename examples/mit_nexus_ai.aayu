@@ -16,49 +16,86 @@ model ChatMemory {
 
 Page NexusChat
     state user_input = ""
-    state chat_history = "System: Nexus AI Initialized. Ready for inference."
-    state is_computing = "false"
-    
+    state chat_history = "System: Nexus AI Initialized.\n\n"
+    state is_computing = ""
+
     action compute_inference()
-        is_computing = "Computing..."
+        is_computing = "Thinking..."
         
-        # Simulating LLM Attention / Matrix Math Compute using nested loops
+        let current_msg = user_input
+        user_input = ""
+        chat_history = chat_history + "You: " + current_msg + "\n"
+        
+        # ========================================================
+        # AAYU Native Nano-LLM (Zero-Dependency)
+        # ========================================================
+        let vocab = ["Nexus", "is", "thinking", "about", "your", "query.", "AAYU", "engine", "is", "fast", "and", "secure.", "Hello,", "I", "am", "ready.", "MIT", "is", "great,", "yes!"]
+        let vocab_size = 20
+        
+        let response = ""
         let total_weights = 0
-        let outer_i = 0
+        let step = 0
         
-        while outer_i < 10
-            let inner_j = 0
-            while inner_j < 50
-                total_weights = total_weights + outer_i * inner_j
-                inner_j = inner_j + 1
-            end
-            outer_i = outer_i + 1
+        # Seed includes chat history length for extra variation
+        let seed = len(current_msg) + len(chat_history)
+        if seed == 0
+            seed = 1
         end
         
-        # Store history securely
-        insert ChatMemory { session_id = "mit_demo_01" user_query = "user_input" ai_response = "Calculated token weights securely." compute_time_ms = total_weights }
+        # Calculate tokens_to_generate without parentheses
+        let seed_div_4 = seed / 4
+        let seed_div_floor = math::floor(seed_div_4)
+        let seed_mul = seed_div_floor * 4
+        let rem = seed - seed_mul
+        let tokens_to_generate = 5 + rem
         
-        # Update UI Reactively
-        chat_history = "User: Compute Done"
-        user_input = ""
-        is_computing = "Done. Weights generated."
+        while step < tokens_to_generate
+            # LCG pseudorandom step (seed = (seed * 101 + 11) % 1000)
+            let seed_next = seed * 101
+            seed = seed_next + 11
+            
+            let s_div = seed / 1000
+            let s_div_floor = math::floor(s_div)
+            let s_mul = s_div_floor * 1000
+            seed = seed - s_mul
+            
+            # Map seed to vocab index
+            let act_div = seed / vocab_size
+            let act_div_floor = math::floor(act_div)
+            let act_mul = act_div_floor * vocab_size
+            let activation = seed - act_mul
+            let int_activation = math::floor(activation)
+            
+            # Fetch token
+            let token = vocab[int_activation]
+            response = response + token + " "
+            
+            step = step + 1
+        end
+        chat_history = chat_history + "AI: " + response + "\n\n"
+        print(chat_history)
+        is_computing = ""
+        
+        # Store history securely
+        insert ChatMemory { session_id = "mit_demo" user_query = current_msg ai_response = response compute_time_ms = total_weights }
     end
-    
-    Container class="nexus-container"
-        Column padding="40px"
-            Heading "Nexus AI (AAYU Engine)" size="32"
-            Text chat_history
-            
+
+    Column padding=20 gap=20
+        Text "Nexus AI (AAYU Engine)" size=32 bold=true color="white"
+        
+        Container padding=20 backgroundColor="#1e293b" radius=10
             Text "---------------------------------------------------"
-            
-            Form id="chatForm"
-                Input placeholder="Enter your prompt..."
-                    bind user_input
-                end
-                Button "Generate Response" onClick="compute_inference"
-            end
-            
+            Text chat_history
+            Text "---------------------------------------------------"
             Text is_computing
+        end
+        
+        Row
+            Input placeholder="Type your message here..." flex=1
+                bind user_input
+            end
+            Button "Send Message" onClick=compute_inference
         end
     end
 end
+

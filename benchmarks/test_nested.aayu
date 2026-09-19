@@ -1,0 +1,14 @@
+let outer = 0
+let total = 0
+while outer < 3
+    let inner = 0
+    while inner < 2
+        total = total + 1
+        inner = inner + 1
+    end
+    outer = outer + 1
+end
+print("Outer:")
+print(outer)
+print("Total:")
+print(total)

@@ -1,0 +1,161 @@
+# Flipkart Clone in pure AAYU
+# Showcases Database, UI Rendering, Server, and Styling
+
+model Product
+    title: String
+    price: Int
+    image: String
+    rating: String
+end
+
+model CartItem
+    title: String
+    price: Int
+end
+
+let search_query = ""
+let cart_count = 0
+let current_view = "HOME"
+
+action init_db()
+    let count = db::count("Product", {})
+    if count == 0
+        db::insert("Product", {
+            "title": "SAMSUNG Galaxy S24 Ultra",
+            "price": 129999,
+            "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/4/v/w/-original-imagxgn4zyghzxez.jpeg?q=70",
+            "rating": "4.8"
+        })
+        db::insert("Product", {
+            "title": "APPLE iPhone 15 (Blue)",
+            "price": 72999,
+            "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/k/l/l/-original-imagtc5fz9spysyk.jpeg?q=70",
+            "rating": "4.6"
+        })
+        db::insert("Product", {
+            "title": "Sony PlayStation 5",
+            "price": 54990,
+            "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/gamingconsole/5/h/f/-original-imagtk7c2zhrfgb6.jpeg?q=70",
+            "rating": "4.9"
+        })
+        db::insert("Product", {
+            "title": "Nothing Phone (2a)",
+            "price": 23999,
+            "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/m/f/h/-original-imagzyjyyhzy95hg.jpeg?q=70",
+            "rating": "4.5"
+        })
+    end
+end
+
+action add_to_cart(p_title, p_price)
+    db::insert("CartItem", { "title": p_title, "price": p_price })
+    cart_count = db::count("CartItem", {})
+    return true
+end
+
+action go_home()
+    current_view = "HOME"
+end
+
+action go_cart()
+    current_view = "CART"
+end
+
+action clear_cart()
+    # Mock clear cart logic
+    current_view = "HOME"
+end
+
+page Navbar
+    Container(display="flex", justifyContent="space-between", alignItems="center", backgroundColor="#2874f0", padding="12px 10%", color="white")
+        Container(display="flex", flexDirection="column", cursor="pointer", onClick=go_home())
+            Text("AAYUKart", fontSize=20, fontWeight="bold", color="white")
+            Text("Explore Plus", fontSize=12, color="#ffe500", fontWeight="bold")
+        end
+        
+        Container(display="flex", width="40%", backgroundColor="white", padding="0", borderRadius="2px")
+            Input(bind=search_query, placeholder="Search for products, brands and more", width="100%", padding="10px", border="none")
+        end
+        
+        Container(display="flex", gap="30px", alignItems="center")
+            Button("Login", backgroundColor="white", color="#2874f0", padding="5px 30px", fontWeight="bold", border="none", borderRadius="2px", cursor="pointer")
+            Text("Become a Seller", color="white", fontWeight="bold", cursor="pointer")
+            Text("More", color="white", fontWeight="bold", cursor="pointer")
+            Button("Cart (" + cart_count + ")", backgroundColor="transparent", color="white", border="none", fontWeight="bold", cursor="pointer", onClick=go_cart())
+        end
+    end
+end
+
+page ProductCard(product)
+    Container(display="flex", flexDirection="column", width="250px", backgroundColor="white", padding="15px", margin="10px", borderRadius="4px", shadow="0 1px 2px 0 rgba(0,0,0,0.2)")
+        Image(src=product.image, height="200px", width="100%")
+        Container(marginTop="15px")
+            Text(product.title, fontSize=14, fontWeight="bold", color="#212121")
+            
+            Container(display="flex", gap="10px", alignItems="center", marginTop="5px")
+                Container(backgroundColor="#388e3c", padding="2px 6px", borderRadius="3px")
+                    Text(product.rating + " ★", color="white", fontSize=12, fontWeight="bold")
+                end
+            end
+            
+            Text("Rs " + product.price, fontSize=18, fontWeight="bold", color="#212121", marginTop="10px")
+            
+            Button("Add to Cart", backgroundColor="#ff9f00", color="white", padding="10px", width="100%", border="none", borderRadius="2px", marginTop="15px", fontWeight="bold", cursor="pointer", onClick=add_to_cart(product.title, product.price))
+        end
+    end
+end
+
+page HomeView
+    let products = db::find("Product", {})
+    Container(backgroundColor="#f1f3f6", minHeight="100vh")
+        Container(padding="20px 10%", display="flex", flexWrap="wrap", justifyContent="center")
+            for p in products
+                ProductCard(p)
+            end
+        end
+    end
+end
+
+page CartView
+    let items = db::find("CartItem", {})
+    let total = 0
+    for i in items
+        total = total + i.price
+    end
+    
+    Container(backgroundColor="#f1f3f6", minHeight="100vh", padding="30px 10%")
+        Container(backgroundColor="white", padding="20px", shadow="0 1px 2px 0 rgba(0,0,0,0.2)")
+            Text("My Cart", fontSize=20, fontWeight="bold")
+            
+            for item in items
+                Container(display="flex", justifyContent="space-between", padding="20px 0", borderBottom="1px solid #f0f0f0")
+                    Text(item.title, fontSize=16)
+                    Text("Rs " + item.price, fontSize=18, fontWeight="bold")
+                end
+            end
+            
+            Container(display="flex", justifyContent="space-between", padding="20px 0", marginTop="20px")
+                Text("Total Amount:", fontSize=20, fontWeight="bold")
+                Text("Rs " + total, fontSize=24, fontWeight="bold", color="#2874f0")
+            end
+            
+            Button("PLACE ORDER", backgroundColor="#fb641b", color="white", padding="15px 40px", border="none", borderRadius="2px", fontWeight="bold", fontSize=16, cursor="pointer", marginTop="20px", onClick=clear_cart())
+        end
+    end
+end
+
+page App
+    init_db()
+    cart_count = db::count("CartItem", {})
+    
+    Container(display="flex", flexDirection="column", minHeight="100vh", backgroundColor="#f1f3f6", fontFamily="Arial, sans-serif")
+        Navbar()
+        if current_view == "HOME"
+            HomeView()
+        else
+            CartView()
+        end
+    end
+end
+
+server::start(8080, App)

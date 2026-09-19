@@ -1,3 +1,14 @@
+# ==============================================================================
+# COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
+# 
+# This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
+# GitHub: https://github.com/Minato95-ayu
+# 
+# UNAUTHORIZED COPYING, REPRODUCTION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
+# ANY ATTEMPT TO CLONE OR CREATE DERIVATIVE WORKS FROM AAYU WILL BE SUBJECT
+# TO LEGAL ACTION.
+# ==============================================================================
+
 """
 =============================================================================
 FILE: math_lib.py
@@ -71,13 +82,13 @@ def fn_shape(args, vm):
 
 def register_math_lib(registry: StdLibRegistry):
     def fn_sin(args, vm):
-        return NumberValue(math.sin(_value(args[0])))
+        return math.sin(_value(args[0]))
     def fn_cos(args, vm):
-        return NumberValue(math.cos(_value(args[0])))
+        return math.cos(_value(args[0]))
     def fn_tan(args, vm):
-        return NumberValue(math.tan(_value(args[0])))
+        return math.tan(_value(args[0]))
     def fn_sqrt(args, vm):
-        return NumberValue(math.sqrt(_value(args[0])))
+        return math.sqrt(_value(args[0]))
 
     registry.register("math_sin", fn_sin)
     registry.register("math_cos", fn_cos)
@@ -89,19 +100,23 @@ def register_math_lib(registry: StdLibRegistry):
     registry.register("tensor_shape", fn_shape)
 
     def fn_pow(args, vm):
-        return NumberValue(math.pow(_value(args[0]), _value(args[1])))
+        return math.pow(_value(args[0]), _value(args[1]))
     def fn_abs(args, vm):
-        return NumberValue(abs(_value(args[0])))
+        return abs(_value(args[0]))
     def fn_round(args, vm):
-        return NumberValue(round(args[0].to_python()))
+        return round(_value(args[0]))
     def fn_min(args, vm):
-        return NumberValue(min(args[0].to_python(), args[1].to_python()))
+        return min(_value(args[0]), _value(args[1]))
     def fn_max(args, vm):
-        return NumberValue(max(args[0].to_python(), args[1].to_python()))
+        return max(_value(args[0]), _value(args[1]))
     def fn_floor(args, vm):
-        return NumberValue(math.floor(args[0].to_python()))
+        val = args[0]
+        if hasattr(val, 'to_python'): val = val.to_python()
+        return math.floor(val)
     def fn_ceil(args, vm):
-        return NumberValue(math.ceil(args[0].to_python()))
+        val = args[0]
+        if hasattr(val, 'to_python'): val = val.to_python()
+        return math.ceil(val)
         
     registry.register("math::sin", fn_sin)
     registry.register("math::cos", fn_cos)

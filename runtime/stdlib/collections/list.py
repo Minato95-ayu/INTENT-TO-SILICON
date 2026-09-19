@@ -1,3 +1,14 @@
+# ==============================================================================
+# COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
+# 
+# This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
+# GitHub: https://github.com/Minato95-ayu
+# 
+# UNAUTHORIZED COPYING, REPRODUCTION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
+# ANY ATTEMPT TO CLONE OR CREATE DERIVATIVE WORKS FROM AAYU WILL BE SUBJECT
+# TO LEGAL ACTION.
+# ==============================================================================
+
 """
 =============================================================================
 FILE: list.py
@@ -17,146 +28,122 @@ from ...values.list import ListValue
 from ...values.number import NumberValue
 from ...values.base import RuntimeValue
 
-def list_append(args: list, vm) -> RuntimeValue:
+def list_append(args: list, vm):
     if len(args) < 2:
         raise Exception("list_append requires a list and a value")
     lst = args[0]
     val = args[1]
     if isinstance(lst, list):
         lst.append(val)
-        return NullValue()
-    if not isinstance(lst, ListValue):
-        raise Exception(f"Expected a list, got {lst.type_name()}")
+        return None
     lst.append(val)
-    return NullValue()
+    return None
 
-def list_length(args: list, vm) -> RuntimeValue:
+def list_length(args: list, vm):
     if len(args) < 1:
         raise Exception("list_length requires a list")
     lst = args[0]
     if isinstance(lst, list):
-        return NumberValue(len(lst))
-    if not isinstance(lst, ListValue):
-        raise Exception(f"Expected a list, got {lst.type_name()}")
-    return lst.length()
+        return len(lst)
+    return len(lst.to_python()) if hasattr(lst, 'to_python') else 0
 
-def list_get(args: list, vm) -> RuntimeValue:
+def list_get(args: list, vm):
     if len(args) < 2:
         raise Exception("list_get requires a list and an index")
     lst = args[0]
     idx = args[1]
+    idx_val = int(idx.to_python() if hasattr(idx, 'to_python') else idx)
     if isinstance(lst, list):
-        idx_val = int(idx.to_python() if hasattr(idx, 'to_python') else idx)
         return lst[idx_val]
-    if not isinstance(lst, ListValue):
-        raise Exception(f"Expected a list, got {lst.type_name()}")
-    return lst.get(idx)
+    return lst.get(idx_val)
 
-def list_set(args: list, vm) -> RuntimeValue:
+def list_set(args: list, vm):
     if len(args) < 3:
         raise Exception("list_set requires a list, an index, and a value")
     lst = args[0]
     idx = args[1]
     val = args[2]
+    idx_val = int(idx.to_python() if hasattr(idx, 'to_python') else idx)
     if isinstance(lst, list):
-        idx_val = int(idx.to_python() if hasattr(idx, 'to_python') else idx)
         lst[idx_val] = val
-        return NullValue()
-    if not isinstance(lst, ListValue):
-        raise Exception(f"Expected a list, got {lst.type_name()}")
-    lst.set(idx, val)
-    return NullValue()
+        return None
+    lst.set(idx_val, val)
+    return None
 
-def list_remove(args: list, vm) -> RuntimeValue:
+def list_remove(args: list, vm):
     if len(args) < 2:
         raise Exception("list_remove requires a list and an index")
     lst = args[0]
     idx = args[1]
+    idx_val = int(idx.to_python() if hasattr(idx, 'to_python') else idx)
     if isinstance(lst, list):
-        idx_val = int(idx.to_python() if hasattr(idx, 'to_python') else idx)
         lst.pop(idx_val)
-        return NullValue()
-    if not isinstance(lst, ListValue):
-        raise Exception(f"Expected a list, got {lst.type_name()}")
-    lst.remove(idx)
-    return NullValue()
+        return None
+    lst.remove(idx_val)
+    return None
 
-def list_contains(args: list, vm) -> RuntimeValue:
+def list_contains(args: list, vm):
     if len(args) < 2:
         raise Exception("list_contains requires a list and a value")
     lst = args[0]
     val = args[1]
+    val_py = val.to_python() if hasattr(val, 'to_python') else val
     if isinstance(lst, list):
-        return val in lst
-    if not isinstance(lst, ListValue):
-        raise Exception(f"Expected a list, got {lst.type_name()}")
-    return lst.contains(val)
+        return val_py in lst
+    lst_py = lst.to_python() if hasattr(lst, 'to_python') else []
+    return val_py in lst_py
 
-def list_pop(args: list, vm) -> RuntimeValue:
+def list_pop(args: list, vm):
     if len(args) < 1:
         raise Exception("list_pop requires a list")
     lst = args[0]
     if isinstance(lst, list):
         return lst.pop()
-    if not isinstance(lst, ListValue):
-        raise Exception(f"Expected a list, got {lst.type_name()}")
     val = lst._get_payload().pop()
     return val
 
-def list_insert(args: list, vm) -> RuntimeValue:
+def list_insert(args: list, vm):
     if len(args) < 3:
         raise Exception("list_insert requires a list, an index, and a value")
     lst = args[0]
     idx = args[1]
     val = args[2]
+    idx_val = int(idx.to_python() if hasattr(idx, 'to_python') else idx)
     if isinstance(lst, list):
-        idx_val = int(idx.to_python() if hasattr(idx, 'to_python') else idx)
         lst.insert(idx_val, val)
-        return NullValue()
-    if not isinstance(lst, ListValue):
-        raise Exception(f"Expected a list, got {lst.type_name()}")
-    if not isinstance(idx, NumberValue):
-        raise Exception(f"Expected index to be a number")
-    lst._get_payload().insert(int(idx.to_python()), val)
-    return NullValue()
+        return None
+    lst._get_payload().insert(idx_val, val)
+    return None
 
-def list_reverse(args: list, vm) -> RuntimeValue:
+def list_reverse(args: list, vm):
     if len(args) < 1:
         raise Exception("list_reverse requires a list")
     lst = args[0]
     if isinstance(lst, list):
         lst.reverse()
-        return NullValue()
-    if not isinstance(lst, ListValue):
-        raise Exception(f"Expected a list, got {lst.type_name()}")
+        return None
     lst._get_payload().reverse()
-    return NullValue()
+    return None
 
-def list_sort(args: list, vm) -> RuntimeValue:
+def list_sort(args: list, vm):
     if len(args) < 1:
         raise Exception("list_sort requires a list")
     lst = args[0]
     if isinstance(lst, list):
         lst.sort(key=lambda x: x.to_python() if hasattr(x, 'to_python') else x)
-        return NullValue()
-    if not isinstance(lst, ListValue):
-        raise Exception(f"Expected a list, got {lst.type_name()}")
-    
-    # Simple sort based on underlying python values
-    lst._get_payload().sort(key=lambda x: x.to_python())
-    return NullValue()
+        return None
+    lst._get_payload().sort(key=lambda x: x.to_python() if hasattr(x, 'to_python') else x)
+    return None
 
-def list_clear(args: list, vm) -> RuntimeValue:
+def list_clear(args: list, vm):
     if len(args) < 1:
         raise Exception("list_clear requires a list")
     lst = args[0]
     if isinstance(lst, list):
         lst.clear()
-        return NullValue()
-    if not isinstance(lst, ListValue):
-        raise Exception(f"Expected a list, got {lst.type_name()}")
+        return None
     lst._get_payload().clear()
-    return NullValue()
+    return None
 
 def register_list_stdlib(registry):
     registry.register("list_append", list_append)

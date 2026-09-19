@@ -1,3 +1,14 @@
+# ==============================================================================
+# COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
+# 
+# This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
+# GitHub: https://github.com/Minato95-ayu
+# 
+# UNAUTHORIZED COPYING, REPRODUCTION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
+# ANY ATTEMPT TO CLONE OR CREATE DERIVATIVE WORKS FROM AAYU WILL BE SUBJECT
+# TO LEGAL ACTION.
+# ==============================================================================
+
 """
 compiler.ir.linearizer — Out-of-SSA lowering + block serialization
 ==================================================================
@@ -186,6 +197,7 @@ class Linearizer:
             elif inst.opcode == "PRINT":
                 self._push_value(inst.operands[0])
                 self._emit("OP_ASYNC_CALL", ["print", 1])
+                self._emit("POP", [])
 
             elif inst.opcode == "HAS_NEXT":
                 self._push_value(inst.operands[0])
@@ -263,11 +275,14 @@ class Linearizer:
 
         if "." in name or "::" in name or name in BUILTIN_FUNCTIONS:
             self._emit("OP_ASYNC_CALL", [name, len(args)])
+            if inst.result is None:
+                self._emit("POP", [])
+            else:
+                self._pop_to(inst.result)
         else:
             return_count = 1 if inst.result is not None else 0
             self._emit("CALL_ACTION", [name, len(args), return_count])
-
-        self._pop_to(inst.result)
+            self._pop_to(inst.result)
 
     def _lower_action_decl(self, inst: MIRInstruction) -> None:
         """Lower an ACTION_DECL by recursively linearizing the nested CFG."""

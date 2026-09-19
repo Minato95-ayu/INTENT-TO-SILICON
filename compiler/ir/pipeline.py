@@ -1,3 +1,14 @@
+# ==============================================================================
+# COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
+# 
+# This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
+# GitHub: https://github.com/Minato95-ayu
+# 
+# UNAUTHORIZED COPYING, REPRODUCTION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
+# ANY ATTEMPT TO CLONE OR CREATE DERIVATIVE WORKS FROM AAYU WILL BE SUBJECT
+# TO LEGAL ACTION.
+# ==============================================================================
+
 from typing import List
 from compiler.semantic.nodes import (
     SemanticProgramNode, SemanticStateDeclNode, SemanticWidgetNode,
@@ -36,13 +47,14 @@ class IRPipeline:
                 hir_list.append(hir_node)
         return hir_list
     def _semantic_to_hir(self, node):
-        if isinstance(node, SemanticStateDeclNode) or type(node).__name__ == "SemanticLetDeclNode":
+        if isinstance(node, SemanticStateDeclNode):
             val_hir = self._semantic_to_hir(node.value)
             if isinstance(val_hir, HIRPrint): val_hir = HIRLoadConst(val_hir.value)
             return HIRStateDecl(node.name, val_hir)
+        elif type(node).__name__ == "SemanticLetDeclNode":
             val_hir = self._semantic_to_hir(node.value)
             if isinstance(val_hir, HIRPrint): val_hir = HIRLoadConst(val_hir.value)
-            return HIRStateDecl(node.name, val_hir)
+            return HIRAssignment(node.name, val_hir)
         elif isinstance(node, SemanticWidgetNode):
             children_hir = []
             for child in node.children:
@@ -312,7 +324,7 @@ class IRPipeline:
                     "container", "row", "column", "card", "stack", "center",
                     "expanded", "padding", "scrollview", "grid",
                     "appbar", "navigationbar", "list", "form", "dialog",
-                    "drawer", "snackbar", "tabbar", "scaffold", "page", "component"
+                    "drawer", "snackbar", "tabbar", "scaffold", "page", "component", "input", "passwordinput", "fileinput"
                 ]
                 if is_block:
                     mir_list.append(MIRInstruction("MARK_BLOCK_START", []))
@@ -365,11 +377,11 @@ class IRPipeline:
         elif isinstance(hir, HIRActionCall):
             for arg in hir.args:
                 self._hir_to_mir(arg, mir_list)
-            if "." in hir.name or "::" in hir.name or hir.name in ["print", "len", "type", "float", "int"]:
-                print(f"[DEBUG MIR] Compiling OP_ASYNC_CALL for {hir.name}")
+            if hir.name == "len":
+                mir_list.append(MIRInstruction("GET_LENGTH", []))
+            elif "." in hir.name or "::" in hir.name or hir.name in ["print", "type", "float", "int"]:
                 mir_list.append(MIRInstruction("OP_ASYNC_CALL", [hir.name, len(hir.args)]))
             else:
-                print(f"[DEBUG MIR] Compiling CALL_ACTION for {hir.name}")
                 mir_list.append(MIRInstruction("CALL_ACTION", [hir.name, len(hir.args)]))
         elif isinstance(hir, HIRTheme):
             mir_list.append(MIRInstruction("DECLARE_THEME", [hir.name, hir.properties]))
@@ -456,10 +468,12 @@ class IRPipeline:
             self._hir_to_mir(hir.condition, mir_list)
             mir_list.append(MIRInstruction("JUMP_IF_FALSE", [end_label]))
             
+            mir_list.append(MIRInstruction("ENTER_SCOPE", []))
             for stmt in hir.body:
                 self._hir_to_mir(stmt, mir_list)
                 if self._needs_pop(stmt):
                     mir_list.append(MIRInstruction("POP", []))
+            mir_list.append(MIRInstruction("EXIT_SCOPE", []))
                     
             mir_list.append(MIRInstruction("JUMP", [start_label]))
             mir_list.append(MIRInstruction("LABEL", [end_label]))
@@ -653,7 +667,7 @@ class IRPipeline:
         elif mir.opcode == "BINARY_OP":
             lir_list.append(LIRNode("BINARY_OP", [mir.operands[0]]))
             
-        elif mir.opcode in ["POP", "JUMP", "JUMP_IF_FALSE", "LABEL", "GET_ITER", "FOR_ITER", "GET_LENGTH", "LOAD_SUBSCR", "STORE_SUBSCR", "CREATE_CLOSURE", "SETUP_EXCEPT", "POP_EXCEPT", "THROW", "RETHROW"]:
+        elif mir.opcode in ["POP", "JUMP", "JUMP_IF_FALSE", "LABEL", "GET_ITER", "FOR_ITER", "GET_LENGTH", "LOAD_SUBSCR", "STORE_SUBSCR", "CREATE_CLOSURE", "SETUP_EXCEPT", "POP_EXCEPT", "THROW", "RETHROW", "ENTER_SCOPE", "EXIT_SCOPE"]:
             lir_list.append(LIRNode(mir.opcode, mir.operands))
         elif mir.opcode == "CREATE_ARRAY":
             lir_list.append(LIRNode("CREATE_ARRAY", [mir.operands[0]]))

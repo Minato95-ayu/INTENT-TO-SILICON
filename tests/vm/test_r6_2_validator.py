@@ -1,3 +1,14 @@
+# ==============================================================================
+# COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
+# 
+# This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
+# GitHub: https://github.com/Minato95-ayu
+# 
+# UNAUTHORIZED COPYING, REPRODUCTION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
+# ANY ATTEMPT TO CLONE OR CREATE DERIVATIVE WORKS FROM AAYU WILL BE SUBJECT
+# TO LEGAL ACTION.
+# ==============================================================================
+
 import unittest
 from runtime.vm.exceptions import InvalidBytecodeError
 from runtime.vm.validator import Validator
@@ -47,7 +58,7 @@ class TestR62Validator(unittest.TestCase):
             Opcode.POP, 0, 0,
             Opcode.RET, 0, 0
         ])
-        with self.assertRaisesRegex(InvalidBytecodeError, "Stack underflow"):
+        with self.assertRaisesRegex(InvalidBytecodeError, "Insufficient stack depth for CALL"):
             Validator.validate(bytecode, [])
 
     def test_invalid_call_target(self):

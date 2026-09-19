@@ -1,3 +1,14 @@
+# ==============================================================================
+# COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
+# 
+# This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
+# GitHub: https://github.com/Minato95-ayu
+# 
+# UNAUTHORIZED COPYING, REPRODUCTION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
+# ANY ATTEMPT TO CLONE OR CREATE DERIVATIVE WORKS FROM AAYU WILL BE SUBJECT
+# TO LEGAL ACTION.
+# ==============================================================================
+
 """
 ===============================================================================
 AAYU Compiler - Runtime Standard Library
@@ -82,6 +93,7 @@ class StdLib:
         register_reflect_lib(self.registry)
 
         from .modules.ml import register_ml_lib
+        from .modules.ai_lib import register_ai_lib
         from .modules import (
             register_math_lib, register_string_lib, register_list_lib, register_map_lib,
             register_file_lib, register_path_lib, register_json_lib, register_time_lib,
@@ -93,6 +105,7 @@ class StdLib:
         
         register_math_lib(self.registry)
         register_ml_lib(self.registry)
+        register_ai_lib(self.registry)
         register_data_lib(self.registry)
 
         # Register ML explicitly

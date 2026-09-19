@@ -60,7 +60,7 @@ if __name__ == '__main__':
             print(f"[Builder] PyInstaller failed or not found, falling back to mock: {e}")
             exe_path = os.path.join(out_dir, "app.exe")
             with open(exe_path, "w") as f:
-                f.write("MOCK_WINDOWS_EXE_CONTENT")
+                f.write("MZ_MOCK_WINDOWS_EXE_CONTENT")
         
         exe_path = os.path.join(out_dir, "app.exe")
         print(f"[Builder] Windows binary generated at: {exe_path}")

@@ -1,3 +1,14 @@
+# ==============================================================================
+# COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
+# 
+# This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
+# GitHub: https://github.com/Minato95-ayu
+# 
+# UNAUTHORIZED COPYING, REPRODUCTION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
+# ANY ATTEMPT TO CLONE OR CREATE DERIVATIVE WORKS FROM AAYU WILL BE SUBJECT
+# TO LEGAL ACTION.
+# ==============================================================================
+
 from typing import List, Tuple, Any
 from dataclasses import dataclass, field
 from compiler.ir.lir import LIRNode
@@ -113,7 +124,7 @@ class BytecodeEncoder:
 
         # Pass 2: emit actual bytecode
         for node in lir_nodes:
-            print(f"LIRNode: {node.opcode} {node.operands}")
+            
             self._encode_node(node)
 
         # Append HALT
@@ -192,6 +203,10 @@ class BytecodeEncoder:
             self._emit(Opcode.SETUP_EXCEPT, 0xFFFF)
         elif opcode == "POP_EXCEPT":
             self._emit(Opcode.POP_EXCEPT, 0)
+        elif opcode == "ENTER_SCOPE":
+            self._emit(Opcode.ENTER_SCOPE, 0)
+        elif opcode == "EXIT_SCOPE":
+            self._emit(Opcode.EXIT_SCOPE, 0)
         elif opcode == "THROW":
             self._emit(Opcode.THROW, 0)
         elif opcode == "RETHROW":

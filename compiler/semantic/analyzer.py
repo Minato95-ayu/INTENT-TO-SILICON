@@ -1,4 +1,15 @@
-﻿from compiler.ast.nodes import (InsertNode, FindNode, RespondNode, 
+# ==============================================================================
+# COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
+# 
+# This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
+# GitHub: https://github.com/Minato95-ayu
+# 
+# UNAUTHORIZED COPYING, REPRODUCTION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
+# ANY ATTEMPT TO CLONE OR CREATE DERIVATIVE WORKS FROM AAYU WILL BE SUBJECT
+# TO LEGAL ACTION.
+# ==============================================================================
+
+from compiler.ast.nodes import (InsertNode, FindNode, RespondNode, 
     ProgramNode, StateDeclarationNode, LetDeclarationNode, LiteralNode,
     AssignmentNode, WidgetNode, ImportNode,
     ActionDeclarationNode, ActionCallNode, IdentifierNode,
@@ -37,14 +48,17 @@ class SemanticAnalyzer:
             ("print", -1),
             ("len", 1), ("append", 2), ("push", 2), ("remove", 2), ("has", 2), ("keys", 1), ("values", 1), ("typeof", 1),
             ("db::connect", 1), ("db::query", 2), ("db::execute", 2),
-            ("http::get", 1), ("http::post", 2),
+            ("http::get", 1), ("http::post", 2), ("ai::generate", 1),
             ("ml::kmeans_fit", 3), ("ml::kmeans_predict", 2),
             ("ml::linear_regression_fit", 3), ("ml::linear_regression_predict", 2),
             ("file::read", 1), ("file::write", 2),
             ("json::parse", 1), ("json::stringify", 1),
             ("math::sin", 1), ("math::cos", 1), ("math::tan", 1), ("math::sqrt", 1), ("math::pow", 2),
             ("math::abs", 1), ("math::round", 1), ("math::min", 2), ("math::max", 2),
-            ("math::floor", 1), ("math::ceil", 1)
+            ("math::floor", 1), ("math::ceil", 1),
+            ("string::split", 2), ("string::trim", 1), ("string::replace", 3),
+            ("string::upper", 1), ("string::lower", 1), ("string::contains", 2),
+            ("string::starts_with", 2), ("string::ends_with", 2), ("string::length", 1)
         ]
         for name, arity in builtins:
             sym = Symbol(name, "function")

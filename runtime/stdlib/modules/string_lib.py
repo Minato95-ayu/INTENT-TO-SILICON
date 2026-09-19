@@ -1,3 +1,14 @@
+# ==============================================================================
+# COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
+# 
+# This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
+# GitHub: https://github.com/Minato95-ayu
+# 
+# UNAUTHORIZED COPYING, REPRODUCTION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
+# ANY ATTEMPT TO CLONE OR CREATE DERIVATIVE WORKS FROM AAYU WILL BE SUBJECT
+# TO LEGAL ACTION.
+# ==============================================================================
+
 """
 =============================================================================
 FILE: string_lib.py
@@ -21,49 +32,54 @@ from ...values.boolean import BooleanValue
 from ...values.null import NullValue
 from ...values.list import ListValue
 
+def get_val(arg):
+    val = arg.to_python() if hasattr(arg, 'to_python') else arg
+    if val is None: return ""
+    return str(val)
+
 def register_string_lib(registry: StdLibRegistry):
     def fn_split(args, vm):
         if len(args) < 2: return NullValue()
-        parts = args[0].to_python().split(args[1].to_python())
+        parts = get_val(args[0]).split(get_val(args[1]))
         return make_list(vm, [make_string(vm, p) for p in parts])
     registry.register("string::split", fn_split)
     
     def fn_trim(args, vm):
         if not args: return NullValue()
-        return make_string(vm, args[0].to_python().strip())
+        return make_string(vm, get_val(args[0]).strip())
     registry.register("string::trim", fn_trim)
     
     def fn_replace(args, vm):
         if len(args) < 3: return NullValue()
-        return make_string(vm, args[0].to_python().replace(args[1].to_python(), args[2].to_python()))
+        return make_string(vm, get_val(args[0]).replace(get_val(args[1]), get_val(args[2])))
     registry.register("string::replace", fn_replace)
     
     def fn_upper(args, vm):
         if not args: return NullValue()
-        return make_string(vm, args[0].to_python().upper())
+        return make_string(vm, get_val(args[0]).upper())
     registry.register("string::upper", fn_upper)
     
     def fn_lower(args, vm):
         if not args: return NullValue()
-        return make_string(vm, args[0].to_python().lower())
+        return make_string(vm, get_val(args[0]).lower())
     registry.register("string::lower", fn_lower)
     
     def fn_contains(args, vm):
-        if len(args) < 2: return NullValue()
-        return BooleanValue(args[1].to_python() in args[0].to_python())
+        if len(args) < 2: return False
+        return bool(get_val(args[1]) in get_val(args[0]))
     registry.register("string::contains", fn_contains)
     
     def fn_starts_with(args, vm):
-        if len(args) < 2: return NullValue()
-        return BooleanValue(args[0].to_python().startswith(args[1].to_python()))
+        if len(args) < 2: return False
+        return bool(get_val(args[0]).startswith(get_val(args[1])))
     registry.register("string::starts_with", fn_starts_with)
     
     def fn_ends_with(args, vm):
-        if len(args) < 2: return NullValue()
-        return BooleanValue(args[0].to_python().endswith(args[1].to_python()))
+        if len(args) < 2: return False
+        return bool(get_val(args[0]).endswith(get_val(args[1])))
     registry.register("string::ends_with", fn_ends_with)
 
     def fn_length(args, vm):
-        if not args: return NullValue()
-        return NumberValue(len(args[0].to_python()))
+        if not args: return 0
+        return int(len(get_val(args[0])))
     registry.register("string::length", fn_length)

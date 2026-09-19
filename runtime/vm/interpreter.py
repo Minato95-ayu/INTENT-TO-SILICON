@@ -1,3 +1,14 @@
+# ==============================================================================
+# COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
+# 
+# This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
+# GitHub: https://github.com/Minato95-ayu
+# 
+# UNAUTHORIZED COPYING, REPRODUCTION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
+# ANY ATTEMPT TO CLONE OR CREATE DERIVATIVE WORKS FROM AAYU WILL BE SUBJECT
+# TO LEGAL ACTION.
+# ==============================================================================
+
 import time
 from runtime.vm.instructions import Opcode
 from runtime.vm.exceptions import KernelError
@@ -6,6 +17,16 @@ from runtime.vm.result import ResultStatus
 from runtime.renderers.web_renderer import RenderNode
 
 class Interpreter:
+
+    def op_DISPATCH(self, opcode):
+        if hasattr(self.vm, 'kernel_dispatch'):
+            res = self.vm.kernel_dispatch()
+            from runtime.vm.result import ResultStatus
+            if res.status == ResultStatus.ERROR:
+                from runtime.vm.exceptions import KernelError
+                self._throw_exception(KernelError(res.error_message))
+                return
+        self.vm.registers.ip += 3
     'Core bytecode dispatch loop.'
 
     def __init__(self, vm):
@@ -30,6 +51,8 @@ class Interpreter:
         self.dispatch_table[Opcode.STORE_STATE] = self.op_STORE_STATE
         self.dispatch_table[Opcode.LOAD_STATE] = self.op_LOAD_STATE
         self.dispatch_table[Opcode.INIT_STATE] = self.op_INIT_STATE
+        self.dispatch_table[Opcode.ENTER_SCOPE] = self.op_ENTER_SCOPE
+        self.dispatch_table[Opcode.EXIT_SCOPE] = self.op_EXIT_SCOPE
         self.dispatch_table[Opcode.CALL_COMPONENT] = self.op_CALL_COMPONENT
         self.dispatch_table[Opcode.PREPARE_CALL] = self.op_PREPARE_CALL
         self.dispatch_table[Opcode.CALL] = self.op_CALL
@@ -66,6 +89,7 @@ class Interpreter:
         self.dispatch_table[Opcode.RETHROW] = self.op_RETHROW
         self.dispatch_table[Opcode.SETUP_FINALLY] = self.op_SETUP_FINALLY
         self.dispatch_table[Opcode.EXEC_FINALLY] = self.op_EXEC_FINALLY
+        self.dispatch_table[Opcode.DISPATCH] = self.op_DISPATCH
 
     def build_stacktrace(self):
         trace = []
@@ -254,8 +278,12 @@ class Interpreter:
         name = self.vm.constant_pool[idx]
         val = self.vm.value_stack.pop()
         if not self.vm.state_scopes:
-            raise KernelError(f'state_scopes is empty at IP {self.vm.registers.ip - 3}')
-        self.vm.state_scopes[-1][name] = val
+            from runtime.vm.exceptions import KernelError
+            raise KernelError(f"state_scopes is empty at IP {self.vm.registers.ip - 3}")
+        # Store in current (local) scope, not global scope[0]
+        current_scope = self.vm.state_scopes[-1]
+        if name not in current_scope:
+            current_scope[name] = val
         return True
 
     def op_CALL_COMPONENT(self, opcode):
@@ -327,15 +355,25 @@ class Interpreter:
                 props = dynamic_values.pop(0)
         from compiler.bytecode.encoder import WIDGET_TYPES
         widget_name = next((k for k, v in WIDGET_TYPES.items() if v == widget_type), 'UNKNOWN')
-        is_block = widget_name.lower() in ['container', 'row', 'column', 'card', 'stack', 'center', 'expanded', 'padding', 'scrollview', 'grid', 'appbar', 'navigationbar', 'list', 'form', 'dialog', 'drawer', 'snackbar', 'tabbar', 'scaffold', 'page', 'component']
+        is_block = widget_name.lower() in ['container', 'row', 'column', 'card', 'stack', 'center', 'expanded', 'padding', 'scrollview', 'grid', 'appbar', 'navigationbar', 'list', 'form', 'dialog', 'drawer', 'snackbar', 'tabbar', 'scaffold', 'page', 'component', 'input', 'passwordinput', 'fileinput']
         children = []
         if is_block:
             while self.node_stack and self.node_stack[-1] != '$BLOCK_START':
                 children.insert(0, self.node_stack.pop())
             if self.node_stack and self.node_stack[-1] == '$BLOCK_START':
                 self.node_stack.pop()
-        node = RenderNode(widget_name, props=props)
-        node.children = children
+        node_props = props.copy() if props else {}
+        final_children = []
+        for child in children:
+            if isinstance(child, RenderNode) and child.type == 'BINDING':
+                node_props['bind'] = child.props.get('target')
+            elif isinstance(child, RenderNode) and child.type == 'VALIDATION':
+                node_props['validate'] = child.props.get('fields')
+            else:
+                final_children.append(child)
+                
+        node = RenderNode(widget_name, props=node_props)
+        node.children = final_children
         if widget_name == 'PAGE':
             self.render_tree.root = node
         else:
@@ -425,7 +463,7 @@ class Interpreter:
                 expected_exit_depth = base_depth - args
             current_depth = self.vm.value_stack.depth()
             if current_depth != expected_exit_depth:
-                self.vm.raise_exception(f'Runtime ABI violation: Stack depth mismatch on return. Expected {expected_exit_depth}, got {current_depth}')
+                self.vm.raise_exception(f'Runtime ABI violation: Stack depth mismatch on return. Expected {expected_exit_depth}, got {current_depth}. Stack dump: {self.vm.value_stack.stack}')
                 return False
             if hasattr(self.vm, 'state_scopes') and len(self.vm.state_scopes) > 1:
                 self.vm.state_scopes.pop()
@@ -454,7 +492,7 @@ class Interpreter:
                 expected_exit_depth = base_depth - args
             current_depth = self.vm.value_stack.depth()
             if current_depth != expected_exit_depth:
-                self.vm.raise_exception(f'Runtime ABI violation: Stack depth mismatch on return. Expected {expected_exit_depth}, got {current_depth}')
+                self.vm.raise_exception(f'Runtime ABI violation: Stack depth mismatch on return. Expected {expected_exit_depth}, got {current_depth}. Stack dump: {self.vm.value_stack.stack}')
                 return False
             if hasattr(self.vm, 'state_scopes') and len(self.vm.state_scopes) > 1:
                 self.vm.state_scopes.pop()
@@ -721,4 +759,16 @@ class Interpreter:
         self.vm.registers.ip += 3
         val = self.vm.value_stack.pop()
         print(f"[HTTP RESPONSE] {val}")
+        return True
+
+    def op_ENTER_SCOPE(self, opcode):
+        self.vm.registers.ip += 3
+        if hasattr(self.vm, 'state_scopes'):
+            self.vm.state_scopes.append({})
+        return True
+
+    def op_EXIT_SCOPE(self, opcode):
+        self.vm.registers.ip += 3
+        if hasattr(self.vm, 'state_scopes') and len(self.vm.state_scopes) > 1:
+            self.vm.state_scopes.pop()
         return True

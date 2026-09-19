@@ -1,3 +1,14 @@
+# ==============================================================================
+# COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
+# 
+# This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
+# GitHub: https://github.com/Minato95-ayu
+# 
+# UNAUTHORIZED COPYING, REPRODUCTION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
+# ANY ATTEMPT TO CLONE OR CREATE DERIVATIVE WORKS FROM AAYU WILL BE SUBJECT
+# TO LEGAL ACTION.
+# ==============================================================================
+
 """
 =============================================================================
 FILE: helpers.py
@@ -17,14 +28,14 @@ from ..values.list import ListValue
 from ..values.map import MapValue
 
 def make_string(vm, text: str) -> StringValue:
-    obj = vm.heap.allocate("string", text)
-    return StringValue(obj.id, vm.heap)
+    obj_id = vm.heap.allocate("string", text)
+    return StringValue(obj_id, vm.heap)
 
 def make_list(vm, elements: list) -> ListValue:
-    obj = vm.heap.allocate("list", elements)
-    return ListValue(obj.id, vm.heap)
+    obj_id = vm.heap.allocate("list", elements)
+    return ListValue(obj_id, vm.heap)
 
 def make_map(vm, elements: dict) -> MapValue:
-    obj = vm.heap.allocate("map", elements)
-    return MapValue(obj.id, vm.heap)
+    obj_id = vm.heap.allocate("map", elements)
+    return MapValue(obj_id, vm.heap)
 

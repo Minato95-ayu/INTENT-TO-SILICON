@@ -1,3 +1,14 @@
+# ==============================================================================
+# COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
+# 
+# This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
+# GitHub: https://github.com/Minato95-ayu
+# 
+# UNAUTHORIZED COPYING, REPRODUCTION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
+# ANY ATTEMPT TO CLONE OR CREATE DERIVATIVE WORKS FROM AAYU WILL BE SUBJECT
+# TO LEGAL ACTION.
+# ==============================================================================
+
 import pytest
 import sys
 import os
@@ -51,7 +62,8 @@ def test_plugin_recovery():
     
     vm.kernel_dispatch = lambda: RuntimeResult.error("Mock Plugin Error")
     
-    with pytest.raises(KernelError):
+    from runtime.vm.exceptions import InternalException
+    with pytest.raises(InternalException):
         vm.execute()
 
 if __name__ == "__main__":

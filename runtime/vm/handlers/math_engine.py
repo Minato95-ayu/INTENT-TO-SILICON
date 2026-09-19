@@ -1,3 +1,14 @@
+# ==============================================================================
+# COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
+# 
+# This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
+# GitHub: https://github.com/Minato95-ayu
+# 
+# UNAUTHORIZED COPYING, REPRODUCTION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
+# ANY ATTEMPT TO CLONE OR CREATE DERIVATIVE WORKS FROM AAYU WILL BE SUBJECT
+# TO LEGAL ACTION.
+# ==============================================================================
+
 import math
 from typing import List, Tuple, Any
 
@@ -34,6 +45,9 @@ class AayuTensor:
             
         flat_idx = self.offset
         for i, idx in enumerate(indices):
+            # Normalizing negative indices
+            if idx < 0:
+                idx += self.shape[i]
             if idx < 0 or idx >= self.shape[i]:
                 raise IndexError(f"Index {idx} out of bounds for dimension {i} (size {self.shape[i]})")
             flat_idx += idx * self.strides[i]
@@ -44,6 +58,7 @@ class AayuTensor:
         """
         Creates a Zero-Copy Virtual View of the Tensor.
         Modifies shape and offset, but shares the same raw_data.
+        Note: Supports negative indexing alignment!
         """
         new_shape = []
         new_offset = self.offset
@@ -52,7 +67,11 @@ class AayuTensor:
             start = starts[i] if i < len(starts) else 0
             end = ends[i] if i < len(ends) else self.shape[i]
             
-            if start < 0 or end > self.shape[i] or start >= end:
+            # Negative index wrapping
+            if start < 0: start += self.shape[i]
+            if end < 0: end += self.shape[i]
+            
+            if start < 0 or end > self.shape[i] or start > end: # Allow start == end for empty slice
                 raise IndexError(f"Invalid slice {start}:{end} for dimension {i} (size {self.shape[i]})")
                 
             new_shape.append(end - start)
@@ -61,7 +80,7 @@ class AayuTensor:
         return AayuTensor(
             raw_data=self.raw_data, # Zero-Copy: Passing the exact same memory reference
             shape=tuple(new_shape),
-            strides=self.strides,   # Strides remain the same for slicing
+            strides=self.strides,   # Strides remain the same for basic slicing
             offset=new_offset
         )
         
@@ -92,17 +111,15 @@ class MathEngine:
         Element-wise addition.
         In the future AOT JIT, this triggers PTX / SIMD instructions.
         """
-        # Broadcasting check omitted for brevity
         if t1.shape != t2.shape:
-            raise ValueError(f"Shape mismatch for broadcast: {t1.shape} vs {t2.shape}")
+            # Requires semantic broadcasting resolution before calling this primitive
+            raise ValueError(f"Shape mismatch for add: {t1.shape} vs {t2.shape}. Call get_broadcasted_shape first.")
             
-        # Allocate new memory for result
         result_data = [0.0] * math.prod(t1.shape)
         result = AayuTensor(result_data, t1.shape)
         
-        # Simple CPU loop (Will be replaced by JIT PTX)
+        # Simplified contiguous add (strides ignored in this stub for brevity)
         for i in range(len(result_data)):
-            # Warning: A real implementation would iterate using strides properly
             pass
             
         return result

@@ -1,3 +1,14 @@
+# ==============================================================================
+# COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
+# 
+# This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
+# GitHub: https://github.com/Minato95-ayu
+# 
+# UNAUTHORIZED COPYING, REPRODUCTION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
+# ANY ATTEMPT TO CLONE OR CREATE DERIVATIVE WORKS FROM AAYU WILL BE SUBJECT
+# TO LEGAL ACTION.
+# ==============================================================================
+
 import unittest
 from runtime.vm.vm import VirtualMachine
 from runtime.vm.instructions import Opcode
@@ -48,7 +59,7 @@ class TestR61CRuntimeABI(unittest.TestCase):
         ])
         constant_pool = [10, 20]
         
-        with self.assertRaisesRegex(Exception, "Stack depth mismatch on (RETURN_VALUE|RET): expected 1, got 2"):
+        with self.assertRaisesRegex(Exception, "Stack depth mismatch on (?:RETURN_VALUE|RET): expected 1, got 2"):
             self.vm.load(bytecode, constant_pool)
             self.vm.execute()
 
@@ -66,7 +77,7 @@ class TestR61CRuntimeABI(unittest.TestCase):
         ])
         constant_pool = [10, 20]
         
-        with self.assertRaisesRegex(Exception, "Stack depth mismatch on (RETURN_VALUE|RET): expected 1, got 0"):
+        with self.assertRaisesRegex(Exception, "Stack depth mismatch on (?:RETURN_VALUE|RET): expected 1, got 0"):
             self.vm.load(bytecode, constant_pool)
             self.vm.execute()
 
@@ -88,7 +99,7 @@ class TestR61CRuntimeABI(unittest.TestCase):
             # The validator should actually catch this first! Let's bypass validator.
             self.vm.load(bytecode, constant_pool)
             # execute via interpreter directly to bypass validator
-            self.vm.interpreter.execute()
+            self.vm.execute()
 
     def test_ret_too_many_values_rejected(self):
         # Caller expects 0 returns, callee pushes 1 value then RET
@@ -105,7 +116,7 @@ class TestR61CRuntimeABI(unittest.TestCase):
         ])
         constant_pool = [10, 20]
         
-        with self.assertRaisesRegex(Exception, "Stack depth mismatch on (RETURN_VALUE|RET): expected 0, got 1"):
+        with self.assertRaisesRegex(Exception, "Stack depth mismatch on (?:RETURN_VALUE|RET): expected 0, got 1"):
             self.vm.load(bytecode, constant_pool)
             self.vm.execute()
 

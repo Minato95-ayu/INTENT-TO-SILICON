@@ -1,3 +1,14 @@
+# ==============================================================================
+# COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
+# 
+# This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
+# GitHub: https://github.com/Minato95-ayu
+# 
+# UNAUTHORIZED COPYING, REPRODUCTION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
+# ANY ATTEMPT TO CLONE OR CREATE DERIVATIVE WORKS FROM AAYU WILL BE SUBJECT
+# TO LEGAL ACTION.
+# ==============================================================================
+
 import re
 from typing import List
 from .tokens import Token, TokenType, KEYWORDS, OPERATORS, SYMBOLS
@@ -112,8 +123,26 @@ class Lexer:
         self._advance() # skip quote
         val = ""
         while self.pos < self.length and self.source[self.pos] != quote:
-            val += self.source[self.pos]
-            self._advance()
+            if self.source[self.pos] == '\\':
+                self._advance()
+                if self.pos < self.length:
+                    escape_char = self.source[self.pos]
+                    if escape_char == 'n':
+                        val += '\n'
+                    elif escape_char == 't':
+                        val += '\t'
+                    elif escape_char == 'r':
+                        val += '\r'
+                    elif escape_char == '\\':
+                        val += '\\'
+                    elif escape_char == quote:
+                        val += quote
+                    else:
+                        val += '\\' + escape_char
+                    self._advance()
+            else:
+                val += self.source[self.pos]
+                self._advance()
             
         if self.pos < self.length:
             self._advance() # skip closing quote

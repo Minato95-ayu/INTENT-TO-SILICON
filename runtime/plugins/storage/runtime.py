@@ -1,8 +1,20 @@
+# ==============================================================================
+# COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
+# 
+# This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
+# GitHub: https://github.com/Minato95-ayu
+# 
+# UNAUTHORIZED COPYING, REPRODUCTION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
+# ANY ATTEMPT TO CLONE OR CREATE DERIVATIVE WORKS FROM AAYU WILL BE SUBJECT
+# TO LEGAL ACTION.
+# ==============================================================================
+
 import time
 import uuid
 import sqlite3
 import os
 import logging
+import threading
 from typing import Any, Dict
 from runtime.kernel.interface import RuntimeInterface, RuntimeMetadata, DispatchResult
 
@@ -18,6 +30,7 @@ class StorageRuntime(RuntimeInterface):
         self.in_memory = in_memory
         self.db_path = ":memory:" if in_memory else db_path
         self.conn = None
+        self.lock = threading.Lock()
         self.kernel = None
 
     def metadata(self) -> RuntimeMetadata:
@@ -56,20 +69,18 @@ class StorageRuntime(RuntimeInterface):
         pass
 
     def _execute(self, sql: str, params: tuple = (), commit: bool = False, transaction_id: str = None) -> Any:
-        # If transaction_id is provided, we should technically route to a specific connection/cursor.
-        # For simplicity in this sqlite wrapper, we just execute.
-        cursor = self.conn.cursor()
-        cursor.execute(sql, params)
-        if commit:
-            self.conn.commit()
-        
-        rows_affected = cursor.rowcount
-        
-        # If it's a SELECT, return rows
-        if sql.strip().upper().startswith("SELECT"):
-            return [dict(r) for r in cursor.fetchall()], rows_affected
-        else:
-            return None, rows_affected
+        with self.lock:
+            cursor = self.conn.cursor()
+            cursor.execute(sql, params)
+            if commit:
+                self.conn.commit()
+            rows_affected = cursor.rowcount
+            
+            # If it's a SELECT, return rows
+            if sql.strip().upper().startswith("SELECT"):
+                return [dict(r) for r in cursor.fetchall()], rows_affected
+            else:
+                return None, rows_affected
 
     def handle(self, action: str, payload: Dict[str, Any]) -> DispatchResult:
         start_ms = time.time()

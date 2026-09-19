@@ -1,3 +1,14 @@
+# ==============================================================================
+# COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
+# 
+# This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
+# GitHub: https://github.com/Minato95-ayu
+# 
+# UNAUTHORIZED COPYING, REPRODUCTION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
+# ANY ATTEMPT TO CLONE OR CREATE DERIVATIVE WORKS FROM AAYU WILL BE SUBJECT
+# TO LEGAL ACTION.
+# ==============================================================================
+
 class Registers:
     __slots__ = ['acc', 'flags', 'fp', 'ip', 'sp']
     '\n    Core VM Registers.\n    IP: Instruction Pointer\n    SP: Stack Pointer\n    FP: Frame Pointer\n    ACC: Accumulator (for math/logic)\n    FLAGS: Status Flags (Zero, Sign, Overflow, etc.)\n    '

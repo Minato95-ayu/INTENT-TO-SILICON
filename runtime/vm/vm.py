@@ -1,3 +1,14 @@
+# ==============================================================================
+# COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
+# 
+# This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
+# GitHub: https://github.com/Minato95-ayu
+# 
+# UNAUTHORIZED COPYING, REPRODUCTION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
+# ANY ATTEMPT TO CLONE OR CREATE DERIVATIVE WORKS FROM AAYU WILL BE SUBJECT
+# TO LEGAL ACTION.
+# ==============================================================================
+
 from runtime.vm.config import VMConfig
 from typing import Any
 from runtime.vm.registers import Registers
@@ -50,13 +61,14 @@ class VirtualMachine:
             if name in scope:
                 scope[name] = value
                 return
-        self.state_scopes[-1][name] = value
+        self.state_scopes[0][name] = value
 
     def load(self, bytecode, constant_pool=None, action_addresses=None, action_params=None):
         self.constant_pool = constant_pool or []
         self.action_addresses = action_addresses or {}
         self.action_params = action_params or {}
-        # Validator.validate(bytecode, self.constant_pool)
+        from runtime.vm.validator import Validator
+        Validator.validate(bytecode, self.constant_pool)
         self.decoder = Decoder(bytecode, self.constant_pool)
         self.registers.reset()
 

@@ -1,3 +1,14 @@
+# ==============================================================================
+# COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
+# 
+# This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
+# GitHub: https://github.com/Minato95-ayu
+# 
+# UNAUTHORIZED COPYING, REPRODUCTION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
+# ANY ATTEMPT TO CLONE OR CREATE DERIVATIVE WORKS FROM AAYU WILL BE SUBJECT
+# TO LEGAL ACTION.
+# ==============================================================================
+
 class Opcode:
     """AAYU Bytecode Instruction Set"""
     # Stack Operations
@@ -35,6 +46,8 @@ class Opcode:
     STORE_STATE = 0x30
     LOAD_STATE = 0x31
     INIT_STATE = 0x32
+    ENTER_SCOPE = 0x33
+    EXIT_SCOPE = 0x34
     
     # Kernel & External
     DISPATCH = 0x40

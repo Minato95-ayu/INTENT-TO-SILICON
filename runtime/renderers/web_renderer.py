@@ -1,182 +1,72 @@
-import json
-import threading
-import time
-import hashlib
-from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
-from runtime.ui.render_tree import RenderTree, RenderNode
-from runtime.events.queue import EventQueue, ActionEvent
+# ==============================================================================
+# COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
+# 
+# This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
+# GitHub: https://github.com/Minato95-ayu
+# 
+# UNAUTHORIZED COPYING, REPRODUCTION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
+# ANY ATTEMPT TO CLONE OR CREATE DERIVATIVE WORKS FROM AAYU WILL BE SUBJECT
+# TO LEGAL ACTION.
+# ==============================================================================
 
-_session_manager = None
+import os
+import json
+import asyncio
+from typing import Dict, Any
+import mimetypes
+
+from runtime.ui.render_tree import RenderTree, RenderNode
+
 _global_project_dir = "."
 
-def generate_css_class(props: dict) -> tuple[str, str]:
-    import hashlib
-    css_props = []
-    responsive_props = {"mobile": [], "tablet": [], "desktop": []}
-    
-    mapping = {
-        "width": "width", "height": "height", "backgroundColor": "background-color",
-        "background": "background", "color": "color", "padding": "padding", 
-        "margin": "margin", "borderRadius": "border-radius", "radius": "border-radius",
-        "fontSize": "font-size", "fontWeight": "font-weight", 
-        "justifyContent": "justify-content", "alignItems": "align-items", 
-        "gap": "gap", "border": "border", "cursor": "cursor", 
-        "overflowY": "overflow-y", "overflow": "overflow", "shadow": "box-shadow", 
-        "gradient": "background", "flex": "flex", "flexGrow": "flex-grow",
-        "display": "display", "flexDirection": "flex-direction",
-        "minWidth": "min-width", "maxWidth": "max-width",
-        "minHeight": "min-height", "maxHeight": "max-height"
-    }
-    
-    def fmt_val(k, v):
-        val = str(v)
-        if (k in ["fontSize", "radius", "borderRadius", "padding", "margin", "width", "height"]) and val.isdigit(): 
-            val += "px"
-        if k == "gradient":
-            val = f"linear-gradient({val})"
-        return val
-    
-    for k, v in props.items():
-        if k in mapping:
-            css_props.append(f"{mapping[k]}: {fmt_val(k, v)};")
-            
-    if "__responsive__" in props:
-        for k, breakpoints in props["__responsive__"].items():
-            if k in mapping:
-                if "mobile" in breakpoints:
-                    responsive_props["mobile"].append(f"{mapping[k]}: {fmt_val(k, breakpoints['mobile'])};")
-                if "tablet" in breakpoints:
-                    responsive_props["tablet"].append(f"{mapping[k]}: {fmt_val(k, breakpoints['tablet'])};")
-                if "desktop" in breakpoints:
-                    responsive_props["desktop"].append(f"{mapping[k]}: {fmt_val(k, breakpoints['desktop'])};")
-                    
-    if not css_props and not responsive_props["mobile"] and not responsive_props["tablet"] and not responsive_props["desktop"] and "hoverBackgroundColor" not in props and "hoverColor" not in props:
-        return "", ""
-        
-    # Serialize props for hashing to create a unique class name
-    content = str(sorted([(k, str(v)) for k, v in props.items()]))
-    class_name = "cls-" + hashlib.md5(content.encode()).hexdigest()[:8]
-    
-    css_rule = f".{class_name} {{ {' '.join(css_props)} }}\n"
-    if responsive_props["mobile"]:
-        css_rule += f"@media (max-width: 480px) {{ .{class_name} {{ {' '.join(responsive_props['mobile'])} }} }}\n"
-    if responsive_props["tablet"]:
-        css_rule += f"@media (min-width: 481px) and (max-width: 1024px) {{ .{class_name} {{ {' '.join(responsive_props['tablet'])} }} }}\n"
-    if responsive_props["desktop"]:
-        css_rule += f"@media (min-width: 1025px) {{ .{class_name} {{ {' '.join(responsive_props['desktop'])} }} }}\n"
-        
-    # Add hover state if hoverBackgroundColor exists
-    if "hoverBackgroundColor" in props:
-        css_rule += f".{class_name}:hover {{ background-color: {props['hoverBackgroundColor']} !important; }}\n"
-    if "hoverColor" in props:
-        css_rule += f".{class_name}:hover {{ color: {props['hoverColor']} !important; }}\n"
-        
-    return class_name, css_rule
+iconMap = {
+    "user": "fa-user",
+    "search": "fa-search",
+    "home": "fa-home",
+    "settings": "fa-cog",
+    "cart": "fa-shopping-cart",
+    "heart": "fa-heart",
+    "star": "fa-star",
+    "bell": "fa-bell"
+}
 
-def serialize_node(node: RenderNode, style_sheet: set):
+def serialize_node(node, style_sheet: set):
+    node_type = node.widget_type.lower()
+    
     props = {}
     for k, v in node.props.items():
-        if isinstance(v, str) and v.startswith("Theme."):
-            props[k] = f"var(--{v.split('.')[1]})"
-        else:
-            props[k] = v
-    node_type = node.type.lower()
-    
-    if node_type == "row":
-        props["display"] = "flex"
-        props["flexDirection"] = "row"
-        if "gap" not in props: props["gap"] = "0px"
-    elif node_type == "column":
-        props["display"] = "flex"
-        props["flexDirection"] = "column"
-        if "gap" not in props: props["gap"] = "0px"
-    elif node_type == "center":
-        props["display"] = "flex"
-        props["justifyContent"] = "center"
-        props["alignItems"] = "center"
-    elif node_type == "expanded":
-        props["flex"] = "1"
-    elif node_type == "spacer":
-        props["flexGrow"] = "1"
-    elif node_type == "padding":
-        # Usually padding widget just applies padding prop
-        if "value" in props:
-            props["padding"] = props.pop("value")
-    elif node_type == "scrollview":
-        props["overflowY"] = "auto"
-        props["display"] = "flex"
-        props["flexDirection"] = "column"
-    elif node_type == "page":
-        props["display"] = "flex"
-        props["flexDirection"] = "column"
-        props["width"] = "100vw"
-        props["height"] = "100vh"
-        props["margin"] = "0"
-        props["overflow"] = "hidden"
-    elif node_type == "grid":
-        cols = props.get("columns", 2)
-        gap = props.get("gap", "10px")
-        props["display"] = "grid"
-        props.pop("columns", None)  # not a CSS property
-    elif node_type in ("container", "card"):
-        props["display"] = "flex"
-        props["flexDirection"] = "column"
-    elif node_type == "appbar":
-        props["display"] = "flex"
-        props["flexDirection"] = "row"
-        props["alignItems"] = "center"
-        if "height" not in props: props["height"] = "56px"
-    elif node_type == "navigationbar":
-        props["display"] = "flex"
-        props["flexDirection"] = "row"
-        props["alignItems"] = "center"
-        if "height" not in props: props["height"] = "56px"
-    elif node_type in ("list", "form"):
-        props["display"] = "flex"
-        props["flexDirection"] = "column"
-    elif node_type == "stack":
-        props["position"] = "relative"
-    elif node_type == "divider":
-        if "height" not in props: props["height"] = "1px"
-        props["width"] = "100%"
-    
-
-    elif node_type == "scaffold":
-        props["display"] = "flex"
-        props["flexDirection"] = "column"
-        props["width"] = "100vw"
-        props["height"] = "100vh"
-        props["margin"] = "0"
-        props["overflow"] = "hidden"
-    elif node_type == "avatar":
-        props["display"] = "flex"
-        props["alignItems"] = "center"
-        props["justifyContent"] = "center"
-        if "size" in props:
-            sz = str(props["size"])
-            if sz.isdigit(): sz += "px"
-            props["width"] = sz
-            props["height"] = sz
-            props["borderRadius"] = "50%"
-            props.pop("size")
-    elif node_type == "chatbubble":
-        props["display"] = "flex"
-        props["flexDirection"] = "column"
-        if props.get("sender") == "true":
-            props["alignSelf"] = "flex-end"
-            if "backgroundColor" not in props:
-                props["backgroundColor"] = "#005c4b"
-        else:
-            props["alignSelf"] = "flex-start"
-            if "backgroundColor" not in props:
-                props["backgroundColor"] = "#202c33"
-        props["borderRadius"] = "8px"
-        props["padding"] = "6px 8px"
-        props["margin"] = "4px 0"
+        props[k] = v.to_python() if hasattr(v, 'to_python') else v
         
-    class_name, css_rule = generate_css_class(props)
-    if css_rule:
-        style_sheet.add(css_rule)
+    class_name = None
+    style_rules = []
+    
+    mapping = {
+        'padding': 'padding', 'margin': 'margin', 'color': 'color',
+        'backgroundColor': 'background-color', 'width': 'width',
+        'height': 'height', 'size': 'font-size', 'border': 'border',
+        'borderRadius': 'border-radius', 'shadow': 'box-shadow',
+        'opacity': 'opacity', 'align': 'text-align',
+        'position': 'position', 'zIndex': 'z-index', 'top': 'top',
+        'left': 'left', 'marginTop': 'margin-top', 'marginBottom': 'margin-bottom',
+        'paddingTop': 'padding-top', 'paddingBottom': 'padding-bottom', 'right': 'right', 'bottom': 'bottom'
+    }
+    
+    def fmt_val(prop, v):
+        if prop in ['padding', 'margin', 'width', 'height', 'size', 'border-radius', 'top', 'left', 'bottom', 'right', 'margin-top', 'margin-bottom', 'padding-top', 'padding-bottom']:
+            if isinstance(v, (int, float)):
+                return f"{v}px"
+            if str(v).isdigit():
+                return f"{v}px"
+        return str(v)
+
+    for p, v in props.items():
+        if p in mapping:
+            style_rules.append(f"{mapping[p]}: {fmt_val(mapping[p], v)}")
+            
+    if style_rules:
+        class_name = f"aayu-{node.id}"
+        rule = f".{class_name} {{ {'; '.join(style_rules)} }}"
+        style_sheet.add(rule)
         
     return {
         "id": node.id,
@@ -186,328 +76,203 @@ def serialize_node(node: RenderNode, style_sheet: set):
         "children": [serialize_node(c, style_sheet) for c in node.children]
     }
 
-class WebRendererHandler(BaseHTTPRequestHandler):
-
-    def get_session_id(self):
-        import http.cookies
-        cookies = http.cookies.SimpleCookie(self.headers.get('Cookie'))
-        if 'session_id' in cookies:
-            return cookies['session_id'].value
-        return None
-
-    def do_GET(self):
-        session_id = self.get_session_id()
-        session = _session_manager.get_or_create_session(session_id)
-        
-        # API Stream
-        if self.path == "/api/stream":
-            self.send_response(200)
-            self.send_header('Content-type', 'text/event-stream')
-            self.send_header('Cache-Control', 'no-cache')
-            self.send_header('Connection', 'keep-alive')
-            if session_id != session.session_id:
-                self.send_header('Set-Cookie', f'session_id={session.session_id}; Path=/')
-            self.end_headers()
-            
-            try:
-                initial = f"data: {session.current_tree_json}\n\n"
-                self.wfile.write(initial.encode('utf-8'))
-                self.wfile.flush()
-                
-                while True:
-                    data = session.message_queue.get()
-                    msg = f"data: {data}\n\n"
-                    self.wfile.write(msg.encode('utf-8'))
-                    self.wfile.flush()
-            except Exception:
-                pass
-            return
-            
-        # Serve Static Assets from .aayu/build/
-        import os
-        import mimetypes
-        
-        req_path = self.path
-        if req_path == "/":
-            req_path = "/index.html"
-            
-        build_dir = os.path.join(_global_project_dir, ".aayu", "build")
-        file_path = os.path.abspath(os.path.join(build_dir, req_path.lstrip("/")))
-        
-        if os.path.exists(file_path) and os.path.isfile(file_path):
-            self.send_response(200)
-            mime_type, _ = mimetypes.guess_type(file_path)
-            if mime_type:
-                self.send_header("Content-type", mime_type)
-            self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
-            if session_id != session.session_id:
-                self.send_header('Set-Cookie', f'session_id={session.session_id}; Path=/')
-            self.end_headers()
-            
-            with open(file_path, "rb") as f:
-                self.wfile.write(f.read())
-        else:
-            self.send_response(404)
-            self.end_headers()
-
-    def do_POST(self):
-        session_id = self.get_session_id()
-        session = _session_manager.get_session(session_id)
-        if not session:
-            self.send_response(401)
-            self.end_headers()
-            return
-            
-        if self.path == "/api/action":
-            content_length = int(self.headers.get('Content-Length', 0))
-            action_name = self.rfile.read(content_length).decode('utf-8')
-            if action_name not in session.vm.action_addresses:
-                self.send_response(400)
-                self.end_headers()
-                return
-            session.event_queue.push(ActionEvent(action_name))
-            self.send_response(200)
-            self.end_headers()
-            
-        elif self.path == "/api/event":
-            import json
-            from runtime.events.queue import InputEvent
-            content_length = int(self.headers.get('Content-Length', 0))
-            body = self.rfile.read(content_length).decode('utf-8')
-            try:
-                data = json.loads(body)
-                evt_type = data.get("type")
-                target = data.get("target")
-                val = data.get("value")
-                
-                if evt_type == "INPUT":
-                    session.event_queue.push(InputEvent(target, val))
-                elif evt_type == "ACTION":
-                    if target not in session.vm.action_addresses:
-                        self.send_response(400)
-                        self.end_headers()
-                        return
-                    session.event_queue.push(ActionEvent(target))
-                    
-                self.send_response(200)
-                self.end_headers()
-            except Exception as e:
-                print("Event processing error:", e)
-                self.send_response(400)
-                self.end_headers()
-            
-    def log_message(self, format, *args):
-        import sys
-        sys.stderr.write(format % args + "\\n")
-        
-    def log_error(self, format, *args):
-        import sys
-        sys.stderr.write("ERROR: " + format % args + "\\n")
-
-
 class WebRenderer:
-    _instance = None
-
-    @classmethod
-    def instance(cls) -> "WebRenderer":
-        if cls._instance is None:
-            raise RuntimeError("WebRenderer not initialized.")
-        return cls._instance
-
-    def __init__(self, session_manager, project_dir: str = ".", port: int = 3000):
-        WebRenderer._instance = self
+    def __init__(self, session_manager, project_dir: str = ".", port: int = 4000):
+        global _global_project_dir
+        _global_project_dir = project_dir
         self.session_manager = session_manager
+        self.project_dir = project_dir
         self.port = port
+        self.build_dir = os.path.join(self.project_dir, ".aayu", "build")
+        os.makedirs(self.build_dir, exist_ok=True)
         self.server = None
         self.thread = None
         
-        global _session_manager, _global_project_dir
-        _session_manager = session_manager
-        _global_project_dir = project_dir
-
-    def broadcast_theme_update(self, theme_name: str):
-        from runtime.ui.theme import ThemeManager
-        theme = ThemeManager.instance()._themes.get(theme_name, {})
-        data = {
-            "type": "theme",
-            "cssVars": {f"--{k}": (f"{v}px" if isinstance(v, (int, float)) else v) for k, v in theme.items()}
-        }
-        import json
-        msg = json.dumps(data)
+    async def asgi_app(self, scope, receive, send):
+        if scope['type'] != 'http':
+            return
+            
+        path = scope['path']
+        if path == "/": path = "/index.html"
         
-        # Broadcast to all sessions
-        if _session_manager:
-            for session in _session_manager.sessions.values():
-                try:
-                    session.message_queue.put_nowait(msg)
-                except:
-                    pass
-
-
+        headers = dict(scope.get('headers', []))
+        cookie_header = headers.get(b'cookie', b'').decode('utf-8')
+        session_id = None
+        for cookie in cookie_header.split(';'):
+            if 'session_id=' in cookie:
+                session_id = cookie.split('session_id=')[1].strip()
+                
+        session = await self.session_manager.get_or_create_session(session_id)
+        
+        if path == "/api/stream":
+            await send({
+                'type': 'http.response.start',
+                'status': 200,
+                'headers': [
+                    [b'content-type', b'text/event-stream'],
+                    [b'cache-control', b'no-cache'],
+                    [b'connection', b'keep-alive'],
+                ] + ([[b'set-cookie', f'session_id={session.session_id}; Path=/'.encode()]] if session_id != session.session_id else [])
+            })
+            
+            try:
+                initial = f"data: {session.current_tree_json}\n\n"
+                await send({'type': 'http.response.body', 'body': initial.encode('utf-8'), 'more_body': True})
+                
+                while True:
+                    try:
+                        data = await asyncio.wait_for(session.message_queue.get(), timeout=15)
+                        msg = f"data: {data}\n\n"
+                        await send({'type': 'http.response.body', 'body': msg.encode('utf-8'), 'more_body': True})
+                    except asyncio.TimeoutError:
+                        await send({'type': 'http.response.body', 'body': b': keepalive\n\n', 'more_body': True})
+            except asyncio.CancelledError:
+                pass
+            return
+            
+        if path == "/api/event":
+            body = b''
+            more_body = True
+            while more_body:
+                message = await receive()
+                body += message.get('body', b'')
+                more_body = message.get('more_body', False)
+                
+            data = json.loads(body)
+            evt_type = data.get("type")
+            target = data.get("target")
+            val = data.get("value")
+            
+            from runtime.events.queue import ActionEvent, InputEvent
+            if evt_type == "ACTION":
+                session.event_queue.push(ActionEvent(target))
+            elif evt_type == "INPUT":
+                session.event_queue.push(InputEvent(target, val))
+                
+            await send({
+                'type': 'http.response.start',
+                'status': 200,
+                'headers': [[b'content-type', b'application/json']]
+            })
+            await send({'type': 'http.response.body', 'body': b'{"status": "ok"}'})
+            return
+            
+        file_path = os.path.abspath(os.path.join(self.build_dir, path.lstrip("/")))
+        if os.path.exists(file_path) and os.path.isfile(file_path):
+            mime_type, _ = mimetypes.guess_type(file_path)
+            await send({
+                'type': 'http.response.start',
+                'status': 200,
+                'headers': [[b'content-type', (mime_type or 'application/octet-stream').encode()]]
+            })
+            with open(file_path, 'rb') as f:
+                await send({'type': 'http.response.body', 'body': f.read()})
+            return
+            
+        await send({'type': 'http.response.start', 'status': 404})
+        await send({'type': 'http.response.body', 'body': b'Not Found'})
 
     def initialize(self):
-        import os
-        build_dir = os.path.join(_global_project_dir, ".aayu", "build")
-        os.makedirs(build_dir, exist_ok=True)
-        
-        with open(os.path.join(build_dir, "index.html"), "w", encoding="utf-8") as f:
+        pass
+
+    def start(self):
+        with open(os.path.join(self.build_dir, "index.html"), "w", encoding="utf-8") as f:
             f.write('''<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>AAYU DOM Renderer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AAYU Web App</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/styles.css">
-    <link rel="stylesheet" id="theme-css" href="/theme.css">
-    <style id="dynamic-styles"></style>
+    <link rel="stylesheet" href="/theme.css">
+    <style id="aayu-styles"></style>
+    <style>
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        .widget-container { display: flex; flex-direction: column; }
+        .row { flex-direction: row; }
+        .center { align-items: center; justify-content: center; display: flex; width: 100%; height: 100%; }
+        .expanded { flex: 1; }
+        .padding { padding: 16px; }
+        .card { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); overflow: hidden; }
+        .button { background: #2196F3; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; text-align: center; }
+        .button:hover { background: #1976D2; }
+        .input { border: 1px solid #ccc; padding: 8px; border-radius: 4px; outline: none; }
+        .input:focus { border-color: #2196F3; }
+        .chatbubble { background: #E3F2FD; padding: 12px; border-radius: 12px; max-width: 70%; margin: 4px 0; word-wrap: break-word; position: relative; }
+        .chat-time { font-size: 0.7em; color: #666; text-align: right; margin-top: 4px; }
+    </style>
 </head>
 <body>
     <div id="root"></div>
-    <script src="/app.js"></script>
+    <script src="/app.js?v=2"></script>
 </body>
 </html>''')
-            
-        with open(os.path.join(build_dir, "styles.css"), "w", encoding="utf-8") as f:
-            f.write('''body { margin: 0; padding: 0; font-family: var(--font, 'Segoe UI'), Helvetica, Arial, sans-serif; background-color: var(--background, #111b21); color: var(--text, #e9edef); overflow: hidden; }
-.widget-container { box-sizing: border-box; display: flex; }
-.widget-row { display: flex; flex-direction: row; box-sizing: border-box; }
-.widget-column { display: flex; flex-direction: column; box-sizing: border-box; }
-.widget-button { cursor: pointer; border: none; outline: none; box-sizing: border-box; transition: background-color 0.2s; display: flex; align-items: center; justify-content: center;}
-.widget-input { border: 1px solid #ccc; outline: none; box-sizing: border-box; padding: 0 15px; font-family: inherit; }
-.widget-icon { display: flex; align-items: center; justify-content: center; }
-.widget-page, .widget-scaffold { width: 100vw; height: 100vh; overflow: hidden; box-sizing: border-box; display: flex; flex-direction: column; background-color: var(--background, #111b21); }
-.widget-text { font-family: inherit; color: var(--text, #e9edef); white-space: pre-wrap; }
-.widget-avatar { object-fit: cover; overflow: hidden; background-color: #ccc; }
-.widget-chatbubble { max-width: 85%; font-size: 14.2px; }
-.chat-time { font-size: 11px; color: rgba(255,255,255,0.6); align-self: flex-end; margin-top: 4px; }
 
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
-
-#root { width: 100vw; height: 100vh; }
-''')
-            
-        with open(os.path.join(build_dir, "app.js"), "w", encoding="utf-8") as f:
+        with open(os.path.join(self.build_dir, "app.js"), "w", encoding="utf-8") as f:
             f.write('''const rootEl = document.getElementById('root');
-const styleEl = document.getElementById('dynamic-styles');
+const styleEl = document.getElementById('aayu-styles');
 
 const iconMap = {
-    'search': 'fa-search', 'menu': 'fa-ellipsis-v', 'back': 'fa-arrow-left',
-    'plus': 'fa-plus', 'send': 'fa-paper-plane', 'user': 'fa-user',
-    'check': 'fa-check', 'check-double': 'fa-check-double'
+    "user": "fa-user", "search": "fa-search", "home": "fa-home",
+    "settings": "fa-cog", "cart": "fa-shopping-cart", "heart": "fa-heart",
+    "star": "fa-star", "bell": "fa-bell"
 };
 
 function sendEvent(type, target, value) {
-    fetch("/api/event", {
-        method: "POST",
+    fetch('/api/event', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type, target, value })
     });
 }
 
 function createElementFromNode(node) {
+    if (!node) return document.createTextNode("");
+    
     let el;
     const t = node.type;
+    
     if (t === "text") {
         el = document.createElement("span");
-        el.className = "widget-text";
-        el.innerText = node.props.text || node.props.value || "";
+        el.innerText = node.props.text || node.props.value || node.props.value_node || "";
     } else if (t === "heading") {
-        el = document.createElement("h1");
-        el.innerText = node.props.text || node.props.value || "";
-        el.style.margin = "0";
+        el = document.createElement("h2");
+        el.innerText = node.props.text || node.props.value || node.props.value_node || "";
     } else if (t === "button") {
         el = document.createElement("button");
-        el.innerText = node.props.text || node.props.value || "";
-        el.className = "widget-button";
+        el.className = "button";
+        el.innerText = node.props.text || node.props.value || node.props.value_node || "";
     } else if (t === "input" || t === "passwordinput") {
         el = document.createElement("input");
-        if (t === "passwordinput") el.type = "password";
-        el.placeholder = node.props.placeholder || "";
-        el.className = "widget-input";
-        if (node.props.name) el.name = node.props.name;
-        if (node.props.required) el.required = true;
-        if (node.props.minLength) el.minLength = node.props.minLength;
-        if (node.props.maxLength) el.maxLength = node.props.maxLength;
-        if (node.props.pattern) el.pattern = node.props.pattern;
+        el.className = "input";
+        el.type = t === "passwordinput" ? "password" : "text";
+        el.value = node.props.value || "";
+        if (node.props.placeholder) el.placeholder = node.props.placeholder;
         
-        if (node.props.value) el.value = node.props.value;
-        
-        if (node.props.bind) {
-            el.oninput = (e) => {
-                sendEvent("INPUT", node.props.bind, e.target.value);
-            };
-        }
+        let timeout = null;
+        el.oninput = (e) => {
+            if (node.props.bind) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => sendEvent("INPUT", node.props.bind, e.target.value), 50);
+            }
+        };
     } else if (t === "icon") {
         el = document.createElement("i");
         const iconName = node.props.name || "user";
-        el.className = `widget-icon fas ${iconMap[iconName] || "fa-" + iconName}`;
+        el.className = as ;
     } else if (t === "image") {
         el = document.createElement("img");
-        el.src = node.props.src || "";
+        if (node.props.src) el.src = node.props.src;
+        if (node.props.width) el.width = parseInt(node.props.width);
+        if (node.props.height) el.height = parseInt(node.props.height);
         el.style.objectFit = "cover";
-    } else if (t === "avatar") {
-        if (node.props.src) {
-            el = document.createElement("img");
-            el.src = node.props.src;
-        } else {
-            el = document.createElement("div");
-            el.innerText = node.props.text || "";
-        }
-        el.className = "widget-avatar widget-container";
-    } else if (t === "divider") {
-        el = document.createElement("div");
-        el.style.height = "1px";
-        el.style.width = "100%";
-        el.style.backgroundColor = node.props.color || "#ccc";
-    } else if (t === "form") {
-        el = document.createElement("form");
-        el.className = "widget-form";
-        el.onsubmit = (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData.entries());
-            if (node.props.onSubmit) {
-                // Here we would ideally send the data payload.
-                // For now, AAYU events only take string values. We serialize it.
-                sendEvent("ACTION", node.props.onSubmit, JSON.stringify(data));
-            }
-        };
-    } else if (t === "fileinput") {
-        el = document.createElement("input");
-        el.type = "file";
-        el.className = "widget-fileinput";
-        if (node.props.name) el.name = node.props.name;
-        if (node.props.accept) el.accept = node.props.accept;
-        el.onchange = (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (re) => {
-                const base64 = re.target.result;
-                if (node.props.bind) sendEvent("INPUT", node.props.bind, base64);
-                if (node.props.onUpload) sendEvent("ACTION", node.props.onUpload, base64);
-            };
-            reader.readAsDataURL(file);
-        };
-    } else if (t === "row") {
-        el = document.createElement("div");
-        el.className = "widget-row";
-    } else if (t === "column" || t === "list" || t === "scrollview") {
-        el = document.createElement("div");
-        el.className = "widget-column";
-    } else if (t === "page" || t === "scaffold") {
-        el = document.createElement("div");
-        el.className = t === "page" ? "widget-page" : "widget-scaffold";
     } else if (t === "chatbubble") {
         el = document.createElement("div");
-        el.className = "widget-chatbubble widget-container";
-        // Text
+        el.className = "chatbubble";
+        
         const tspan = document.createElement("span");
-        tspan.innerText = node.props.text || node.props.value || "";
+        tspan.innerText = node.props.text || node.props.value || node.props.value_node || "";
         el.appendChild(tspan);
-        // Time & Ticks
         if (node.props.time) {
             const timeEl = document.createElement("div");
             timeEl.className = "chat-time";
@@ -541,18 +306,12 @@ function createElementFromNode(node) {
         });
     }
     
-    // ARIA Attributes mapping
     if (node.props) {
         for (const key in node.props) {
-            if (key.startsWith("aria-")) {
-                el.setAttribute(key, node.props[key]);
-            } else if (key === "role") {
-                el.setAttribute("role", node.props[key]);
-            } else if (key === "tabIndex") {
-                el.tabIndex = node.props[key];
-            } else if (key === "alt") {
-                el.alt = node.props[key];
-            }
+            if (key.startsWith("aria-")) el.setAttribute(key, node.props[key]);
+            else if (key === "role") el.setAttribute("role", node.props[key]);
+            else if (key === "tabIndex") el.tabIndex = node.props[key];
+            else if (key === "alt") el.alt = node.props[key];
         }
     }
     
@@ -580,8 +339,8 @@ function patch(parent, oldEl, newVNode, index = 0) {
     }
     
     if (["text", "heading", "button"].includes(newVNode.type)) {
-        const nt = newVNode.props.text || newVNode.props.value || "";
-        const ot = oldVNode.props.text || oldVNode.props.value || "";
+        const nt = newVNode.props.text || newVNode.props.value || newVNode.props.value_node || "";
+        const ot = oldVNode.props.text || oldVNode.props.value || oldVNode.props.value_node || "";
         if (nt !== ot) {
             oldEl.innerText = nt;
         }
@@ -600,14 +359,14 @@ function patch(parent, oldEl, newVNode, index = 0) {
         if (oldVNode.props.name !== newVNode.props.name) {
             const oldIcon = oldVNode.props.name || "user";
             const newIcon = newVNode.props.name || "user";
-            oldEl.classList.remove(`fa-${oldIcon}`, iconMap[oldIcon] || `fa-${oldIcon}`);
-            oldEl.classList.add(`fa-${newIcon}`, iconMap[newIcon] || `fa-${newIcon}`);
+            oldEl.classList.remove(a-, iconMap[oldIcon] || a-);
+            oldEl.classList.add(a-, iconMap[newIcon] || a-);
         }
     }
     
     if (newVNode.type === "chatbubble") {
-        const oldT = oldVNode.props.text || oldVNode.props.value || "";
-        const newT = newVNode.props.text || newVNode.props.value || "";
+        const oldT = oldVNode.props.text || oldVNode.props.value || oldVNode.props.value_node || "";
+        const newT = newVNode.props.text || newVNode.props.value || oldVNode.props.value_node || "";
         if (oldT !== newT && oldEl.firstChild) {
             oldEl.firstChild.innerText = newT;
         }
@@ -670,6 +429,10 @@ window.addEventListener('popstate', (event) => {
 
 function connectSSE() {
     const evtSource = new EventSource('/api/stream');
+    evtSource.onopen = function() {
+        const overlay = document.getElementById('aayu-reconnect-overlay');
+        if (overlay) overlay.remove();
+    };
     evtSource.onmessage = function(event) {
         const data = JSON.parse(event.data);
         if (data.type === 'theme') {
@@ -682,6 +445,13 @@ function connectSSE() {
     };
     evtSource.onerror = function(err) {
         console.error("SSE connection lost. Reconnecting in 3 seconds...", err);
+        if (!document.getElementById('aayu-reconnect-overlay')) {
+            const overlay = document.createElement('div');
+            overlay.id = 'aayu-reconnect-overlay';
+            overlay.style = 'position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; font-family: monospace;';
+            overlay.innerHTML = '<h2>Connection Lost</h2><p>Server restarted or disconnected.</p><p style="color: #aaa; margin-top: 10px;">Reconnecting...</p>';
+            document.body.appendChild(overlay);
+        }
         evtSource.close();
         setTimeout(connectSSE, 3000);
     };
@@ -690,29 +460,33 @@ connectSSE();
 ''')
             
         from runtime.ui.theme import ThemeManager
-        with open(os.path.join(build_dir, "theme.css"), "w", encoding="utf-8") as f:
+        with open(os.path.join(self.build_dir, "theme.css"), "w", encoding="utf-8") as f:
             f.write(ThemeManager.instance().generate_css_variables())
             
-        self.server = ThreadingHTTPServer(('0.0.0.0', self.port), WebRendererHandler)
-
-
-        self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
-        self.thread.start()
+        import uvicorn
+        import threading
+        
         print("\n=========================================")
-        print("AAYU Web Renderer (DOM Mode) started!")
+        print("AAYU Async Web Renderer (ASGI) started!")
         print(f"Open in browser: http://localhost:{self.port}")
         print("=========================================\n")
+        
+        self.thread = threading.Thread(
+            target=uvicorn.run, 
+            args=(self.asgi_app,), 
+            kwargs={"host": "0.0.0.0", "port": self.port, "log_level": "error"},
+            daemon=True
+        )
+        self.thread.start()
 
     def render(self, tree: RenderTree):
-        # We no longer process render tree here, each session handles it
         pass
         
     def process_events(self):
-        # We no longer process events centrally
         pass
-        time.sleep(0.016)
         
+    def present(self):
+        pass
+
     def shutdown(self):
-        if self.server:
-            self.server.shutdown()
-            self.server.server_close()
+        pass

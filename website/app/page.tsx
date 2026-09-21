@@ -639,21 +639,21 @@ export default function HomePage() {
           <div className="bg-black border border-white/10 rounded-xl p-6 max-w-lg mx-auto text-left font-mono text-sm mb-10 space-y-3">
             <div className="flex items-center gap-3">
               <span className="text-zinc-600 select-none">$</span>
-              <span className="text-green-400">pip install aayu-lang</span>
+              <span className="text-zinc-400"># 1. Download the standalone compiler</span>
             </div>
             <div className="flex items-center gap-3">
               <span className="text-zinc-600 select-none">$</span>
-              <span className="text-blue-400">aayu init myapp</span>
+              <span className="text-green-400">curl -LO https://github.com/Minato95-ayu/INTENT-TO-SILICON/releases/download/latest/aayuc.exe</span>
             </div>
             <div className="flex items-center gap-3">
               <span className="text-zinc-600 select-none">$</span>
-              <span className="text-purple-400">aayu run myapp/main.aayu</span>
+              <span className="text-blue-400">./aayuc.exe main.aayu</span>
             </div>
             <div className="border-t border-white/5 pt-3 mt-3">
-              <span className="text-emerald-400">âœ“ Compiled in 12ms</span>
+              <span className="text-emerald-400">⚡ Compiled to Native machine code in 12ms</span>
             </div>
             <div>
-              <span className="text-emerald-400">âœ“ VM started â€” Hello from AAYU</span>
+              <span className="text-emerald-400">✨ Execution output: Hello from AAYU</span>
             </div>
           </div>
 
@@ -696,6 +696,41 @@ export default function HomePage() {
       </section>
 
     
+      {/* ================================================================
+          ABOUT THE CREATOR
+          ================================================================ */}
+      <section className="container mx-auto px-4 max-w-5xl mb-24">
+        <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-8 md:p-12 relative overflow-hidden">
+          <div className="flex flex-col md:flex-row items-center gap-8">
+            <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-blue-500/30 flex-shrink-0">
+              {/* Optional: we can put Ayush's image here if we had one. Let's use a nice gradient circle for now */}
+              <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-4xl font-bold">
+                AK
+              </div>
+            </div>
+            <div className="flex-1 text-center md:text-left">
+              <h2 className="text-3xl font-bold mb-2">Developed by Ayush Ghrit Kaushik</h2>
+              <p className="text-blue-400 font-mono text-sm mb-4">@Minato95-ayu</p>
+              <p className="text-zinc-400 mb-6 max-w-2xl">
+                I built AAYU because I believe programming should be accessible, lightning-fast, and free of the bloated ecosystems we see today. My goal was to create a language that respects the developer's time and the computer's resources. Everything from the parser to the native C-backend was engineered from scratch to bring the true joy of programming back.
+              </p>
+              <div className="flex flex-wrap justify-center md:justify-start gap-4">
+                <Link href="https://www.linkedin.com/in/ayushh-kaushiq-1a950825a/" target="_blank">
+                  <Button variant="outline" className="border-white/10 hover:bg-white/5 hover:text-white">
+                    <ExternalLink className="w-4 h-4 mr-2" /> LinkedIn
+                  </Button>
+                </Link>
+                <Link href="https://www.instagram.com/aa.yu_s/" target="_blank">
+                  <Button variant="outline" className="border-white/10 hover:bg-white/5 hover:text-white">
+                    <ExternalLink className="w-4 h-4 mr-2" /> Instagram
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ================================================================
           LEGAL & LICENSE
           ================================================================ */}

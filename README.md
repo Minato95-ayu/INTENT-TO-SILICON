@@ -1,59 +1,81 @@
-# AAYU - Intent-to-Silicon Programming Language
-### Developed by Ayush Ghrit Kaushik (Minato95-ayu)
-
-> **Write your intent. AAYU compiles it to native machine code.**
-
-AAYU is a **Native AOT (Ahead-of-Time) Compiled Systems Language** designed to be the ultimate single-file full-stack ecosystem. AAYU bridges the gap between Python's simplicity and C++/Rust's unmatched speed and security.
-
-No Python VM. No heavy runtimes. AAYU transpiles your intent directly to **Native C code** and invokes GCC/Clang to produce blazing fast standalone executables.
+﻿<div align="center">
+  <img src="website/public/aayu-logo.png" alt="AAYU Logo" width="200" />
+  <h1>AAYU Programming Language</h1>
+  <p><strong>Intent-to-Silicon: Write your intent. AAYU compiles it to native machine code.</strong></p>
+  <p>
+    <a href="https://intent-to-silicon.vercel.app/">Website</a> • 
+    <a href="https://www.linkedin.com/in/ayushh-kaushiq-1a950825a/">LinkedIn</a> • 
+    <a href="https://www.instagram.com/aa.yu_s/">Instagram</a>
+  </p>
+</div>
 
 ---
 
-## 🚀 The AAYU Advantage
+## What is AAYU? 
+Are you a student learning to code? Or a developer tired of setting up environments, dealing with huge dependencies, and slow execution? 
 
-- **Native C-Backend Transpiler**: Compiles directly to C, producing OS-native `.exe` binaries.
-- **C++ Speed, Rust Security, Python Simplicity**: AAYU is strictly typed, memory-safe (soon via compiler-enforced lifetimes/GC), and executes at native silicon speeds.
-- **Single-file Full-stack Ecosystem**: Database models, API routes, UI pages, and AI/ML data science features — all in one `.aayu` file.
-- **Zero External Runtimes**: Final binaries run completely standalone. No npm, no pip, no JVM, no Python overhead.
-- **Self-Hosted Vision**: The core AAYU ecosystem is actively being re-written in AAYU itself.
+**AAYU** is built for you. AAYU is a **Native AOT (Ahead-of-Time) Compiled Systems Language** designed to be incredibly simple to learn, yet as fast as C++ or Rust. 
 
-## 🛠️ Quick Start
+Imagine writing code that looks as easy as Python, but when you hit run, it compiles directly into a standalone .exe native binary. **No Python VM. No Node.js. No pip packages required to run your apps.** It's just you, your code, and the silicon.
 
-```bash
-# Clone and install the AAYU CLI toolchain
-git clone https://github.com/Minato95-ayu/INTENT-TO-SILICON.git
-cd INTENT-TO-SILICON
-pip install -e .
+AAYU is a **fully bootstrapped (self-hosted)** language. This means the AAYU compiler itself is written in AAYU!
 
-# Compile your first program to a Native Executable!
-aayu build hello.aayu
+## 🚀 Why AAYU? (The Features)
+- **Zero Python/Node Overhead**: AAYU generates its own pure C code behind the scenes and natively compiles it. 0% Python dependency at runtime.
+- **Python Simplicity, C++ Speed**: We designed the syntax (ction, let, while) to be readable for absolute beginners, while outputting machine code that runs in nanoseconds.
+- **Single-File Full Stack**: (Coming soon) Build your UI, API, and Database in a single .aayu file without juggling 5 different frameworks.
+- **Stand-Alone Binaries**: Share your apps as a single .exe file. Your friends don't need to install anything to run your code!
 
-# Run the native OS executable directly
-./hello.exe
-```
+## 💻 Code Example
+Look how simple it is. No classes or boilerplate required to get started.
 
-## 🧠 Example AAYU Code
-
-```aayu
+`ayu
+// A simple AAYU program
+let limit = 1000
 let i = 0
 let sum = 0
 
-// Native Loop Execution (0.0001ms overhead)
-while i < 1000000
+// Native Loop Execution (runs at silicon speed!)
+while i < limit
   sum = sum + i
   i = i + 1
 end
 
+print("The total sum is:")
 print(sum)
-```
+`
 
-## 🏗️ Architecture: Intent-to-Silicon
+## 🛠️ How to Get Started
 
-1. **AAYU Parser**: Lexer -> AST -> Semantic Analysis
-2. **AAYU Bytecode VM**: For rapid prototyping, hot-reloading, and server hosting.
-3. **AAYU C-Backend**: Transpiles AST directly to highly-optimized C code.
-4. **GCC/Clang Orchestration**: Automatically links and compiles the C code into `.exe` or `.elf` binaries.
+Right now, AAYU is in active development. If you are a developer or student who wants to compile AAYU code:
+
+### Option 1: Native Executable (For Users)
+Soon, you will be able to simply download ayuc.exe from our releases and run:
+`ash
+# Simply pass your file to the AAYU compiler
+aayuc my_program.aayu
+`
+
+### Option 2: Build from Source (For Compiler Contributors)
+If you want to help develop the AAYU compiler itself, you can use our Python bootstrap script:
+`ash
+git clone https://github.com/Minato95-ayu/INTENT-TO-SILICON.git
+cd INTENT-TO-SILICON
+pip install -e .
+
+# Use the bootstrap CLI to build your .aayu files
+aayu build my_program.aayu
+`
+*(Note: pip install is ONLY used right now if you are developing the compiler itself. Regular AAYU users will never need Python!)*
+
+## 🧠 About the Creator
+**Ayush Ghrit Kaushik** (GitHub: [@Minato95-ayu](https://github.com/Minato95-ayu))  
+I built AAYU because I believe programming should be accessible, fast, and completely free of the bloated ecosystems we see today. The goal was to create a tool that respects the developer's time and computer's resources. Everything from the parser to the native C-backend was engineered to bring the joy of programming back.
+
+Connect with me and follow AAYU's journey:
+- [LinkedIn](https://www.linkedin.com/in/ayushh-kaushiq-1a950825a/)
+- [Instagram](https://www.instagram.com/aa.yu_s/)
 
 ---
-**Copyright © 2026 Ayush Ghrit Kaushik. All Rights Reserved.**
+**Copyright © 2026 Ayush Ghrit Kaushik. All Rights Reserved.**  
 Unauthorized copying, reproduction, or distribution is strictly prohibited.

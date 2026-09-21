@@ -28,8 +28,8 @@ export function Navbar() {
           </Link>
                     <nav className="hidden lg:flex gap-6 text-sm font-medium text-zinc-400 items-center">
             <Link href="/" className="hover:text-white transition-colors">Home</Link>
-            <Link href="https://github.com/Minato95-ayu/INTENT-TO-SILICON" target="_blank" className="hover:text-white transition-colors">Documentation</Link>
-            <Link href="https://github.com/Minato95-ayu/INTENT-TO-SILICON/tree/main/examples" target="_blank" className="hover:text-white transition-colors">Examples</Link>
+            <Link href="/docs" className="hover:text-white transition-colors">Documentation</Link>
+            <Link href="/docs#project" className="hover:text-white transition-colors">Examples</Link>
           </nav>
         </div>
                 <div className="flex items-center gap-4">

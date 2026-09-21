@@ -612,9 +612,9 @@ export default function HomePage() {
           </div>
           
           <div className="mt-8 flex gap-4">
-            <Link href="https://github.com/Minato95-ayu/INTENT-TO-SILICON/tree/main/tests" target="_blank">
+            <Link href="/docs">
                <Button className="bg-green-500/10 text-green-400 border border-green-500/30 hover:bg-green-500/20 font-bold">
-                 View Live Test Suite
+                 Start "Zero to Legend" Course
                </Button>
             </Link>
           </div>

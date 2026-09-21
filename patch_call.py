@@ -1,29 +1,13 @@
-# ==============================================================================
-# COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
-# 
-# This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
-# GitHub: https://github.com/Minato95-ayu
-# 
-# UNAUTHORIZED COPYING, REPRODUCTION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
-# ANY ATTEMPT TO CLONE OR CREATE DERIVATIVE WORKS FROM AAYU WILL BE SUBJECT
-# TO LEGAL ACTION.
-# ==============================================================================
+with open('src/self_hosted/lexer.aayu', 'r', encoding='utf-8') as f:
+    text = f.read()
 
-import re
-with open("compiler/ir/linearizer.py", "r") as f:
-    c = f.read()
+text = text.replace('LexerState(source: src, pos: 0, line: 1, column: 1, length: len(src))', 'LexerState(src, 0, 1, 1, len(src))')
+text = text.replace('Token(type: tok_type, value: value, line: start_line, column: start_col)', 'Token(tok_type, value, start_line, start_col)')
+text = text.replace('Token(type: "NUMBER", value: value, line: start_line, column: start_col)', 'Token("NUMBER", value, start_line, start_col)')
+text = text.replace('Token(type: "STRING", value: value, line: start_line, column: start_col)', 'Token("STRING", value, start_line, start_col)')
+text = text.replace('Token(type: "EOF", value: "", line: st.line, column: st.column)', 'Token("EOF", "", st.line, st.column)')
+text = text.replace('Token(type: "PUNCTUATION", value: val, line: st.line, column: st.column - 1)', 'Token("PUNCTUATION", val, st.line, st.column - 1)')
 
-patch = """        if "." in name or "::" in name or name in BUILTIN_FUNCTIONS:
-            self._emit("OP_ASYNC_CALL", [name, len(args)])
-            if inst.result is None:
-                self._emit("POP", [])
-            else:
-                self._pop_to(inst.result)
-        else:
-            return_count = 1 if inst.result is not None else 0
-            self._emit("CALL_ACTION", [name, len(args), return_count])
-            self._pop_to(inst.result)"""
 
-c = re.sub(r'        if "\." in name or "::" in name or name in BUILTIN_FUNCTIONS:.*?        self\._pop_to\(inst\.result\)', patch, c, flags=re.DOTALL)
-with open("compiler/ir/linearizer.py", "w") as f:
-    f.write(c)
+with open('src/self_hosted/lexer.aayu', 'w', encoding='utf-8') as f:
+    f.write(text)

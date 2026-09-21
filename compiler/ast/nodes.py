@@ -9,7 +9,7 @@
 # TO LEGAL ACTION.
 # ==============================================================================
 
-﻿from dataclasses import dataclass, field
+from dataclasses import dataclass, field
 from typing import List, Optional, Any, Dict
 
 @dataclass

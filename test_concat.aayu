@@ -1,0 +1,3 @@
+let a = "he"
+let b = "llo"
+print(a + b)

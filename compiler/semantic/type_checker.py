@@ -72,7 +72,7 @@ class TypeChecker:
                     if rt not in ["Integer", "Float"] and rt != "String":
                         raise TypeError(expected="Number or String", received=rt, line=node.line, column=node.column)
                     
-                    if (lt == "String" or rt == "String") and op != "+":
+                    if (lt == "String" or rt == "String") and op not in ["+", "==", "!=", "<", ">", "<=", ">="]:
                         raise TypeError(expected="Number", received="String", line=node.line, column=node.column, hint="Only + is supported for strings.")
                             
                 elif op in ["&&", "||", "!"]:

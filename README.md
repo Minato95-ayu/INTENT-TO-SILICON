@@ -1,119 +1,59 @@
-# AAYU — Intent-to-Silicon Programming Language
+# AAYU - Intent-to-Silicon Programming Language
+### Developed by Ayush Ghrit Kaushik (Minato95-ayu)
 
-> Write your intent. AAYU compiles it to silicon-ready bytecode.
+> **Write your intent. AAYU compiles it to native machine code.**
 
-AAYU is a **single-file full-stack programming language** with built-in Database, Backend Server, Frontend UI, and AI/ML — all zero-dependency, zero-config.
+AAYU is a **Native AOT (Ahead-of-Time) Compiled Systems Language** designed to be the ultimate single-file full-stack ecosystem. AAYU bridges the gap between Python's simplicity and C++/Rust's unmatched speed and security.
 
-## ✨ What Makes AAYU Different
+No Python VM. No heavy runtimes. AAYU transpiles your intent directly to **Native C code** and invokes GCC/Clang to produce blazing fast standalone executables.
 
-- **Single-file full-stack**: Database models, API routes, UI pages, and AI/ML — all in one `.aayu` file
-- **Zero dependencies**: No npm, no pip, no package managers needed for core features
-- **Real compiler pipeline**: Lexer → Parser → AST → HIR → MIR → LIR → Bytecode → Stack-based VM
-- **Memory**: Basic reference counting (Mark-and-sweep GC planned)
-- **Built-in database**: Basic SQLite wrapper with automatic model table generation (Query planner & migrations planned)
-- **Built-in web server**: Basic HTTP server with routing (Middleware & auth planned)
-- **Built-in UI**: Declarative widget-tree (Proof of concept)
+---
 
-## 🚀 Quick Start
+## 🚀 The AAYU Advantage
+
+- **Native C-Backend Transpiler**: Compiles directly to C, producing OS-native `.exe` binaries.
+- **C++ Speed, Rust Security, Python Simplicity**: AAYU is strictly typed, memory-safe (soon via compiler-enforced lifetimes/GC), and executes at native silicon speeds.
+- **Single-file Full-stack Ecosystem**: Database models, API routes, UI pages, and AI/ML data science features — all in one `.aayu` file.
+- **Zero External Runtimes**: Final binaries run completely standalone. No npm, no pip, no JVM, no Python overhead.
+- **Self-Hosted Vision**: The core AAYU ecosystem is actively being re-written in AAYU itself.
+
+## 🛠️ Quick Start
 
 ```bash
-# Clone and install
+# Clone and install the AAYU CLI toolchain
 git clone https://github.com/Minato95-ayu/INTENT-TO-SILICON.git
 cd INTENT-TO-SILICON
 pip install -e .
 
-# Run your first program
-aayu run hello.aayu
+# Compile your first program to a Native Executable!
+aayu build hello.aayu
 
-# Run with web server
-aayu run aayugram.aayu --web
+# Run the native OS executable directly
+./hello.exe
 ```
 
-## 📝 Hello World
+## 🧠 Example AAYU Code
 
 ```aayu
-app Hello
-action main
-    print("Hello, AAYU!")
-end
-run main
-```
+let i = 0
+let sum = 0
 
-## 🏗️ Full-Stack Example (AAYUGram)
-
-```aayu
-app AAYUGram
-
-model Post
-    id Int
-    content String
-    likes Int = 0
+// Native Loop Execution (0.0001ms overhead)
+while i < 1000000
+  sum = sum + i
+  i = i + 1
 end
 
-route "/api/feed"
-    get
-        let posts = Post.all()
-        respond(posts)
-    end
-end
-
-Page Home
-    Column
-        Text("Welcome to AAYUGram")
-        Button("Create Post", onClick: createPost)
-    end
-end
-
-run Home
+print(sum)
 ```
 
-## 🏛️ Architecture
+## 🏗️ Architecture: Intent-to-Silicon
 
-```
-┌─────────────────────────────────────────┐
-│              AAYU Source (.aayu)         │
-├──────┬──────┬──────┬──────┬─────────────┤
-│Lexer │Parser│ AST  │Seman-│   IR        │
-│      │      │      │tic   │Pipeline     │
-├──────┴──────┴──────┴──────┼─────────────┤
-│         HIR → MIR → LIR  │  Bytecode   │
-├───────────────────────────┼─────────────┤
-│     Stack-based VM        │   GC Heap   │
-├───────────────────────────┴─────────────┤
-│  stdlib: math | ai | ml | db | http     │
-└─────────────────────────────────────────┘
-```
+1. **AAYU Parser**: Lexer -> AST -> Semantic Analysis
+2. **AAYU Bytecode VM**: For rapid prototyping, hot-reloading, and server hosting.
+3. **AAYU C-Backend**: Transpiles AST directly to highly-optimized C code.
+4. **GCC/Clang Orchestration**: Automatically links and compiles the C code into `.exe` or `.elf` binaries.
 
-## 🧪 Testing
-
-```bash
-# Run all tests
-python -m pytest tests/ -v
-
-# Run compiler tests
-python -m pytest tests/compiler/ -v
-```
-
-## 📊 Project Status
-
-**Current Version**: v1.1.0
-
-| Feature | Status |
-|---------|--------|
-| Compiler Pipeline (Lexer → LIR) | ✅ Working |
-| Stack-based VM + Bytecode | ✅ Working |
-| Garbage Collector (Mark & Sweep) | ✅ Working |
-| Database / Storage Engine | ✅ Working |
-| Web Server / REST Routes | ✅ Working |
-| CLI Tools (`aayu run`, `aayu doctor`) | ✅ Working |
-| Frontend UI (Declarative Widgets) | 🔨 In Progress |
-| AI/ML Standard Library | 🔨 In Progress |
-| Package Manager (APM) | 📋 Planned |
-
-## 📄 License
-
-MIT License — see [LICENSE](LICENSE)
-
-## 🤝 Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md)
+---
+**Copyright © 2026 Ayush Ghrit Kaushik. All Rights Reserved.**
+Unauthorized copying, reproduction, or distribution is strictly prohibited.

@@ -1,0 +1,627 @@
+action match(tokens, pos, type, mat_value)
+    if pos < len(tokens)
+        let mat_t = tokens[pos]
+        if mat_t["type"] == type
+            if mat_value == ""
+                return 1 == 1
+            else
+                if mat_t["value"] == mat_value
+                    return 1 == 1
+                end
+            end
+        end
+    end
+    return 1 == 0
+end
+
+action check(tokens, pos, type)
+    if pos < len(tokens)
+        let chk_t = tokens[pos]
+        if chk_t["type"] == type
+            return 1 == 1
+        end
+    end
+    return 1 == 0
+end
+
+action expect(tokens, pos, type, msg)
+    if pos < len(tokens)
+        let exp_t = tokens[pos]
+        if exp_t["type"] == type
+            return [pos + 1, exp_t]
+        end
+    end
+    print("Syntax Error: " + msg)
+    return [pos, { "type": "EOF", "value": "", "line": 0, "column": 0 }]
+end
+
+action expect_val(tokens, pos, type, expv_value, msg)
+    if pos < len(tokens)
+        let expv_t = tokens[pos]
+        if expv_t["type"] == type
+            if expv_t["value"] == expv_value
+                return [pos + 1, expv_t]
+            end
+        end
+    end
+    print("Syntax Error: " + msg)
+    return [pos, { "type": "EOF", "value": "", "line": 0, "column": 0 }]
+end
+
+action make_program(stmts)
+    return { "type": "Program", "statements": stmts }
+end
+action make_let(name, value, line, column)
+    return { "type": "LetDeclaration", "name": name, "value": value, "line": line, "column": column }
+end
+action make_assignment(target, value, line, column)
+    return { "type": "Assignment", "target": target, "value": value, "line": line, "column": column }
+end
+action make_if(cond, then_b, else_b, line, column)
+    return { "type": "If", "condition": cond, "then_branch": then_b, "else_branch": else_b, "line": line, "column": column }
+end
+action make_while(cond, body, line, column)
+    return { "type": "While", "condition": cond, "body": body, "line": line, "column": column }
+end
+action make_action(name, args, stmts, line, column)
+    return { "type": "ActionDeclaration", "name": name, "args": args, "statements": stmts, "line": line, "column": column }
+end
+action make_return(value, line, column)
+    return { "type": "Return", "value": value, "line": line, "column": column }
+end
+action make_binary(left, op, right, line, column)
+    return { "type": "BinaryOp", "left": left, "operator": op, "right": right, "line": line, "column": column }
+end
+action make_call(name, args, line, column)
+    return { "type": "ActionCall", "name": name, "args": args, "line": line, "column": column }
+end
+action make_subscript(target, index, line, column)
+    return { "type": "Subscript", "target": target, "index": index, "line": line, "column": column }
+end
+action make_array(elements, line, column)
+    return { "type": "Array", "elements": elements, "line": line, "column": column }
+end
+action make_dict(dkeys, dvals, line, column)
+    return { "type": "Dictionary", "keys": dkeys, "values": dvals, "line": line, "column": column }
+end
+action make_literal(value, line, column)
+    return { "type": "Literal", "value": value, "line": line, "column": column }
+end
+action make_identifier(name, line, column)
+    return { "type": "Identifier", "name": name, "line": line, "column": column }
+end
+
+action parse_expression(tokens, pos)
+    return parse_equality(tokens, pos)
+end
+
+action parse_equality(tokens, pos)
+    let eq_res = parse_comparison(tokens, pos)
+    pos = eq_res[0]
+    let eq_expr = eq_res[1]
+    let eq_loop = 1 == 1
+    let eq_op_tok = []
+    
+    while eq_loop
+        eq_op_tok = tokens[pos]
+        if match(tokens, pos, "PUNCTUATION", "==")
+            pos = pos + 1
+            eq_res = parse_comparison(tokens, pos)
+            pos = eq_res[0]
+            eq_expr = make_binary(eq_expr, "==", eq_res[1], eq_op_tok["line"], eq_op_tok["column"])
+        else
+            if match(tokens, pos, "PUNCTUATION", "!=")
+                pos = pos + 1
+                eq_res = parse_comparison(tokens, pos)
+                pos = eq_res[0]
+                eq_expr = make_binary(eq_expr, "!=", eq_res[1], eq_op_tok["line"], eq_op_tok["column"])
+            else
+                eq_loop = 1 == 0
+            end
+        end
+    end
+    
+    return [pos, eq_expr]
+end
+
+action parse_comparison(tokens, pos)
+    let comp_res = parse_term(tokens, pos)
+    pos = comp_res[0]
+    let comp_expr = comp_res[1]
+    let comp_loop = 1 == 1
+    let comp_is_comp = 1 == 0
+    let comp_op = ""
+    let comp_op_tok = []
+    
+    while comp_loop
+        comp_is_comp = 1 == 0
+        comp_op = ""
+        comp_op_tok = tokens[pos]
+        if match(tokens, pos, "PUNCTUATION", "<")
+            comp_is_comp = 1 == 1
+            comp_op = "<"
+        end
+        if match(tokens, pos, "PUNCTUATION", ">")
+            comp_is_comp = 1 == 1
+            comp_op = ">"
+        end
+        if match(tokens, pos, "PUNCTUATION", "<=")
+            comp_is_comp = 1 == 1
+            comp_op = "<="
+        end
+        if match(tokens, pos, "PUNCTUATION", ">=")
+            comp_is_comp = 1 == 1
+            comp_op = ">="
+        end
+        
+        if comp_is_comp
+            pos = pos + 1
+            comp_res = parse_term(tokens, pos)
+            pos = comp_res[0]
+            comp_expr = make_binary(comp_expr, comp_op, comp_res[1], comp_op_tok["line"], comp_op_tok["column"])
+        else
+            comp_loop = 1 == 0
+        end
+    end
+    
+    return [pos, comp_expr]
+end
+
+action parse_term(tokens, pos)
+    let term_res = parse_factor(tokens, pos)
+    pos = term_res[0]
+    let term_expr = term_res[1]
+    let term_loop = 1 == 1
+    let term_is_term = 1 == 0
+    let term_op = ""
+    let term_op_tok = []
+    
+    while term_loop
+        term_is_term = 1 == 0
+        term_op = ""
+        term_op_tok = tokens[pos]
+        if match(tokens, pos, "PUNCTUATION", "+")
+            term_is_term = 1 == 1
+            term_op = "+"
+        end
+        if match(tokens, pos, "PUNCTUATION", "-")
+            term_is_term = 1 == 1
+            term_op = "-"
+        end
+        
+        if term_is_term
+            pos = pos + 1
+            term_res = parse_factor(tokens, pos)
+            pos = term_res[0]
+            term_expr = make_binary(term_expr, term_op, term_res[1], term_op_tok["line"], term_op_tok["column"])
+        else
+            term_loop = 1 == 0
+        end
+    end
+    
+    return [pos, term_expr]
+end
+
+action parse_factor(tokens, pos)
+    let fact_res = parse_primary(tokens, pos)
+    pos = fact_res[0]
+    let fact_expr = fact_res[1]
+    let fact_loop = 1 == 1
+    let fact_is_fact = 1 == 0
+    let fact_op = ""
+    let fact_op_tok = []
+    
+    while fact_loop
+        fact_is_fact = 1 == 0
+        fact_op = ""
+        fact_op_tok = tokens[pos]
+        if match(tokens, pos, "PUNCTUATION", "*")
+            fact_is_fact = 1 == 1
+            fact_op = "*"
+        end
+        if match(tokens, pos, "PUNCTUATION", "/")
+            fact_is_fact = 1 == 1
+            fact_op = "/"
+        end
+        
+        if fact_is_fact
+            pos = pos + 1
+            fact_res = parse_primary(tokens, pos)
+            pos = fact_res[0]
+            fact_expr = make_binary(fact_expr, fact_op, fact_res[1], fact_op_tok["line"], fact_op_tok["column"])
+        else
+            fact_loop = 1 == 0
+        end
+    end
+    
+    return [pos, fact_expr]
+end
+
+action parse_primary(tokens, pos)
+    let prim_res = []
+    let prim_res2 = []
+    let prim_line = 0
+    let prim_col = 0
+    let prim_elements = []
+    let prim_dict_keys = []
+    let prim_dict_vals = []
+    let prim_expr = []
+    let prim_name = ""
+    let prim_idx = []
+    let prim_args = []
+    let prim_loop = 1 == 1
+    let prim_arg_loop = 1 == 1
+    
+    if pos >= len(tokens)
+        print("Syntax Error: Unexpected EOF in expression")
+        return [pos, make_literal("null", 0, 0)]
+    end
+    
+    let prim_t = tokens[pos]
+    
+    if prim_t["type"] == "NUMBER"
+        return [pos + 1, make_literal(prim_t["value"], prim_t["line"], prim_t["column"])]
+    end
+    if prim_t["type"] == "STRING"
+        return [pos + 1, make_literal(prim_t["value"], prim_t["line"], prim_t["column"])]
+    end
+    
+    if match(tokens, pos, "PUNCTUATION", "[")
+        prim_line = tokens[pos]["line"]
+        prim_col = tokens[pos]["column"]
+        pos = pos + 1
+        
+        prim_elements = []
+        if match(tokens, pos, "PUNCTUATION", "]")
+            pos = pos + 1
+            return [pos, make_array(prim_elements, prim_line, prim_col)]
+        else
+            prim_loop = 1 == 1
+            while prim_loop
+                prim_res = parse_expression(tokens, pos)
+                pos = prim_res[0]
+                prim_elements = prim_elements + [prim_res[1]]
+                
+                if match(tokens, pos, "PUNCTUATION", ",")
+                    pos = pos + 1
+                else
+                    prim_loop = 1 == 0
+                end
+            end
+            
+            prim_res2 = expect_val(tokens, pos, "PUNCTUATION", "]", "Expect ']' after array prim_elements.")
+            pos = prim_res2[0]
+            return [pos, make_array(prim_elements, prim_line, prim_col)]
+        end
+    end
+    
+    if match(tokens, pos, "PUNCTUATION", "{")
+        prim_line = tokens[pos]["line"]
+        prim_col = tokens[pos]["column"]
+        pos = pos + 1
+        
+        prim_dict_keys = []
+        prim_dict_vals = []
+        
+        if match(tokens, pos, "PUNCTUATION", "}")
+            pos = pos + 1
+            return [pos, make_dict(prim_dict_keys, prim_dict_vals, prim_line, prim_col)]
+        else
+            prim_loop = 1 == 1
+            while prim_loop
+                prim_res = parse_expression(tokens, pos)
+                pos = prim_res[0]
+                prim_dict_keys = prim_dict_keys + [prim_res[1]["value"]]
+                
+                prim_res = expect_val(tokens, pos, "PUNCTUATION", ":", "Expect ':' after dict key.")
+                pos = prim_res[0]
+                
+                prim_res = parse_expression(tokens, pos)
+                pos = prim_res[0]
+                prim_dict_vals = prim_dict_vals + [prim_res[1]]
+                
+                if match(tokens, pos, "PUNCTUATION", ",")
+                    pos = pos + 1
+                else
+                    prim_loop = 1 == 0
+                end
+            end
+            
+            prim_res2 = expect_val(tokens, pos, "PUNCTUATION", "}", "Expect '}' after dict prim_elements.")
+            pos = prim_res2[0]
+            return [pos, make_dict(prim_dict_keys, prim_dict_vals, prim_line, prim_col)]
+        end
+    end
+    
+    if match(tokens, pos, "PUNCTUATION", "(")
+        pos = pos + 1
+        prim_res = parse_expression(tokens, pos)
+        pos = prim_res[0]
+        prim_expr = prim_res[1]
+        prim_res2 = expect_val(tokens, pos, "PUNCTUATION", ")", "Expect ')' after expression.")
+        pos = prim_res2[0]
+        return [pos, prim_expr]
+    end
+    
+    if prim_t["type"] == "IDENTIFIER"
+        prim_line = prim_t["line"]
+        prim_col = prim_t["column"]
+        prim_name = prim_t["value"]
+        pos = pos + 1
+        
+        prim_expr = make_identifier(prim_name, prim_line, prim_col)
+        
+        prim_loop = 1 == 1
+        while prim_loop
+            if match(tokens, pos, "PUNCTUATION", "[")
+                pos = pos + 1
+                prim_res = parse_expression(tokens, pos)
+                pos = prim_res[0]
+                prim_idx = prim_res[1]
+                prim_res2 = expect_val(tokens, pos, "PUNCTUATION", "]", "Expect ']' after index.")
+                pos = prim_res2[0]
+                prim_expr = make_subscript(prim_expr, prim_idx, prim_line, prim_col)
+            else
+                if match(tokens, pos, "PUNCTUATION", "(")
+                    pos = pos + 1
+                    prim_args = []
+                    if match(tokens, pos, "PUNCTUATION", ")")
+                        pos = pos + 1
+                        prim_expr = make_call(prim_expr, prim_args, prim_line, prim_col)
+                    else
+                        prim_arg_loop = 1 == 1
+                        while prim_arg_loop
+                            prim_res = parse_expression(tokens, pos)
+                            pos = prim_res[0]
+                            prim_args = prim_args + [prim_res[1]]
+                            
+                            if match(tokens, pos, "PUNCTUATION", ",")
+                                pos = pos + 1
+                            else
+                                prim_arg_loop = 1 == 0
+                            end
+                        end
+                        prim_res2 = expect_val(tokens, pos, "PUNCTUATION", ")", "Expect ')' after arguments.")
+                        pos = prim_res2[0]
+                        prim_expr = make_call(prim_expr, prim_args, prim_line, prim_col)
+                    end
+                else
+                    prim_loop = 1 == 0
+                end
+            end
+        end
+        return [pos, prim_expr]
+    end
+    
+    print("Syntax Error: Unexpected token " + prim_t["value"])
+    return [pos + 1, make_literal("null", prim_t["line"], prim_t["column"])]
+end
+
+action parse_statement(tokens, pos)
+    let stmt_res = []
+    let stmt_line = 0
+    let stmt_col = 0
+    let stmt_name_tok = []
+    let stmt_value = []
+    let stmt_cond = []
+    let stmt_then_branch = []
+    let stmt_else_branch = []
+    let stmt_body = []
+    let stmt_next_pos = 0
+    let stmt_next_tok = []
+    let stmt_name = ""
+    let stmt_loop = 1 == 1
+    let stmt_else_loop = 1 == 1
+
+    if match(tokens, pos, "KEYWORD", "let")
+        stmt_line = tokens[pos]["line"]
+        stmt_col = tokens[pos]["column"]
+        pos = pos + 1
+        
+        stmt_res = expect(tokens, pos, "IDENTIFIER", "Expect variable stmt_name.")
+        pos = stmt_res[0]
+        stmt_name_tok = stmt_res[1]
+        
+        stmt_res = expect_val(tokens, pos, "PUNCTUATION", "=", "Expect '='.")
+        pos = stmt_res[0]
+        
+        stmt_res = parse_expression(tokens, pos)
+        pos = stmt_res[0]
+        stmt_value = stmt_res[1]
+        
+        return [pos, make_let(stmt_name_tok["value"], stmt_value, stmt_line, stmt_col)]
+    end
+    
+    if match(tokens, pos, "KEYWORD", "if")
+        stmt_line = tokens[pos]["line"]
+        stmt_col = tokens[pos]["column"]
+        pos = pos + 1
+        
+        stmt_res = parse_expression(tokens, pos)
+        pos = stmt_res[0]
+        stmt_cond = stmt_res[1]
+        
+        stmt_then_branch = []
+        stmt_else_branch = []
+        
+        stmt_loop = 1 == 1
+        while stmt_loop
+            if match(tokens, pos, "KEYWORD", "end")
+                pos = pos + 1
+                stmt_loop = 1 == 0
+            else
+                if match(tokens, pos, "KEYWORD", "else")
+                    pos = pos + 1
+                    stmt_else_loop = 1 == 1
+                    while stmt_else_loop
+                        if match(tokens, pos, "KEYWORD", "end")
+                            pos = pos + 1
+                            stmt_else_loop = 1 == 0
+                            stmt_loop = 1 == 0
+                        else
+                            stmt_res = parse_statement(tokens, pos)
+                            pos = stmt_res[0]
+                            stmt_else_branch = stmt_else_branch + [stmt_res[1]]
+                        end
+                    end
+                else
+                    stmt_res = parse_statement(tokens, pos)
+                    pos = stmt_res[0]
+                    stmt_then_branch = stmt_then_branch + [stmt_res[1]]
+                end
+            end
+        end
+        
+        return [pos, make_if(stmt_cond, stmt_then_branch, stmt_else_branch, stmt_line, stmt_col)]
+    end
+    
+    if match(tokens, pos, "KEYWORD", "while")
+        stmt_line = tokens[pos]["line"]
+        stmt_col = tokens[pos]["column"]
+        pos = pos + 1
+        
+        stmt_res = parse_expression(tokens, pos)
+        pos = stmt_res[0]
+        stmt_cond = stmt_res[1]
+        
+        stmt_body = []
+        stmt_loop = 1 == 1
+        while stmt_loop
+            if match(tokens, pos, "KEYWORD", "end")
+                pos = pos + 1
+                stmt_loop = 1 == 0
+            else
+                stmt_res = parse_statement(tokens, pos)
+                pos = stmt_res[0]
+                stmt_body = stmt_body + [stmt_res[1]]
+            end
+        end
+        
+        return [pos, make_while(stmt_cond, stmt_body, stmt_line, stmt_col)]
+    end
+    
+    if match(tokens, pos, "KEYWORD", "return")
+        stmt_line = tokens[pos]["line"]
+        stmt_col = tokens[pos]["column"]
+        pos = pos + 1
+        
+        stmt_res = parse_expression(tokens, pos)
+        pos = stmt_res[0]
+        stmt_value = stmt_res[1]
+        
+        return [pos, make_return(stmt_value, stmt_line, stmt_col)]
+    end
+    
+    if check(tokens, pos, "IDENTIFIER")
+        stmt_next_pos = pos + 1
+        if stmt_next_pos < len(tokens)
+            stmt_next_tok = tokens[stmt_next_pos]
+            if stmt_next_tok["type"] == "PUNCTUATION"
+                if stmt_next_tok["value"] == "="
+                    stmt_line = tokens[pos]["line"]
+                    stmt_col = tokens[pos]["column"]
+                    stmt_name = tokens[pos]["value"]
+                    pos = pos + 2
+                    
+                    stmt_res = parse_expression(tokens, pos)
+                    pos = stmt_res[0]
+                    stmt_value = stmt_res[1]
+                    
+                    return [pos, make_assignment(stmt_name, stmt_value, stmt_line, stmt_col)]
+                end
+            end
+        end
+    end
+    
+    return parse_expression(tokens, pos)
+end
+
+action parse_action_decl(tokens, pos)
+    let act_res = []
+    let act_line = 0
+    let act_col = 0
+    let act_name_tok = []
+    let act_args = []
+    let act_body = []
+    let act_loop = 1 == 1
+    let act_arg_loop = 1 == 1
+
+    act_line = tokens[pos]["line"]
+    act_col = tokens[pos]["column"]
+    pos = pos + 1
+    
+    act_res = expect(tokens, pos, "IDENTIFIER", "Expect action act_name.")
+    pos = act_res[0]
+    act_name_tok = act_res[1]
+    
+    act_args = []
+    if match(tokens, pos, "PUNCTUATION", "(")
+        pos = pos + 1
+        if match(tokens, pos, "PUNCTUATION", ")")
+            pos = pos + 1
+        else
+            act_arg_loop = 1 == 1
+            while act_arg_loop
+                act_res = expect(tokens, pos, "IDENTIFIER", "Expect argument act_name.")
+                pos = act_res[0]
+                act_args = act_args + [act_res[1]["value"]]
+                
+                if match(tokens, pos, "PUNCTUATION", ",")
+                    pos = pos + 1
+                else
+                    act_arg_loop = 1 == 0
+                end
+            end
+            act_res = expect_val(tokens, pos, "PUNCTUATION", ")", "Expect ')' after arguments.")
+            pos = act_res[0]
+        end
+    end
+    
+    act_body = []
+    act_loop = 1 == 1
+    while act_loop
+        if match(tokens, pos, "KEYWORD", "end")
+            pos = pos + 1
+            act_loop = 1 == 0
+        else
+            act_res = parse_statement(tokens, pos)
+            pos = act_res[0]
+            act_body = act_body + [act_res[1]]
+        end
+    end
+    
+    return [pos, make_action(act_name_tok["value"], act_args, act_body, act_line, act_col)]
+end
+
+action parse(tokens)
+    let main_res = []
+    let main_stmts = []
+    let pos = 0
+    let main_length = len(tokens)
+    
+    while pos < main_length
+        if tokens[pos]["type"] == "EOF"
+            pos = main_length
+        else
+            if match(tokens, pos, "KEYWORD", "action")
+                main_res = parse_action_decl(tokens, pos)
+                pos = main_res[0]
+                main_stmts = main_stmts + [main_res[1]]
+            else
+                main_res = parse_statement(tokens, pos)
+                pos = main_res[0]
+                main_stmts = main_stmts + [main_res[1]]
+            end
+        end
+    end
+    
+    return make_program(main_stmts)
+end
+
+let tokens = [{ "type": "KEYWORD", "value": "action", "line": 1, "column": 1 }, { "type": "IDENTIFIER", "value": "add", "line": 1, "column": 8 }, { "type": "PUNCTUATION", "value": "(", "line": 1, "column": 11 }, { "type": "IDENTIFIER", "value": "a", "line": 1, "column": 12 }, { "type": "PUNCTUATION", "value": ",", "line": 1, "column": 13 }, { "type": "IDENTIFIER", "value": "b", "line": 1, "column": 15 }, { "type": "PUNCTUATION", "value": ")", "line": 1, "column": 16 }, { "type": "KEYWORD", "value": "return", "line": 2, "column": 5 }, { "type": "IDENTIFIER", "value": "a", "line": 2, "column": 12 }, { "type": "PUNCTUATION", "value": "+", "line": 2, "column": 14 }, { "type": "IDENTIFIER", "value": "b", "line": 2, "column": 16 }, { "type": "KEYWORD", "value": "end", "line": 3, "column": 1 }, { "type": "EOF", "value": "", "line": 3, "column": 4 }]
+
+let ast = parse(tokens)
+print("AST parsed successfully!")
+print(ast["type"])
+print(ast["statements"])
+

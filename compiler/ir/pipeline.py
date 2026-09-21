@@ -434,7 +434,6 @@ class IRPipeline:
             # Imports are resolved at semantic stage; skip in IR
             pass
         elif isinstance(hir, HIRBinaryOp):
-            print(f"[DEBUG HIR] BinaryOp left={type(hir.left)} right={type(hir.right)}")
             self._hir_to_mir(hir.left, mir_list)
             self._hir_to_mir(hir.right, mir_list)
             mir_list.append(MIRInstruction("BINARY_OP", [hir.op]))

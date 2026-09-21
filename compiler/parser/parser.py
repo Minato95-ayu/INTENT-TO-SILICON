@@ -549,7 +549,7 @@ class Parser:
 
     def _parse_let_declaration(self):
         line, col = self._previous().line, self._previous().column
-        name = self._consume(TokenType.IDENTIFIER, "Expect variable name after 'let'.").value
+        name = self._consume(TokenType.IDENTIFIER, "Expect variable name after 'let'. Line: " + str(self._previous().line)).value
         self._consume(TokenType.OPERATOR, "Expect '=' after variable name.", value="=")
         value = self._parse_expression()
         from compiler.ast.nodes import LetDeclarationNode
@@ -790,7 +790,7 @@ class Parser:
             expr = DictionaryNode(line=line, column=col, pairs=pairs)
         else:
             token = self._peek()
-            raise CompilerError(f"Expect expression, got {token.type.name}", token.line, token.column, token.source_line)
+            raise CompilerError(f"Expect expression, got {token.type.name} at line {token.line}", token.line, token.column, token.source_line)
             
         # Postfix operators
         while True:

@@ -161,35 +161,35 @@ export default function HomePage() {
     return <>{parts}</>;
   }
 
-  /* â”€â”€â”€â”€ Core products data â”€â”€â”€â”€ */
+  /* ———— Core products data ———— */
   const coreProducts = [
     {
-      title: "AAYU Language",
-      description: "Full compiler pipeline with type system, semantic analysis, and bytecode generation. Stack-based VM with mark-and-sweep garbage collection.",
-      icon: Code2,
+      title: "AAYU Native Compiler",
+      description: "Zero Python overhead. AAYU transpiles directly to C and compiles with GCC/Clang to produce blazing fast native executables.",
+      icon: Cpu,
       color: "from-purple-500 to-violet-600",
       borderColor: "border-purple-500/30",
       glowColor: "bg-purple-500/20",
-      features: ["Lexer â†’ Parser â†’ AST â†’ Bytecode", "Stack-based Virtual Machine", "Mark-and-Sweep GC", "Static Type System", "Standard Library"],
+      features: ["Native C-Backend Transpiler", "C++ Level Execution Speed", "Rust Level Security", "Standalone .exe/.elf Binaries", "Zero Runtime Dependencies"],
     },
     {
-      title: "AAYU Runtime",
-      description: "Native HTTP server, Storage Operating System, and UI engine â€” all built from scratch with zero external dependencies.",
+      title: "AAYU Full-Stack Engine",
+      description: "Database, Server, UI, and ML all built in. Build full applications natively without npm, pip, or external libraries.",
       icon: Server,
       color: "from-blue-500 to-cyan-500",
       borderColor: "border-blue-500/30",
       glowColor: "bg-blue-500/20",
       badge: "CORE",
-      features: ["Native HTTP Server & Router", "Storage OS with Query Planner", "Schema & Migration Engine", "UI Render Tree & Layout", "State Management"],
+      features: ["Native HTTP Server & Router", "Storage OS with Query Planner", "Schema & Migration Engine", "UI Render Tree & Layout", "Built-in AI/ML Features"],
     },
     {
-      title: "AAYU CLI",
-      description: "Build, run, test, and manage AAYU applications from the terminal. Integrated development workflow with hot reload.",
+      title: "AAYU CLI & Toolchain",
+      description: "Build, run, test, and manage AAYU applications natively from the terminal. Fully orchestrated GCC compilation.",
       icon: Terminal,
       color: "from-emerald-500 to-green-500",
       borderColor: "border-emerald-500/30",
       glowColor: "bg-emerald-500/20",
-      features: ["aayu run app.aayu", "aayu build app.aayu", "aayu test", "aayu init", "Hot Reload"],
+      features: ["aayu build app.aayu", "aayu run app.aayu", "aayu test", "Self-Hosted Ecosystem", "Bundled Native Toolchain"],
     },
     {
       title: "AAYU Packages",

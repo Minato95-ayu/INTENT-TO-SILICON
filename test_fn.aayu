@@ -1,0 +1,15 @@
+action is_alpha(c)
+    if c >= "a"
+        if c <= "z"
+            return 1
+        end
+    end
+    return 0
+end
+
+let c = "b"
+if is_alpha(c)
+    print("yes")
+else
+    print("no")
+end

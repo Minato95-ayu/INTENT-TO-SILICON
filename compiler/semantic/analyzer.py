@@ -143,15 +143,23 @@ class SemanticAnalyzer:
         return SemanticBinaryOpNode(line=node.line, column=node.column, scope=self.current_scope, left=left, op=node.operator, right=right)
 
     def analyze(self, ast: ProgramNode) -> SemanticProgramNode:
-        # Pre-pass for Auth validation
+        # Pre-pass for Auth validation and Function Registration (Forward Declarations)
         needs_auth = False
         has_auth_model = False
         from compiler.ast.nodes import ActionDeclarationNode, ModelDeclNode
+        from compiler.semantic.symbols import Symbol
         
         for stmt in ast.statements:
             if isinstance(stmt, ActionDeclarationNode):
                 if any(d.name == "auth_required" for d in stmt.decorators):
                     needs_auth = True
+                
+                # Register function for forward calling / mutual recursion
+                if stmt.name not in self.current_scope.symbols:
+                    sym = Symbol(stmt.name, "function")
+                    sym.signature_args = len(stmt.arguments) if hasattr(stmt, "arguments") else len(getattr(stmt, "args", []))
+                    self.current_scope.define(sym)
+                
             elif isinstance(stmt, ModelDeclNode):
                 for field in stmt.fields:
                     if any(a.name == "auth_password" for a in field.attributes):
@@ -281,11 +289,11 @@ class SemanticAnalyzer:
             raise SemanticError(f"Unknown node type: {type(node).__name__}", getattr(node, 'line', 0), getattr(node, 'column', 0))
 
     def _analyze_action_decl(self, node: ActionDeclarationNode):
-        if self.current_scope.resolve(node.name) is not None:
-            raise SemanticError(f"Duplicate declaration of '{node.name}'", node.line, node.column)
-        sym = Symbol(node.name, "function")
-        sym.signature_args = len(node.args)
-        self.current_scope.define(sym)
+        if node.name not in self.current_scope.symbols:
+            # Should have been registered in pre-pass, but just in case
+            sym = Symbol(node.name, "function")
+            sym.signature_args = len(node.args)
+            self.current_scope.define(sym)
 
         # Create lexical scope for the function body
         parent_scope = self.current_scope

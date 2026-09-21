@@ -1,0 +1,5 @@
+let t = true
+print(t)
+if t
+    print("t is true")
+end

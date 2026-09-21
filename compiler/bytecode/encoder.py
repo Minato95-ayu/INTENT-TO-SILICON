@@ -185,11 +185,6 @@ class BytecodeEncoder:
         elif opcode.startswith("INIT_") and opcode not in ["INIT_STATE"]:
             node.opcode = "BUILD_" + opcode[5:]
             self._encode_build_widget(node)
-        elif opcode == "BUILD_DICT":
-            keys = node.operands[0]
-            idx = self.pool.add(keys)
-            self._emit(Opcode.PUSH_CONST, idx)
-            self._emit(Opcode.BUILD_DICT, 0)
         elif opcode == "CREATE_CLOSURE":
             action_name = node.operands[0]
             num_args = node.operands[1]

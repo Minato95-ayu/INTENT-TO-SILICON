@@ -1,0 +1,12 @@
+let tokens = []
+let loop = true
+let i = 0
+while loop
+    print("Looping")
+    tokens = tokens + [i]
+    i = i + 1
+    if i == 5
+        loop = false
+    end
+end
+print(tokens)

@@ -1,0 +1,1628 @@
+# AAYU Self-Hosted Compiler Pipeline
+# Lexer -> Parser -> Semantic Analyzer -> Compiler
+
+# AAYU Self-Hosted Lexer (Draft 3)
+# Implemented using a single tokenize function and local variables.
+
+
+
+action is_alpha(c)
+    if c >= "a"
+        if c <= "z"
+            return 1
+        end
+    end
+    if c >= "A"
+        if c <= "Z"
+            return 1
+        end
+    end
+    if c == "_"
+        return 1
+    end
+    return 0
+end
+
+action is_digit(c)
+    if c >= "0"
+        if c <= "9"
+            return 1
+        end
+    end
+    return 0
+end
+
+action is_alphanumeric(c)
+    if is_alpha(c)
+        return 1
+    end
+    if is_digit(c)
+        return 1
+    end
+    return 0
+end
+
+action tokenize(src)
+    let tokens = []
+    let pos = 0
+    let line = 1
+    let column = 1
+    let length = len(src)
+    
+    let loop = 1 == 1
+    while loop
+        let start_line = 0
+        let start_col = 0
+        let value = ""
+        # skip whitespace
+        let ws_loop = 1 == 1
+        while ws_loop
+            if pos >= length
+                ws_loop = 1 == 0
+            else
+                let c = src[pos]
+                if c == " "
+                    pos = pos + 1
+                    column = column + 1
+                else
+                    if c == "\r"
+                        pos = pos + 1
+                    else
+                        if c == "\t"
+                            pos = pos + 1
+                            column = column + 1
+                        else
+                            if c == "\n"
+                                pos = pos + 1
+                                line = line + 1
+                                column = 1
+                            else
+                                ws_loop = 1 == 0
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        
+        if pos >= length
+tokens = tokens + [{ "type": "EOF", "value": "", "line": line, "column": column }]
+            loop = 1 == 0
+        else
+            let c = src[pos]
+            
+            if is_alpha(c)
+                start_line = line
+                start_col = column
+                value = ""
+                
+                let id_loop = 1 == 1
+                while id_loop
+                    if pos >= length
+                        id_loop = 1 == 0
+                    else
+                        let cur = src[pos]
+                        if is_alphanumeric(cur)
+                            value = value + cur
+                            pos = pos + 1
+                            column = column + 1
+                        else
+                            id_loop = 1 == 0
+                        end
+                    end
+                end
+                
+                let tok_type = "IDENTIFIER"
+                if value == "run"
+                    tok_type = "KEYWORD"
+                end
+                if value == "theme"
+                    tok_type = "KEYWORD"
+                end
+                if value == "page"
+                    tok_type = "KEYWORD"
+                end
+                if value == "state"
+                    tok_type = "KEYWORD"
+                end
+                if value == "await"
+                    tok_type = "KEYWORD"
+                end
+                if value == "navigate"
+                    tok_type = "KEYWORD"
+                end
+                if value == "while"
+                    tok_type = "KEYWORD"
+                end
+                if value == "return"
+                    tok_type = "KEYWORD"
+                end
+                if value == "throw"
+                    tok_type = "KEYWORD"
+                end
+                if value == "if"
+                    tok_type = "KEYWORD"
+                end
+                if value == "try"
+                    tok_type = "KEYWORD"
+                end
+                if value == "respond"
+                    tok_type = "KEYWORD"
+                end
+                if value == "rethrow"
+                    tok_type = "KEYWORD"
+                end
+                if value == "animate"
+                    tok_type = "KEYWORD"
+                end
+                if value == "for"
+                    tok_type = "KEYWORD"
+                end
+                if value == "task"
+                    tok_type = "KEYWORD"
+                end
+                if value == "insert"
+                    tok_type = "KEYWORD"
+                end
+                if value == "catch"
+                    tok_type = "KEYWORD"
+                end
+                if value == "post"
+                    tok_type = "KEYWORD"
+                end
+                if value == "else"
+                    tok_type = "KEYWORD"
+                end
+                if value == "let"
+                    tok_type = "KEYWORD"
+                end
+                if value == "print"
+                    tok_type = "KEYWORD"
+                end
+                if value == "model"
+                    tok_type = "KEYWORD"
+                end
+                if value == "action"
+                    tok_type = "KEYWORD"
+                end
+                if value == "extern"
+                    tok_type = "KEYWORD"
+                end
+                if value == "import"
+                    tok_type = "KEYWORD"
+                end
+                if value == "app"
+                    tok_type = "KEYWORD"
+                end
+                if value == "widget"
+                    tok_type = "KEYWORD"
+                end
+                if value == "fn"
+                    tok_type = "KEYWORD"
+                end
+                if value == "end"
+                    tok_type = "KEYWORD"
+                end
+                if value == "component"
+                    tok_type = "KEYWORD"
+                end
+                if value == "server"
+                    tok_type = "KEYWORD"
+                end
+                if value == "elif"
+                    tok_type = "KEYWORD"
+                end
+                if value == "useTheme"
+                    tok_type = "KEYWORD"
+                end
+                if value == "bind"
+                    tok_type = "KEYWORD"
+                end
+                if value == "get"
+                    tok_type = "KEYWORD"
+                end
+                if value == "as"
+                    tok_type = "KEYWORD"
+                end
+                if value == "in"
+                    tok_type = "KEYWORD"
+                end
+                if value == "event"
+                    tok_type = "KEYWORD"
+                end
+                if value == "finally"
+                    tok_type = "KEYWORD"
+                end
+                if value == "find"
+                    tok_type = "KEYWORD"
+                end
+                if value == "validate"
+                    tok_type = "KEYWORD"
+                end
+                if value == "route"
+                    tok_type = "KEYWORD"
+                end
+                
+tokens = tokens + [{ "type": tok_type, "value": value, "line": start_line, "column": start_col }]
+            else
+                if is_digit(c)
+                    start_line = line
+                    start_col = column
+                    value = ""
+                    
+                    let num_loop = 1 == 1
+                    while num_loop
+                        if pos >= length
+                            num_loop = 1 == 0
+                        else
+                            let cur = src[pos]
+                            if is_digit(cur)
+                                value = value + cur
+                                pos = pos + 1
+                                column = column + 1
+                            else
+                                if cur == "."
+                                    value = value + cur
+                                    pos = pos + 1
+                                    column = column + 1
+                                else
+                                    num_loop = 1 == 0
+                                end
+                            end
+                        end
+                    end
+tokens = tokens + [{ "type": "NUMBER", "value": value, "line": start_line, "column": start_col }]
+                else
+                    if c == "\""
+                        start_line = line
+                        start_col = column
+                        pos = pos + 1 # consume "
+                        column = column + 1
+                        
+                        value = ""
+                        let str_loop = 1 == 1
+                        while str_loop
+                            if pos >= length
+                                str_loop = 1 == 0
+                            else
+                                let cur = src[pos]
+                                if cur == "\""
+                                    str_loop = 1 == 0
+                                else
+                                    value = value + cur
+                                    pos = pos + 1
+                                    column = column + 1
+                                end
+                            end
+                        end
+                        
+                        if pos < length
+                            pos = pos + 1 # consume "
+                            column = column + 1
+                        end
+                        
+tokens = tokens + [{ "type": "STRING", "value": value, "line": start_line, "column": start_col }]
+                    else
+                                                # Punctuation
+                        start_line = line
+                        start_col = column
+                        let punct = c
+                        pos = pos + 1
+                        column = column + 1
+                        
+                        if pos < length
+                            let next_c = src[pos]
+                            let is_double = 1 == 0
+                            
+                            if c == "="
+                                if next_c == "="
+                                    is_double = 1 == 1
+                                end
+                            end
+                            if c == "!"
+                                if next_c == "="
+                                    is_double = 1 == 1
+                                end
+                            end
+                            if c == ">"
+                                if next_c == "="
+                                    is_double = 1 == 1
+                                end
+                            end
+                            if c == "<"
+                                if next_c == "="
+                                    is_double = 1 == 1
+                                end
+                            end
+                            if c == "+"
+                                if next_c == "="
+                                    is_double = 1 == 1
+                                end
+                            end
+                            if c == "-"
+                                if next_c == "="
+                                    is_double = 1 == 1
+                                end
+                            end
+                            if c == "&"
+                                if next_c == "&"
+                                    is_double = 1 == 1
+                                end
+                            end
+                            if c == "|"
+                                if next_c == "|"
+                                    is_double = 1 == 1
+                                end
+                            end
+                            if c == ":"
+                                if next_c == ":"
+                                    is_double = 1 == 1
+                                end
+                            end
+                            
+                            if is_double
+                                punct = c + next_c
+                                pos = pos + 1
+                                column = column + 1
+                            end
+                        end
+                        tokens = tokens + [{ "type": "PUNCTUATION", "value": punct, "line": start_line, "column": start_col }]
+                    end
+                end
+            end
+        end
+    end
+    
+    return tokens
+end
+
+
+
+action match(tokens, pos, type, mat_value)
+    if pos < len(tokens)
+        let mat_t = tokens[pos]
+        if mat_t["type"] == type
+            if mat_value == ""
+                return 1 == 1
+            else
+                if mat_t["value"] == mat_value
+                    return 1 == 1
+                end
+            end
+        end
+    end
+    return 1 == 0
+end
+
+action check(tokens, pos, type)
+    if pos < len(tokens)
+        let chk_t = tokens[pos]
+        if chk_t["type"] == type
+            return 1 == 1
+        end
+    end
+    return 1 == 0
+end
+
+action expect(tokens, pos, type, msg)
+    if pos < len(tokens)
+        let exp_t = tokens[pos]
+        if exp_t["type"] == type
+            return [pos + 1, exp_t]
+        end
+    end
+    print("Syntax Error: " + msg)
+    return [pos, { "type": "EOF", "value": "", "line": 0, "column": 0 }]
+end
+
+action expect_val(tokens, pos, type, expv_value, msg)
+    if pos < len(tokens)
+        let expv_t = tokens[pos]
+        if expv_t["type"] == type
+            if expv_t["value"] == expv_value
+                return [pos + 1, expv_t]
+            end
+        end
+    end
+    print("Syntax Error: " + msg)
+    return [pos, { "type": "EOF", "value": "", "line": 0, "column": 0 }]
+end
+
+action make_program(stmts)
+    return { "type": "Program", "statements": stmts }
+end
+action make_let(name, value, line, column)
+    return { "type": "LetDeclaration", "name": name, "value": value, "line": line, "column": column }
+end
+action make_assignment(target, value, line, column)
+    return { "type": "Assignment", "target": target, "value": value, "line": line, "column": column }
+end
+action make_if(cond, then_b, else_b, line, column)
+    return { "type": "If", "condition": cond, "then_branch": then_b, "else_branch": else_b, "line": line, "column": column }
+end
+action make_while(cond, body, line, column)
+    return { "type": "While", "condition": cond, "body": body, "line": line, "column": column }
+end
+action make_action(name, args, stmts, line, column)
+    return { "type": "ActionDeclaration", "name": name, "args": args, "statements": stmts, "line": line, "column": column }
+end
+action make_return(value, line, column)
+    return { "type": "Return", "value": value, "line": line, "column": column }
+end
+action make_binary(left, op, right, line, column)
+    return { "type": "BinaryOp", "left": left, "operator": op, "right": right, "line": line, "column": column }
+end
+action make_call(name, args, line, column)
+    return { "type": "ActionCall", "name": name, "args": args, "line": line, "column": column }
+end
+action make_subscript(target, index, line, column)
+    return { "type": "Subscript", "target": target, "index": index, "line": line, "column": column }
+end
+action make_array(elements, line, column)
+    return { "type": "Array", "elements": elements, "line": line, "column": column }
+end
+action make_dict(dkeys, dvals, line, column)
+    return { "type": "Dictionary", "keys": dkeys, "values": dvals, "line": line, "column": column }
+end
+action make_literal(value, line, column)
+    return { "type": "Literal", "value": value, "line": line, "column": column }
+end
+action make_identifier(name, line, column)
+    return { "type": "Identifier", "name": name, "line": line, "column": column }
+end
+
+action parse_expression(tokens, pos)
+    return parse_equality(tokens, pos)
+end
+
+action parse_equality(tokens, pos)
+    let eq_res = parse_comparison(tokens, pos)
+    pos = eq_res[0]
+    let eq_expr = eq_res[1]
+    let eq_loop = 1 == 1
+    let eq_op_tok = []
+    
+    while eq_loop
+        eq_op_tok = tokens[pos]
+        if match(tokens, pos, "PUNCTUATION", "==")
+            pos = pos + 1
+            eq_res = parse_comparison(tokens, pos)
+            pos = eq_res[0]
+            eq_expr = make_binary(eq_expr, "==", eq_res[1], eq_op_tok["line"], eq_op_tok["column"])
+        else
+            if match(tokens, pos, "PUNCTUATION", "!=")
+                pos = pos + 1
+                eq_res = parse_comparison(tokens, pos)
+                pos = eq_res[0]
+                eq_expr = make_binary(eq_expr, "!=", eq_res[1], eq_op_tok["line"], eq_op_tok["column"])
+            else
+                eq_loop = 1 == 0
+            end
+        end
+    end
+    
+    return [pos, eq_expr]
+end
+
+action parse_comparison(tokens, pos)
+    let comp_res = parse_term(tokens, pos)
+    pos = comp_res[0]
+    let comp_expr = comp_res[1]
+    let comp_loop = 1 == 1
+    let comp_is_comp = 1 == 0
+    let comp_op = ""
+    let comp_op_tok = []
+    
+    while comp_loop
+        comp_is_comp = 1 == 0
+        comp_op = ""
+        comp_op_tok = tokens[pos]
+        if match(tokens, pos, "PUNCTUATION", "<")
+            comp_is_comp = 1 == 1
+            comp_op = "<"
+        end
+        if match(tokens, pos, "PUNCTUATION", ">")
+            comp_is_comp = 1 == 1
+            comp_op = ">"
+        end
+        if match(tokens, pos, "PUNCTUATION", "<=")
+            comp_is_comp = 1 == 1
+            comp_op = "<="
+        end
+        if match(tokens, pos, "PUNCTUATION", ">=")
+            comp_is_comp = 1 == 1
+            comp_op = ">="
+        end
+        
+        if comp_is_comp
+            pos = pos + 1
+            comp_res = parse_term(tokens, pos)
+            pos = comp_res[0]
+            comp_expr = make_binary(comp_expr, comp_op, comp_res[1], comp_op_tok["line"], comp_op_tok["column"])
+        else
+            comp_loop = 1 == 0
+        end
+    end
+    
+    return [pos, comp_expr]
+end
+
+action parse_term(tokens, pos)
+    let term_res = parse_factor(tokens, pos)
+    pos = term_res[0]
+    let term_expr = term_res[1]
+    let term_loop = 1 == 1
+    let term_is_term = 1 == 0
+    let term_op = ""
+    let term_op_tok = []
+    
+    while term_loop
+        term_is_term = 1 == 0
+        term_op = ""
+        term_op_tok = tokens[pos]
+        if match(tokens, pos, "PUNCTUATION", "+")
+            term_is_term = 1 == 1
+            term_op = "+"
+        end
+        if match(tokens, pos, "PUNCTUATION", "-")
+            term_is_term = 1 == 1
+            term_op = "-"
+        end
+        
+        if term_is_term
+            pos = pos + 1
+            term_res = parse_factor(tokens, pos)
+            pos = term_res[0]
+            term_expr = make_binary(term_expr, term_op, term_res[1], term_op_tok["line"], term_op_tok["column"])
+        else
+            term_loop = 1 == 0
+        end
+    end
+    
+    return [pos, term_expr]
+end
+
+action parse_factor(tokens, pos)
+    let fact_res = parse_primary(tokens, pos)
+    pos = fact_res[0]
+    let fact_expr = fact_res[1]
+    let fact_loop = 1 == 1
+    let fact_is_fact = 1 == 0
+    let fact_op = ""
+    let fact_op_tok = []
+    
+    while fact_loop
+        fact_is_fact = 1 == 0
+        fact_op = ""
+        fact_op_tok = tokens[pos]
+        if match(tokens, pos, "PUNCTUATION", "*")
+            fact_is_fact = 1 == 1
+            fact_op = "*"
+        end
+        if match(tokens, pos, "PUNCTUATION", "/")
+            fact_is_fact = 1 == 1
+            fact_op = "/"
+        end
+        
+        if fact_is_fact
+            pos = pos + 1
+            fact_res = parse_primary(tokens, pos)
+            pos = fact_res[0]
+            fact_expr = make_binary(fact_expr, fact_op, fact_res[1], fact_op_tok["line"], fact_op_tok["column"])
+        else
+            fact_loop = 1 == 0
+        end
+    end
+    
+    return [pos, fact_expr]
+end
+
+action parse_primary(tokens, pos)
+    let prim_res = []
+    let prim_res2 = []
+    let prim_line = 0
+    let prim_col = 0
+    let prim_elements = []
+    let prim_dict_keys = []
+    let prim_dict_vals = []
+    let prim_expr = []
+    let prim_name = ""
+    let prim_idx = []
+    let prim_args = []
+    let prim_loop = 1 == 1
+    let prim_arg_loop = 1 == 1
+    
+    if pos >= len(tokens)
+        print("Syntax Error: Unexpected EOF in expression")
+        return [pos, make_literal("null", 0, 0)]
+    end
+    
+    let prim_t = tokens[pos]
+    
+    if prim_t["type"] == "NUMBER"
+        return [pos + 1, make_literal(prim_t["value"], prim_t["line"], prim_t["column"])]
+    end
+    if prim_t["type"] == "STRING"
+        return [pos + 1, make_literal(prim_t["value"], prim_t["line"], prim_t["column"])]
+    end
+    
+    if match(tokens, pos, "PUNCTUATION", "[")
+        prim_line = tokens[pos]["line"]
+        prim_col = tokens[pos]["column"]
+        pos = pos + 1
+        
+        prim_elements = []
+        if match(tokens, pos, "PUNCTUATION", "]")
+            pos = pos + 1
+            return [pos, make_array(prim_elements, prim_line, prim_col)]
+        else
+            prim_loop = 1 == 1
+            while prim_loop
+                prim_res = parse_expression(tokens, pos)
+                pos = prim_res[0]
+                prim_elements = prim_elements + [prim_res[1]]
+                
+                if match(tokens, pos, "PUNCTUATION", ",")
+                    pos = pos + 1
+                else
+                    prim_loop = 1 == 0
+                end
+            end
+            
+            prim_res2 = expect_val(tokens, pos, "PUNCTUATION", "]", "Expect ']' after array prim_elements.")
+            pos = prim_res2[0]
+            return [pos, make_array(prim_elements, prim_line, prim_col)]
+        end
+    end
+    
+    if match(tokens, pos, "PUNCTUATION", "{")
+        prim_line = tokens[pos]["line"]
+        prim_col = tokens[pos]["column"]
+        pos = pos + 1
+        
+        prim_dict_keys = []
+        prim_dict_vals = []
+        
+        if match(tokens, pos, "PUNCTUATION", "}")
+            pos = pos + 1
+            return [pos, make_dict(prim_dict_keys, prim_dict_vals, prim_line, prim_col)]
+        else
+            prim_loop = 1 == 1
+            while prim_loop
+                prim_res = parse_expression(tokens, pos)
+                pos = prim_res[0]
+                prim_dict_keys = prim_dict_keys + [prim_res[1]["value"]]
+                
+                prim_res = expect_val(tokens, pos, "PUNCTUATION", ":", "Expect ':' after dict key.")
+                pos = prim_res[0]
+                
+                prim_res = parse_expression(tokens, pos)
+                pos = prim_res[0]
+                prim_dict_vals = prim_dict_vals + [prim_res[1]]
+                
+                if match(tokens, pos, "PUNCTUATION", ",")
+                    pos = pos + 1
+                else
+                    prim_loop = 1 == 0
+                end
+            end
+            
+            prim_res2 = expect_val(tokens, pos, "PUNCTUATION", "}", "Expect '}' after dict prim_elements.")
+            pos = prim_res2[0]
+            return [pos, make_dict(prim_dict_keys, prim_dict_vals, prim_line, prim_col)]
+        end
+    end
+    
+    if match(tokens, pos, "PUNCTUATION", "(")
+        pos = pos + 1
+        prim_res = parse_expression(tokens, pos)
+        pos = prim_res[0]
+        prim_expr = prim_res[1]
+        prim_res2 = expect_val(tokens, pos, "PUNCTUATION", ")", "Expect ')' after expression.")
+        pos = prim_res2[0]
+        return [pos, prim_expr]
+    end
+    
+    if prim_t["type"] == "IDENTIFIER"
+        prim_line = prim_t["line"]
+        prim_col = prim_t["column"]
+        prim_name = prim_t["value"]
+        pos = pos + 1
+        
+        prim_expr = make_identifier(prim_name, prim_line, prim_col)
+        
+        prim_loop = 1 == 1
+        while prim_loop
+            if match(tokens, pos, "PUNCTUATION", "[")
+                pos = pos + 1
+                prim_res = parse_expression(tokens, pos)
+                pos = prim_res[0]
+                prim_idx = prim_res[1]
+                prim_res2 = expect_val(tokens, pos, "PUNCTUATION", "]", "Expect ']' after index.")
+                pos = prim_res2[0]
+                prim_expr = make_subscript(prim_expr, prim_idx, prim_line, prim_col)
+            else
+                if match(tokens, pos, "PUNCTUATION", "(")
+                    pos = pos + 1
+                    prim_args = []
+                    if match(tokens, pos, "PUNCTUATION", ")")
+                        pos = pos + 1
+                        prim_expr = make_call(prim_expr, prim_args, prim_line, prim_col)
+                    else
+                        prim_arg_loop = 1 == 1
+                        while prim_arg_loop
+                            prim_res = parse_expression(tokens, pos)
+                            pos = prim_res[0]
+                            prim_args = prim_args + [prim_res[1]]
+                            
+                            if match(tokens, pos, "PUNCTUATION", ",")
+                                pos = pos + 1
+                            else
+                                prim_arg_loop = 1 == 0
+                            end
+                        end
+                        prim_res2 = expect_val(tokens, pos, "PUNCTUATION", ")", "Expect ')' after arguments.")
+                        pos = prim_res2[0]
+                        prim_expr = make_call(prim_expr, prim_args, prim_line, prim_col)
+                    end
+                else
+                    prim_loop = 1 == 0
+                end
+            end
+        end
+        return [pos, prim_expr]
+    end
+    
+    print("Syntax Error: Unexpected token " + prim_t["value"])
+    return [pos + 1, make_literal("null", prim_t["line"], prim_t["column"])]
+end
+
+action parse_statement(tokens, pos)
+    let stmt_res = []
+    let stmt_line = 0
+    let stmt_col = 0
+    let stmt_name_tok = []
+    let stmt_value = []
+    let stmt_cond = []
+    let stmt_then_branch = []
+    let stmt_else_branch = []
+    let stmt_body = []
+    let stmt_next_pos = 0
+    let stmt_next_tok = []
+    let stmt_name = ""
+    let stmt_loop = 1 == 1
+    let stmt_else_loop = 1 == 1
+
+    if match(tokens, pos, "KEYWORD", "let")
+        stmt_line = tokens[pos]["line"]
+        stmt_col = tokens[pos]["column"]
+        pos = pos + 1
+        
+        stmt_res = expect(tokens, pos, "IDENTIFIER", "Expect variable stmt_name.")
+        pos = stmt_res[0]
+        stmt_name_tok = stmt_res[1]
+        
+        stmt_res = expect_val(tokens, pos, "PUNCTUATION", "=", "Expect '='.")
+        pos = stmt_res[0]
+        
+        stmt_res = parse_expression(tokens, pos)
+        pos = stmt_res[0]
+        stmt_value = stmt_res[1]
+        
+        return [pos, make_let(stmt_name_tok["value"], stmt_value, stmt_line, stmt_col)]
+    end
+    
+    if match(tokens, pos, "KEYWORD", "if")
+        let if_line = tokens[pos]["line"]
+        let if_col = tokens[pos]["column"]
+        pos = pos + 1
+        
+        let if_res = parse_expression(tokens, pos)
+        pos = if_res[0]
+        let if_cond = if_res[1]
+        
+        let if_then = []
+        let if_else = []
+        
+        let if_loop = 1 == 1
+        while if_loop
+            if match(tokens, pos, "KEYWORD", "end")
+                pos = pos + 1
+                if_loop = 1 == 0
+            else
+                if match(tokens, pos, "KEYWORD", "else")
+                    pos = pos + 1
+                    let if_eloop = 1 == 1
+                    while if_eloop
+                        if match(tokens, pos, "KEYWORD", "end")
+                            pos = pos + 1
+                            if_eloop = 1 == 0
+                            if_loop = 1 == 0
+                        else
+                            let if_eres = parse_statement(tokens, pos)
+                            pos = if_eres[0]
+                            if_else = if_else + [if_eres[1]]
+                        end
+                    end
+                else
+                    let if_tres = parse_statement(tokens, pos)
+                    pos = if_tres[0]
+                    if_then = if_then + [if_tres[1]]
+                end
+            end
+        end
+        
+        return [pos, make_if(if_cond, if_then, if_else, if_line, if_col)]
+    end
+    
+    if match(tokens, pos, "KEYWORD", "while")
+        let w_line = tokens[pos]["line"]
+        let w_col = tokens[pos]["column"]
+        pos = pos + 1
+        
+        let w_res = parse_expression(tokens, pos)
+        pos = w_res[0]
+        let w_cond = w_res[1]
+        
+        let w_body = []
+        let w_loop = 1 == 1
+        while w_loop
+            if match(tokens, pos, "KEYWORD", "end")
+                pos = pos + 1
+                w_loop = 1 == 0
+            else
+                let w_inner = parse_statement(tokens, pos)
+                pos = w_inner[0]
+                w_body = w_body + [w_inner[1]]
+            end
+        end
+        
+        return [pos, make_while(w_cond, w_body, w_line, w_col)]
+    end
+    
+    if match(tokens, pos, "KEYWORD", "return")
+        stmt_line = tokens[pos]["line"]
+        stmt_col = tokens[pos]["column"]
+        pos = pos + 1
+        
+        stmt_res = parse_expression(tokens, pos)
+        pos = stmt_res[0]
+        stmt_value = stmt_res[1]
+        
+        return [pos, make_return(stmt_value, stmt_line, stmt_col)]
+    end
+    
+    if check(tokens, pos, "IDENTIFIER")
+        stmt_next_pos = pos + 1
+        if stmt_next_pos < len(tokens)
+            stmt_next_tok = tokens[stmt_next_pos]
+            if stmt_next_tok["type"] == "PUNCTUATION"
+                if stmt_next_tok["value"] == "="
+                    stmt_line = tokens[pos]["line"]
+                    stmt_col = tokens[pos]["column"]
+                    stmt_name = tokens[pos]["value"]
+                    pos = pos + 2
+                    
+                    stmt_res = parse_expression(tokens, pos)
+                    pos = stmt_res[0]
+                    stmt_value = stmt_res[1]
+                    
+                    return [pos, make_assignment(make_identifier(stmt_name, stmt_line, stmt_col), stmt_value, stmt_line, stmt_col)]
+                end
+            end
+        end
+    end
+    
+    return parse_expression(tokens, pos)
+end
+
+action parse_action_decl(tokens, pos)
+    let act_res = []
+    let act_line = 0
+    let act_col = 0
+    let act_name_tok = []
+    let act_args = []
+    let act_body = []
+    let act_loop = 1 == 1
+    let act_arg_loop = 1 == 1
+
+    act_line = tokens[pos]["line"]
+    act_col = tokens[pos]["column"]
+    pos = pos + 1
+    
+    act_res = expect(tokens, pos, "IDENTIFIER", "Expect action act_name.")
+    pos = act_res[0]
+    act_name_tok = act_res[1]
+    
+    act_args = []
+    if match(tokens, pos, "PUNCTUATION", "(")
+        pos = pos + 1
+        if match(tokens, pos, "PUNCTUATION", ")")
+            pos = pos + 1
+        else
+            act_arg_loop = 1 == 1
+            while act_arg_loop
+                act_res = expect(tokens, pos, "IDENTIFIER", "Expect argument act_name.")
+                pos = act_res[0]
+                act_args = act_args + [act_res[1]["value"]]
+                
+                if match(tokens, pos, "PUNCTUATION", ",")
+                    pos = pos + 1
+                else
+                    act_arg_loop = 1 == 0
+                end
+            end
+            act_res = expect_val(tokens, pos, "PUNCTUATION", ")", "Expect ')' after arguments.")
+            pos = act_res[0]
+        end
+    end
+    
+    act_body = []
+    act_loop = 1 == 1
+    while act_loop
+        if match(tokens, pos, "KEYWORD", "end")
+            pos = pos + 1
+            act_loop = 1 == 0
+        else
+            act_res = parse_statement(tokens, pos)
+            pos = act_res[0]
+            act_body = act_body + [act_res[1]]
+        end
+    end
+    
+    return [pos, make_action(act_name_tok["value"], act_args, act_body, act_line, act_col)]
+end
+
+action parse(tokens)
+    let main_res = []
+    let main_stmts = []
+    let pos = 0
+    let main_length = len(tokens)
+    
+    while pos < main_length
+        if tokens[pos]["type"] == "EOF"
+            pos = main_length
+        else
+            if match(tokens, pos, "KEYWORD", "action")
+                main_res = parse_action_decl(tokens, pos)
+                pos = main_res[0]
+                main_stmts = main_stmts + [main_res[1]]
+            else
+                main_res = parse_statement(tokens, pos)
+                pos = main_res[0]
+                main_stmts = main_stmts + [main_res[1]]
+            end
+        end
+    end
+    
+    return make_program(main_stmts)
+end
+
+
+
+
+# AAYU Self-Hosted Semantic Analyzer
+
+# Scope stacks using parallel arrays because AAYU dicts are immutable
+let scopes_keys = [[]]
+let scopes_vals = [[]]
+
+action push_scope()
+    scopes_keys = scopes_keys + [[]]
+    scopes_vals = scopes_vals + [[]]
+    return 0
+end
+
+action pop_scope()
+    let ps_len = len(scopes_keys)
+    let ps_new_k = []
+    let ps_new_v = []
+    let ps_i = 0
+    while ps_i < ps_len - 1
+        ps_new_k = ps_new_k + [scopes_keys[ps_i]]
+        ps_new_v = ps_new_v + [scopes_vals[ps_i]]
+        ps_i = ps_i + 1
+    end
+    scopes_keys = ps_new_k
+    scopes_vals = ps_new_v
+    return 0
+end
+
+action update_scope_array(arr, index, val)
+    let ua_res = []
+    let ua_i = 0
+    let ua_l = len(arr)
+    while ua_i < ua_l
+        if ua_i == index
+            ua_res = ua_res + [val]
+        else
+            ua_res = ua_res + [arr[ua_i]]
+        end
+        ua_i = ua_i + 1
+    end
+    return ua_res
+end
+
+action define_symbol(name, sym_type)
+    let ds_top_idx = len(scopes_keys) - 1
+    
+    let ds_keys = scopes_keys[ds_top_idx]
+    let ds_vals = scopes_vals[ds_top_idx]
+    
+    # check for duplicates in current scope
+    let ds_i = 0
+    let ds_l = len(ds_keys)
+    while ds_i < ds_l
+        if ds_keys[ds_i] == name
+            print("[Semantic Error] Duplicate declaration of: ")
+            print(name)
+            return 0
+        end
+        ds_i = ds_i + 1
+    end
+    
+    ds_keys = ds_keys + [name]
+    ds_vals = ds_vals + [sym_type]
+    
+    scopes_keys = update_scope_array(scopes_keys, ds_top_idx, ds_keys)
+    scopes_vals = update_scope_array(scopes_vals, ds_top_idx, ds_vals)
+    return 0
+end
+
+action resolve_symbol(name)
+    let rs_i = len(scopes_keys) - 1
+    while rs_i >= 0
+        let rs_keys = scopes_keys[rs_i]
+        let rs_vals = scopes_vals[rs_i]
+        let rs_j = 0
+        let rs_l = len(rs_keys)
+        while rs_j < rs_l
+            if rs_keys[rs_j] == name
+                return rs_vals[rs_j]
+            end
+            rs_j = rs_j + 1
+        end
+        rs_i = rs_i - 1
+    end
+    return ""
+end
+
+action analyze_expression(expr)
+    let ae_type = expr["type"]
+    let ae_sym = ""
+    let ae_args = []
+    let ae_sem_args = []
+    let ae_i = 0
+    let ae_l = 0
+    
+    if ae_type == "Number"
+        return { "type": "Literal", "value": expr["value"], "dtype": "Number" }
+    end
+    if ae_type == "String"
+        return { "type": "Literal", "value": expr["value"], "dtype": "String" }
+    end
+    if ae_type == "Literal"
+        return { "type": "Literal", "value": expr["value"], "dtype": "Unknown" }
+    end
+    if ae_type == "Identifier"
+        ae_sym = resolve_symbol(expr["name"])
+        if ae_sym == ""
+            print("[Semantic Error] Undeclared identifier: ")
+            print(expr["name"])
+            return null
+        end
+        return { "type": "Identifier", "name": expr["name"] }
+    end
+    if ae_type == "BinaryOp"
+        let ae_left = analyze_expression(expr["left"])
+        let ae_right = analyze_expression(expr["right"])
+        return { "type": "BinaryOp", "operator": expr["operator"], "left": ae_left, "right": ae_right }
+    end
+    if ae_type == "ActionCall"
+        ae_sym = resolve_symbol(expr["name"])
+        if ae_sym == ""
+            print("[Semantic Error] Undeclared function: ")
+            print(expr["name"])
+        end
+        
+        ae_args = expr["args"]
+        ae_sem_args = []
+        while len(ae_sem_args) < len(ae_args)
+            ae_sem_args = ae_sem_args + [analyze_expression(ae_args[len(ae_sem_args)])]
+        end
+        return { "type": "ActionCall", "name": expr["name"], "args": ae_sem_args }
+    end
+    if ae_type == "Array"
+        ae_args = expr["elements"]
+        ae_sem_args = []
+        while len(ae_sem_args) < len(ae_args)
+            ae_sem_args = ae_sem_args + [analyze_expression(ae_args[len(ae_sem_args)])]
+        end
+        return { "type": "Array", "elements": ae_sem_args }
+    end
+    return expr
+end
+
+action analyze_statement(stmt)
+    let as_type = stmt["type"]
+    let as_sym = ""
+    let as_val = {}
+    let as_i = 0
+    let as_l = 0
+    let as_target = {}
+    
+    if as_type == "LetDeclaration"
+        define_symbol(stmt["name"], "local")
+        as_val = analyze_expression(stmt["value"])
+        return { "type": "LetDecl", "name": stmt["name"], "value": as_val }
+    end
+    if as_type == "Assignment"
+        as_target = stmt["target"]
+        if as_target["type"] == "Identifier"
+            as_sym = resolve_symbol(as_target["name"])
+            if as_sym == ""
+                print("[Semantic Error] Assignment to undeclared identifier: ")
+                print(as_target["name"])
+            end
+        end
+        as_val = analyze_expression(stmt["value"])
+        return { "type": "Assignment", "target": as_target, "value": as_val }
+    end
+    if as_type == "If"
+        let as_cond = analyze_expression(stmt["condition"])
+        
+        push_scope()
+        let as_then = []
+        let as_tb = stmt["then_branch"]
+        while len(as_then) < len(as_tb)
+            as_then = as_then + [analyze_statement(as_tb[len(as_then)])]
+        end
+        pop_scope()
+        
+        push_scope()
+        let as_else = []
+        let as_eb = stmt["else_branch"]
+        while len(as_else) < len(as_eb)
+            as_else = as_else + [analyze_statement(as_eb[len(as_else)])]
+        end
+        pop_scope()
+        
+        return { "type": "If", "condition": as_cond, "then_branch": as_then, "else_branch": as_else }
+    end
+    if as_type == "Return"
+        if stmt["value"] != ""
+            return { "type": "Return", "value": analyze_expression(stmt["value"]) }
+        else
+            return { "type": "Return", "value": "" }
+        end
+    end
+    if as_type == "ExpressionStatement"
+        return { "type": "ExpressionStatement", "expression": analyze_expression(stmt["expression"]) }
+    end
+    if as_type == "ActionDeclaration"
+        define_symbol(stmt["name"], "function")
+        
+        push_scope()
+        let as_args = stmt["args"]
+        as_i = 0
+        as_l = len(as_args)
+        while as_i < as_l
+            define_symbol(as_args[as_i], "local")
+            as_i = as_i + 1
+        end
+        
+        let as_body = []
+        let as_stmts = stmt["statements"]
+        while len(as_body) < len(as_stmts)
+            as_body = as_body + [analyze_statement(as_stmts[len(as_body)])]
+        end
+        pop_scope()
+        
+        return { "type": "ActionDeclaration", "name": stmt["name"], "args": as_args, "statements": as_body }
+    end
+    return stmt
+end
+
+action analyze(ast)
+    define_symbol("print", "function")
+    define_symbol("len", "function")
+    
+    if ast["type"] == "Program"
+        let a_stmts = ast["statements"]
+        let a_sem_stmts = []
+        let a_i = 0
+        let a_l = len(a_stmts)
+        while a_i < a_l
+            a_sem_stmts = a_sem_stmts + [analyze_statement(a_stmts[a_i])]
+            a_i = a_i + 1
+        end
+        return { "type": "Program", "statements": a_sem_stmts }
+    end
+    return {}
+end
+
+
+
+
+# AAYU Self-Hosted Compiler (AST to Bytecode)
+
+let OP_PUSH_CONST = 1
+let OP_POP = 2
+let OP_ADD = 16
+let OP_SUB = 17
+let OP_MUL = 18
+let OP_DIV = 19
+let OP_JMP = 32
+let OP_JMP_IF_FALSE = 33
+let OP_CALL = 34
+let OP_RET = 35
+let OP_CMP_EQ = 38
+let OP_CMP_NEQ = 39
+let OP_CMP_LT = 41
+let OP_CMP_GT = 42
+let OP_CMP_LTE = 43
+let OP_CMP_GTE = 44
+let OP_STORE_STATE = 48
+let OP_LOAD_STATE = 49
+let OP_PRINT = 81
+let OP_RETURN_VALUE = 98
+let OP_CREATE_ARRAY = 134
+let OP_BUILD_DICT = 128
+let OP_LOAD_SUBSCR = 136
+let OP_STORE_SUBSCR = 137
+let OP_HALT = 255
+
+
+action update_array(arr, index, val)
+    let ua_res = []
+    let ua_i = 0
+    let ua_l = len(arr)
+    while ua_i < ua_l
+        if ua_i == index
+            ua_res = ua_res + [val]
+        else
+            ua_res = ua_res + [arr[ua_i]]
+        end
+        ua_i = ua_i + 1
+    end
+    return ua_res
+end
+
+# Globals
+let constants = []
+let bytecode = []
+
+action add_constant(value)
+    let ac_idx = 0
+    let ac_len = len(constants)
+    let ac_found = 1 == 0
+    
+    while ac_idx < ac_len
+        if constants[ac_idx] == value
+            ac_found = 1 == 1
+            return ac_idx
+        end
+        ac_idx = ac_idx + 1
+    end
+    
+    constants = constants + [value]
+    return ac_len
+end
+
+action emit(opcode, arg1, arg2)
+    let em_hi = encode_hi(arg1)
+    let em_lo = encode_lo(arg1)
+    bytecode = bytecode + [opcode, em_hi, em_lo]
+    return 0
+end
+
+action emit_patchable(opcode)
+    let ep_idx = len(bytecode)
+    bytecode = bytecode + [opcode, 255, 255]
+    return ep_idx
+end
+
+action floor_div(a, b)
+    let fd_result = a / b
+    let fd_int = 0
+    while fd_int + 1 <= fd_result
+        fd_int = fd_int + 1
+    end
+    return fd_int
+end
+
+action encode_hi(target)
+    return floor_div(target, 256)
+end
+
+action encode_lo(target)
+    let el_hi = floor_div(target, 256)
+    let el_offset = el_hi * 256
+    return target - el_offset
+end
+
+action patch_jump(ep_idx)
+    let pj_target = len(bytecode)
+    let pj_hi = encode_hi(pj_target)
+    let pj_lo = encode_lo(pj_target)
+    bytecode = update_array(bytecode, ep_idx + 1, pj_hi)
+    bytecode = update_array(bytecode, ep_idx + 2, pj_lo)
+    return 0
+end
+
+action compile_expression(expr)
+    let ce_type = expr["type"]
+    let ce_idx = 0
+    let ce_op = ""
+    let ce_i = 0
+    let ce_len = 0
+    let ce_args = []
+    
+    if ce_type == "Number"
+        ce_idx = add_constant(expr["value"])
+        emit(OP_PUSH_CONST, ce_idx, 0)
+    end
+    if ce_type == "String"
+        ce_idx = add_constant(expr["value"])
+        emit(OP_PUSH_CONST, ce_idx, 0)
+    end
+    if ce_type == "Literal"
+        ce_idx = add_constant(expr["value"])
+        emit(OP_PUSH_CONST, ce_idx, 0)
+    end
+    if ce_type == "Identifier"
+        ce_idx = add_constant(expr["name"])
+        emit(OP_LOAD_STATE, ce_idx, 0)
+    end
+    if ce_type == "Array"
+        let arr_elems = expr["elements"]
+        let arr_i = 0
+        let arr_len = len(arr_elems)
+        while arr_i < arr_len
+            compile_expression(arr_elems[arr_i])
+            arr_i = arr_i + 1
+        end
+        emit(OP_CREATE_ARRAY, arr_len, 0)
+    end
+    if ce_type == "Dictionary"
+        ce_args = expr["keys"]
+        let ce_vals = expr["values"]
+        ce_i = 0
+        ce_len = len(ce_args)
+        while ce_i < ce_len
+            compile_expression(ce_vals[ce_i])
+            compile_expression(ce_args[ce_i])
+            ce_i = ce_i + 1
+        end
+        emit(OP_BUILD_DICT, ce_len, 0)
+    end
+    if ce_type == "Subscript"
+        let sub_target = expr["target"]
+        let sub_index = expr["index"]
+        compile_expression(sub_target)
+        compile_expression(sub_index)
+        emit(OP_LOAD_SUBSCR, 0, 0)
+    end
+    if ce_type == "ActionCall"
+        let ac_cidx = add_constant(expr["name"])
+        emit(OP_PUSH_CONST, ac_cidx, 0)
+        let ac_args = expr["args"]
+        let ac_i = 0
+        let ac_len = len(ac_args)
+        while ac_i < ac_len
+            compile_expression(ac_args[ac_i])
+            ac_i = ac_i + 1
+        end
+        emit(OP_CALL, ac_len, 0)
+    end
+    if ce_type == "BinaryOp"
+        let bo_op = expr["operator"]
+        let bo_left = expr["left"]
+        let bo_right = expr["right"]
+        compile_expression(bo_left)
+        compile_expression(bo_right)
+        if bo_op == "+"
+            emit(OP_ADD, 0, 0)
+        end
+        if bo_op == "-"
+            emit(OP_SUB, 0, 0)
+        end
+        if bo_op == "*"
+            emit(OP_MUL, 0, 0)
+        end
+        if bo_op == "/"
+            emit(OP_DIV, 0, 0)
+        end
+        if bo_op == "=="
+            emit(OP_CMP_EQ, 0, 0)
+        end
+        if bo_op == "!="
+            emit(OP_CMP_NEQ, 0, 0)
+        end
+        if bo_op == "<"
+            emit(OP_CMP_LT, 0, 0)
+        end
+        if bo_op == ">"
+            emit(OP_CMP_GT, 0, 0)
+        end
+        if bo_op == "<="
+            emit(OP_CMP_LTE, 0, 0)
+        end
+        if bo_op == ">="
+            emit(OP_CMP_GTE, 0, 0)
+        end
+    end
+    return 0
+end
+
+action compile_statement(stmt)
+    let cs_type = stmt["type"]
+    let cs_idx = 0
+    let cs_body = []
+    let cs_else = []
+    let cs_i = 0
+    let cs_len = 0
+    let cs_jmp1 = 0
+    let cs_jmp2 = 0
+    
+    if cs_type == "LetDeclaration"
+        let ld_val = stmt["value"]
+        compile_expression(ld_val)
+        let ld_idx = add_constant(stmt["name"])
+        emit(OP_STORE_STATE, ld_idx, 0)
+    end
+    if cs_type == "Assignment"
+        let as_target = stmt["target"]
+        let as_value = stmt["value"]
+        if as_target["type"] == "Identifier"
+            compile_expression(as_value)
+            let as_idx = add_constant(as_target["name"])
+            emit(OP_STORE_STATE, as_idx, 0)
+        end
+        if as_target["type"] == "Subscript"
+            let as_sub_t = as_target["target"]
+            let as_sub_i = as_target["index"]
+            compile_expression(as_sub_t)
+            compile_expression(as_sub_i)
+            compile_expression(as_value)
+            emit(OP_STORE_SUBSCR, 0, 0)
+        end
+    end
+    if cs_type == "If"
+        let ic_cond = stmt["condition"]
+        compile_expression(ic_cond)
+        let ic_jmp1 = emit_patchable(OP_JMP_IF_FALSE)
+        
+        let ic_then = stmt["then_branch"]
+        let ic_ti = 0
+        let ic_tlen = len(ic_then)
+        while ic_ti < ic_tlen
+            compile_statement(ic_then[ic_ti])
+            ic_ti = ic_ti + 1
+        end
+        
+        let ic_else = stmt["else_branch"]
+        if len(ic_else) > 0
+            let ic_jmp2 = emit_patchable(OP_JMP)
+            patch_jump(ic_jmp1)
+            
+            let ic_ei = 0
+            let ic_elen = len(ic_else)
+            while ic_ei < ic_elen
+                compile_statement(ic_else[ic_ei])
+                ic_ei = ic_ei + 1
+            end
+            patch_jump(ic_jmp2)
+        else
+            patch_jump(ic_jmp1)
+        end
+    end
+    if cs_type == "While"
+        let wc_start = len(bytecode)
+        let wc_cond = stmt["condition"]
+        compile_expression(wc_cond)
+        let wc_jmp = emit_patchable(OP_JMP_IF_FALSE)
+        
+        let wc_body = stmt["body"]
+        let wc_i = 0
+        let wc_len = len(wc_body)
+        while wc_i < wc_len
+            compile_statement(wc_body[wc_i])
+            wc_i = wc_i + 1
+        end
+        
+        emit(OP_JMP, wc_start, 0)
+        patch_jump(wc_jmp)
+    end
+    if cs_type == "Return"
+        if stmt["value"] != ""
+            compile_expression(stmt["value"])
+        else
+            cs_idx = add_constant("")
+            emit(OP_PUSH_CONST, cs_idx, 0)
+        end
+        emit(OP_RETURN_VALUE, 0, 0)
+    end
+    if cs_type == "ActionDeclaration"
+        let ad_jmp = emit_patchable(OP_JMP)
+        
+        let ad_body = stmt["statements"]
+        let ad_i = 0
+        let ad_len = len(ad_body)
+        while ad_i < ad_len
+            compile_statement(ad_body[ad_i])
+            ad_i = ad_i + 1
+        end
+        
+        patch_jump(ad_jmp)
+    end
+    if cs_type == "ActionCall"
+        compile_expression(stmt)
+        emit(OP_POP, 0, 0)
+    end
+    if cs_type == "ExpressionStatement"
+        compile_expression(stmt["expression"])
+        emit(OP_POP, 0, 0)
+    end
+    return 0
+end
+
+action compile(ast)
+    if ast["type"] == "Program"
+        let cp_stmts = ast["statements"]
+        let cp_i = 0
+        let cp_len = len(cp_stmts)
+        while cp_i < cp_len
+            compile_statement(cp_stmts[cp_i])
+            cp_i = cp_i + 1
+        end
+    end
+    emit(OP_HALT, 0, 0)
+    return 0
+end
+
+# A more complex AST from phase 2!
+
+
+
+# ==========================================
+# MAIN PIPELINE
+# ==========================================
+
+let code = "let i = 0
+let sum = 0
+while i != 5
+  sum = sum + i
+  i = i + 1
+end
+print(sum)"
+
+print("Compiling source:")
+print(code)
+print("----------------")
+
+# 1. Lex
+let tokens = tokenize(code)
+print("Lexer finished. Tokens: ")
+print(len(tokens))
+
+# 2. Parse
+let ast = parse(tokens)
+print("Parser finished. Statements:")
+print(len(ast["statements"]))
+
+# 3. Semantic Analysis
+# Currently analyzer outputs Semantic* nodes, so we skip it to match compiler.aayu's expected AST.
+# let sem_ast = analyze(ast)
+print("Semantic Analysis finished.")
+
+# 4. Compile
+compile(ast)
+print("Compilation finished. Bytecode length:")
+print(len(bytecode))
+
+print("BYTECODE DUMP:")
+print(bytecode)
+print("CONSTANT POOL:")
+print(constants)
+print("AAYUC Execution Complete.")

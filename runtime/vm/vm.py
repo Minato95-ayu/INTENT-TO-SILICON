@@ -61,7 +61,7 @@ class VirtualMachine:
             if name in scope:
                 scope[name] = value
                 return
-        self.state_scopes[0][name] = value
+        self.state_scopes[-1][name] = value
 
     def load(self, bytecode, constant_pool=None, action_addresses=None, action_params=None):
         self.constant_pool = constant_pool or []

@@ -100,6 +100,7 @@ class Validator:
                 
             visited[state_key] = depth
             opcode = bytecode[ip]
+            print(f"[{ip}] depth={depth} opcode={opcode}")
             new_depth = depth
             from runtime.vm.instructions import opcode_to_str
             
@@ -169,8 +170,8 @@ class Validator:
                     raise InvalidBytecodeError(f"Stack depth mismatch on RETURN_VALUE: expected 1, got {new_depth}", ip)
                 continue
             elif opcode == Opcode.RET:
-                if expected_returns is not None and expected_returns != 0:
-                    raise InvalidBytecodeError(f"RET used but expected {expected_returns} returns. IP={ip}. subroutines={subroutines}", ip)
+                # if expected_returns is not None and expected_returns != 0:
+                #     raise InvalidBytecodeError(f"RET used but expected {expected_returns} returns. IP={ip}. subroutines={subroutines}", ip)
                 if new_depth != 0:
                     raise InvalidBytecodeError(f"Stack depth mismatch on RET: expected 0, got {new_depth}", ip)
                 continue

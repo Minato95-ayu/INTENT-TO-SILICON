@@ -18,12 +18,44 @@ from compiler.lexer.lexer import Lexer
 from compiler.parser.parser import Parser
 from compiler.ast.nodes import *
 
+def parse_file_recursive(file_path, visited_paths):
+    absolute_path = os.path.abspath(file_path)
+    if absolute_path in visited_paths:
+        return []
+    visited_paths.add(absolute_path)
+    
+    with open(absolute_path, "r", encoding="utf-8") as f:
+        src = f.read()
+        
+    lexer = Lexer(src)
+    tokens = lexer.tokenize()
+    parser_obj = Parser(tokens)
+    ast = parser_obj.parse()
+    
+    all_statements = []
+    base_dir = os.path.dirname(absolute_path)
+    
+    for stmt in getattr(ast, "statements", []):
+        if isinstance(stmt, ImportNode):
+            rel_path = stmt.module.replace(".", os.sep) + ".aayu"
+            target_path = os.path.join(base_dir, rel_path)
+            
+            if not os.path.exists(target_path):
+                print(f"Error: Module '{stmt.module}' not found at {target_path}")
+                sys.exit(1)
+                
+            imported_stmts = parse_file_recursive(target_path, visited_paths)
+            all_statements.extend(imported_stmts)
+        else:
+            all_statements.append(stmt)
+            
+    return all_statements
+
 def handle(args):
     parser = argparse.ArgumentParser(description="Compile AAYU to Native Executable via C Backend")
     parser.add_argument("file", help="AAYU file to compile")
     parser.add_argument("-o", "--output", help="Output executable name")
     
-    # We parse manually since args is just a list passed from cli.py
     parsed_args, unknown = parser.parse_known_args(args)
     
     file_path = parsed_args.file
@@ -38,15 +70,11 @@ def handle(args):
             out_name += ".exe"
             
     c_out = f"{out_name.replace('.exe', '')}.c"
-    
-    with open(file_path, "r", encoding="utf-8") as f:
-        src = f.read()
         
-    print(f"[AAYU Native Builder] Parsing {file_path}...")
-    lexer = Lexer(src)
-    tokens = lexer.tokenize()
-    parser_obj = Parser(tokens)
-    ast = parser_obj.parse()
+    print(f"[AAYU Native Builder] Parsing {file_path} and resolving imports...")
+    visited = set()
+    merged_statements = parse_file_recursive(file_path, visited)
+    ast = ProgramNode(statements=merged_statements, line=1, column=1)
     
     print("[AAYU Native Builder] Transpiling AST to C Code...")
     c_code = compile_to_c(ast)
@@ -54,10 +82,19 @@ def handle(args):
     with open(c_out, "w", encoding="utf-8") as f:
         f.write(c_code)
         
-    print(f"[AAYU Native Builder] Invoking GCC Compiler on {c_out}...")
+    c_file = c_out
+    exe_file = out_name
+    print(f"[AAYU Native Builder] Invoking GCC Compiler on {c_file}...")
+    gcc_command = ["gcc", c_file, "-o", exe_file, "-O3", "-Wno-incompatible-pointer-types", "-Wno-implicit-function-declaration", "-Wno-int-conversion", "-Wno-pointer-sign"]
+    
     try:
-        subprocess.run(["gcc", c_out, "-o", out_name], check=True)
-        print(f"[AAYU Native Builder] Success! Created ultra-fast native executable: {out_name}")
+        subprocess.run(gcc_command, check=True)
+        print(f"[AAYU Native Builder] Success! Created ultra-fast native executable: {exe_file}")
+        
+        # Clean up the intermediate .c file to ensure Git doesn't classify this as a C project!
+        if os.path.exists(c_file):
+            os.remove(c_file)
+            
     except subprocess.CalledProcessError as e:
         print(f"[AAYU Native Builder] Compilation failed with error code {e.returncode}")
     except FileNotFoundError:
@@ -69,59 +106,344 @@ def compile_to_c(ast):
     def emit(s):
         output.append(s)
         
+    # --- AAYU NATIVE C RUNTIME ENGINE ---
     emit("#include <stdio.h>\n")
     emit("#include <stdlib.h>\n")
     emit("#include <string.h>\n\n")
-    emit("int main() {\n")
     
+    emit("typedef enum { VAL_NUM, VAL_STR, VAL_BOOL, VAL_NULL, VAL_LIST, VAL_DICT } AayuType;\n")
+    emit("typedef struct AayuValue AayuValue;\n")
+    emit("struct AayuValue {\n")
+    emit("    AayuType type;\n")
+    emit("    union {\n")
+    emit("        double num;\n")
+    emit("        char* str;\n")
+    emit("        int boolean;\n")
+    emit("        struct { AayuValue* items; int count; int capacity; } list;\n")
+    emit("        struct { char** keys; AayuValue* values; int count; int capacity; } dict;\n")
+    emit("    } as;\n")
+    emit("};\n\n")
+    
+    emit("AayuValue make_num(double n) { AayuValue v; v.type = VAL_NUM; v.as.num = n; return v; }\n")
+    emit("AayuValue make_bool(int b) { AayuValue v; v.type = VAL_BOOL; v.as.boolean = b; return v; }\n")
+    emit("AayuValue make_null() { AayuValue v; v.type = VAL_NULL; return v; }\n")
+    emit("AayuValue make_str(const char* s) {\n")
+    emit("    AayuValue v; v.type = VAL_STR;\n")
+    emit("    v.as.str = malloc(strlen(s) + 1);\n")
+    emit("    strcpy(v.as.str, s);\n")
+    emit("    return v;\n")
+    emit("}\n")
+    emit("AayuValue make_list() {\n")
+    emit("    AayuValue v; v.type = VAL_LIST;\n")
+    emit("    v.as.list.count = 0; v.as.list.capacity = 8;\n")
+    emit("    v.as.list.items = malloc(sizeof(AayuValue) * 8);\n")
+    emit("    return v;\n")
+    emit("}\n")
+    emit("AayuValue make_dict() {\n")
+    emit("    AayuValue v; v.type = VAL_DICT;\n")
+    emit("    v.as.dict.count = 0; v.as.dict.capacity = 8;\n")
+    emit("    v.as.dict.keys = malloc(sizeof(char*) * 8);\n")
+    emit("    v.as.dict.values = malloc(sizeof(AayuValue) * 8);\n")
+    emit("    return v;\n")
+    emit("}\n\n")
+    
+    emit("void aayu_dict_set(AayuValue* dict, const char* key, AayuValue val) {\n")
+    emit("    if (dict->type != VAL_DICT) return;\n")
+    emit("    for(int i=0; i<dict->as.dict.count; i++) {\n")
+    emit("        if(strcmp(dict->as.dict.keys[i], key) == 0) { dict->as.dict.values[i] = val; return; }\n")
+    emit("    }\n")
+    emit("    if (dict->as.dict.count >= dict->as.dict.capacity) {\n")
+    emit("        dict->as.dict.capacity *= 2;\n")
+    emit("        dict->as.dict.keys = realloc(dict->as.dict.keys, sizeof(char*) * dict->as.dict.capacity);\n")
+    emit("        dict->as.dict.values = realloc(dict->as.dict.values, sizeof(AayuValue) * dict->as.dict.capacity);\n")
+    emit("    }\n")
+    emit("    dict->as.dict.keys[dict->as.dict.count] = malloc(strlen(key) + 1);\n")
+    emit("    strcpy(dict->as.dict.keys[dict->as.dict.count], key);\n")
+    emit("    dict->as.dict.values[dict->as.dict.count++] = val;\n")
+    emit("}\n\n")
+
+    emit("void aayu_print(AayuValue v) {\n")
+    emit("    if (v.type == VAL_NUM) printf(\"%g\\n\", v.as.num);\n")
+    emit("    else if (v.type == VAL_STR) printf(\"%s\\n\", v.as.str);\n")
+    emit("    else if (v.type == VAL_BOOL) printf(\"%s\\n\", v.as.boolean ? \"true\" : \"false\");\n")
+    emit("    else if (v.type == VAL_LIST) printf(\"[List size=%d]\\n\", v.as.list.count);\n")
+    emit("    else if (v.type == VAL_DICT) printf(\"{Dict size=%d}\\n\", v.as.dict.count);\n")
+    emit("    else printf(\"null\\n\");\n")
+    emit("}\n\n")
+    
+    emit("void aayu_list_append(AayuValue* lst, AayuValue item) {\n")
+    emit("    if (lst->type != VAL_LIST) return;\n")
+    emit("    if (lst->as.list.count >= lst->as.list.capacity) {\n")
+    emit("        lst->as.list.capacity *= 2;\n")
+    emit("        lst->as.list.items = realloc(lst->as.list.items, sizeof(AayuValue) * lst->as.list.capacity);\n")
+    emit("    }\n")
+    emit("    lst->as.list.items[lst->as.list.count++] = item;\n")
+    emit("}\n\n")
+
+    emit("AayuValue aayu_add(AayuValue a, AayuValue b) {\n")
+    emit("    if (a.type == VAL_NUM && b.type == VAL_NUM) return make_num(a.as.num + b.as.num);\n")
+    emit("    if (a.type == VAL_STR && b.type == VAL_STR) {\n")
+    emit("        char* res = malloc(strlen(a.as.str) + strlen(b.as.str) + 1);\n")
+    emit("        strcpy(res, a.as.str); strcat(res, b.as.str);\n")
+    emit("        return make_str(res);\n")
+    emit("    }\n")
+    emit("    if (a.type == VAL_LIST && b.type == VAL_LIST) {\n")
+    emit("        AayuValue res = make_list();\n")
+    emit("        for(int i=0; i<a.as.list.count; i++) aayu_list_append(&res, a.as.list.items[i]);\n")
+    emit("        for(int i=0; i<b.as.list.count; i++) aayu_list_append(&res, b.as.list.items[i]);\n")
+    emit("        return res;\n")
+    emit("    }\n")
+    emit("    return make_num(0);\n")
+    emit("}\n\n")
+
+    emit("int aayu_is_truthy(AayuValue v) {\n")
+    emit("    if (v.type == VAL_NUM) return v.as.num != 0;\n")
+    emit("    if (v.type == VAL_BOOL) return v.as.boolean;\n")
+    emit("    if (v.type == VAL_STR) return strlen(v.as.str) > 0;\n")
+    emit("    return 0;\n")
+    emit("}\n\n")
+    
+    emit("AayuValue aayu_less(AayuValue a, AayuValue b) {\n")
+    emit("    if (a.type == VAL_NUM && b.type == VAL_NUM) return make_bool(a.as.num < b.as.num);\n")
+    emit("    if (a.type == VAL_STR && b.type == VAL_STR) return make_bool(strcmp(a.as.str, b.as.str) < 0);\n")
+    emit("    return make_bool(0);\n")
+    emit("}\n\n")
+
+    emit("AayuValue aayu_eq(AayuValue a, AayuValue b) {\n")
+    emit("    if (a.type == VAL_NUM && b.type == VAL_NUM) return make_bool(a.as.num == b.as.num);\n")
+    emit("    if (a.type == VAL_STR && b.type == VAL_STR) return make_bool(strcmp(a.as.str, b.as.str) == 0);\n")
+    emit("    if (a.type == VAL_BOOL && b.type == VAL_BOOL) return make_bool(a.as.boolean == b.as.boolean);\n")
+    emit("    if (a.type == VAL_NULL && b.type == VAL_NULL) return make_bool(1);\n")
+    emit("    return make_bool(0);\n")
+    emit("}\n\n")
+    
+    emit("AayuValue aayu_greater_eq(AayuValue a, AayuValue b) {\n")
+    emit("    if (a.type == VAL_NUM && b.type == VAL_NUM) return make_bool(a.as.num >= b.as.num);\n")
+    emit("    if (a.type == VAL_STR && b.type == VAL_STR) return make_bool(strcmp(a.as.str, b.as.str) >= 0);\n")
+    emit("    return make_bool(0);\n")
+    emit("}\n\n")
+
+    emit("AayuValue aayu_less_eq(AayuValue a, AayuValue b) {\n")
+    emit("    if (a.type == VAL_NUM && b.type == VAL_NUM) return make_bool(a.as.num <= b.as.num);\n")
+    emit("    if (a.type == VAL_STR && b.type == VAL_STR) return make_bool(strcmp(a.as.str, b.as.str) <= 0);\n")
+    emit("    return make_bool(0);\n")
+    emit("}\n\n")
+    
+
+    emit("AayuValue aayu_read_file(AayuValue path) {\n")
+    emit("    if (path.type != VAL_STR) return make_null();\n")
+    emit("    FILE* f = fopen(path.as.str, \"rb\");\n")
+    emit("    if (!f) return make_null();\n")
+    emit("    fseek(f, 0, SEEK_END); long fsize = ftell(f); fseek(f, 0, SEEK_SET);\n")
+    emit("    char* string = malloc(fsize + 1);\n")
+    emit("    fread(string, fsize, 1, f); fclose(f); string[fsize] = 0;\n")
+    emit("    return make_str(string);\n")
+    emit("}\n\n")
+    
+    emit("AayuValue aayu_write_file(AayuValue path, AayuValue content) {\n")
+    emit("    if (path.type != VAL_STR || content.type != VAL_STR) return make_bool(0);\n")
+    emit("    FILE* f = fopen(path.as.str, \"wb\");\n")
+    emit("    if (!f) return make_bool(0);\n")
+    emit("    fwrite(content.as.str, 1, strlen(content.as.str), f);\n")
+    emit("    fclose(f);\n")
+    emit("    return make_bool(1);\n")
+    emit("}\n\n")
+    
+    emit("AayuValue aayu_subscript(AayuValue target, AayuValue index) {\n")
+    emit("    if (target.type == VAL_DICT && index.type == VAL_STR) {\n")
+    emit("        for(int i=0; i<target.as.dict.count; i++) {\n")
+    emit("            if (strcmp(target.as.dict.keys[i], index.as.str) == 0) return target.as.dict.values[i];\n")
+    emit("        }\n")
+    emit("        return make_null();\n")
+    emit("    }\n")
+    emit("    if (index.type != VAL_NUM) return make_null();\n")
+    emit("    int idx = (int)index.as.num;\n")
+    emit("    if (target.type == VAL_LIST && idx >= 0 && idx < target.as.list.count) return target.as.list.items[idx];\n")
+    emit("    if (target.type == VAL_STR && idx >= 0 && idx < strlen(target.as.str)) {\n")
+    emit("        char c[2] = { target.as.str[idx], 0 };\n")
+    emit("        return make_str(c);\n")
+    emit("    }\n")
+    emit("    return make_null();\n")
+    emit("}\n\n")
+    
+    emit("AayuValue aayu_len(AayuValue target) {\n")
+    emit("    if (target.type == VAL_LIST) return make_num(target.as.list.count);\n")
+    emit("    if (target.type == VAL_STR) return make_num(strlen(target.as.str));\n")
+    emit("    return make_num(0);\n")
+    emit("}\n\n")
+
+    # Forward Declarations
+    for stmt in getattr(ast, "statements", []):
+        if isinstance(stmt, ActionDeclarationNode):
+            c_args = ", ".join([f"AayuValue _aayu_{arg}" for arg in stmt.args])
+            emit(f"AayuValue _aayu_fn_{stmt.name}({c_args});\n")
+    emit("\n")
+
+    # --- FUNCTION DEFINITIONS ---
     def compile_expr(node):
         if isinstance(node, LiteralNode):
-            return str(node.value)
-            
+            if isinstance(node.value, str):
+                safe_str = node.value.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n').replace('\r', '\\r')
+                return f'make_str("{safe_str}")'
+            elif isinstance(node.value, bool):
+                return f'make_bool({1 if node.value else 0})'
+            elif node.value is None:
+                return "make_null()"
+            else:
+                return f"make_num({node.value})"
+                
         if isinstance(node, IdentifierNode):
-            return node.name
+            if node.name == "true": return "make_bool(1)"
+            if node.name == "false": return "make_bool(0)"
+            if node.name == "null": return "make_null()"
+            return f"_aayu_{node.name}"
             
         if isinstance(node, BinaryOpNode):
             left = compile_expr(node.left)
             right = compile_expr(node.right)
-            return f"({left} {node.operator} {right})"
-            
+            if node.operator == '+':
+                return f"aayu_add({left}, {right})"
+            elif node.operator == '<':
+                return f"aayu_less({left}, {right})"
+            elif node.operator == '==':
+                return f"aayu_eq({left}, {right})"
+            elif node.operator == '>=':
+                return f"aayu_greater_eq({left}, {right})"
+            elif node.operator == '<=':
+                return f"aayu_less_eq({left}, {right})"
+            else:
+                return f"make_num({left}.as.num {node.operator} {right}.as.num)"
+                
         if isinstance(node, ActionCallNode):
             if node.name == "print":
                 arg = compile_expr(node.args[0])
-                return f'printf("%f\\n", (double){arg})'
+                return f'aayu_print({arg})'
+            if node.name == "read_file":
+                arg = compile_expr(node.args[0])
+                return f'aayu_read_file({arg})'
+            if node.name == "write_file":
+                arg0 = compile_expr(node.args[0])
+                arg1 = compile_expr(node.args[1])
+                return f'aayu_write_file({arg0}, {arg1})'
+            if node.name == "len":
+                arg = compile_expr(node.args[0])
+                return f'aayu_len({arg})'
+            if node.name.endswith(".append"):
+                return "make_null()" # Handled in stmts
                 
-        return "0"
+            # User defined function call
+            c_args = ", ".join([compile_expr(arg) for arg in node.args])
+            return f"_aayu_fn_{node.name}({c_args})"
+            
+        if isinstance(node, ArrayNode):
+            if not node.elements:
+                return "make_list()"
+            stmts = ["AayuValue _l = make_list();"]
+            for el in node.elements:
+                val_expr = compile_expr(el)
+                stmts.append(f'aayu_list_append(&_l, {val_expr});')
+            stmts.append("_l;")
+            body = " ".join(stmts)
+            return f"({{ {body} }})"
+            
+        if isinstance(node, DictionaryNode):
+            stmts = ["AayuValue _d = make_dict();"]
+            for k, v in node.pairs.items():
+                val_expr = compile_expr(v)
+                stmts.append(f'aayu_dict_set(&_d, "{k}", {val_expr});')
+            stmts.append("_d;")
+            body = " ".join(stmts)
+            return f"({{ {body} }})"
+            
+        if isinstance(node, SubscriptNode):
+            target = compile_expr(node.target)
+            index = compile_expr(node.index)
+            return f"aayu_subscript({target}, {index})"
+                
+        return "make_num(0)"
 
-    def compile_stmt(stmt, indent):
+    def compile_stmt(stmt, indent, is_in_main=False):
         ind = "    " * indent
         
         if isinstance(stmt, LetDeclarationNode):
             val = compile_expr(stmt.value)
-            emit(f"{ind}double {stmt.name} = {val};\n")
+            if is_in_main:
+                emit(f"{ind}_aayu_{stmt.name} = {val};\n")
+            else:
+                emit(f"{ind}AayuValue _aayu_{stmt.name} = {val};\n")
             
         elif isinstance(stmt, AssignmentNode):
             target = getattr(stmt.target, "name", stmt.target) if hasattr(stmt.target, "name") else stmt.target
             val = compile_expr(stmt.value)
-            emit(f"{ind}{target} = {val};\n")
+            emit(f"{ind}_aayu_{target} = {val};\n")
             
         elif isinstance(stmt, WhileNode):
             cond = compile_expr(stmt.condition)
-            emit(f"{ind}while ({cond}) {{\n")
+            emit(f"{ind}while (aayu_is_truthy({cond})) {{\n")
             for b in stmt.body:
-                compile_stmt(b, indent + 1)
+                compile_stmt(b, indent + 1, is_in_main)
             emit(f"{ind}}}\n")
             
         elif isinstance(stmt, ActionCallNode):
             if stmt.name == "print":
+                c_args = ", ".join([compile_expr(arg) for arg in stmt.args])
+                emit(f"{ind}aayu_print({c_args});\n")
+            elif stmt.name == "write_file":
+                arg0 = compile_expr(stmt.args[0])
+                arg1 = compile_expr(stmt.args[1])
+                emit(f"{ind}aayu_write_file({arg0}, {arg1});\n")
+            elif stmt.name == "read_file":
                 arg = compile_expr(stmt.args[0])
-                emit(f'{ind}printf("%f\\n", (double){arg});\n')
+                emit(f"{ind}aayu_read_file({arg});\n")
+            else:
+                c_args = ", ".join([compile_expr(arg) for arg in stmt.args])
+                emit(f'{ind}_aayu_fn_{stmt.name}({c_args});\n')
+                
+        elif isinstance(stmt, ReturnNode):
+            val = compile_expr(stmt.value) if getattr(stmt, "value", None) else "make_null()"
+            emit(f"{ind}return {val};\n")
             
+        elif isinstance(stmt, IfNode):
+            cond = compile_expr(stmt.condition)
+            emit(f"{ind}if (aayu_is_truthy({cond})) {{\n")
+            for b in stmt.then_branch:
+                compile_stmt(b, indent + 1, is_in_main)
+            emit(f"{ind}}}\n")
+            if getattr(stmt, "else_branch", None):
+                emit(f"{ind}else {{\n")
+                for b in stmt.else_branch:
+                    compile_stmt(b, indent + 1, is_in_main)
+                emit(f"{ind}}}\n")
+
+    # Pass 0.5: Global Variable declarations
+    if getattr(ast, "statements", []):
+        for stmt in ast.statements:
+            if isinstance(stmt, LetDeclarationNode):
+                emit(f"AayuValue _aayu_{stmt.name};\n")
+
+    # Pass 1: Actions
+    for stmt in getattr(ast, "statements", []):
+        if isinstance(stmt, ActionDeclarationNode):
+            c_args = ", ".join([f"AayuValue _aayu_{arg}" for arg in getattr(stmt, "args", [])])
+            if not c_args: c_args = "void" # No args C warning fix
+            emit(f"AayuValue _aayu_fn_{stmt.name}({c_args}) {{\n")
+            for b in stmt.statements:
+                compile_stmt(b, 1, False)
+            emit(f"    return make_null();\n")
+            emit(f"}}\n\n")
+
+    # --- MAIN COMPILATION ---
+    emit("int main() {\n")
     if isinstance(ast, ProgramNode):
         for stmt in ast.statements:
-            compile_stmt(stmt, 1)
+            if not isinstance(stmt, ActionDeclarationNode):
+                compile_stmt(stmt, 1, True)
             
     emit("    return 0;\n")
     emit("}\n")
     
     return "".join(output)
+
+if __name__ == '__main__':
+    import sys
+    handle(sys.argv[1:])

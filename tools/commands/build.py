@@ -109,7 +109,8 @@ def compile_to_c(ast):
     # --- AAYU NATIVE C RUNTIME ENGINE ---
     emit("#include <stdio.h>\n")
     emit("#include <stdlib.h>\n")
-    emit("#include <string.h>\n\n")
+    emit("#include <string.h>\n")
+    emit("#include <setjmp.h>\n\n")
     
     emit("typedef enum { VAL_NUM, VAL_STR, VAL_BOOL, VAL_NULL, VAL_LIST, VAL_DICT } AayuType;\n")
     emit("typedef struct AayuValue AayuValue;\n")
@@ -123,6 +124,22 @@ def compile_to_c(ast):
     emit("        struct { char** keys; AayuValue* values; int count; int capacity; } dict;\n")
     emit("    } as;\n")
     emit("};\n\n")
+    
+    emit("#define MAX_EXCEPTIONS 256\n")
+    emit("jmp_buf aayu_exception_stack[MAX_EXCEPTIONS];\n")
+    emit("int aayu_exception_depth = 0;\n")
+    emit("AayuValue aayu_current_exception;\n\n")
+    
+    emit("void aayu_print(AayuValue v);\n")
+    emit("void aayu_throw(AayuValue e) {\n")
+    emit("    if (aayu_exception_depth == 0) {\n")
+    emit("        printf(\"Unhandled Exception: \");\n")
+    emit("        aayu_print(e);\n")
+    emit("        exit(1);\n")
+    emit("    }\n")
+    emit("    aayu_current_exception = e;\n")
+    emit("    longjmp(aayu_exception_stack[aayu_exception_depth - 1], 1);\n")
+    emit("}\n\n")
     
     emit("AayuValue make_num(double n) { AayuValue v; v.type = VAL_NUM; v.as.num = n; return v; }\n")
     emit("AayuValue make_bool(int b) { AayuValue v; v.type = VAL_BOOL; v.as.boolean = b; return v; }\n")
@@ -406,7 +423,7 @@ def compile_to_c(ast):
         elif isinstance(stmt, IfNode):
             cond = compile_expr(stmt.condition)
             emit(f"{ind}if (aayu_is_truthy({cond})) {{\n")
-            for b in stmt.then_branch:
+            for b in getattr(stmt, "then_branch", []):
                 compile_stmt(b, indent + 1, is_in_main)
             emit(f"{ind}}}\n")
             if getattr(stmt, "else_branch", None):
@@ -414,12 +431,55 @@ def compile_to_c(ast):
                 for b in stmt.else_branch:
                     compile_stmt(b, indent + 1, is_in_main)
                 emit(f"{ind}}}\n")
+                
+        elif isinstance(stmt, TryNode):
+            emit(f"{ind}if (aayu_exception_depth < MAX_EXCEPTIONS) {{\n")
+            emit(f"{ind}    if (setjmp(aayu_exception_stack[aayu_exception_depth++]) == 0) {{\n")
+            for b in getattr(stmt, "try_block", []):
+                compile_stmt(b, indent + 2, is_in_main)
+            emit(f"{ind}        aayu_exception_depth--;\n")
+            emit(f"{ind}    }} else {{\n")
+            emit(f"{ind}        aayu_exception_depth--;\n")
+            if getattr(stmt, "catch_var", None):
+                if is_in_main:
+                    emit(f"{ind}        _aayu_{stmt.catch_var} = aayu_current_exception;\n")
+                else:
+                    emit(f"{ind}        AayuValue _aayu_{stmt.catch_var} = aayu_current_exception;\n")
+            for b in getattr(stmt, "catch_block", []):
+                compile_stmt(b, indent + 2, is_in_main)
+            emit(f"{ind}    }}\n")
+            for b in getattr(stmt, "finally_block", []):
+                compile_stmt(b, indent + 1, is_in_main)
+            emit(f"{ind}}} else {{\n")
+            emit(f"{ind}    printf(\"Exception stack overflow\\n\"); exit(1);\n")
+            emit(f"{ind}}}\n")
+            
+        elif isinstance(stmt, ThrowNode):
+            val = compile_expr(stmt.value)
+            emit(f"{ind}aayu_throw({val});\n")
+            
+        elif isinstance(stmt, RethrowNode):
+            emit(f"{ind}aayu_throw(aayu_current_exception);\n")
 
     # Pass 0.5: Global Variable declarations
-    if getattr(ast, "statements", []):
-        for stmt in ast.statements:
+    def declare_globals(nodes):
+        for stmt in getattr(nodes, "statements", []) if hasattr(nodes, "statements") else nodes:
             if isinstance(stmt, LetDeclarationNode):
                 emit(f"AayuValue _aayu_{stmt.name};\n")
+            elif isinstance(stmt, TryNode):
+                if getattr(stmt, "catch_var", None):
+                    emit(f"AayuValue _aayu_{stmt.catch_var};\n")
+                declare_globals(getattr(stmt, "try_block", []))
+                declare_globals(getattr(stmt, "catch_block", []))
+                declare_globals(getattr(stmt, "finally_block", []))
+            elif isinstance(stmt, IfNode):
+                declare_globals(getattr(stmt, "then_branch", []))
+                declare_globals(getattr(stmt, "else_branch", []))
+            elif isinstance(stmt, WhileNode):
+                declare_globals(getattr(stmt, "body", []))
+
+    if isinstance(ast, ProgramNode):
+        declare_globals(ast.statements)
 
     # Pass 1: Actions
     for stmt in getattr(ast, "statements", []):

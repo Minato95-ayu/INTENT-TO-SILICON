@@ -286,7 +286,7 @@ export default function HomePage() {
               <Link href="/playground" className="text-xs bg-white/5 hover:bg-white/10 border border-white/5 px-3 py-1.5 rounded-lg text-zinc-400 hover:text-white transition-colors">
                 Playground
               </Link>
-              <Link href="/examples" className="text-xs bg-white/5 hover:bg-white/10 border border-white/5 px-3 py-1.5 rounded-lg text-zinc-400 hover:text-white transition-colors">
+              <Link href="/docs#ch9" className="text-xs bg-white/5 hover:bg-white/10 border border-white/5 px-3 py-1.5 rounded-lg text-zinc-400 hover:text-white transition-colors">
                 Examples
               </Link>
             </div>
@@ -549,7 +549,7 @@ export default function HomePage() {
             <h2 className="text-3xl md:text-4xl font-bold mb-2">Production Examples</h2>
             <p className="text-zinc-500 text-sm">Real-world applications built entirely in AAYU.</p>
           </div>
-          <Link href="/examples" className="text-purple-400 hover:text-purple-300 text-sm font-bold flex items-center gap-1 transition-colors">
+          <Link href="/docs#ch9" className="text-purple-400 hover:text-purple-300 text-sm font-bold flex items-center gap-1 transition-colors">
             View All <ArrowRight className="w-4 h-4" />
           </Link>
         </div>

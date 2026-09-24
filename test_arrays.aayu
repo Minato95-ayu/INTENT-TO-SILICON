@@ -1,0 +1,27 @@
+let arr = []
+arr.append("First item")
+arr.append("Second item")
+
+let first = arr[0]
+print(first)
+
+let length = len(arr)
+print("Array length is:")
+print(length)
+
+let char = first[0]
+print("First char of first item:")
+print(char)
+
+let file_content = read_file("test_arrays.aayu")
+let file_len = len(file_content)
+print("Length of this file:")
+print(file_len)
+
+let node = {"type": "Literal", "value": 100}
+let type = node["type"]
+let val = node["value"]
+print("Dict type:")
+print(type)
+print("Dict value:")
+print(val)

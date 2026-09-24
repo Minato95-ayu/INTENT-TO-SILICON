@@ -1,0 +1,5 @@
+action log_message(msg)
+    let content = "[LOG] " + msg
+    write_file("app.log", content)
+    print("Logged to app.log")
+end

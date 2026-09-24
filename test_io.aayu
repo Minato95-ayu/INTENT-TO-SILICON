@@ -1,0 +1,4 @@
+let content = "Hello from AAYU File I/O!"
+write_file("test_output.txt", content)
+let read_back = read_file("test_output.txt")
+print(read_back)

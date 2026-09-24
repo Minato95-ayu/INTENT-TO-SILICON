@@ -1,0 +1,12 @@
+print("Fetching random quote from API...")
+let raw_json = fetch("https://dummyjson.com/quotes/random")
+print(raw_json)
+
+print("Parsing JSON...")
+let data = json_parse(raw_json)
+
+print("Parsed successfully!")
+print("Quote:")
+print(data["quote"])
+print("Author:")
+print(data["author"])

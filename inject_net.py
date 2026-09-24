@@ -1,0 +1,130 @@
+import sys
+
+with open("tools/commands/build.py", "r", encoding="utf-8") as f:
+    content = f.read()
+
+injection_c = """    # --- HTTP AND JSON LIBRARY ---
+    emit("AayuValue aayu_fetch(AayuValue url) {\\n")
+    emit("    if (url.type != VAL_STR) aayu_throw(make_str(\\"fetch expects a string url\\"));\\n")
+    emit("    char cmd[2048];\\n")
+    emit("    snprintf(cmd, sizeof(cmd), \\"curl -s \\\\\\"%s\\\\\\"\\", url.as.str);\\n")
+    # On Windows popen is _popen sometimes, but gcc provides popen.
+    emit("    FILE *fp = popen(cmd, \\"r\\");\\n")
+    emit("    if (!fp) aayu_throw(make_str(\\"Failed to execute curl\\"));\\n")
+    emit("    int capacity = 4096;\\n")
+    emit("    int length = 0;\\n")
+    emit("    char* result = malloc(capacity);\\n")
+    emit("    result[0] = '\\\\0';\\n")
+    emit("    char buffer[1024];\\n")
+    emit("    while (fgets(buffer, sizeof(buffer), fp) != NULL) {\\n")
+    emit("        int len = strlen(buffer);\\n")
+    emit("        if (length + len >= capacity) {\\n")
+    emit("            capacity *= 2;\\n")
+    emit("            result = realloc(result, capacity);\\n")
+    emit("        }\\n")
+    emit("        strcat(result, buffer);\\n")
+    emit("        length += len;\\n")
+    emit("    }\\n")
+    emit("    pclose(fp);\\n")
+    emit("    return make_str(result);\\n")
+    emit("}\\n\\n")
+
+    emit("void aayu_skip_whitespace(const char** c) {\\n")
+    emit("    while (**c == ' ' || **c == '\\\\n' || **c == '\\\\r' || **c == '\\\\t') (*c)++;\\n")
+    emit("}\\n")
+    emit("AayuValue aayu_parse_json_value(const char** c);\\n")
+    emit("AayuValue aayu_parse_json_string(const char** c) {\\n")
+    emit("    (*c)++; \\n")
+    emit("    const char* start = *c;\\n")
+    emit("    while (**c && **c != '\\"') {\\n")
+    emit("        if (**c == '\\\\\\\\' && *(*c + 1)) (*c) += 2; else (*c)++;\\n")
+    emit("    }\\n")
+    emit("    int len = *c - start;\\n")
+    emit("    char* str = malloc(len + 1);\\n")
+    emit("    strncpy(str, start, len);\\n")
+    emit("    str[len] = '\\\\0';\\n")
+    emit("    (*c)++; \\n")
+    emit("    return make_str(str);\\n")
+    emit("}\\n")
+    emit("AayuValue aayu_parse_json_number(const char** c) {\\n")
+    emit("    char* end;\\n")
+    emit("    double val = strtod(*c, &end);\\n")
+    emit("    *c = end;\\n")
+    emit("    return make_num(val);\\n")
+    emit("}\\n")
+    emit("AayuValue aayu_parse_json_dict(const char** c) {\\n")
+    emit("    (*c)++; \\n")
+    emit("    AayuValue dict = make_dict();\\n")
+    emit("    aayu_skip_whitespace(c);\\n")
+    emit("    while (**c && **c != '}') {\\n")
+    emit("        if (**c != '\\"') break;\\n")
+    emit("        AayuValue key = aayu_parse_json_string(c);\\n")
+    emit("        aayu_skip_whitespace(c);\\n")
+    emit("        if (**c == ':') (*c)++;\\n")
+    emit("        AayuValue val = aayu_parse_json_value(c);\\n")
+    emit("        aayu_dict_set(&dict, key.as.str, val);\\n")
+    emit("        aayu_skip_whitespace(c);\\n")
+    emit("        if (**c == ',') (*c)++;\\n")
+    emit("        aayu_skip_whitespace(c);\\n")
+    emit("    }\\n")
+    emit("    if (**c == '}') (*c)++;\\n")
+    emit("    return dict;\\n")
+    emit("}\\n")
+    emit("AayuValue aayu_parse_json_list(const char** c) {\\n")
+    emit("    (*c)++; \\n")
+    emit("    AayuValue list = make_list();\\n")
+    emit("    aayu_skip_whitespace(c);\\n")
+    emit("    while (**c && **c != ']') {\\n")
+    emit("        AayuValue val = aayu_parse_json_value(c);\\n")
+    emit("        aayu_list_append(&list, val);\\n")
+    emit("        aayu_skip_whitespace(c);\\n")
+    emit("        if (**c == ',') (*c)++;\\n")
+    emit("        aayu_skip_whitespace(c);\\n")
+    emit("    }\\n")
+    emit("    if (**c == ']') (*c)++;\\n")
+    emit("    return list;\\n")
+    emit("}\\n")
+    emit("AayuValue aayu_parse_json_value(const char** c) {\\n")
+    emit("    aayu_skip_whitespace(c);\\n")
+    emit("    if (!**c) return make_null();\\n")
+    emit("    if (**c == '\\"') return aayu_parse_json_string(c);\\n")
+    emit("    if (**c == '{') return aayu_parse_json_dict(c);\\n")
+    emit("    if (**c == '[') return aayu_parse_json_list(c);\\n")
+    emit("    if (strncmp(*c, \\"true\\", 4) == 0) { *c += 4; return make_bool(1); }\\n")
+    emit("    if (strncmp(*c, \\"false\\", 5) == 0) { *c += 5; return make_bool(0); }\\n")
+    emit("    if (strncmp(*c, \\"null\\", 4) == 0) { *c += 4; return make_null(); }\\n")
+    emit("    return aayu_parse_json_number(c);\\n")
+    emit("}\\n")
+    emit("AayuValue aayu_json_parse(AayuValue json_str) {\\n")
+    emit("    if (json_str.type != VAL_STR) aayu_throw(make_str(\\"json_parse expects a string\\"));\\n")
+    emit("    const char* c = json_str.as.str;\\n")
+    emit("    return aayu_parse_json_value(&c);\\n")
+    emit("}\\n\\n")
+"""
+
+target = '    emit("AayuValue aayu_read_file(AayuValue path) {\\n")'
+content = content.replace(target, injection_c + target)
+
+# Also update compile_expr and compile_stmt
+expr_target = "elif node.name == 'write_file':"
+expr_inj = """            elif node.name == 'fetch':
+                arg = compile_expr(node.arguments[0])
+                return f'aayu_fetch({arg})'
+            elif node.name == 'json_parse':
+                arg = compile_expr(node.arguments[0])
+                return f'aayu_json_parse({arg})'
+            """
+content = content.replace(expr_target, expr_inj + expr_target)
+
+stmt_target = "elif stmt.name == 'write_file':"
+stmt_inj = """            elif stmt.name == 'fetch':
+                arg = compile_expr(stmt.arguments[0])
+                emit(f"{ind}aayu_fetch({arg});\\n")
+            elif stmt.name == 'json_parse':
+                arg = compile_expr(stmt.arguments[0])
+                emit(f"{ind}aayu_json_parse({arg});\\n")
+            """
+content = content.replace(stmt_target, stmt_inj + stmt_target)
+
+with open("tools/commands/build.py", "w", encoding="utf-8") as f:
+    f.write(content)

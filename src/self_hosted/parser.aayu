@@ -73,7 +73,11 @@ action make_binary(left, op, right, line, column)
     return { "type": "BinaryOp", "left": left, "operator": op, "right": right, "line": line, "column": column }
 end
 action make_call(name, args, line, column)
-    return { "type": "ActionCall", "name": name, "args": args, "line": line, "column": column }
+    let final_name = name
+    if name["type"] == "Identifier"
+        final_name = name["name"]
+    end
+    return { "type": "ActionCall", "name": final_name, "args": args, "line": line, "column": column }
 end
 action make_subscript(target, index, line, column)
     return { "type": "Subscript", "target": target, "index": index, "line": line, "column": column }
@@ -399,6 +403,7 @@ end
 
 action parse_statement(tokens, pos)
     let stmt_res = []
+    let stmt_res2 = []
     let stmt_line = 0
     let stmt_col = 0
     let stmt_name_tok = []
@@ -510,6 +515,27 @@ action parse_statement(tokens, pos)
         stmt_value = stmt_res[1]
         
         return [pos, make_return(stmt_value, stmt_line, stmt_col)]
+    end
+    
+    if match(tokens, pos, "KEYWORD", "print")
+        stmt_line = tokens[pos]["line"]
+        stmt_col = tokens[pos]["column"]
+        pos = pos + 1
+        
+        if match(tokens, pos, "PUNCTUATION", "(")
+            pos = pos + 1
+            stmt_res = parse_expression(tokens, pos)
+            pos = stmt_res[0]
+            stmt_value = stmt_res[1]
+            stmt_res2 = expect_val(tokens, pos, "PUNCTUATION", ")", "Expect ')' after print.")
+            pos = stmt_res2[0]
+        else
+            stmt_res = parse_expression(tokens, pos)
+            pos = stmt_res[0]
+            stmt_value = stmt_res[1]
+        end
+        
+        return [pos, make_call("print", [stmt_value], stmt_line, stmt_col)]
     end
     
     if check(tokens, pos, "IDENTIFIER")

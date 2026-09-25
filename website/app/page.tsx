@@ -7,6 +7,7 @@ import React from "react";
 import { Activity, ArrowRight, Braces, Briefcase, Check, ChevronRight, CircuitBoard, Code2, Copy, Cpu, Database, Download, ExternalLink, Folder, GitBranch, Globe, HardDrive, Icon, Layers, Monitor, Package, Server, ShieldCheck, ShoppingCart, Sparkles, Terminal, Workflow, Zap } from 'lucide-react';
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
+import DownloadTerminal from "@/components/DownloadTerminal";
 
 /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    Animated typing hook

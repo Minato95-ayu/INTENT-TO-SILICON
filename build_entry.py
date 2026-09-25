@@ -25,6 +25,7 @@ import tools.commands.test
 import tools.commands.tree
 import tools.commands.update
 import tools.commands.version
+import runtime.renderers.web_renderer
 
 if __name__ == '__main__':
     sys.exit(main())

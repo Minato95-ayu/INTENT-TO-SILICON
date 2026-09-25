@@ -1,4 +1,4 @@
-﻿Write-Host "====================================" -ForegroundColor Cyan
+Write-Host "====================================" -ForegroundColor Cyan
 Write-Host "🚀 Installing AAYU Language Compiler" -ForegroundColor Green
 Write-Host "====================================" -ForegroundColor Cyan
 

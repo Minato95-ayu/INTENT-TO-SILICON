@@ -1,2 +1,0 @@
-let t = { "type": "EOF", "value": "1" }
-print(t.type)

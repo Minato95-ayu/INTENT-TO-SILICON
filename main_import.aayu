@@ -1,5 +1,0 @@
-import math_lib
-
-let result = calculate_sum(100, 250)
-print("The sum from the imported module is:")
-print(result)

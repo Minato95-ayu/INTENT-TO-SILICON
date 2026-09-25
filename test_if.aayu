@@ -1,5 +1,0 @@
-let value = "fn"
-let tok_type = "IDENTIFIER"
-if value == "fn"
-    tok_type = "KEYWORD"
-end

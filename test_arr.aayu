@@ -1,5 +1,0 @@
-let tokens = []
-let line = 1
-let column = 1
-let c = "x"
-tokens = tokens + [{ "type": "EOF", "value": c, "line": line, "column": column }]

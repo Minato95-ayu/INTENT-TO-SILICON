@@ -1,4 +1,0 @@
-import fs_lib
-
-print("Starting server...")
-log_message("Server started on port 8080")

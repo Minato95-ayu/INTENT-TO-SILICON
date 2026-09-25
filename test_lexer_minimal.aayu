@@ -1,6 +1,0 @@
-let tokens = []
-tokens = tokens + [{"type": "NUMBER", "value": 100}]
-
-let t = tokens[0]
-print(t["type"])
-print(t["value"])

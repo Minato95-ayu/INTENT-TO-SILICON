@@ -1,4 +1,0 @@
-action calculate_sum(a, b)
-    let sum = a + b
-    return sum
-end

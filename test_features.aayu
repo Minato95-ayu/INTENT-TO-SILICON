@@ -1,6 +1,0 @@
-let c = "b"
-if c >= "a"
-    if c <= "z"
-        print("is lowercase")
-    end
-end

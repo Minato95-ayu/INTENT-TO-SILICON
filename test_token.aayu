@@ -1,2 +1,0 @@
-let tokens = []
-tokens = tokens + [Token("EOF", "", 1, 1)]

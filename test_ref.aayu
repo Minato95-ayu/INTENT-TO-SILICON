@@ -1,7 +1,0 @@
-action mutate(ctx)
-    ctx["pos"] = ctx["pos"] + 1
-end
-
-let context = { "pos": 0 }
-mutate(context)
-print(context["pos"])

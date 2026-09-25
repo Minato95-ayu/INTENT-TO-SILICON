@@ -41,28 +41,31 @@ export default function DownloadTerminal() {
 
   const isMac = os === "mac";
   const isLinux = os === "linux";
-  const binary = isMac ? "aayu-macos.pkg" : isLinux ? "aayu-linux.tar.gz" : "aayu.exe";
-  const runCmd = isMac || isLinux ? "./aayu main.aayu" : "./aayu.exe main.aayu";
+  const isWindows = os === "windows";
 
   return (
     <div className="bg-black border border-white/10 rounded-xl p-6 max-w-lg mx-auto text-left font-mono text-sm mb-10 space-y-3">
       <div className="flex items-center gap-3">
         <span className="text-zinc-600 select-none">$</span>
-        <span className="text-zinc-400"># 1. Download the standalone compiler for {os.toUpperCase()}</span>
+        <span className="text-zinc-400"># 1. Install AAYU Globally for {os.toUpperCase()}</span>
       </div>
       <div className="flex items-center gap-3">
         <span className="text-zinc-600 select-none">$</span>
-        <span className="text-green-400 break-all">curl -LO https://aayu.run/releases/latest/{binary}</span>
+        {isWindows ? (
+            <span className="text-green-400 break-all">irm https://intent-to-silicon.vercel.app/install.ps1 | iex</span>
+        ) : (
+            <span className="text-green-400 break-all">curl -sSL https://intent-to-silicon.vercel.app/install.sh | bash</span>
+        )}
       </div>
       <div className="flex items-center gap-3">
         <span className="text-zinc-600 select-none">$</span>
-        <span className="text-blue-400">{runCmd}</span>
+        <span className="text-blue-400">aayu run main.aayu</span>
       </div>
       <div className="border-t border-white/5 pt-3 mt-3">
-        <span className="text-emerald-400">✓ Compiled to Native machine code in 12ms</span>
+        <span className="text-emerald-400">⚡ Compiled to Native machine code in 12ms</span>
       </div>
       <div>
-        <span className="text-emerald-400">▶ Execution output: Hello from AAYU</span>
+        <span className="text-emerald-400">✨ Execution output: Hello from AAYU</span>
       </div>
     </div>
   );

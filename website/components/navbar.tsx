@@ -30,6 +30,13 @@ export function Navbar() {
             <Link href="/" className="hover:text-white transition-colors">Home</Link>
             <Link href="/docs" className="hover:text-white transition-colors">Documentation</Link>
             <Link href="/docs#ch9" className="hover:text-white transition-colors">Examples</Link>
+            <Link href="/download" className="hover:text-white transition-colors flex items-center gap-1">
+              <span className="relative flex h-2 w-2 mr-1">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+              </span>
+              Download
+            </Link>
           </nav>
         </div>
                 <div className="flex items-center gap-4">

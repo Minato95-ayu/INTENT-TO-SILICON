@@ -1,4 +1,4 @@
-# ==============================================================================
+﻿# ==============================================================================
 # COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
 # 
 # This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
@@ -13,53 +13,89 @@ import sqlite3
 import os
 
 class DatabaseEngine:
-    __slots__ = ['conn', 'cursor', 'db_path', 'models']
+    __slots__ = ['_conn', '_cursor', 'db_path', 'models']
 
     def __init__(self, db_path='db.sqlite3'):
         self.db_path = db_path
-        self.conn = sqlite3.connect(db_path, check_same_thread=False)
-        self.conn.row_factory = sqlite3.Row
-        self.cursor = self.conn.cursor()
+        self._conn = None
+        self._cursor = None
         self.models = {}
 
+    @property
+    def conn(self):
+        if self._conn is None:
+            self._conn = sqlite3.connect(self.db_path, check_same_thread=False)
+            self._conn.row_factory = sqlite3.Row
+        return self._conn
+
+    @property
+    def cursor(self):
+        if self._cursor is None:
+            self._cursor = self.conn.cursor()
+        return self._cursor
+
     def close(self):
-        self.conn.close()
+        if self._conn is not None:
+            self._conn.close()
+            self._conn = None
+            self._cursor = None
 
     def create_model(self, model_name: str, fields: list, decorators: list=None):
         table_name = model_name.lower() + 's'
         if not table_name.endswith('s'):
             table_name += 's'
-        decorators = decorators or []
-        dec_names = [d['name'] for d in decorators] if decorators and isinstance(decorators[0], dict) else decorators
-        is_secure = any((d in dec_names for d in ['auth', 'admin', 'role', 'permission', 'secure']))
+        is_secure = False
         roles = []
         permissions = []
-        is_soft_delete = 'soft_delete' in dec_names
-        is_owner = 'owner' in dec_names
-        for d in decorators:
-            if isinstance(d, dict):
-                args = d.get('args', [])
-                val_args = []
-                for a in args:
-                    if hasattr(a, 'value'):
-                        val_args.append(a.value)
-                    else:
-                        val_args.append(str(a))
-                if d['name'] == 'role':
-                    roles.extend(val_args)
-                elif d['name'] == 'permission':
-                    permissions.extend(val_args)
-        columns = ['id INTEGER PRIMARY KEY AUTOINCREMENT', 'created_at DATETIME DEFAULT CURRENT_TIMESTAMP', 'updated_at DATETIME DEFAULT CURRENT_TIMESTAMP']
+        is_owner = False
+        is_soft_delete = False
+        if decorators:
+            for dec in decorators:
+                if dec.name == 'Secure':
+                    is_secure = True
+                    for arg in dec.args:
+                        if hasattr(arg, 'name') and arg.name == 'roles':
+                            if hasattr(arg, 'value') and isinstance(arg.value, list):
+                                roles = [v.value for v in arg.value]
+                            elif isinstance(arg.value, list):
+                                roles = arg.value
+                        elif isinstance(arg, dict) and 'roles' in arg:
+                            roles = arg['roles']
+                        elif hasattr(arg, 'name') and arg.name == 'permissions':
+                            if hasattr(arg, 'value') and isinstance(arg.value, list):
+                                permissions = [v.value for v in arg.value]
+                        elif isinstance(arg, dict) and 'permissions' in arg:
+                            permissions = arg['permissions']
+                        elif hasattr(arg, 'name') and arg.name == 'owner' and (arg.value is True):
+                            is_owner = True
+                        elif isinstance(arg, dict) and arg.get('owner') is True:
+                            is_owner = True
+                elif dec.name == 'SoftDelete':
+                    is_soft_delete = True
+        columns = ['id INTEGER PRIMARY KEY AUTOINCREMENT']
+        if is_soft_delete:
+            columns.append('deleted_at DATETIME DEFAULT NULL')
+        columns.append('created_at DATETIME DEFAULT CURRENT_TIMESTAMP')
+        columns.append('updated_at DATETIME DEFAULT CURRENT_TIMESTAMP')
         parsed_fields = {}
-        for f in fields:
-            name = f['name']
-            f_type = f['type']
-            attributes = f.get('attributes', [])
+        for field in fields:
+            name = field.name if hasattr(field, 'name') else field.get('name')
+            type_info = field.type if hasattr(field, 'type') else field.get('type')
+            f_type = type_info.name if hasattr(type_info, 'name') else type_info
+            attributes = field.attributes if hasattr(field, 'attributes') else field.get('attributes', [])
             sql_type = 'TEXT'
-            if f_type in ['Int', 'Boolean']:
+            if f_type == 'Int':
                 sql_type = 'INTEGER'
             elif f_type == 'Float':
                 sql_type = 'REAL'
+            elif f_type == 'Boolean':
+                sql_type = 'INTEGER'
+            elif f_type == 'DateTime':
+                sql_type = 'DATETIME'
+            elif f_type == 'Email' or f_type == 'URL' or f_type == 'Phone':
+                sql_type = 'TEXT'
+            elif f_type == 'UUID':
+                sql_type = 'TEXT'
             implicit_regex = None
             if f_type == 'Email':
                 implicit_regex = '^[\\w\\.-]+@[\\w\\.-]+\\.\\w+$'

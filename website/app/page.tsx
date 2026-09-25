@@ -204,22 +204,26 @@ export default function HomePage() {
 
   /* â”€â”€â”€â”€ Stdlib data â”€â”€â”€â”€ */
   const stdlibModules = [
-    { name: "ai", desc: "Native Model Training & Inference" },
-    { name: "ml", desc: "Clustering, Regression & Data Science" },
-    { name: "math", desc: "Advanced mathematics, calculations" },
-    { name: "json", desc: "Parse and serialize JSON" },
-    { name: "fs", desc: "File system operations" },
-    { name: "crypto", desc: "Hashing, encryption, tokens" },
-    { name: "http", desc: "Secure HTTPS client utilities" },
-    { name: "database", desc: "Query builder, transactions" },
+    { name: "ml", desc: "Native Machine Learning & Clustering" },
+    { name: "ai", desc: "Neural Networks & Inference Engine" },
+    { name: "db", desc: "Enterprise Database & Schema Engine" },
+    { name: "http", desc: "High-Performance REST Routing" },
+    { name: "math", desc: "Tensor Math & Advanced Calc" },
+    { name: "crypto", desc: "AES Encryption, Hashing, JWT" },
+    { name: "fs", desc: "Asynchronous File System I/O" },
+    { name: "net", desc: "Raw TCP Sockets & WebSockets" },
+    { name: "json", desc: "Native JSON Parser & Serializer" },
+    { name: "os", desc: "Process & Thread Management" },
+    { name: "regex", desc: "Pattern Matching & Text" },
+    { name: "ui", desc: "Declarative UI Widget Engine" },
   ];
 
   /* â”€â”€â”€â”€ Production examples â”€â”€â”€â”€ */
   const productionExamples = [
-    { name: "CRM System", desc: "Contacts, deals, pipeline management", lines: 280, icon: <Briefcase className="w-8 h-8 text-purple-400" /> },
-    { name: "Hospital ERP", desc: "Patient records, scheduling, billing", lines: 420, icon: <Activity className="w-8 h-8 text-blue-400" /> },
-    { name: "E-Commerce Platform", desc: "Products, cart, checkout, payments", lines: 350, icon: <ShoppingCart className="w-8 h-8 text-green-400" /> },
-    { name: "Portfolio App", desc: "Projects, blog, contact form", lines: 120, icon: <Folder className="w-8 h-8 text-orange-400" /> },
+    { name: "EnterpriseShop", desc: "E-Commerce with Memory-Safe Structs, Secure Checkout & Auth", lines: 350, icon: <ShoppingCart className="w-8 h-8 text-emerald-400" /> },
+    { name: "AAYUGram Social", desc: "Social Network Backend with Post Feeds, Auth & Database Sync", lines: 410, icon: <Globe className="w-8 h-8 text-blue-400" /> },
+    { name: "AI & Math Engine", desc: "MIT-Grade Data Science & Native K-Means Clustering Predictor", lines: 220, icon: <Cpu className="w-8 h-8 text-purple-400" /> },
+    { name: "Native App UI", desc: "Declarative UI widgets (Flutter-like) natively rendered", lines: 180, icon: <Monitor className="w-8 h-8 text-orange-400" /> },
   ];
 
   /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• RENDER â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
@@ -680,7 +684,7 @@ export default function HomePage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
               { value: "v1.1.0", label: "Latest Release" },
-              { value: "8", label: "Stdlib Modules" },
+              { value: "12", label: "Core Modules" },
               { value: "0", label: "Dependencies" },
               { value: "12ms", label: "Avg Compile" },
             ].map((stat, i) => (

@@ -15,14 +15,14 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         include:
           - os: ubuntu-latest
-            artifact_name: aayu-linux-bin
-            asset_name: Aayu-Linux-bin
+            artifact_name: aayuc-linux.tar.gz
+            asset_name: aayuc-linux.tar.gz
           - os: windows-latest
-            artifact_name: aayu.exe
-            asset_name: AayuInstaller.exe
+            artifact_name: aayuc.exe
+            asset_name: aayuc.exe
           - os: macos-latest
-            artifact_name: aayu
-            asset_name: Aayu-MacOS
+            artifact_name: aayuc-macos.pkg
+            asset_name: aayuc-macos.pkg
 
     permissions:
       contents: write
@@ -43,39 +43,39 @@ jobs:
           pip install -e .
           pip install pyinstaller
 
+      - name: Create Build Entry
+        shell: bash
+        run: |
+          echo "import sys" > build_entry.py
+          echo "from tools.cli import main" >> build_entry.py
+          echo "if __name__ == '__main__':" >> build_entry.py
+          echo "    sys.exit(main())" >> build_entry.py
+
       - name: Build Native Binary (Windows)
         if: matrix.os == 'windows-latest'
-        run: pyinstaller --onefile --name aayu tools/cli.py
+        run: pyinstaller --onefile --name aayuc --collect-all tools --collect-all compiler --collect-all runtime build_entry.py
 
       - name: Build Native Binary (Linux/Mac)
         if: matrix.os != 'windows-latest'
-        run: pyinstaller --onefile --name aayu tools/cli.py
+        run: pyinstaller --onefile --name aayuc --collect-all tools --collect-all compiler --collect-all runtime build_entry.py
 
-      - name: Package macOS DMG
+      - name: Package Linux (tar.gz)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          cd dist
+          tar -czvf aayuc-linux.tar.gz aayuc
+
+      - name: Package macOS (zip)
         if: matrix.os == 'macos-latest'
         run: |
-          npm install -g create-dmg
-          mkdir -p dist/dmg
-          cp dist/aayu dist/dmg/Aayu
-          create-dmg dist/dmg/Aayu dist/Aayu.dmg || echo "dmg creation fallback"
+          cd dist
+          zip aayuc-macos.zip aayuc
+          # We provide a zip for Mac as building pkg requires extra Apple certificates.
 
-      - name: Rename binaries for Release
-        shell: bash
-        run: |
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            mv dist/aayu.exe dist/${{ matrix.asset_name }}
-          elif [ "${{ matrix.os }}" = "macos-latest" ]; then
-            if [ -f dist/Aayu.dmg ]; then
-              mv dist/Aayu.dmg dist/${{ matrix.asset_name }}.dmg
-            else
-              mv dist/aayu dist/${{ matrix.asset_name }}
-            fi
-          else
-            mv dist/aayu dist/${{ matrix.asset_name }}
-          fi
-
-      - name: Upload Release Asset
+      - name: Rename and Upload
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/${{ matrix.asset_name }}*
-
+          files: |
+            dist/aayuc.exe
+            dist/aayuc-linux.tar.gz
+            dist/aayuc-macos.zip

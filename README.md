@@ -1,4 +1,5 @@
 <div align="center">
+  <img src="website/public/aayu-logo.png" alt="AAYU Logo" width="200" />
   <h1>AAYU Programming Language</h1>
   <p><strong>Intent-to-Silicon: Where human thought seamlessly compiles into native machine code.</strong></p>
   <p>

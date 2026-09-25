@@ -1,4 +1,4 @@
-﻿# ==============================================================================
+# ==============================================================================
 # COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
 # 
 # This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
@@ -89,6 +89,15 @@ class WebRenderer:
         self.thread = None
         
     async def asgi_app(self, scope, receive, send):
+        print('ENTERED ASGI APP!', flush=True)
+        try:
+            await self._asgi_app_inner(scope, receive, send)
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            raise
+
+    async def _asgi_app_inner(self, scope, receive, send):
         if scope['type'] != 'http':
             return
             
@@ -105,6 +114,7 @@ class WebRenderer:
         session = self.session_manager.get_or_create_session(session_id)
         
         if path == "/api/stream":
+            print('Sending start!')
             await send({
                 'type': 'http.response.start',
                 'status': 200,
@@ -149,6 +159,7 @@ class WebRenderer:
             elif evt_type == "INPUT":
                 session.event_queue.push(InputEvent(target, val))
                 
+            print('Sending start!')
             await send({
                 'type': 'http.response.start',
                 'status': 200,
@@ -160,13 +171,16 @@ class WebRenderer:
         file_path = os.path.abspath(os.path.join(self.build_dir, path.lstrip("/")))
         if os.path.exists(file_path) and os.path.isfile(file_path):
             mime_type, _ = mimetypes.guess_type(file_path)
+            print('Sending start!')
             await send({
                 'type': 'http.response.start',
                 'status': 200,
                 'headers': [[b'content-type', (mime_type or 'application/octet-stream').encode()]]
             })
             with open(file_path, 'rb') as f:
+                print('Sending body!')
                 await send({'type': 'http.response.body', 'body': f.read()})
+                print('Body sent!')
             return
             
         await send({'type': 'http.response.start', 'status': 404})
@@ -463,7 +477,7 @@ connectSSE();
         with open(os.path.join(self.build_dir, "theme.css"), "w", encoding="utf-8") as f:
             f.write(ThemeManager.instance().generate_css_variables())
             
-        import uvicorn
+            import uvicorn
         import threading
         
         print("\n=========================================")
@@ -471,7 +485,7 @@ connectSSE();
         print(f"Open in browser: http://localhost:{self.port}")
         print("=========================================\n")
         
-                def uvicorn_run(*args, **kwargs):
+        def uvicorn_run(*args, **kwargs):
             import uvicorn
             import asyncio
             
@@ -487,7 +501,7 @@ connectSSE();
         self.thread = threading.Thread(
             target=uvicorn_run, 
             args=(self.asgi_app,), 
-            kwargs={"host": "0.0.0.0", "port": self.port, "log_level": "error"},
+            kwargs={"host": "0.0.0.0", "port": self.port, "log_level": "trace"},
             daemon=True
         )
         self.thread.start()
@@ -503,4 +517,5 @@ connectSSE();
 
     def shutdown(self):
         pass
+
 

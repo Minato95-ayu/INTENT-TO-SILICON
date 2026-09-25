@@ -2,10 +2,23 @@ app AayuWeb
 
 state visitors = 0
 
-page Home
-    heading "AAYU Studio"
-    text "A complete webpage written only in AAYU."
-    text "Simple syntax. Native performance. Safe interop."
-    button "Explore AAYU"
-    text visitors
+action increment
+    visitors = visitors + 1
 end
+
+page Home
+    Column
+        heading "AAYU Studio"
+        text "A complete webpage written only in AAYU."
+        text "Simple syntax. Native performance. Safe interop."
+        
+        Row
+            button "Explore AAYU"
+            button "Add Visitor" onClick="increment"
+        end
+        
+        text visitors
+    end
+end
+
+run Home

@@ -102,7 +102,7 @@ class WebRenderer:
             if 'session_id=' in cookie:
                 session_id = cookie.split('session_id=')[1].strip()
                 
-        session = await self.session_manager.get_or_create_session(session_id)
+        session = self.session_manager.get_or_create_session(session_id)
         
         if path == "/api/stream":
             await send({

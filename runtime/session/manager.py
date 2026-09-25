@@ -105,7 +105,7 @@ class SessionManager:
         self.session_timeout = session_timeout
         self.sessions: Dict[str, Session] = {}
         
-    async def get_or_create_session(self, session_id: str) -> Session:
+    def get_or_create_session(self, session_id: str) -> Session:
         if not session_id or session_id not in self.sessions:
             session_id = str(uuid.uuid4())
             try:

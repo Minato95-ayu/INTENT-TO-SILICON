@@ -702,11 +702,8 @@ export default function HomePage() {
       <section className="container mx-auto px-4 max-w-5xl mb-24">
         <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-8 md:p-12 relative overflow-hidden">
           <div className="flex flex-col md:flex-row items-center gap-8">
-            <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-blue-500/30 flex-shrink-0">
-              {/* Optional: we can put Ayush's image here if we had one. Let's use a nice gradient circle for now */}
-              <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-4xl font-bold">
-                AK
-              </div>
+            <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-blue-500/30 flex-shrink-0 relative">
+              <img src="/ayush-profile.jpg" alt="Ayush Ghrit Kaushik" className="w-full h-full object-cover" />
             </div>
             <div className="flex-1 text-center md:text-left">
               <h2 className="text-3xl font-bold mb-2">Developed by Ayush Ghrit Kaushik</h2>

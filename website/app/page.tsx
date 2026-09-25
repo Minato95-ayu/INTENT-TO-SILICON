@@ -648,11 +648,11 @@ export default function HomePage() {
             </div>
             <div className="flex items-center gap-3">
               <span className="text-zinc-600 select-none">$</span>
-              <span className="text-green-400">curl -LO https://github.com/Minato95-ayu/INTENT-TO-SILICON/releases/download/latest/aayuc.exe</span>
+              <span className="text-green-400">curl -LO https://github.com/Minato95-ayu/INTENT-TO-SILICON/releases/download/latest/aayu.exe</span>
             </div>
             <div className="flex items-center gap-3">
               <span className="text-zinc-600 select-none">$</span>
-              <span className="text-blue-400">./aayuc.exe main.aayu</span>
+              <span className="text-blue-400">./aayu.exe main.aayu</span>
             </div>
             <div className="border-t border-white/5 pt-3 mt-3">
               <span className="text-emerald-400">⚡ Compiled to Native machine code in 12ms</span>

@@ -15,7 +15,7 @@ Nahi! Agar aap Windows par hain, toh aapko kisi bhi language (Python/Rust/Node.j
 
 🛠️ *STEP 1: Download AAYU*
 Bas niche diye link se ayuc.exe download karo aur apne PC mein kisi ek folder mein rakh lo.
-🔗 https://github.com/Minato95-ayu/INTENT-TO-SILICON/releases/download/latest/aayuc.exe
+🔗 https://github.com/Minato95-ayu/INTENT-TO-SILICON/releases/download/latest/aayu.exe
 
 ---
 

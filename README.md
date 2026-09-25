@@ -93,7 +93,7 @@ end
 We have removed all technical barriers to entry. You do **not** need `git`, `python`, or `pip` to use AAYU. 
 
 1. Visit the [AAYU Official Download Page](https://intent-to-silicon.vercel.app/download).
-2. Download the standalone `aayuc.exe` (or macOS/Linux equivalent).
+2. Download the standalone `aayu.exe` (or macOS/Linux equivalent).
 3. Run it directly from your terminal:
 ```bash
 # Compile and run your first AAYU program natively

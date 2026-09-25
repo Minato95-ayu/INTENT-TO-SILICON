@@ -15,14 +15,14 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         include:
           - os: ubuntu-latest
-            artifact_name: aayuc-linux.tar.gz
-            asset_name: aayuc-linux.tar.gz
+            artifact_name: aayu-linux.tar.gz
+            asset_name: aayu-linux.tar.gz
           - os: windows-latest
-            artifact_name: aayuc.exe
-            asset_name: aayuc.exe
+            artifact_name: aayu.exe
+            asset_name: aayu.exe
           - os: macos-latest
-            artifact_name: aayuc-macos.pkg
-            asset_name: aayuc-macos.pkg
+            artifact_name: aayu-macos.pkg
+            asset_name: aayu-macos.pkg
 
     permissions:
       contents: write
@@ -53,29 +53,30 @@ jobs:
 
       - name: Build Native Binary (Windows)
         if: matrix.os == 'windows-latest'
-        run: pyinstaller --onefile --name aayuc --collect-all tools --collect-all compiler --collect-all runtime build_entry.py
+        run: pyinstaller --onefile --name aayu --collect-all tools --collect-all compiler --collect-all runtime build_entry.py
 
       - name: Build Native Binary (Linux/Mac)
         if: matrix.os != 'windows-latest'
-        run: pyinstaller --onefile --name aayuc --collect-all tools --collect-all compiler --collect-all runtime build_entry.py
+        run: pyinstaller --onefile --name aayu --collect-all tools --collect-all compiler --collect-all runtime build_entry.py
 
       - name: Package Linux (tar.gz)
         if: matrix.os == 'ubuntu-latest'
         run: |
           cd dist
-          tar -czvf aayuc-linux.tar.gz aayuc
+          tar -czvf aayu-linux.tar.gz aayu
 
       - name: Package macOS (zip)
         if: matrix.os == 'macos-latest'
         run: |
           cd dist
-          zip aayuc-macos.zip aayuc
+          zip aayu-macos.zip aayu
           # We provide a zip for Mac as building pkg requires extra Apple certificates.
 
       - name: Rename and Upload
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist/aayuc.exe
-            dist/aayuc-linux.tar.gz
-            dist/aayuc-macos.zip
+            dist/aayu.exe
+            dist/aayu-linux.tar.gz
+            dist/aayu-macos.zip
+

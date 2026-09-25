@@ -41,8 +41,8 @@ export default function DownloadTerminal() {
 
   const isMac = os === "mac";
   const isLinux = os === "linux";
-  const binary = isMac ? "aayuc-macos.pkg" : isLinux ? "aayuc-linux.tar.gz" : "aayuc.exe";
-  const runCmd = isMac || isLinux ? "./aayuc main.aayu" : "./aayuc.exe main.aayu";
+  const binary = isMac ? "aayu-macos.pkg" : isLinux ? "aayu-linux.tar.gz" : "aayu.exe";
+  const runCmd = isMac || isLinux ? "./aayu main.aayu" : "./aayu.exe main.aayu";
 
   return (
     <div className="bg-black border border-white/10 rounded-xl p-6 max-w-lg mx-auto text-left font-mono text-sm mb-10 space-y-3">

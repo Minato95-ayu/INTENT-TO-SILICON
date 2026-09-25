@@ -23,7 +23,7 @@ export default function ExamplesPage() {
           </p>
           <div className="bg-black border border-white/10 rounded-xl p-6 overflow-x-auto">
             <pre className="text-sm font-mono text-zinc-300">
-              <code>{pp EnterpriseShop
+              <code>{`app EnterpriseShop
 
 # 1. Complex Memory-Safe Data Models (Structs)
 model User
@@ -87,7 +87,7 @@ action main
     serve(8080)
 end
 
-run main}</code>
+run main`}</code>
             </pre>
           </div>
         </div>

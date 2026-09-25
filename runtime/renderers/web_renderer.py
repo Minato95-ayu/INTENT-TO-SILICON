@@ -1,4 +1,4 @@
-# ==============================================================================
+﻿# ==============================================================================
 # COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
 # 
 # This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
@@ -471,8 +471,21 @@ connectSSE();
         print(f"Open in browser: http://localhost:{self.port}")
         print("=========================================\n")
         
+                def uvicorn_run(*args, **kwargs):
+            import uvicorn
+            import asyncio
+            
+            # Run without setting signal handlers since we are in a thread
+            config = uvicorn.Config(*args, **kwargs)
+            server = uvicorn.Server(config)
+            
+            # Need a new event loop for this thread
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            loop.run_until_complete(server.serve())
+
         self.thread = threading.Thread(
-            target=uvicorn.run, 
+            target=uvicorn_run, 
             args=(self.asgi_app,), 
             kwargs={"host": "0.0.0.0", "port": self.port, "log_level": "error"},
             daemon=True
@@ -490,3 +503,4 @@ connectSSE();
 
     def shutdown(self):
         pass
+

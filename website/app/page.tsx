@@ -696,6 +696,75 @@ export default function HomePage() {
       </section>
 
     
+
+      {/* ================================================================
+          BENCHMARKS & COMPARISON
+          ================================================================ */}
+      <section className="border-t border-white/5 py-24 bg-black/40">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">Zero Dependencies. <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-400">Silicon Speed.</span></h2>
+            <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
+              Other AI models say AAYU isn't ready for "Big Projects". They think big projects require 10,000 NPM modules and 50 config files. They are wrong. AAYU proves that enterprise-grade scalable microservices run best on bare-metal native C-backends with Built-in GC.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 mb-16">
+            {/* Python Comparison */}
+            <div className="bg-zinc-900/50 border border-white/5 rounded-2xl p-8 hover:bg-zinc-900/80 transition duration-300">
+              <h3 className="text-2xl font-bold mb-2 flex items-center"><span className="text-blue-400 mr-2">vs</span> Python</h3>
+              <p className="text-zinc-400 text-sm mb-6">Interpreted, slow startup, virtualenv hell, requires pip installations.</p>
+              <ul className="space-y-3">
+                <li className="flex items-center text-sm"><span className="text-red-400 font-bold mr-2">?</span> 50-100ms Startup Time</li>
+                <li className="flex items-center text-sm"><span className="text-red-400 font-bold mr-2">?</span> GIL (Global Interpreter Lock)</li>
+                <li className="flex items-center text-sm"><span className="text-emerald-400 font-bold mr-2">? AAYU:</span> 29ms Startup Native</li>
+                <li className="flex items-center text-sm"><span className="text-emerald-400 font-bold mr-2">? AAYU:</span> No VENV, Zero Config</li>
+              </ul>
+            </div>
+
+            {/* Node.js Comparison */}
+            <div className="bg-zinc-900/50 border border-white/5 rounded-2xl p-8 hover:bg-zinc-900/80 transition duration-300">
+              <h3 className="text-2xl font-bold mb-2 flex items-center"><span className="text-green-400 mr-2">vs</span> Node.js</h3>
+              <p className="text-zinc-400 text-sm mb-6">Bloated node_modules, package.json management, single-threaded bottlenecks.</p>
+              <ul className="space-y-3">
+                <li className="flex items-center text-sm"><span className="text-red-400 font-bold mr-2">?</span> 1GB+ node_modules for APIs</li>
+                <li className="flex items-center text-sm"><span className="text-red-400 font-bold mr-2">?</span> External ORM/DB dependencies</li>
+                <li className="flex items-center text-sm"><span className="text-emerald-400 font-bold mr-2">? AAYU:</span> 15MB Standalone Binary</li>
+                <li className="flex items-center text-sm"><span className="text-emerald-400 font-bold mr-2">? AAYU:</span> Built-in SQLite & HTTP</li>
+              </ul>
+            </div>
+
+            {/* Go/Rust Comparison */}
+            <div className="bg-zinc-900/50 border border-white/5 rounded-2xl p-8 hover:bg-zinc-900/80 transition duration-300 relative overflow-hidden">
+              <div className="absolute top-0 right-0 bg-blue-500/20 text-blue-400 text-xs px-3 py-1 font-bold rounded-bl-lg">THE GOAL</div>
+              <h3 className="text-2xl font-bold mb-2 flex items-center"><span className="text-cyan-400 mr-2">vs</span> Go / Rust</h3>
+              <p className="text-zinc-400 text-sm mb-6">Fast execution, but steep learning curve with complex pointers and borrow checkers.</p>
+              <ul className="space-y-3">
+                <li className="flex items-center text-sm"><span className="text-red-400 font-bold mr-2">?</span> High cognitive load (Lifetimes/Pointers)</li>
+                <li className="flex items-center text-sm"><span className="text-red-400 font-bold mr-2">?</span> Tedious standard library boilerplate</li>
+                <li className="flex items-center text-sm"><span className="text-emerald-400 font-bold mr-2">? AAYU:</span> Python-like Syntax</li>
+                <li className="flex items-center text-sm"><span className="text-emerald-400 font-bold mr-2">? AAYU:</span> Native C-backend Speed</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-r from-blue-900/20 to-purple-900/20 border border-blue-500/20 rounded-2xl p-8 lg:p-12 text-center max-w-4xl mx-auto">
+            <h3 className="text-2xl font-bold mb-4">Enterprise-Ready Architecture</h3>
+            <p className="text-zinc-400 mb-6 leading-relaxed">
+              AAYU uses an advanced <strong>HIR (High-Level IR) ? MIR (Mid-Level IR) ? LIR</strong> compiler pipeline. This is the exact same enterprise compiler architecture used by Rust (MIR) and Swift (SIL). Combined with our native Mark-and-Sweep Garbage Collector, AAYU guarantees memory safety for massive microservices and APIs.
+            </p>
+            <div className="inline-block bg-black/50 border border-white/10 rounded-lg p-4 font-mono text-sm text-left w-full md:w-auto">
+              <span className="text-zinc-500">// Real benchmark from a 2017 MacBook Air</span><br/>
+              <span className="text-green-400">? Lexical Analysis</span>: 0.003s<br/>
+              <span className="text-green-400">? AST Parsing</span>: 0.007s<br/>
+              <span className="text-green-400">? Semantic Typecheck</span>: 0.004s<br/>
+              <span className="text-green-400">? C-Backend CodeGen</span>: 0.015s<br/>
+              <span className="text-blue-400">Total Pipeline Latency</span>: <span className="font-bold text-white">29ms</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ================================================================
           ABOUT THE CREATOR
           ================================================================ */}

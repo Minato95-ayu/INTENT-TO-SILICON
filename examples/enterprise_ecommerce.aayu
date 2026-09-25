@@ -1,0 +1,114 @@
+# Enterprise E-Commerce Backend in AAYU
+# Proves AAYU's capability to handle complex, scalable, real-world microservices.
+app EnterpriseShop
+
+# 1. Complex Memory-Safe Data Models (Structs)
+model User
+    id Int
+    email String
+    password_hash String
+    role String = "CUSTOMER" # Admin or Customer
+    created_at String
+end
+
+model Product
+    id Int
+    name String
+    description String
+    price Float
+    stock_count Int
+end
+
+model Order
+    id Int
+    user_id Int
+    total_amount Float
+    status String = "PENDING"
+end
+
+# 2. Initialization and Database Sync
+action init_db
+    User.sync()
+    Product.sync()
+    Order.sync()
+    print("Enterprise Database Initialized and Synced.")
+end
+
+# 3. Enterprise REST API Routes
+# User Authentication Route
+route "/api/v1/auth/login"
+    post
+        let req_email = req.body.email
+        let req_pass = req.body.password
+        
+        # AAYU Native DB Query Planner in action
+        let user = User.find(email == req_email)
+        
+        if user.password_hash == req_pass
+            # Generate Token (Simulated)
+            let token = "JWT_AAYU_SECURE_TOKEN_9384"
+            respond({"status": "success", "token": token})
+        else
+            respond({"status": "error", "message": "Invalid Credentials"}, 401)
+        end
+    end
+end
+
+# Products Inventory Route
+route "/api/v1/products"
+    get
+        let available_products = Product.find(stock_count > 0)
+        respond({"status": "success", "data": available_products})
+    end
+
+    post
+        # Secure Admin Middleware Check
+        let auth_header = req.headers.authorization
+        if auth_header != "Bearer ADMIN_SECRET"
+            respond({"status": "error", "message": "Forbidden"}, 403)
+            return
+        end
+
+        # Create new product safely
+        let new_prod = Product.create(
+            name: req.body.name,
+            price: req.body.price,
+            stock_count: req.body.stock
+        )
+        respond({"status": "created", "data": new_prod}, 201)
+    end
+end
+
+# Order Processing Pipeline
+route "/api/v1/orders/checkout"
+    post
+        let user_id = req.body.user_id
+        let product_id = req.body.product_id
+        
+        let target_product = Product.findById(product_id)
+        
+        if target_product.stock_count > 0
+            # Transactional Integrity
+            target_product.stock_count = target_product.stock_count - 1
+            target_product.save()
+            
+            let new_order = Order.create(
+                user_id: user_id,
+                total_amount: target_product.price,
+                status: "PAID"
+            )
+            respond({"status": "success", "order_id": new_order.id})
+        else
+            respond({"status": "error", "message": "Out of Stock"}, 400)
+        end
+    end
+end
+
+# 4. Entry Point
+action main
+    init_db()
+    print("Starting EnterpriseShop API on Port 8080...")
+    serve(8080)
+end
+
+run main

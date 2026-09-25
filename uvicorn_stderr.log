@@ -1,0 +1,7 @@
+INFO:     Started server process [10536]
+INFO:     Waiting for application startup.
+TRACE:    ASGI [1] Started scope={'type': 'lifespan', 'asgi': {'version': '2.0', 'spec_version': '2.0'}, 'state': {}}
+TRACE:    ASGI [1] Raised exception
+INFO:     ASGI 'lifespan' protocol appears unsupported.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:4000 (Press CTRL+C to quit)

@@ -1,6 +1,6 @@
 import asyncio
 import time
-import urllib.request
+import subprocess
 from runtime.renderers.web_renderer import WebRenderer
 class DummySessionManager:
     def get_or_create_session(self, id):
@@ -12,8 +12,4 @@ class DummySessionManager:
 renderer = WebRenderer(DummySessionManager())
 renderer.start()
 time.sleep(2)
-try:
-    r = urllib.request.urlopen('http://127.0.0.1:4000/')
-    print(r.read())
-except Exception as e:
-    print("Error:", e)
+subprocess.run(['curl.exe', '-v', 'http://127.0.0.1:4000/'])

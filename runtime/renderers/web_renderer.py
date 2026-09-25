@@ -485,6 +485,9 @@ connectSSE();
         print(f"Open in browser: http://localhost:{self.port}")
         print("=========================================\n")
         
+        async def asgi_wrapper(scope, receive, send):
+            await self.asgi_app(scope, receive, send)
+
         def uvicorn_run(*args, **kwargs):
             import uvicorn
             import asyncio
@@ -500,7 +503,7 @@ connectSSE();
 
         self.thread = threading.Thread(
             target=uvicorn_run, 
-            args=(self.asgi_app,), 
+            args=(asgi_wrapper,), 
             kwargs={"host": "0.0.0.0", "port": self.port, "log_level": "trace"},
             daemon=True
         )

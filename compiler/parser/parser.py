@@ -11,7 +11,7 @@
 
 from typing import List, Optional
 from compiler.lexer.tokens import Token, TokenType
-from compiler.ast.nodes import (InsertNode, FindNode, RespondNode, 
+from compiler.ast.nodes import (StructDeclarationNode, InsertNode, FindNode, RespondNode,
     ProgramNode,
     StateDeclarationNode,
     LiteralNode,
@@ -48,6 +48,20 @@ class Parser:
         return ProgramNode(line=1, column=1, statements=statements)
 
     def _parse_statement(self):
+        if self._match(TokenType.KEYWORD, "struct"):
+            from compiler.ast.nodes import StructDeclarationNode
+            line, col = self._previous().line, self._previous().column
+            name = self._consume(TokenType.IDENTIFIER, "Expect struct name.").value
+            fields = []
+            while not (self._check(TokenType.KEYWORD) and self._peek().value == "end") and not self._is_at_end():
+                # Allow ignoring type annotations like `age Int` or `age = 0` if present, but for now just identifiers.
+                # Actually AAYU struct syntax: field_name 
+
+                field_name = self._consume(TokenType.IDENTIFIER, "Expect field name.").value
+                fields.append(field_name)
+            self._consume(TokenType.KEYWORD, "Expect 'end' after struct fields.", value="end")
+            return StructDeclarationNode(line=line, column=col, name=name, fields=fields)
+
         if self._match(TokenType.KEYWORD, "insert"):
             line, col = self._previous().line, self._previous().column
             model_name = self._consume(TokenType.IDENTIFIER, "Expect model name after insert.").value

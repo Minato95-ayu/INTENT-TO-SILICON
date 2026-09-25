@@ -39,7 +39,7 @@ KEYWORDS = {
     "theme", "useTheme", "widget", "navigate", "validate",
     "await", "bind", "animate",
     "try", "catch", "finally", "throw", "rethrow", "extern", "as", "print",
-    "insert", "find", "respond"
+    "insert", "find", "respond", "struct"
 }
 
 OPERATORS = {

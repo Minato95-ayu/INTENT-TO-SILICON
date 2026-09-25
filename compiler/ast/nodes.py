@@ -266,3 +266,8 @@ class LifecycleNode(ASTNode):
 class WhileNode(ASTNode):
     condition: ASTNode
     body: list[ASTNode]
+
+@dataclass(frozen=True)
+class StructDeclarationNode(ASTNode):
+    name: str
+    fields: List[str]

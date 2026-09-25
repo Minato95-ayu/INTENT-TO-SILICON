@@ -34,7 +34,7 @@ export default function DownloadPage() {
               <h3 className="text-2xl font-bold text-white mb-2">Windows</h3>
               <p className="text-zinc-400 mb-6 min-h-[48px]">Windows 10, 11 (x64 and ARM64). Pre-compiled native executable.</p>
               
-              <Link href="https://github.com/Minato95-ayu/INTENT-TO-SILICON" target="_blank">
+              <Link href="/releases/aayuc.exe" target="_blank">
                 <Button className="w-full bg-white text-black hover:bg-zinc-200 font-semibold mb-4">
                   <Download className="mr-2 h-4 w-4" /> Download .exe
                 </Button>
@@ -58,9 +58,9 @@ export default function DownloadPage() {
               <h3 className="text-2xl font-bold text-white mb-2">macOS</h3>
               <p className="text-zinc-400 mb-6 min-h-[48px]">macOS 12.0+ (Apple Silicon M1/M2/M3 & Intel).</p>
               
-              <Link href="https://github.com/Minato95-ayu/INTENT-TO-SILICON" target="_blank">
-                <Button className="w-full bg-zinc-800 text-white hover:bg-zinc-700 font-semibold mb-4 border border-zinc-700">
-                  <Download className="mr-2 h-4 w-4" /> Download .pkg
+              <Link href="/releases/aayuc-macos.pkg" target="_blank">
+                  <Button className="w-full bg-zinc-800 text-white hover:bg-zinc-700 font-semibold mb-4 border border-zinc-700">
+                    <Download className="mr-2 h-4 w-4" /> Download .pkg
                 </Button>
               </Link>
 
@@ -82,9 +82,9 @@ export default function DownloadPage() {
               <h3 className="text-2xl font-bold text-white mb-2">Linux</h3>
               <p className="text-zinc-400 mb-6 min-h-[48px]">Ubuntu, Debian, Fedora, Arch. Statically linked binaries.</p>
               
-              <Link href="https://github.com/Minato95-ayu/INTENT-TO-SILICON" target="_blank">
-                <Button className="w-full bg-zinc-800 text-white hover:bg-zinc-700 font-semibold mb-4 border border-zinc-700">
-                  <Download className="mr-2 h-4 w-4" /> Download .tar.gz
+              <Link href="/releases/aayuc-linux.tar.gz" target="_blank">
+                  <Button className="w-full bg-zinc-800 text-white hover:bg-zinc-700 font-semibold mb-4 border border-zinc-700">
+                    <Download className="mr-2 h-4 w-4" /> Download .tar.gz
                 </Button>
               </Link>
 
@@ -106,8 +106,8 @@ export default function DownloadPage() {
             </p>
             <div className="flex gap-4">
               <Link href="https://github.com/Minato95-ayu/INTENT-TO-SILICON" target="_blank">
-                <Button className="bg-transparent border border-zinc-600 text-white hover:bg-zinc-800 font-semibold">
-                  <Code2 className="mr-2 h-4 w-4" /> GitHub Repository
+                  <Button className="bg-transparent border border-zinc-600 text-white hover:bg-zinc-800 font-semibold">
+                    <Code2 className="mr-2 h-4 w-4" /> GitHub Repository
                 </Button>
               </Link>
             </div>
@@ -120,7 +120,7 @@ export default function DownloadPage() {
               <span className="ml-2 text-xs text-zinc-500 font-mono">terminal</span>
             </div>
             <pre className="font-mono text-sm">
-              <span className="text-green-400">git</span> <span className="text-zinc-300">clone https://github.com/Minato95-ayu/INTENT-TO-SILICON</span><br/>
+              <span className="text-green-400">git</span> <span className="text-zinc-300">clone /releases/aayuc.exe</span><br/>
               <span className="text-green-400">cd</span> <span className="text-zinc-300">INTENT-TO-SILICON</span><br/>
               <span className="text-green-400">pip</span> <span className="text-zinc-300">install -e .</span><br/>
               <br/>

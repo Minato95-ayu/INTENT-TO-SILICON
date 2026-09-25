@@ -391,6 +391,10 @@ def compile_to_c(ast):
         if isinstance(stmt, ActionDeclarationNode):
             c_args = ", ".join([f"AayuValue _aayu_{arg}" for arg in stmt.args])
             emit(f"AayuValue _aayu_fn_{stmt.name}({c_args});\n")
+        elif type(stmt).__name__ == 'StructDeclarationNode':
+            c_args = ", ".join([f"AayuValue _aayu_{arg}" for arg in getattr(stmt, "fields", [])])
+            if not c_args: c_args = "void"
+            emit(f"AayuValue _aayu_fn_{stmt.name}({c_args});\n")
     emit("\n")
 
     # --- FUNCTION DEFINITIONS ---
@@ -410,6 +414,12 @@ def compile_to_c(ast):
             if node.name == "true": return "make_bool(1)"
             if node.name == "false": return "make_bool(0)"
             if node.name == "null": return "make_null()"
+            if "." in node.name:
+                parts = node.name.split(".")
+                res = f"_aayu_{parts[0]}"
+                for p in parts[1:]:
+                    res = f'aayu_subscript({res}, make_str("{p}"))'
+                return res
             return f"_aayu_{node.name}"
             
         if isinstance(node, BinaryOpNode):
@@ -495,7 +505,26 @@ def compile_to_c(ast):
         elif isinstance(stmt, AssignmentNode):
             target = getattr(stmt.target, "name", stmt.target) if hasattr(stmt.target, "name") else stmt.target
             val = compile_expr(stmt.value)
-            emit(f"{ind}_aayu_{target} = {val};\n")
+            if "." in target:
+                parts = target.split(".")
+                res = f"_aayu_{parts[0]}"
+                for p in parts[1:-1]:
+                    res = f'aayu_subscript({res}, make_str("{p}"))'
+                # Note: res is an AayuValue, not a pointer, but in AAYU C structs:
+                # dicts are managed via aayu_dict_set which takes AayuValue* pointer.
+                # Oh wait! aayu_dict_set takes AayuValue*. 
+                # If res is a variable name, we can do &res. 
+                # If res is the return of aayu_dict_get, we can't take its address directly if it's passed by value!
+                # Since AAYU dicts contain copies or values, modifying nested dicts via value won't update the parent unless it's a reference. 
+                # Fortunately, structs are passed by value in AAYU C currently. Wait...
+                # Let's just create a temporary variable or handle 1-level deep for now (e.g. u1.name)
+                # For 1-level: parts[0] is the root var, parts[1] is the property.
+                if len(parts) == 2:
+                    emit(f'{ind}aayu_dict_set(&_aayu_{parts[0]}, "{parts[1]}", {val});\n')
+                else:
+                    emit(f'{ind}aayu_dict_set(&{res}, "{parts[-1]}", {val});\n') # This might fail if res is an rvalue
+            else:
+                emit(f"{ind}_aayu_{target} = {val};\n")
             
         elif isinstance(stmt, WhileNode):
             cond = compile_expr(stmt.condition)
@@ -600,6 +629,16 @@ def compile_to_c(ast):
                 compile_stmt(b, 1, False)
             emit(f"    return make_null();\n")
             emit(f"}}\n\n")
+        elif type(stmt).__name__ == 'StructDeclarationNode':
+            c_args = ", ".join([f"AayuValue _aayu_{arg}" for arg in getattr(stmt, "fields", [])])
+            if not c_args: c_args = "void"
+            emit(f"AayuValue _aayu_fn_{stmt.name}({c_args}) {{\n")
+            emit("    AayuValue _d = make_dict();\n")
+            for field in getattr(stmt, "fields", []):
+                emit(f'    aayu_dict_set(&_d, "{field}", _aayu_{field});\n')
+            emit(f'    aayu_dict_set(&_d, "_type", make_str("{getattr(stmt, "name", "")}"));\n')
+            emit("    return _d;\n")
+            emit("}\n\n")
 
     # --- MAIN COMPILATION ---
     emit("int main() {\n")

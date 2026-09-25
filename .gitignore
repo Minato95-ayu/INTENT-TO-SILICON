@@ -43,3 +43,5 @@ vscode-aayu/node_modules/
 
 # Generated
 generated/
+!website/public/releases/*.exe
+

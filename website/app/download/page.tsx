@@ -41,8 +41,9 @@ export default function DownloadPage() {
               </Link>
               
               <div className="bg-black/50 rounded-lg p-3 border border-zinc-800/50">
-                <code className="text-sm text-zinc-300 font-mono flex items-center justify-between">
-                  <span>winget install aayu</span>
+                <span className="text-xs text-zinc-500 uppercase tracking-wider mb-2 block font-sans">Recommended (Bypass SmartScreen)</span>
+                <code className="text-sm text-zinc-300 font-mono block break-all">
+                  irm https://intent-to-silicon.vercel.app/releases/aayuc.exe -OutFile aayuc.exe
                 </code>
               </div>
             </div>

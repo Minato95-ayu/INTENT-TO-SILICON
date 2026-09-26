@@ -2,18 +2,11 @@
   "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
   "name": "aayu",
   "patterns": [
-    {
-      "include": "#comments"
-    },
-    {
-      "include": "#strings"
-    },
-    {
-      "include": "#numbers"
-    },
-    {
-      "include": "#keywords"
-    }
+    { "include": "#comments" },
+    { "include": "#strings" },
+    { "include": "#numbers" },
+    { "include": "#keywords" },
+    { "include": "#functions" }
   ],
   "repository": {
     "comments": {
@@ -26,8 +19,8 @@
     },
     "strings": {
       "name": "string.quoted.double.aayu",
-      "begin": "\"",
-      "end": "\"",
+      "begin": """,
+      "end": """,
       "patterns": [
         {
           "name": "constant.character.escape.aayu",
@@ -46,8 +39,12 @@
           "match": "\\b(if|else|while|end|return|run)\\b"
         },
         {
+          "name": "keyword.declaration.aayu",
+          "match": "\\b(app|action|let|model|state|route|page|system|record|task|entity|workflow|step)\\b"
+        },
+        {
           "name": "storage.type.aayu",
-          "match": "\\b(system|record|task|entity|map|list|text|number|boolean|role|workflow|page|step)\\b"
+          "match": "\\b(Int|String|Float|Boolean|map|list|text|number|boolean|role)\\b"
         },
         {
           "name": "keyword.operator.aayu",
@@ -58,16 +55,20 @@
           "match": "\\b(use|create|find|update|delete|get|post|serve|login|logout|guard|render|json|crud|relation|allow)\\b"
         },
         {
-          "name": "support.function.ui.aayu",
-          "match": "\\b(card|heading|button|table|sidebar|dashboard)\\b"
-        },
-        {
-          "name": "constant.language.aayu",
-          "match": "\\b(one_to_one|one_to_many|many_to_one|many_to_many)\\b"
+          "name": "support.class.ui.aayu",
+          "match": "\\b(Column|Row|Text|Button|card|heading|button|table|sidebar|dashboard)\\b"
         },
         {
           "name": "variable.language.aayu",
           "match": "\\b(session|req|cookies|form)\\b"
+        }
+      ]
+    },
+    "functions": {
+      "patterns": [
+        {
+          "name": "support.function.builtin.aayu",
+          "match": "\\b(print|input|int|float|type|typeof)\\b"
         }
       ]
     }

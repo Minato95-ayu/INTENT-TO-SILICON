@@ -1,122 +1,78 @@
-<div align="center">
-  <img src="website/public/aayu-logo.png" alt="AAYU Logo" width="200" />
-  <h1>AAYU Programming Language</h1>
-  <p><strong>Intent-to-Silicon: Where human thought seamlessly compiles into native machine code.</strong></p>
-  <p>
-    <a href="https://intent-to-silicon.vercel.app/">Official Website & Direct Downloads</a> •
-    <a href="https://github.com/Minato95-ayu">GitHub</a> •
-    <a href="https://www.instagram.com/aa.yu_s/">Instagram</a>
-  </p>
-</div>
+# 🚀 AAYU — The Intent-to-Silicon Programming Language
+
+**AAYU** is a revolutionary, single-file, zero-dependency, full-stack programming language developed by **Ayush Ghrit Kaushik**. Designed to bridge the gap between human intent and machine execution, AAYU natively integrates an entire software ecosystem—Database, Backend Server, Frontend UI, and AI/ML—into one seamless compiler and virtual machine.
+
+🌐 **Official Website:** [https://aayu-lang.vercel.app](https://aayu-lang.vercel.app)
+▶️ **Developer:** Ayush Ghrit Kaushik
 
 ---
 
-## 🌟 Executive Summary
+## ✨ Why AAYU? (The Vision by Ayush Ghrit Kaushik)
 
-**AAYU** is a next-generation, zero-dependency, AOT (Ahead-of-Time) compiled systems programming language. It is meticulously engineered to bridge the gap between high-level cognitive intent (readable by both humans and AI agents) and low-level, high-performance silicon execution.
+Modern software development is plagued by glue code, dependency hell (npm, pip), and complex configurations. AAYU eliminates this by providing a unified syntax where you simply write your intent. 
 
-While modern ecosystems are plagued by bloated dependencies, package managers, and virtualization overhead, AAYU takes a fundamentally different approach. It provides a **single-file, full-stack environment**—equipped with memory-safe structs, native C-backend compilation, built-in REST routing, and an embedded database engine—all without requiring a single external dependency at runtime.
+- **Single-file Full-Stack:** Define your database models, API routes, and declarative UI all in one .aayu file.
+- **Zero Dependencies:** No package managers required. The compiler and VM handle everything natively.
+- **Built-in SQLite Database:** Direct schema generation, ORM, and migrations without external drivers.
+- **Built-in Async Web Server:** ASGI-compliant internal server for high-performance HTTP routing.
+- **Built-in UI Framework:** Declarative, reactive widget trees (like Flutter/SwiftUI) natively rendered.
+- **Native AI/ML:** Train models and run inferences directly through standard library functions.
 
-AAYU is designed for **both the Academic and the Enterprise**. Whether you are a professor teaching compiler design or a developer deploying high-performance production microservices, AAYU’s architecture provides unparalleled transparency and speed.
+## 🛠️ Architecture & Pipeline
 
----
+AAYU isn't just syntactic sugar; it is a true compiler with a custom stack-based Virtual Machine.
+Lexer → Parser → AST → Semantic Analyzer → HIR → MIR → Bytecode → Stack-based VM
 
-## 🏛️ Compiler Architecture & Pipeline
+AAYU features a highly optimized mark-and-sweep Garbage Collector, reference counting, and safe C-interop.
 
-AAYU is not a mere script interpreter. It features a complete, rigorously designed compiler pipeline that rivals industry standards like LLVM or GCC in its structural purity. 
+## 💻 Code Examples
 
-```text
-┌─────────────────────────────────────────────────────────────┐
-│                   AAYU Source Code (.aayu)                  │
-├───────┬────────┬───────┬─────────┬──────────────────────────┤
-│ Lexer │ Parser │  AST  │Semantic │      IR Pipeline         │
-│       │        │       │Analysis │                          │
-├───────┴────────┴───────┴─────────┼──────────────────────────┤
-│           HIR → MIR → LIR        │       Bytecode           │
-├──────────────────────────────────┼──────────────────────────┤
-│        aayu run: VM Mode         │  aayu build: AOT Native  │
-│ (Rapid prototyping & debugging)  │ (Silicon-ready C & EXE)  │
-└──────────────────────────────────┴──────────────────────────┘
-```
-
----
-
-## 🛡️ Key Innovations & Proof of Power
-
-### 1. Memory Safety via Mark-and-Sweep GC
-AAYU introduces a robust memory management system. Unlike C/C++ where manual memory management leads to fatal segmentation faults, AAYU automatically handles reference counting and cyclical garbage collection. Struct properties and complex nested dictionaries are securely mapped to C-native memory spaces, ensuring Java-level safety with C-level speed.
-
-### 2. Dual-Execution Modes (The Proof of Speed)
-AAYU respects the developer's time. 
-- **`aayu run`**: Immediately executes code via the AAYU Stack-based Virtual Machine. Perfect for instant feedback.
-- **`aayu build`**: Lowers the AST directly into highly optimized C code, leveraging `gcc -O3` to produce a standalone native binary (`.exe`, `.pkg`, `.tar.gz`). 
-  
-*Benchmark Proof*: In computationally heavy tasks (like iterative Fibonacci up to large boundaries), the native AAYU binary executes in **~29ms**, outperforming interpreted languages like Python by nearly 300%.
-
-### 3. The "Zero-Dependency" Promise
-A compiled AAYU binary requires absolutely nothing to run on the host machine. 
-- No Python VM.
-- No Node.js runtime.
-- No DLL hell. 
-A single `.exe` contains your UI logic, API routes, database models, and AI subroutines.
-
----
-
-## 📝 Syntax Elegance
-
-AAYU's syntax is mathematically minimal. It eliminates the boilerplate of Java and the steep learning curve of Rust borrow-checkers, making it the **ideal language for AI-driven code generation**.
-
-```aayu
-# Example: Secure, memory-safe data structures & iteration
-struct User
-    name String
-    role String
-    auth_level Int
+### 1. Interactive Terminal (Synchronous Input)
+`ayu
+app Calculator
+action main
+    let n1 = float(input("Enter number: "))
+    let n2 = float(input("Enter number: "))
+    print("Sum is: " + (n1 + n2))
 end
+run main
+`
 
-let admin = User()
-admin.name = "Ayush"
-admin.role = "System Architect"
-admin.auth_level = 99
-
-let systems = ["Compiler", "VM", "Native Backend", "GC"]
-
-for sys in systems
-    print("Initializing " + sys + " under authority: " + admin.name)
+### 2. Full-Stack Web App
+`ayu
+app AayuWeb
+state visitors = 0
+action increment
+    visitors = visitors + 1
 end
-```
+page Home
+    Column
+        heading "AAYU Studio by Ayush Ghrit Kaushik"
+        text "Simple syntax. Native performance."
+        button "Add Visitor" onClick="increment"
+        text visitors
+    end
+end
+run Home
+`
+
+## 🌍 SEO & Global Recognition
+
+This language is actively tracked for global recognition on platforms like **GitHub Linguist**.
+If you are searching for the **AAYU Programming Language** or its creator **Ayush Ghrit Kaushik**, you are in the right place. 
+Subscribe and follow the journey as we build the compiler of the future!
+
+## 📥 Installation
+
+`ash
+git clone https://github.com/Minato95-ayu/INTENT-TO-SILICON.git
+cd INTENT-TO-SILICON
+pip install -e .
+`
+Run any AAYU file globally:
+`ash
+aayu run my_app.aayu
+`
 
 ---
-
-## 🚀 Getting Started (Direct Download)
-
-We have removed all technical barriers to entry. You do **not** need `git`, `python`, or `pip` to use AAYU. 
-
-1. Visit the [AAYU Official Download Page](https://intent-to-silicon.vercel.app/download).
-2. Download the standalone `aayu.exe` (or macOS/Linux equivalent).
-3. Run it directly from your terminal:
-```bash
-# Compile and run your first AAYU program natively
-aayuc build my_program.aayu
-```
-
----
-
-## 🛠️ Repository Integrity
-
-This repository is maintained with the highest standards of software engineering. **There are no "junk" files, temporary debug scripts, or auto-generated AI artifacts cluttering the root directory.** Every line of code in the core compiler `src/` and `runtime/` directories is deliberately structured and architecturally sound.
-
----
-
-## 👤 Creator
-
-**Ayush Ghrit Kaushik** (@Minato95-ayu)  
-*Creator, System Architect, and AI Researcher*
-
-"I engineered AAYU because the tech industry lost its way in a sea of bloated frameworks and slow runtimes. Programming should be an elegant dialogue between the human intent and the silicon processor. AAYU restores that direct connection."
-
-* [GitHub](https://github.com/Minato95-ayu)
-* [Instagram](https://www.instagram.com/aa.yu_s/)
-
----
-**Copyright © 2026 Ayush Ghrit Kaushik. All Rights Reserved.**
+*Developed with pure intent by Ayush Ghrit Kaushik.*

@@ -2,29 +2,25 @@
   "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
   "name": "aayu",
   "patterns": [
-    {
-      "include": "#keywords"
-    },
-    {
-      "include": "#strings"
-    },
-    {
-      "include": "#comments"
-    }
+    { "include": "#comments" },
+    { "include": "#strings" },
+    { "include": "#numbers" },
+    { "include": "#keywords" },
+    { "include": "#functions" }
   ],
   "repository": {
-    "keywords": {
+    "comments": {
       "patterns": [
         {
-          "name": "keyword.control.aayu",
-          "match": "\\b(app|page|title|text|button|state|fn|model|end|run)\\b"
+          "name": "comment.line.number-sign.aayu",
+          "match": "#.*$"
         }
       ]
     },
     "strings": {
       "name": "string.quoted.double.aayu",
-      "begin": "\"",
-      "end": "\"",
+      "begin": """,
+      "end": """,
       "patterns": [
         {
           "name": "constant.character.escape.aayu",
@@ -32,11 +28,47 @@
         }
       ]
     },
-    "comments": {
+    "numbers": {
+      "name": "constant.numeric.aayu",
+      "match": "\\b[0-9]+(?:\\.[0-9]+)?\\b"
+    },
+    "keywords": {
       "patterns": [
         {
-          "name": "comment.line.double-slash.aayu",
-          "match": "//.*$"
+          "name": "keyword.control.aayu",
+          "match": "\\b(if|else|while|end|return|run)\\b"
+        },
+        {
+          "name": "keyword.declaration.aayu",
+          "match": "\\b(app|action|let|model|state|route|page|system|record|task|entity|workflow|step)\\b"
+        },
+        {
+          "name": "storage.type.aayu",
+          "match": "\\b(Int|String|Float|Boolean|map|list|text|number|boolean|role)\\b"
+        },
+        {
+          "name": "keyword.operator.aayu",
+          "match": "\\b(equal|greater|less|is|to|with|from|set)\\b"
+        },
+        {
+          "name": "keyword.other.aayu",
+          "match": "\\b(use|create|find|update|delete|get|post|serve|login|logout|guard|render|json|crud|relation|allow)\\b"
+        },
+        {
+          "name": "support.class.ui.aayu",
+          "match": "\\b(Column|Row|Text|Button|card|heading|button|table|sidebar|dashboard)\\b"
+        },
+        {
+          "name": "variable.language.aayu",
+          "match": "\\b(session|req|cookies|form)\\b"
+        }
+      ]
+    },
+    "functions": {
+      "patterns": [
+        {
+          "name": "support.function.builtin.aayu",
+          "match": "\\b(print|input|int|float|type|typeof)\\b"
         }
       ]
     }

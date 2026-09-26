@@ -379,7 +379,7 @@ class IRPipeline:
                 self._hir_to_mir(arg, mir_list)
             if hir.name == "len":
                 mir_list.append(MIRInstruction("GET_LENGTH", []))
-            elif "." in hir.name or "::" in hir.name or hir.name in ["print", "type", "float", "int"]:
+            elif "." in hir.name or "::" in hir.name or hir.name in ["print", "type", "float", "int", "input", "core::input", "typeof"]:
                 mir_list.append(MIRInstruction("OP_ASYNC_CALL", [hir.name, len(hir.args)]))
             else:
                 mir_list.append(MIRInstruction("CALL_ACTION", [hir.name, len(hir.args)]))

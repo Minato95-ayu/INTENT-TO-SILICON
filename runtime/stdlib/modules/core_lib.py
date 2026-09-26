@@ -39,10 +39,11 @@ def register_core_lib(registry: StdLibRegistry):
     registry.register("print", fn_print)
     
     def fn_input(args, vm):
-        prompt = args[0].stringify() if args else ""
+        prompt = args[0].stringify() if args and hasattr(args[0], "stringify") else str(args[0]) if args else ""
         val = input(prompt)
-        return make_string(vm, val)
+        return val.strip()  # return primitive string
     registry.register("core::input", fn_input)
+    registry.register("input", fn_input)
     
     def fn_typeof(args, vm):
         if not args: return NullValue()

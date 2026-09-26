@@ -48,7 +48,7 @@ from compiler.ir.mir import MIRInstruction, Value
 # Functions that the VM dispatches as built-in async calls rather than
 # user-defined actions.  Shared between Linearizer and legacy pipeline.
 BUILTIN_FUNCTIONS = frozenset({
-    "print", "len", "type", "float", "int",
+    "print", "len", "type", "float", "int", "input", "core::input", "typeof",
 })
 
 

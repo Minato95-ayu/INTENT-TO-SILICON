@@ -468,7 +468,7 @@ class SemanticAnalyzer:
         for c in node.children:
             analyzed_c = self._analyze_node(c)
             # If it's a property node (lowercase/camelCase widget type that isn't a known structural block)
-            if isinstance(analyzed_c, SemanticWidgetNode) and (analyzed_c.widget_type[0].islower() if analyzed_c.widget_type else False) and analyzed_c.widget_type not in ["center", "expanded", "padding"]:
+            if isinstance(analyzed_c, SemanticWidgetNode) and (analyzed_c.widget_type[0].islower() if analyzed_c.widget_type else False) and analyzed_c.widget_type not in ["center", "expanded", "padding", "text", "heading", "button", "input", "passwordinput", "icon", "image", "chatbubble"]:
                 prop_val = analyzed_c.props.get("value_node", analyzed_c.props.get("text", None))
                 from compiler.semantic.nodes import SemanticActionCallNode, SemanticClosureNode
                 

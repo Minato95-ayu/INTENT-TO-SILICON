@@ -31,7 +31,7 @@ iconMap = {
 }
 
 def serialize_node(node, style_sheet: set):
-    node_type = node.widget_type.lower()
+    node_type = node.type.lower()
     
     props = {}
     for k, v in node.props.items():

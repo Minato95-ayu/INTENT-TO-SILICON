@@ -7,10 +7,10 @@ if (-not (Test-Path $aayuDir)) {
     New-Item -ItemType Directory -Force -Path $aayuDir | Out-Null
 }
 
-$exeUrl = "https://intent-to-silicon.vercel.app/releases/aayu.exe"
+$exeUrl = "https://raw.githubusercontent.com/Minato95-ayu/INTENT-TO-SILICON/main/website/public/releases/aayu.exe"
 $exePath = "$aayuDir\aayu.exe"
 
-Write-Host ">> Downloading Native Windows Compiler..."
+Write-Host ">> Downloading Native Windows Compiler (20MB)..."
 $ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri $exeUrl -OutFile $exePath
 
 # Add to PATH

@@ -300,6 +300,7 @@ function createElementFromNode(node) {
     } else {
         el = document.createElement("div");
         el.className = "widget-container";
+        if (["row", "center", "expanded", "padding", "card"].includes(t)) el.classList.add(t);
     }
     
     if (node.class) {

@@ -184,6 +184,9 @@ def handle(args):
             
         if renderer:
             renderer.initialize()
+            if hasattr(renderer, 'start'):
+                print(f"\n>> Starting AAYU Web Server at http://localhost:{port} ...", flush=True)
+                renderer.start()
         
         # Render Pipeline Components
         layout_engine = LayoutEngine(800, 600)

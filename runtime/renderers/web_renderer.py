@@ -373,8 +373,8 @@ function patch(parent, oldEl, newVNode, index = 0) {
         if (oldVNode.props.name !== newVNode.props.name) {
             const oldIcon = oldVNode.props.name || "user";
             const newIcon = newVNode.props.name || "user";
-            oldEl.classList.remove(a-, iconMap[oldIcon] || a-);
-            oldEl.classList.add(a-, iconMap[newIcon] || a-);
+            oldEl.classList.remove("fa-" + (iconMap[oldIcon] || "user"));
+            oldEl.classList.add("fa-" + (iconMap[newIcon] || "user"));
         }
     }
     

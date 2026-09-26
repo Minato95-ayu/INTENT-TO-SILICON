@@ -114,7 +114,7 @@ class WebRenderer:
         session = self.session_manager.get_or_create_session(session_id)
         
         if path == "/api/stream":
-            print('Sending start!')
+            
             await send({
                 'type': 'http.response.start',
                 'status': 200,
@@ -159,7 +159,7 @@ class WebRenderer:
             elif evt_type == "INPUT":
                 session.event_queue.push(InputEvent(target, val))
                 
-            print('Sending start!')
+            
             await send({
                 'type': 'http.response.start',
                 'status': 200,
@@ -171,16 +171,16 @@ class WebRenderer:
         file_path = os.path.abspath(os.path.join(self.build_dir, path.lstrip("/")))
         if os.path.exists(file_path) and os.path.isfile(file_path):
             mime_type, _ = mimetypes.guess_type(file_path)
-            print('Sending start!')
+            
             await send({
                 'type': 'http.response.start',
                 'status': 200,
                 'headers': [[b'content-type', (mime_type or 'application/octet-stream').encode()]]
             })
             with open(file_path, 'rb') as f:
-                print('Sending body!')
+                
                 await send({'type': 'http.response.body', 'body': f.read()})
-                print('Body sent!')
+                
             return
             
         await send({'type': 'http.response.start', 'status': 404})

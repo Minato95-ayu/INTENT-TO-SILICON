@@ -273,7 +273,7 @@ function createElementFromNode(node) {
     } else if (t === "icon") {
         el = document.createElement("i");
         const iconName = node.props.name || "user";
-        el.className = as ;
+        el.className = "fas fa-" + (iconMap[iconName] || "user");
     } else if (t === "image") {
         el = document.createElement("img");
         if (node.props.src) el.src = node.props.src;

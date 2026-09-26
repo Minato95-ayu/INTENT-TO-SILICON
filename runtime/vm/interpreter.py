@@ -206,7 +206,7 @@ class Interpreter:
         self.vm.registers.ip += 3
         b = self.vm.value_stack.pop()
         a = self.vm.value_stack.pop()
-        print(f'[VM DEBUG] CMP_EQ: {repr(a)} == {repr(b)}')
+        # debug removed
         self.vm.value_stack.push(a == b)
         return True
 

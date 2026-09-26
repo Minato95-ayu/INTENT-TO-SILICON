@@ -7,7 +7,7 @@ if (-not (Test-Path $aayuDir)) {
     New-Item -ItemType Directory -Force -Path $aayuDir | Out-Null
 }
 
-$exeUrl = "https://raw.githubusercontent.com/Minato95-ayu/INTENT-TO-SILICON/main/website/public/releases/aayu.exe"
+$exeUrl = "https://github.com/Minato95-ayu/INTENT-TO-SILICON/releases/latest/download/aayu.exe"
 $exePath = "$aayuDir\aayu.exe"
 
 Write-Host ">> Downloading Native Windows Compiler (20MB)..."

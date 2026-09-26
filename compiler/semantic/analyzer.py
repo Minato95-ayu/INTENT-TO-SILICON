@@ -46,7 +46,7 @@ class SemanticAnalyzer:
         # Inject core stdlib functions so they pass resolution
         builtins = [
             ("print", -1),
-            ("len", 1), ("append", 2), ("push", 2), ("remove", 2), ("has", 2), ("keys", 1), ("values", 1), ("typeof", 1),
+            ("len", 1), ("append", 2), ("push", 2), ("remove", 2), ("has", 2), ("keys", 1), ("values", 1), ("typeof", 1), ("input", 1), ("core::input", 1), ("int", 1), ("float", 1),
             ("db::connect", 1), ("db::query", 2), ("db::execute", 2),
             ("http::get", 1), ("http::post", 2), ("ai::generate", 1),
             ("ml::kmeans_fit", 3), ("ml::kmeans_predict", 2),

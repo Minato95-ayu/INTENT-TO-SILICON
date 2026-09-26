@@ -505,7 +505,7 @@ connectSSE();
         self.thread = threading.Thread(
             target=uvicorn_run, 
             args=(asgi_wrapper,), 
-            kwargs={"host": "0.0.0.0", "port": self.port, "log_level": "trace"},
+            kwargs={"host": "0.0.0.0", "port": self.port, "log_level": "error"},
             daemon=True
         )
         self.thread.start()

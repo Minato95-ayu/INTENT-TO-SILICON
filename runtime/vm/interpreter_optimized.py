@@ -167,7 +167,9 @@ class Interpreter:
         self.vm.registers.ip += 3
         b = self.vm.value_stack.pop()
         a = self.vm.value_stack.pop()
-        # debug removed
+        # [LEARNING NOTE FOR GIT READERS]:
+        # Debug print removed to keep production terminal output clean.
+        # This handles OP_CMP_EQ in the optimized VM loop.
         self.vm.value_stack.push(a == b)
         
         return True

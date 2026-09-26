@@ -206,7 +206,10 @@ class Interpreter:
         self.vm.registers.ip += 3
         b = self.vm.value_stack.pop()
         a = self.vm.value_stack.pop()
-        # debug removed
+        # [LEARNING NOTE FOR GIT READERS]:
+        # Previously there was a debug print here: print(f'[VM DEBUG] CMP_EQ: {repr(a)} == {repr(b)}')
+        # We removed it because it polluted the user's terminal output during interactive execution.
+        # This function handles the OP_CMP_EQ (==) operation internally within the AAYU VM.
         self.vm.value_stack.push(a == b)
         return True
 

@@ -47,7 +47,13 @@ from compiler.ir.mir import MIRInstruction, Value
 
 # Functions that the VM dispatches as built-in async calls rather than
 # user-defined actions.  Shared between Linearizer and legacy pipeline.
-BUILTIN_FUNCTIONS = frozenset({
+# ---------------------------------------------------------
+  # BUILT-IN FUNCTIONS WHITELIST
+  # ---------------------------------------------------------
+  # Any function listed here is handled as a native OP_ASYNC_CALL.
+  # If a function is NOT in this list, the linearizer assumes it is a
+  # user-defined 'action' and encodes a CALL_ACTION opcode instead.
+  BUILTIN_FUNCTIONS = frozenset({
     "print", "len", "type", "float", "int", "input", "core::input", "typeof",
 })
 

@@ -379,6 +379,10 @@ class IRPipeline:
                 self._hir_to_mir(arg, mir_list)
             if hir.name == "len":
                 mir_list.append(MIRInstruction("GET_LENGTH", []))
+            # IMPORTANT ROUTING LOGIC:
+            # If the function name has '.' (method) or '::' (namespace), OR it is in our built-in list,
+            # we compile it to OP_ASYNC_CALL which triggers native Python execution.
+            # Otherwise, we assume it is a user-defined AAYU action and compile it to CALL_ACTION.
             elif "." in hir.name or "::" in hir.name or hir.name in ["print", "type", "float", "int", "input", "core::input", "typeof"]:
                 mir_list.append(MIRInstruction("OP_ASYNC_CALL", [hir.name, len(hir.args)]))
             else:

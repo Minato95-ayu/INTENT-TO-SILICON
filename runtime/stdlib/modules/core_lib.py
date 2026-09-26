@@ -30,6 +30,15 @@ from ...values.string import StringValue
 from ...values.null import NullValue
 
 def register_core_lib(registry: StdLibRegistry):
+    """
+    Registers all the core built-in functions for AAYU (like print, input, typeof, int, float).
+    These functions are native to the language and execute directly in Python, bypassing the AAYU VM.
+    Whenever AAYU code calls one of these, it translates to an OP_ASYNC_CALL opcode.
+    """
+    # ---------------------------------------------------------
+    # core::print / print
+    # ---------------------------------------------------------
+    # Takes arguments, converts them to string, and outputs to the console.
     def fn_print(args, vm):
         val = args[0].stringify() if args and hasattr(args[0], "stringify") else str(args[0]) if args else ""
         print(val)
@@ -38,6 +47,11 @@ def register_core_lib(registry: StdLibRegistry):
     registry.register("core::print", fn_print)
     registry.register("print", fn_print)
     
+    # ---------------------------------------------------------
+    # core::input / input
+    # ---------------------------------------------------------
+    # Pauses the VM execution to take synchronous string input from the terminal.
+    # It acts exactly like C's scanf() or Python's input().
     def fn_input(args, vm):
         prompt = args[0].stringify() if args and hasattr(args[0], "stringify") else str(args[0]) if args else ""
         val = input(prompt)

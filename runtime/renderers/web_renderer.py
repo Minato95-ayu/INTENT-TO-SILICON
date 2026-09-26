@@ -83,7 +83,7 @@ class WebRenderer:
         self.session_manager = session_manager
         self.project_dir = project_dir
         self.port = port
-        self.build_dir = os.path.join(self.project_dir, ".aayu", "build")
+        self.build_dir = os.path.join(__import__("tempfile").gettempdir(), "aayu_web_build")
         os.makedirs(self.build_dir, exist_ok=True)
         self.server = None
         self.thread = None

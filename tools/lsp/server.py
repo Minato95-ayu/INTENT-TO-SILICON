@@ -16,7 +16,7 @@ from .protocol import LSPProtocol
 from .workspace import Workspace
 from .cancellation import CancellationManager
 
-logging.basicConfig(filename="aayu_lsp.log", level=logging.DEBUG, 
+logging.basicConfig(filename=__import__('os').path.join(__import__('tempfile').gettempdir(), 'aayu_lsp.log'), level=logging.DEBUG, 
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger("AAYU_LSP")
 

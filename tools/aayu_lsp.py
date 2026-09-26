@@ -32,7 +32,7 @@ from compiler.ast.nodes import RecordDeclarationNode, EntityDeclarationNode, Tas
 from compiler.errors import AAYUSyntaxError
 
 # Set up logging to a file so it doesn't corrupt stdout (which is used for LSP)
-logging.basicConfig(filename='aayu_lsp.log', level=logging.DEBUG, 
+logging.basicConfig(filename=__import__('os').path.join(__import__('tempfile').gettempdir(), 'aayu_lsp.log'), level=logging.DEBUG, 
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger('aayu_lsp')
 

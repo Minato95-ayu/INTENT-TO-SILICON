@@ -1,0 +1,29 @@
+app AayuWeb
+
+state visitors = 0
+
+action increment
+    visitors = visitors + 1
+end
+
+page Home
+    Center
+        Column width="600" padding="40" borderRadius="16" shadow="0 10px 30px rgba(0,0,0,0.1)" backgroundColor="#ffffff" marginTop="100"
+            heading "🚀 AAYU Studio" size="36" color="#222"
+            text "A complete webpage written only in AAYU." color="#666" size="18" paddingBottom="10"
+            text "Simple syntax. Native performance. Safe interop." color="#888" paddingBottom="30"
+            
+            Row
+                button "Explore AAYU" backgroundColor="#2196F3" color="white" padding="15" borderRadius="8"
+                button "Add Visitor" onClick="increment" backgroundColor="#4CAF50" color="white" padding="15" borderRadius="8"
+            end
+            
+            Row paddingTop="40"
+                text "Total Visitors:" size="24" color="#555"
+                text visitors size="32" color="#FF4081"
+            end
+        end
+    end
+end
+
+run Home

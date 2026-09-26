@@ -1,4 +1,4 @@
-﻿name: Cross-Platform Native Release
+name: Cross-Platform Native Release
 
 on:
   push:
@@ -13,16 +13,6 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        include:
-          - os: ubuntu-latest
-            artifact_name: aayu-linux.tar.gz
-            asset_name: aayu-linux.tar.gz
-          - os: windows-latest
-            artifact_name: aayu.exe
-            asset_name: aayu.exe
-          - os: macos-latest
-            artifact_name: aayu-macos.pkg
-            asset_name: aayu-macos.pkg
 
     permissions:
       contents: write
@@ -43,21 +33,13 @@ jobs:
           pip install -e .
           pip install pyinstaller
 
-      - name: Create Build Entry
-        shell: bash
-        run: |
-          echo "import sys" > build_entry.py
-          echo "from tools.cli import main" >> build_entry.py
-          echo "if __name__ == '__main__':" >> build_entry.py
-          echo "    sys.exit(main())" >> build_entry.py
-
       - name: Build Native Binary (Windows)
         if: matrix.os == 'windows-latest'
-        run: pyinstaller --onefile --name aayu --collect-all tools --collect-all compiler --collect-all runtime build_entry.py
+        run: pyinstaller --clean --onefile --name aayu --hidden-import runtime.renderers.web_renderer --hidden-import uvicorn --hidden-import fastapi --hidden-import starlette --hidden-import pydantic --hidden-import anyio build_entry.py
 
       - name: Build Native Binary (Linux/Mac)
         if: matrix.os != 'windows-latest'
-        run: pyinstaller --onefile --name aayu --collect-all tools --collect-all compiler --collect-all runtime build_entry.py
+        run: pyinstaller --clean --onefile --name aayu --hidden-import runtime.renderers.web_renderer --hidden-import uvicorn --hidden-import fastapi --hidden-import starlette --hidden-import pydantic --hidden-import anyio build_entry.py
 
       - name: Package Linux (tar.gz)
         if: matrix.os == 'ubuntu-latest'
@@ -70,7 +52,6 @@ jobs:
         run: |
           cd dist
           zip aayu-macos.zip aayu
-          # We provide a zip for Mac as building pkg requires extra Apple certificates.
 
       - name: Rename and Upload
         uses: softprops/action-gh-release@v2
@@ -79,4 +60,3 @@ jobs:
             dist/aayu.exe
             dist/aayu-linux.tar.gz
             dist/aayu-macos.zip
-

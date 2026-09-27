@@ -19,7 +19,7 @@ export function Navbar() {
   }, []);
 
   return (
-    <header className={ixed top-0 z-50 w-full transition-all duration-300 }>
+    <header className={`fixed top-0 z-50 w-full transition-all duration-300 ${scrolled || mobileMenuOpen ? "border-b border-white/10 bg-black/95 backdrop-blur-md" : "bg-transparent"}`}>
       <div className="container mx-auto flex h-16 items-center justify-between px-4 max-w-7xl">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center space-x-3 group">
@@ -48,11 +48,11 @@ export function Navbar() {
             </div>
           </Link>
           <Link href="https://github.com/Minato95-ayu/INTENT-TO-SILICON" target="_blank" className="hidden sm:flex">
-            <Button className="bg-white text-black hover:bg-zinc-200 hidden sm:flex font-semibold shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+            <Button className="bg-white text-black hover:bg-zinc-200 font-semibold shadow-[0_0_15px_rgba(255,255,255,0.3)]">
               View on GitHub
             </Button>
           </Link>
-          <button 
+          <button
             className="lg:hidden text-zinc-400 hover:text-white p-2"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
@@ -60,7 +60,7 @@ export function Navbar() {
           </button>
         </div>
       </div>
-      
+
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-black/95 border-b border-white/10 px-4 py-6 flex flex-col gap-6 text-base font-medium">

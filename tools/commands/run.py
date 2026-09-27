@@ -294,12 +294,19 @@ def handle(args):
 
         if not renderer:
             # Headless mode, no UI to render, skip frame loop
-            pass
+            if "main" in vm.action_addresses:
+                vm.call_action_by_name("main")
+                vm.execute()
         else:
             # --- First Render Pass ---
             render_pass()
 
         if renderer_type == "console":
+            print(f"Action addresses: {vm.action_addresses}")
+            if "main" in vm.action_addresses:
+                print("Running main!")
+                vm.call_action_by_name("main")
+                vm.execute()
             renderer.shutdown()
             return
         

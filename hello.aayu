@@ -1,7 +1,7 @@
-app Hello
+app Simple
+
 action main
-    print("Hello, AAYU!")
-    print("Multi-statement works!")
-    print("Compiler pipeline verified.")
+    print("HELLO AAYU")
 end
+
 run main

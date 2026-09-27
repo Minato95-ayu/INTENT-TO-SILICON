@@ -30,6 +30,7 @@ export function Navbar() {
             <Link href="/" className="hover:text-white transition-colors">Home</Link>
             <Link href="/docs" className="hover:text-white transition-colors">Documentation</Link>
             <Link href="/tutorial" className="hover:text-white transition-colors text-purple-400 font-bold">Tutorial</Link>
+            <Link href="/reports" className="hover:text-white transition-colors text-cyan-400 font-bold">Benchmarks & Proofs</Link>
             <Link href="/examples" className="hover:text-white transition-colors">Examples</Link>
             <Link href="/download" className="hover:text-white transition-colors flex items-center gap-1">
               <span className="relative flex h-2 w-2 mr-1">
@@ -67,6 +68,7 @@ export function Navbar() {
           <Link href="/" onClick={() => setMobileMenuOpen(false)} className="text-zinc-400 hover:text-white transition-colors block">Home</Link>
           <Link href="/docs" onClick={() => setMobileMenuOpen(false)} className="text-zinc-400 hover:text-white transition-colors block">Documentation</Link>
           <Link href="/tutorial" onClick={() => setMobileMenuOpen(false)} className="text-purple-400 font-bold hover:text-purple-300 transition-colors block">Tutorial</Link>
+          <Link href="/reports" onClick={() => setMobileMenuOpen(false)} className="text-cyan-400 font-bold hover:text-cyan-300 transition-colors block">Benchmarks & Proofs</Link>
           <Link href="/examples" onClick={() => setMobileMenuOpen(false)} className="text-zinc-400 hover:text-white transition-colors block">Examples</Link>
           <Link href="/download" onClick={() => setMobileMenuOpen(false)} className="text-zinc-400 hover:text-white transition-colors flex items-center gap-2">
             <span className="relative flex h-2 w-2 mr-1">

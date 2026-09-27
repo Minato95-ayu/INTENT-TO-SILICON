@@ -1,9 +1,20 @@
-import sys
-with open('runtime/renderers/web_renderer.py', 'r', encoding='utf-8') as f:
-    code = f.read()
-code = code.replace(
-    "async def asgi_app(self, scope, receive, send):",
-    "async def asgi_app(self, scope, receive, send):\n        try:\n            await self._asgi_app_inner(scope, receive, send)\n        except Exception as e:\n            import traceback\n            traceback.print_exc()\n            raise\n\n    async def _asgi_app_inner(self, scope, receive, send):"
-)
-with open('runtime/renderers/web_renderer.py', 'w', encoding='utf-8') as f:
-    f.write(code)
+with open("tools/commands/run.py", "r") as f:
+    text = f.read()
+
+target = """        if renderer_type == "console":
+            renderer.shutdown()
+            return"""
+
+replacement = """        if renderer_type == "console":
+            if "main" in vm.action_addresses:
+                vm.call_action_by_name("main")
+                vm.execute()
+            renderer.shutdown()
+            return"""
+
+if target in text:
+    with open("tools/commands/run.py", "w") as f:
+        f.write(text.replace(target, replacement))
+    print("Fixed run.py!")
+else:
+    print("Target not found in run.py")

@@ -1,0 +1,22 @@
+app FileSystemProof
+
+action main
+    print("Testing File I/O in AAYU...")
+    
+    # Write to file
+    let path = "test_fs.txt"
+    let content = "Hello AAYU Fast Speed and Self-Hosting!"
+    file.write(path, content)
+    print("File written successfully!")
+    
+    # Read from file
+    let read_content = file.read(path)
+    print("Read from file:")
+    print(read_content)
+    
+    # Clean up
+    file.delete(path)
+    print("File deleted successfully!")
+end
+
+run main

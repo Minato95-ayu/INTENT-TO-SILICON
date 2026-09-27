@@ -197,8 +197,7 @@ def handle(args):
         diff_engine = DiffEngine()
         scheduler = FrameScheduler(fps=60)
         
-        import tracemalloc
-        tracemalloc.start()
+        # tracemalloc disabled for speed
         
         # Performance Tracking
         perf_metrics = {
@@ -346,8 +345,7 @@ def handle(args):
                 
             renderer.shutdown()
         
-        current, peak = tracemalloc.get_traced_memory()
-        tracemalloc.stop()
+        current, peak = 0, 0
         
         avg_re_render = 0
         if perf_metrics["re_render_times"]:

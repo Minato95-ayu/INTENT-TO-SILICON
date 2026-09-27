@@ -1,0 +1,5 @@
+app Test
+action main
+    let a = file::read("test.txt")
+end
+run main

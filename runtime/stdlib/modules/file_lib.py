@@ -23,11 +23,11 @@ def create_string(vm, text):
 def register_file_lib(registry: StdLibRegistry):
     def fn_read(args, vm):
         try:
-            path = args[0].to_python()
+            path = args[0] if isinstance(args[0], str) else args[0].to_python()
             # Handle binary vs utf-8 based on optional second arg
             mode = 'r'
             encoding = 'utf-8'
-            if len(args) > 1 and args[1].to_python() == "binary":
+            if len(args) > 1 and (args[1] if isinstance(args[1], str) else args[1].to_python()) == "binary":
                 mode = 'rb'
                 encoding = None
             
@@ -46,8 +46,8 @@ def register_file_lib(registry: StdLibRegistry):
             
     def fn_write(args, vm):
         try:
-            path = args[0].to_python()
-            content = args[1].to_python()
+            path = args[0] if isinstance(args[0], str) else args[0].to_python()
+            content = args[1] if isinstance(args[1], str) else args[1].to_python()
             with open(path, 'w', encoding='utf-8') as f:
                 f.write(content)
             return BooleanValue(True)
@@ -58,8 +58,8 @@ def register_file_lib(registry: StdLibRegistry):
             
     def fn_append(args, vm):
         try:
-            path = args[0].to_python()
-            content = args[1].to_python()
+            path = args[0] if isinstance(args[0], str) else args[0].to_python()
+            content = args[1] if isinstance(args[1], str) else args[1].to_python()
             with open(path, 'a', encoding='utf-8') as f:
                 f.write(content)
             return BooleanValue(True)
@@ -70,7 +70,7 @@ def register_file_lib(registry: StdLibRegistry):
             
     def fn_delete(args, vm):
         try:
-            path = args[0].to_python()
+            path = args[0] if isinstance(args[0], str) else args[0].to_python()
             if os.path.isdir(path):
                 shutil.rmtree(path)
             else:
@@ -85,7 +85,7 @@ def register_file_lib(registry: StdLibRegistry):
 
     def fn_mkdir(args, vm):
         try:
-            path = args[0].to_python()
+            path = args[0] if isinstance(args[0], str) else args[0].to_python()
             os.makedirs(path, exist_ok=True)
             return BooleanValue(True)
         except PermissionError:
@@ -94,12 +94,12 @@ def register_file_lib(registry: StdLibRegistry):
             raise e
 
     def fn_exists(args, vm):
-        return BooleanValue(os.path.exists(args[0].to_python()))
+        return BooleanValue(os.path.exists(args[0] if isinstance(args[0], str) else args[0].to_python()))
         
-    registry.register("file::read", fn_read)
-    registry.register("file::write", fn_write)
+    registry.register("file.read", fn_read)
+    registry.register("file.write", fn_write)
     registry.register("file::append", fn_append)
-    registry.register("file::delete", fn_delete)
+    registry.register("file.delete", fn_delete)
     registry.register("file::mkdir", fn_mkdir)
     registry.register("file::exists", fn_exists)
 

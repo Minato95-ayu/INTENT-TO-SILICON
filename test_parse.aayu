@@ -1,0 +1,4 @@
+action main
+let a = file.read()
+end
+run main

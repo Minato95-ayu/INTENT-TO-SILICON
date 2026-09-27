@@ -412,6 +412,7 @@ class IRPipeline:
             mir_list.append(MIRInstruction("SETUP_EXCEPT", [error_target]))
             for stmt in hir.try_block:
                 self._hir_to_mir(stmt, mir_list)
+                if self._needs_pop(stmt): mir_list.append(MIRInstruction("POP", []))
             mir_list.append(MIRInstruction("POP_EXCEPT", []))
             mir_list.append(MIRInstruction("JUMP", [finally_label]))
             if hir.catch_block:
@@ -425,11 +426,13 @@ class IRPipeline:
                     
                 for stmt in hir.catch_block:
                     self._hir_to_mir(stmt, mir_list)
+                    if self._needs_pop(stmt): mir_list.append(MIRInstruction("POP", []))
                 
                 mir_list.append(MIRInstruction("JUMP", [finally_label]))
             mir_list.append(MIRInstruction("LABEL", [finally_label]))
             for stmt in hir.finally_block:
                 self._hir_to_mir(stmt, mir_list)
+                if self._needs_pop(stmt): mir_list.append(MIRInstruction("POP", []))
         elif isinstance(hir, HIRThrow):
             self._hir_to_mir(hir.value, mir_list)
             mir_list.append(MIRInstruction("THROW", []))

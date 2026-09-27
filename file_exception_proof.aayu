@@ -1,0 +1,17 @@
+app FileExceptionsProof
+
+action main
+    print("Testing File Exception Handling in AAYU...")
+    
+    try
+        let content = file.read("does_not_exist_file_xyz.txt")
+        print("This should not print")
+    catch (err)
+        print("SUCCESS: AAYU caught the error ->")
+        print(err)
+    end
+    
+    print("Execution continued safely after crash!")
+end
+
+run main

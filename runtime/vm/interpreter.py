@@ -571,8 +571,12 @@ class Interpreter:
         stdlib = self.vm.stdlib
         if func_name in stdlib.registry.functions:
             func = stdlib.registry.functions[func_name]
-            result = func(args, self.vm)
-            self.vm.value_stack.push(result)
+            try:
+                result = func(args, self.vm)
+                self.vm.value_stack.push(result)
+            except Exception as e:
+                self._throw_exception(KernelError(str(e)))
+                return True
         elif isinstance(func_name, str) and (external := stdlib.registry.lookup_external(func_name)):
             provider, func = external
             if provider not in {'native', 'python', 'rust', 'js'}:

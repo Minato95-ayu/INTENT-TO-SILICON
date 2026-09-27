@@ -1296,7 +1296,7 @@ let OP_CREATE_ARRAY = 134
 let OP_BUILD_DICT = 128
 let OP_LOAD_SUBSCR = 136
 let OP_STORE_SUBSCR = 137
-let OP_HALT = 255
+let OP_HALT = 0
 
 
 action update_array(arr, index, val)

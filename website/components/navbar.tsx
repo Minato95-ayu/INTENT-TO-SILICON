@@ -28,7 +28,7 @@ export function Navbar() {
           </Link>
                     <nav className="hidden lg:flex gap-6 text-sm font-medium text-zinc-400 items-center">
             <Link href="/" className="hover:text-white transition-colors">Home</Link>
-            <Link href="/docs" className="hover:text-white transition-colors">Documentation</Link>
+            <Link href="/docs" className="hover:text-white transition-colors">Documentation</Link>`n            <Link href="/tutorial" className="hover:text-white transition-colors text-purple-400 font-bold">Tutorial</Link>
             <Link href="/examples" className="hover:text-white transition-colors">Examples</Link>
             <Link href="/download" className="hover:text-white transition-colors flex items-center gap-1">
               <span className="relative flex h-2 w-2 mr-1">

@@ -728,6 +728,7 @@ class Interpreter:
         import sqlite3
         try:
             conn = sqlite3.connect("aayu_db.sqlite")
+            conn.row_factory = sqlite3.Row
             c = conn.cursor()
             cols = ", ".join(fields.keys())
             placeholders = ", ".join(["?"] * len(fields))
@@ -748,9 +749,10 @@ class Interpreter:
         import sqlite3
         try:
             conn = sqlite3.connect("aayu_db.sqlite")
+            conn.row_factory = sqlite3.Row
             c = conn.cursor()
             c.execute(f"SELECT * FROM {model_name}")
-            rows = c.fetchall()
+            rows = [dict(row) for row in c.fetchall()]
             conn.close()
             self.vm.value_stack.push(rows)
             print(f"[DB] Found {len(rows)} records in {model_name}")

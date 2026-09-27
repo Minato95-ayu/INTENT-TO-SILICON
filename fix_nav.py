@@ -1,4 +1,4 @@
-"use client";
+content = '''"use client";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -19,7 +19,7 @@ export function Navbar() {
   }, []);
 
   return (
-    <header className={ixed top-0 z-50 w-full transition-all duration-300 }>
+    <header className={ixed top-0 z-50 w-full transition-all duration-300 \}>
       <div className="container mx-auto flex h-16 items-center justify-between px-4 max-w-7xl">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center space-x-3 group">
@@ -86,3 +86,6 @@ export function Navbar() {
     </header>
   );
 }
+'''
+with open('D:/INTENT-TO-SILICON/website/components/navbar.tsx', 'w', encoding='utf-8') as f:
+    f.write(content)

@@ -1,0 +1,9 @@
+app StringProof
+
+action main
+    let s = "hello,world,aayu"
+    let parts2 = string::split(s, ",")
+    print(parts2)
+end
+
+run main

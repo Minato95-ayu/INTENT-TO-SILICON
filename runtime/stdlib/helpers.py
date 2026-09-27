@@ -29,6 +29,7 @@ from ..values.map import MapValue
 
 def make_string(vm, text: str) -> StringValue:
     obj_id = vm.heap.allocate("string", text)
+    #print(f"Allocated {obj_id} for {repr(text)}")
     return StringValue(obj_id, vm.heap)
 
 def make_list(vm, elements: list) -> ListValue:

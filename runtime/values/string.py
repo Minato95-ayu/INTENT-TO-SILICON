@@ -35,7 +35,12 @@ class StringValue(CollectionValue):
         super().__init__(heap_id, "string", heap)
 
     def _get_payload(self) -> str:
-        return self.heap.read(self.heap_id)['value']
+        print(f'Reading obj_id={self.heap_id} from heap {id(self.heap)}')
+        obj = self.heap.read(self.heap_id)
+        if obj is None:
+            print('OBJ IS NONE!')
+            print(self.heap.allocator.pool.pool.keys())
+        return obj['value']
 
     def length(self) -> RuntimeValue:
         return NumberValue(len(self._get_payload()))

@@ -82,7 +82,16 @@ class ListValue(CollectionValue):
 
     # Delegate base operations
     def stringify(self) -> str:
-        return str(self.to_python())
+        elements = self._get_payload()
+        stringified = []
+        for e in elements:
+            if hasattr(e, "stringify"):
+                stringified.append(e.stringify())
+            elif hasattr(e, "to_python"):
+                stringified.append(repr(e.to_python()))
+            else:
+                stringified.append(repr(e))
+        return "[" + ", ".join(stringified) + "]" 
         
     def to_python(self):
         return [val.to_python() for val in self._get_payload()]

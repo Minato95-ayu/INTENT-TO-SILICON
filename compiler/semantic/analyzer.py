@@ -58,7 +58,11 @@ class SemanticAnalyzer:
             ("math::floor", 1), ("math::ceil", 1),
             ("string::split", 2), ("string::trim", 1), ("string::replace", 3),
             ("string::upper", 1), ("string::lower", 1), ("string::contains", 2),
-            ("string::starts_with", 2), ("string::ends_with", 2), ("string::length", 1)
+            ("string::starts_with", 2), ("string::ends_with", 2), ("string::length", 1),
+            ("string::substring", 3), ("string::char_at", 2), ("string::char_code", 2),
+            ("list::push", 2), ("list::pop", 1), ("list::shift", 1), ("list::unshift", 2),
+            ("list::length", 1), ("list::get", 2), ("list::set", 3), ("list::remove", 2),
+            ("list::contains", 2), ("list::insert", 3), ("list::reverse", 1), ("list::sort", 1)
         ]
         for name, arity in builtins:
             sym = Symbol(name, "function")

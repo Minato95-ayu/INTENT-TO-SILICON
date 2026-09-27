@@ -273,6 +273,8 @@ class Parser:
                 elif self.tokens[self.pos+lookahead].type == TokenType.SYMBOL and self.tokens[self.pos+lookahead].value == ".":
                     has_dot = True
                     lookahead += 2
+                elif self.tokens[self.pos+lookahead].type == TokenType.OPERATOR and self.tokens[self.pos+lookahead].value == "::":
+                    lookahead += 2
                 else:
                     break
             

@@ -157,6 +157,8 @@ def handle(args):
         program = encoder.encode(lir)
         
         # Init VM
+        print(f"BYTECODE: {program.bytecode}")
+        print(f"ACTIONS: {program.action_addresses}")
         vm = VirtualMachine(VMConfig.development() if debug else VMConfig.production())
         vm.load(program.bytecode, program.constant_pool.values(), program.action_addresses)
         vm.execute()

@@ -372,7 +372,10 @@ class IRPipeline:
                 is_app = (hir.name == "App")
                 if has_entry or is_app or not getattr(self, "_has_page_start", False):
                     self._has_page_start = True
-                    alias_body = [MIRInstruction("CALL_ACTION", [hir.name, 0, 0])]
+                    alias_body = []
+                    for _ in range(len(getattr(hir, "args", []))):
+                        alias_body.append(MIRInstruction("PUSH_CONST", [{}]))
+                    alias_body.append(MIRInstruction("CALL_ACTION", [hir.name, len(getattr(hir, "args", [])), 0]))
                     mir_list.append(MIRInstruction("ACTION_DECL", ["__PAGE_START__", alias_body, []]))
         elif isinstance(hir, HIRActionCall):
             for arg in hir.args:

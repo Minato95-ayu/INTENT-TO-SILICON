@@ -134,8 +134,7 @@ class AppDeclarationNode(ASTNode):
 
 @dataclass(frozen=True)
 class RunNode(ASTNode):
-    """Marks the entry point. E.g., 'run'"""
-    pass
+    action_name: str = ""
 
 @dataclass(frozen=True)
 class ModelAttributeNode(ASTNode):

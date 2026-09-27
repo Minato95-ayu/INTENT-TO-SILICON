@@ -198,6 +198,7 @@ class WebRenderer:
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AAYU Web App</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="/theme.css">
     <style id="aayu-styles"></style>
     <style>
@@ -280,6 +281,55 @@ function createElementFromNode(node) {
         if (node.props.width) el.width = parseInt(node.props.width);
         if (node.props.height) el.height = parseInt(node.props.height);
         el.style.objectFit = "cover";
+    } else if (t === "chart") {
+        el = document.createElement("div");
+        el.style.position = "relative";
+        if (node.props.width) el.style.width = String(node.props.width).endsWith("%") || String(node.props.width).endsWith("px") || String(node.props.width).endsWith("vh") || String(node.props.width).endsWith("vw") ? node.props.width : node.props.width + "px";
+        if (node.props.height) el.style.height = String(node.props.height).endsWith("%") || String(node.props.height).endsWith("px") || String(node.props.height).endsWith("vh") || String(node.props.height).endsWith("vw") ? node.props.height : node.props.height + "px";
+        
+        const canvas = document.createElement("canvas");
+        el.appendChild(canvas);
+        
+        setTimeout(() => {
+            if (!canvas.isConnected) return;
+            try {
+                const ctx = canvas.getContext("2d");
+                const dataStr = node.props.data || "{}";
+                let dataObj = typeof dataStr === "string" ? JSON.parse(dataStr) : dataStr;
+                
+                // If it's just an array of numbers, make a simple line chart
+                if (Array.isArray(dataObj)) {
+                    dataObj = {
+                        labels: dataObj.map((_, i) => i + 1),
+                        datasets: [{ label: node.props.title || "Data", data: dataObj, borderColor: "#a855f7", backgroundColor: "rgba(168, 85, 247, 0.2)", fill: true, tension: 0.4 }]
+                    };
+                }
+                
+                new Chart(ctx, {
+                    type: node.props.chartType || "line",
+                    data: dataObj,
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+            } catch (e) {
+                console.error("Chart error:", e);
+            }
+        }, 50);
+    } else if (t === "canvas") {
+        el = document.createElement("canvas");
+        if (node.props.width) el.width = parseInt(node.props.width);
+        if (node.props.height) el.height = parseInt(node.props.height);
+        
+        // Simple game loop hook if needed
+        setTimeout(() => {
+            if (!el.isConnected) return;
+            try {
+                const ctx = el.getContext("2d");
+                if (node.props.fill) {
+                    ctx.fillStyle = node.props.fill;
+                    ctx.fillRect(0, 0, el.width, el.height);
+                }
+            } catch (e) {}
+        }, 0);
     } else if (t === "chatbubble") {
         el = document.createElement("div");
         el.className = "chatbubble";

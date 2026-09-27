@@ -544,16 +544,10 @@ class Interpreter:
         self.vm.registers.ip += 3
         keys = self.vm.value_stack.pop()
         d = {}
-        if self.vm.config.debug_mode:
-            print(f'[DEBUG BUILD_DICT] keys: {keys}, stack depth: {self.vm.value_stack.depth()}')
         for key in reversed(keys):
-            try:
-                d[key] = self.vm.value_stack.pop()
-            except Exception as e:
-                if self.vm.config.debug_mode:
-                    print(f'[DEBUG BUILD_DICT ERROR] Failed popping for key: {key}. Current stack: {self.vm.value_stack.stack}')
-                raise e
+            d[key] = self.vm.value_stack.pop()
         self.vm.value_stack.push(d)
+        return True
         return True
 
     def op_OP_ASYNC_CALL(self, opcode):

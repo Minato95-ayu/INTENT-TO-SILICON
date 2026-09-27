@@ -1,4 +1,4 @@
-﻿# ==============================================================================
+# ==============================================================================
 # COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
 # 
 # This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
@@ -185,7 +185,7 @@ class Validator:
             elif opcode == Opcode.JMP_IF_FALSE:
                 new_depth -= 1
                 if new_depth < 0:
-                    raise InvalidBytecodeError("Stack underflow", ip)
+                    raise InvalidBytecodeError("Stack underflow at OP " + str(opcode) + " new_depth=" + str(new_depth), ip)
                 target = (bytecode[ip+1] << 8) | bytecode[ip+2]
                 if target != 0xFFFF and target not in instruction_boundaries:
                     raise InvalidBytecodeError(f"Jump target inside operand: {target}", ip)
@@ -201,7 +201,7 @@ class Validator:
                 raise InvalidBytecodeError(f"Unknown or unhandled opcode 0x{opcode:02X}", ip)
                 
             if new_depth < 0:
-                raise InvalidBytecodeError("Stack underflow", ip)
+                raise InvalidBytecodeError("Stack underflow at OP " + str(opcode) + " new_depth=" + str(new_depth), ip)
                 
             worklist.append((ip + 3, new_depth, expected_returns))
             

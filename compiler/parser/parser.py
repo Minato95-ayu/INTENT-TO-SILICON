@@ -250,7 +250,8 @@ class Parser:
         if self._match(TokenType.KEYWORD, "run"):
 
             line, col = self._previous().line, self._previous().column
-            return RunNode(line=line, column=col)
+            name = self._consume(TokenType.IDENTIFIER, "Expect action/page name after 'run'.").value
+            return RunNode(line=line, column=col, action_name=name)
         
         if self._match(TokenType.KEYWORD, "page"):
             return self._parse_widget("Page")
@@ -617,8 +618,12 @@ class Parser:
         component_widget = WidgetNode(line=line, column=col, widget_type=component_type, props={"name": name}, children=ui_statements)
         other_statements.append(component_widget)
         
+        from compiler.ast.nodes import IdentifierNode
+        # Components accept one argument: props
+        props_arg = IdentifierNode(line=line, column=col, name="props")
+        
         # Treat component as an action declaration to simplify the IR pipeline
-        return ActionDeclarationNode(line=line, column=col, name=name, statements=other_statements)
+        return ActionDeclarationNode(line=line, column=col, name=name, args=[props_arg], statements=other_statements)
 
     def _parse_action_declaration(self, decorators=None):
         line, col = self._previous().line, self._previous().column

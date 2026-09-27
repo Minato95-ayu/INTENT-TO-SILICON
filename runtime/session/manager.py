@@ -32,6 +32,13 @@ class Session:
         self.vm.execute()
         self.vm.call_action_by_name("__PAGE_START__")
         
+        print("ROOT AFTER INIT:", self.vm.interpreter.render_tree.root)
+        if self.vm.interpreter.render_tree.root:
+            print("ROOT TYPE:", self.vm.interpreter.render_tree.root.type)
+        else:
+            print("NODE STACK:", self.vm.interpreter.node_stack)
+            print("IP AFTER CALL:", self.vm.registers.ip)
+        
         self.last_accessed = time.time()
         self.current_tree_json = "{}"
         self.dirty = True

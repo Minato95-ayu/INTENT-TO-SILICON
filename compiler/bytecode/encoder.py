@@ -58,7 +58,8 @@ WIDGET_TYPES = {
     "CHATBUBBLE": 38,
     "SCAFFOLD": 39,
     "CHART": 100,
-    "DATAFRAMEWIDGET": 101
+    "DATAFRAMEWIDGET": 101,
+    "CANVAS": 102
 }
 
 @dataclass
@@ -209,7 +210,7 @@ class BytecodeEncoder:
         elif opcode == "PRINT":
             self._encode_print(node)
         elif opcode == "PRINT_STACK":
-            # Value is already on stack — just emit PRINT
+            # Value is already on stack â€” just emit PRINT
             self._emit(Opcode.PRINT, 0)
         elif opcode == "RETURN_VALUE":
             self._encode_return_value(node)
@@ -364,39 +365,40 @@ class BytecodeEncoder:
         elif opcode == "RESPOND":
             self._emit(Opcode.RESPOND, 0)
         else:
-            # Unknown LIR opcode — emit as DISPATCH for extensibility
+            # Unknown LIR opcode â€” emit as DISPATCH for extensibility
             self._emit(Opcode.DISPATCH, 0)
 
     def _encode_state_init(self, node: LIRNode):
         """STATE_INIT [name]
         Value is already on stack!
-        → INIT_STATE name_idx
+        â†’ INIT_STATE name_idx
         """
         name = node.operands[0]
         name_idx = self.pool.add(name)
         self._emit(Opcode.INIT_STATE, name_idx)
 
     def _encode_load_var(self, node: LIRNode):
-        """LOAD_VAR [name] → LOAD_STATE name_idx"""
+        """LOAD_VAR [name] â†’ LOAD_STATE name_idx"""
         name = node.operands[0]
         name_idx = self.pool.add(name)
         self._emit(Opcode.LOAD_STATE, name_idx)
 
     def _encode_store_var(self, node: LIRNode):
-        """STORE_VAR [name] → STORE_STATE name_idx"""
+        """STORE_VAR [name] â†’ STORE_STATE name_idx"""
         name = node.operands[0]
         name_idx = self.pool.add(name)
         self._emit(Opcode.STORE_STATE, name_idx)
 
     def _encode_build_widget(self, node: LIRNode):
-        """BUILD_* [props] → PUSH_CONST content + BUILD_WIDGET type
+        """BUILD_* [props] â†’ PUSH_CONST content + BUILD_WIDGET type
         
         The widget type is derived from the LIR opcode suffix.
         Props on the stack, widget type as operand.
         """
         # Extract widget type from opcode: BUILD_TEXT -> TEXT
-        widget_type_str = node.opcode[6:]  # strip "BUILD_"
+        widget_type_str = node.opcode[6:].upper()  # strip "BUILD_"
         widget_type_id = WIDGET_TYPES.get(widget_type_str, 0)
+        print(f"ENCODING WIDGET {widget_type_str} -> {widget_type_id}")
         # Push widget content/props onto stack
         props = node.operands[0] if node.operands else {}
         dynamic_prop_count = 0
@@ -438,7 +440,7 @@ class BytecodeEncoder:
             self._emit(Opcode.BUILD_WIDGET, operand)
 
     def _encode_print(self, node: LIRNode):
-        """PRINT [value] → PUSH_CONST value_idx + PRINT"""
+        """PRINT [value] â†’ PUSH_CONST value_idx + PRINT"""
         if node.operands:
             value = node.operands[0]
             value_idx = self.pool.add(value)
@@ -446,7 +448,7 @@ class BytecodeEncoder:
         self._emit(Opcode.PRINT, 0)
 
     def _encode_push_const(self, node: LIRNode):
-        """PUSH_CONST [value] → PUSH_CONST idx"""
+        """PUSH_CONST [value] â†’ PUSH_CONST idx"""
         value = node.operands[0]
         idx = self.pool.add(value)
         self._emit(Opcode.PUSH_CONST, idx)
@@ -484,7 +486,7 @@ class BytecodeEncoder:
         self.bytecode[jmp_addr + 1] = end_addr & 0xFF
 
     def _encode_call_action(self, node: LIRNode):
-        """CALL_ACTION [name, arg_count, return_count] → PREPARE_CALL + CALL target_address"""
+        """CALL_ACTION [name, arg_count, return_count] â†’ PREPARE_CALL + CALL target_address"""
         action_name = node.operands[0]
         arg_count = node.operands[1] if len(node.operands) > 1 else 0
         return_count = node.operands[2] if len(node.operands) > 2 else 1
@@ -499,7 +501,7 @@ class BytecodeEncoder:
             target = self._action_addresses[action_name]
             self._emit(Opcode.CALL, target)
         else:
-            # Forward reference — add relocation
+            # Forward reference â€” add relocation
             self.relocations.append(Relocation(
                 offset=len(self.bytecode),
                 symbol=action_name,

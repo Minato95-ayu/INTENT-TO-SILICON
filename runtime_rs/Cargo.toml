@@ -1,6 +1,6 @@
-[package]
+﻿[package]
 name = "aayu-vm"
-version = "0.1.0"
+version = "0.3.1"
 edition = "2021"
 authors = ["Ayush Ghrit Kaushik <minato95.ayu@gmail.com>"]
 description = "The extreme-performance native Rust Virtual Machine for AAYU"
@@ -8,3 +8,6 @@ description = "The extreme-performance native Rust Virtual Machine for AAYU"
 [dependencies]
 # Zero overhead, zero heavy dependencies for maximum speed
 byteorder = "1.5" # For fast bytecode decoding
+
+# Lightweight HTTP client (Blocking) - Native Web API Implant
+ureq = { version = "2.9", features = ["tls"] }

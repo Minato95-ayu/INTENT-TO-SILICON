@@ -58,6 +58,7 @@ pub struct AayuVM {
     stack: [NanVal; 4096],
     sp: usize,
     ip: usize,
+    locals: [NanVal; 256],
     bytecode: Vec<u8>,
     constants: Vec<NanVal>,
     pub string_heap: Vec<String>,
@@ -74,6 +75,7 @@ impl AayuVM {
             stack: [NanVal::null(); 4096],
             sp: 0,
             ip: 0,
+            locals: [NanVal::null(); 256],
             bytecode,
             constants,
             string_heap: strings,
@@ -100,7 +102,44 @@ impl AayuVM {
                     self.stack[self.sp] = self.constants[idx];
                     self.sp += 1;
                 }
-                0x10 => { // PUSH_STRING
+                0x05 => { // LOAD_VAR
+                    let idx = self.bytecode[self.ip] as usize;
+                    self.ip += 1;
+                    self.stack[self.sp] = self.locals[idx];
+                    self.sp += 1;
+                }
+                0x06 => { // STORE_VAR
+                    let idx = self.bytecode[self.ip] as usize;
+                    self.ip += 1;
+                    self.locals[idx] = self.stack[self.sp - 1];
+                    self.sp -= 1;
+                }
+                0x10 => { // ADD
+                    let b = self.stack[self.sp - 1].as_int();
+                    let a = self.stack[self.sp - 2].as_int();
+                    self.stack[self.sp - 2] = NanVal::int(a + b);
+                    self.sp -= 1;
+                }
+                0x14 => { // LT
+                    let b = self.stack[self.sp - 1].as_int();
+                    let a = self.stack[self.sp - 2].as_int();
+                    self.stack[self.sp - 2] = NanVal::bool(a < b);
+                    self.sp -= 1;
+                }
+                0x20 => { // JUMP
+                    let offset = ((self.bytecode[self.ip] as usize) << 8) | self.bytecode[self.ip + 1] as usize;
+                    self.ip = offset;
+                }
+                0x21 => { // JUMP_IF_FALSE
+                    let offset = ((self.bytecode[self.ip] as usize) << 8) | self.bytecode[self.ip + 1] as usize;
+                    self.ip += 2;
+                    let cond = self.stack[self.sp - 1].as_bool();
+                    self.sp -= 1;
+                    if !cond {
+                        self.ip = offset;
+                    }
+                }
+                0x12 => { // PUSH_STRING (was 0x10 in old mock, changed to avoid ADD collision)
                     let idx = (self.bytecode[self.ip] as usize) | ((self.bytecode[self.ip+1] as usize) << 8);
                     self.ip += 2;
                     self.stack[self.sp] = NanVal::string(idx);

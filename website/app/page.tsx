@@ -284,6 +284,8 @@ export default function HomePage() {
             </div>
 
             {/* Quick links */}
+              <div className="flex flex-wrap gap-3">
+                <Link href="/benchmarks" className="text-xs bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 px-3 py-1.5 rounded-lg text-purple-400 hover:text-purple-300 transition-colors font-semibold flex items-center gap-1"><Zap className="w-3 h-3" /> Benchmarks & Proofs</Link>
             <div className="flex flex-wrap gap-3">
               <Link href="/docs" className="text-xs bg-white/5 hover:bg-white/10 border border-white/5 px-3 py-1.5 rounded-lg text-zinc-400 hover:text-white transition-colors">
                 Documentation

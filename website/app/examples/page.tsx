@@ -1,100 +1,112 @@
-import React from 'react';
-import Link from 'next/link';
-import { ArrowRight, Code } from 'lucide-react';
+﻿import Link from 'next/link';
+import { ArrowRight, Code2, Database, Layout, ShieldAlert } from 'lucide-react';
 
 export default function ExamplesPage() {
+  const examples = [
+    {
+      title: "AAYUGram (Social Network)",
+      desc: "A full-stack Instagram clone built entirely in a single .aayu file. Features JWT Auth, SQLite Relational Models, Image Uploads, and a declarative feed UI.",
+      tags: ["Full-Stack", "Auth", "UI Engine"],
+      code: pp AAYUGram
+
+model Post
+    id Int
+    image_url String
+    caption String
+    author_id Int
+end
+
+route "/api/feed"
+    get
+        let posts = Post.all()
+        respond(posts)
+    end
+end
+
+Page Feed
+    Column
+        Text("Your Feed", size: 24, bold: true)
+        // Fetches directly via AAYU's SSR engine
+        let items = fetch("/api/feed")
+        List(items, item => PostCard(item))
+    end
+end
+
+run Feed
+    },
+    {
+      title: "AI Trading Bot",
+      desc: "An algorithmic trading bot using AAYU's native Zero-Copy Tensors to compute moving averages and execute trades via WebSockets.",
+      tags: ["AI/Tensors", "Math Engine", "WebSockets"],
+      code: pp TradingBot
+
+action compute_sma(prices: Tensor, window: Int) -> Tensor
+    // Native PyTorch-style Tensor math
+    let sma = prices.rolling_mean(window)
+    return sma
+end
+
+route "wss://trade_stream"
+    on_message(data)
+        let prices = Tensor.new([100], data.history)
+        let ma_fast = compute_sma(prices, 5)
+        let ma_slow = compute_sma(prices, 20)
+        
+        if ma_fast.last() > ma_slow.last()
+            print("BUY SIGNAL")
+        end
+    end
+end
+    }
+  ];
+
   return (
-    <main className="min-h-screen pt-32 pb-20">
-      <div className="container mx-auto px-4 max-w-5xl">
-        <div className="mb-12">
-          <h1 className="text-5xl font-bold mb-6 tracking-tight">Enterprise Examples</h1>
-          <p className="text-xl text-zinc-400 max-w-3xl">
-            See how AAYU scales to build massive, real-world microservices with built-in memory safety and zero dependencies.
+    <main className="min-h-screen bg-[#050505] text-white pt-24 pb-16">
+      <div className="container mx-auto px-4 max-w-7xl">
+        
+        <div className="text-center mb-20">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">Enterprise <span className="text-cyan-400">Examples</span></h1>
+          <p className="text-zinc-400 text-lg max-w-2xl mx-auto">
+            See how AAYU scales to build massive, real-world microservices with built-in memory safety, Tensors, and zero dependencies.
           </p>
         </div>
 
-        <div className="bg-zinc-900/50 border border-white/5 rounded-2xl p-8 mb-12">
-          <div className="flex items-center mb-6">
-            <Code className="text-emerald-400 w-6 h-6 mr-3" />
-            <h2 className="text-2xl font-bold">Full-Stack E-Commerce API</h2>
-          </div>
-          <p className="text-zinc-400 mb-6">
-            This example demonstrates AAYU's ability to handle complex relational data models (Structs), database synchronization, JWT authentication, and transactional integrity for a scalable e-commerce backend.
-          </p>
-          <div className="bg-black border border-white/10 rounded-xl p-6 overflow-x-auto">
-            <pre className="text-sm font-mono text-zinc-300">
-              <code>{`app EnterpriseShop
+        <div className="space-y-24">
+          {examples.map((ex, i) => (
+            <div key={i} className="grid lg:grid-cols-12 gap-12 items-center">
+              
+              <div className="lg:col-span-5">
+                <div className="flex gap-2 mb-4">
+                  {ex.tags.map(tag => (
+                    <span key={tag} className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs font-mono text-zinc-400">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <h2 className="text-3xl font-bold mb-4">{ex.title}</h2>
+                <p className="text-zinc-400 leading-relaxed mb-8">{ex.desc}</p>
+                <Link href="/tutorial" className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-bold transition-colors">
+                  Learn to build this <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
 
-# 1. Complex Memory-Safe Data Models (Structs)
-model User
-    id Int
-    email String
-    password_hash String
-    role String = "CUSTOMER"
-end
+              <div className="lg:col-span-7 relative">
+                <div className="absolute -inset-2 bg-gradient-to-tr from-purple-500/10 to-cyan-500/10 rounded-3xl blur-xl" />
+                <div className="relative bg-[#0a0a0a] border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
+                  <div className="flex items-center px-4 py-3 bg-[#111] border-b border-white/5">
+                     <Code2 className="w-4 h-4 text-zinc-500 mr-2" />
+                     <span className="text-xs font-mono text-zinc-400">example.aayu</span>
+                  </div>
+                  <pre className="p-6 font-mono text-sm leading-relaxed text-zinc-300 overflow-x-auto">
+                    <code>{ex.code}</code>
+                  </pre>
+                </div>
+              </div>
 
-model Product
-    id Int
-    name String
-    price Float
-    stock_count Int
-end
-
-model Order
-    id Int
-    user_id Int
-    total_amount Float
-end
-
-# 2. Database Sync
-action init_db
-    User.sync()
-    Product.sync()
-    Order.sync()
-end
-
-# 3. Enterprise REST API Routes
-route "/api/v1/auth/login"
-    post
-        let user = User.find(email == req.body.email)
-        if user.password_hash == req.body.password
-            respond({"token": "JWT_AAYU_SECURE_TOKEN_9384"})
-        else
-            respond({"error": "Invalid"}, 401)
-        end
-    end
-end
-
-route "/api/v1/orders/checkout"
-    post
-        let target_product = Product.findById(req.body.product_id)
-        if target_product.stock_count > 0
-            target_product.stock_count = target_product.stock_count - 1
-            target_product.save()
-            
-            let new_order = Order.create(
-                user_id: req.body.user_id,
-                total_amount: target_product.price
-            )
-            respond({"status": "success", "order_id": new_order.id})
-        end
-    end
-end
-
-# 4. Entry Point
-action main
-    init_db()
-    serve(8080)
-end
-
-run main`}</code>
-            </pre>
-          </div>
+            </div>
+          ))}
         </div>
 
-        <Link href="/" className="text-blue-400 hover:underline flex items-center text-lg font-medium">
-          <ArrowRight className="w-5 h-5 mr-2 rotate-180" /> Back to Home
-        </Link>
       </div>
     </main>
   );

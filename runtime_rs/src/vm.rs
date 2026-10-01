@@ -175,6 +175,25 @@ impl AayuVM {
                         }
                         sp += 1;
                     }
+
+                    0x61 => { // FILE_WRITE
+                        sp -= 1;
+                        let content = *stack.add(sp);
+                        sp -= 1;
+                        let filename = *stack.add(sp);
+                        
+                        if filename.is_string() && content.is_string() {
+                            let f_str = &self.string_heap[filename.as_string_idx()];
+                            let c_str = &self.string_heap[content.as_string_idx()];
+                            match fs::write(f_str, c_str) {
+                                Ok(_) => *stack.add(sp) = NanVal::bool(true),
+                                Err(_) => *stack.add(sp) = NanVal::bool(false),
+                            }
+                        } else {
+                            *stack.add(sp) = NanVal::null();
+                        }
+                        sp += 1;
+                    }
                     
                     0x65 => { // STRING_CONTAINS
                         sp -= 1;

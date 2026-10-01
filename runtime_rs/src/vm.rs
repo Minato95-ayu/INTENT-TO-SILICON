@@ -210,6 +210,30 @@ impl AayuVM {
                         sp += 1;
                     }
 
+                    0x70 => { // HTTP_GET
+                        sp -= 1;
+                        let val = *stack.add(sp);
+                        if val.is_string() {
+                            let url = &self.string_heap[val.as_string_idx()];
+                            match ureq::get(url).call() {
+                                Ok(response) => {
+                                    if let Ok(text) = response.into_string() {
+                                        self.string_heap.push(text);
+                                        *stack.add(sp) = NanVal::string(self.string_heap.len() - 1);
+                                    } else {
+                                        *stack.add(sp) = NanVal::null();
+                                    }
+                                },
+                                Err(_) => {
+                                    *stack.add(sp) = NanVal::null();
+                                }
+                            }
+                        } else {
+                            *stack.add(sp) = NanVal::null();
+                        }
+                        sp += 1;
+                    }
+
                     _ => {}
                 }
             }

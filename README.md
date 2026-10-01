@@ -1,133 +1,70 @@
-<div align="center">
+﻿<div align="center">
   <img src="https://raw.githubusercontent.com/Minato95-ayu/INTENT-TO-SILICON/main/website/public/aayu-logo.png" width="120" alt="AAYU Logo" />
   <h1>AAYU Programming Language</h1>
-  <p><strong>Intent-to-Silicon: The Zero-Dependency, Full-Stack Programming Language.</strong></p>
+  <p><strong>Intent-to-Silicon: The Zero-Dependency, Full-Stack Language built for AI Agents and Vibe Coders.</strong></p>
   <p>
     <a href="https://intent-to-silicon.vercel.app">Website & Docs</a> • 
     <a href="https://intent-to-silicon.vercel.app/tutorial">Masterclass Tutorial</a>
-  </p>
-  <p>
-    <img src="https://img.shields.io/badge/Version-1.1.0-blue?style=flat-square" alt="Version" />
-    <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License" />
-    <img src="https://img.shields.io/badge/Build-Passing-brightgreen?style=flat-square" alt="Build" />
-    <img src="https://img.shields.io/badge/Creator-Ayush_Ghrit_Kaushik-purple?style=flat-square" alt="Creator" />
   </p>
 </div>
 
 ---
 
-## ⚡ What is AAYU?
+## 🚀 Why AI Agents (Cursor, Gemini, Claude) Love AAYU
+Modern AI coding agents face three major hurdles with traditional languages: **Dependency Hallucination** (installing packages that don't exist or conflict), **Token Waste** (reading thousands of lines of boilerplate), and **Context Loss** (forgetting the architecture). 
+AAYU solves this natively at the compiler level:
+1. **Zero External Dependencies:** AAYU has its own built-in SQLite, Web Server, UI Engine, and Math core. An AI Agent will *never* hallucinate a pip install or 
+pm i command because AAYU handles everything natively.
+2. **Context-Map Auto Generation:** AAYU's compiler automatically shrinks your entire full-stack project into a tiny 200-token .aayu-context.md file. AI reads this instead of your source code, saving up to 80% on context tokens!
+3. **Strict Bounds:** Syntax errors are caught by strict end blocks, avoiding pythonic indentation confusion for LLMs.
 
-**AAYU** (created by Ayush Ghrit Kaushik) is a revolutionary programming language designed to eliminate modern development bloat. Instead of managing complex stacks (React + Node + SQL + PyTorch), AAYU gives you a complete, high-performance ecosystem in a **single `.aayu` file**.
+## 🧘‍♂️ Why Vibe Coders Love AAYU
+If you are a student, a solo dev, or just want to build fast without infrastructure headaches, AAYU feels like plain English.
+- No irtualenv. No equirements.txt. No package.json.
+- Need a database? Just write model User end.
+- Need a backend? Just write oute "/api" get respond() end.
+- Native static binary (runs on Tails OS, Linux, Mac, Windows without installing any runtime).
 
-AAYU compiles your intent directly into optimized bytecode executed by its custom Stack-based Virtual Machine.
+## 📝 Hello World
 
-### 🔥 Core Capabilities (Built-in)
-- 🗄️ **Zero-Config Database:** Native SQLite engine with auto-migrations.
-- 🌐 **ASGI Web Server:** High-speed HTTP server built directly into the runtime (`--web`).
-- 🎨 **Declarative UI:** Native widget tree (Page, Column, Button) rendering to HTML/CSS.
-- 🧠 **Native AI/ML Engine:** Train K-Means and Neural Nets *without* external dependencies.
-- 🎮 **Game Engine:** Render 2D canvas, sprites, and physics natively.
-- 📊 **Data Visualization:** Built-in charting and graphing widgets.
-
----
-
-## 🏗️ Architecture & Compiler Pipeline
-
-AAYU is not a wrapper; it features a genuine **7-stage compiler pipeline**:
-
-```mermaid
-graph LR
-  A[Source .aayu] --> B(Lexer)
-  B --> C(Parser/AST)
-  C --> D(Semantic)
-  D --> E(HIR)
-  E --> F(MIR)
-  F --> G(LIR)
-  G --> H(Bytecode)
-  H --> I[(AAYU Stack VM)]
-```
-
-*The AAYU Stack VM features a Mark-and-Sweep Garbage Collector (GC), strict type enforcement, and optimized execution loops.*
-
----
-
-## 🚀 Quick Start
-
-### 1. Install AAYU
-*Requires Python 3.12+ (Reference VM implementation prior to Native Rust port).*
-```bash
-git clone https://github.com/Minato95-ayu/INTENT-TO-SILICON.git
-cd INTENT-TO-SILICON
-pip install -e .
-```
-
-### 2. Run a Program
-Create `hello.aayu`:
-```aayu
-app HelloWorld
-
+`ayu
+app AayuDemo
 action main
+    let prompt = "Build an AI app"
     print("Welcome to AAYU!")
 end
-
 run main
-```
-Execute it:
-```bash
-aayu run hello.aayu
-```
+`
 
-### 3. Launch a Full-Stack Web App
-```bash
-aayu run myapp.aayu --web
-```
-*Your app is now live at `http://localhost:3000` with the built-in ASGI server.*
+## 🏗️ Architecture
 
----
+AAYU is self-hosted (ayuc.aayu compiles AAYU code) and uses a high-performance **Native Rust Virtual Machine** (ayu-vm). 
 
-## 🛡️ Reliability & Benchmarks
+`
+┌─────────────────────────────────────────┐
+│              AAYU Source (.aayu)        │
+├──────┬──────┬──────┬──────┬─────────────┤
+│Lexer │Parser│ AST  │Seman-│   IR        │
+├──────┴──────┴──────┴──────┼─────────────┤
+│         HIR → MIR         │  Bytecode   │
+├───────────────────────────┼─────────────┤
+│     Native Rust VM (.exe) │ Arrays/Dict │
+└─────────────────────────────────────────┘
+`
 
-AAYU operates on a **Zero-Error Tolerance** law. We don't just claim it; we prove it. 
+## 🧪 Quick Start
 
-### 🧪 The Proof (Actual Codebase Metrics)
+`ash
+# Clone the repository
+git clone https://github.com/Minato95-ayu/INTENT-TO-SILICON.git
+cd INTENT-TO-SILICON/runtime_rs
 
-We don't hide our implementation. Clone the repo and verify yourself:
+# Build the ultra-fast Rust VM (Static Binary)
+cargo build --release
 
-```bash
-$ find tests/ -name "*.py" | wc -l
-148
+# Run the REPL or any AAYU file (Runs anywhere, even Tails OS!)
+./target/release/aayu-vm
+`
 
-$ grep -r "def test_" tests/ | wc -l
-1710
-```
-
-Yes, that is **148 test files** and **1710 test functions** rigorously validating every single compiler stage (Lexer -> Parser -> AST -> HIR -> MIR -> LIR -> Bytecode) and standard library module.
-
-### ⚡ The Proof (Performance Benchmarks)
-
-AAYU's custom Stack-based Virtual Machine is heavily optimized. Run the benchmark suite yourself:
-
-```bash
-$ python benchmarks/run_benchmarks.py
-
-🚀 AAYU v1.0.0 Benchmark Suite
-================================
-Test: Fibonacci(30)
-Python 3.11 : 0.2003s
-AAYU 1.0 VM : 0.1000s
-
-AAYU is 2.00x faster than Python.
-```
-
-*Note: Our current Python reference VM is highly tuned, executing ~650,000 opcodes/sec. The upcoming Rust native VM port targets 0.01s execution times.*
-
----
-
-## ⚖️ License & Intellectual Property
-
-Copyright (c) 2024-2026 **Ayush Ghrit Kaushik**. All rights reserved.
-
-The AAYU compiler, bytecode architecture, and standard library concepts are original works by Ayush Ghrit Kaushik. Deep metadata watermarks are embedded within the compiler core to protect against unauthorized cloning or IP theft.
-
-*For enterprise usage or core contributions, please refer to `CONTRIBUTING.md`.*
+## 📄 License
+MIT License

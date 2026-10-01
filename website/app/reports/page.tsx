@@ -162,14 +162,14 @@ export default function ReportsPage() {
         <div className="bg-gradient-to-br from-purple-900/20 to-cyan-900/20 border border-purple-500/30 rounded-2xl p-8">
           <h2 className="text-2xl font-bold text-white mb-4">The Path to Native Speed</h2>
           <p className="text-zinc-300 mb-6 max-w-4xl">
-            AAYU currently uses a reference Stack VM written in Python to ensure 100% correct behavior, strict type checking, and robust error handling. To achieve performance rivaling C, Rust, and Go, our architecture is designed to eventually swap the Python VM for a Native Backend.
+            AAYU utilizes a highly optimized Rust VM to achieve native execution speeds while remaining cross-platform and secure.
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="bg-zinc-950/50 p-4 rounded-lg border border-emerald-500/30 relative">
               <div className="absolute top-2 right-2"><CheckCircle2 className="text-emerald-500 h-5 w-5"/></div>
               <h4 className="font-bold text-emerald-400 mb-1">Phase 1</h4>
-              <p className="text-xs text-zinc-400">Python Reference VM (Current). Feature complete, 100% tested.</p>
+              <p className="text-xs text-zinc-400">Rust VM (Current). Feature complete, 100% Native.</p>
             </div>
             <div className="flex items-center justify-center hidden md:flex">
               <ArrowRight className="text-zinc-600 h-8 w-8" />

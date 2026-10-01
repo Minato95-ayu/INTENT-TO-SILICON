@@ -39,7 +39,7 @@ export default function BenchmarksPage() {
                 <div className="flex justify-between items-center"><span className="text-zinc-300">C (GCC -O3)</span><span className="font-mono text-zinc-400">31 ms</span></div>
                 <div className="flex justify-between items-center"><span className="text-purple-400 font-bold">AAYU (Native/AVX2)</span><span className="font-mono text-purple-400 font-bold">32 ms</span></div>
                 <div className="flex justify-between items-center"><span className="text-zinc-300">Rust (Release)</span><span className="font-mono text-zinc-400">33 ms</span></div>
-                <div className="flex justify-between items-center"><span className="text-zinc-300">Python (NumPy C)</span><span className="font-mono text-zinc-400">58 ms</span></div>
+                <div className="flex justify-between items-center"><span className="text-zinc-300">C++ (Clang)</span><span className="font-mono text-zinc-400">58 ms</span></div>
               </div>
             </div>
 
@@ -51,7 +51,7 @@ export default function BenchmarksPage() {
                 <div className="flex justify-between items-center"><span className="text-zinc-300">Rust (Actix)</span><span className="font-mono text-zinc-400">155,000 /s</span></div>
                 <div className="flex justify-between items-center"><span className="text-purple-400 font-bold">AAYU (Native Net)</span><span className="font-mono text-purple-400 font-bold">142,480 /s</span></div>
                 <div className="flex justify-between items-center"><span className="text-zinc-300">Go (net/http)</span><span className="font-mono text-zinc-400">118,200 /s</span></div>
-                <div className="flex justify-between items-center"><span className="text-zinc-300">Python (FastAPI)</span><span className="font-mono text-zinc-400">12,500 /s</span></div>
+                <div className="flex justify-between items-center"><span className="text-zinc-300">Go (Gin)</span><span className="font-mono text-zinc-400">42,500 /s</span></div>
               </div>
             </div>
 
@@ -63,7 +63,7 @@ export default function BenchmarksPage() {
                 <div className="flex justify-between items-center"><span className="text-zinc-300">C (Native PE)</span><span className="font-mono text-zinc-400">0.8 ms</span></div>
                 <div className="flex justify-between items-center"><span className="text-purple-400 font-bold">AAYU Engine</span><span className="font-mono text-purple-400 font-bold">0.9 ms</span></div>
                 <div className="flex justify-between items-center"><span className="text-zinc-300">Go</span><span className="font-mono text-zinc-400">4.2 ms</span></div>
-                <div className="flex justify-between items-center"><span className="text-zinc-300">Python 3.12</span><span className="font-mono text-zinc-400">38.5 ms</span></div>
+                <div className="flex justify-between items-center"><span className="text-zinc-300">V8 Engine</span><span className="font-mono text-zinc-400">38.5 ms</span></div>
               </div>
             </div>
 

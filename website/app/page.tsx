@@ -1,10 +1,10 @@
-﻿'use client';
+'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ChevronRight, Terminal, Copy, Check, Bot, Sparkles, Zap, Server, Database, LayoutTemplate } from 'lucide-react';
+import { ChevronRight, Terminal, Copy, Check, Bot, Sparkles, Zap, Server, Database, LayoutTemplate, ShieldCheck } from 'lucide-react';
 
-const codeString = // Welcome to AAYU: The AI-Agent Language
+const codeString = `// Welcome to AAYU: The AI-Agent Language
 app CoreApp
 
 // 1. Built-in Database Models
@@ -31,12 +31,12 @@ end
 // 4. Built-in UI
 Page Home
     Column
-        Text("Hello AAYU!")
+        Text("Built for Silicon. Loved by AI.")
         Button("Run AI", onClick: train_ai)
     end
 end
 
-run Home;
+run Home`;
 
 export default function Home() {
   const [displayed, setDisplayed] = useState<string[]>([]);
@@ -55,7 +55,7 @@ export default function Home() {
         setDone(true);
         clearInterval(interval);
       }
-    }, 150);
+    }, 80);
 
     return () => clearInterval(interval);
   }, []);
@@ -90,18 +90,18 @@ export default function Home() {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm text-zinc-300 mb-6">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              v1.1.0 is now live — Built for AI Agents
+              v1.1.0 Developer Preview
             </div>
             
             <h1 className="text-5xl lg:text-7xl font-extrabold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-br from-white via-white to-zinc-500">
-              The Language for <br/>
+              Built for Silicon.<br/>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">
-                AI Coding Agents.
+                Loved by AI.
               </span>
             </h1>
             
             <p className="text-lg text-zinc-400 mb-8 leading-relaxed max-w-xl">
-              AAYU is a Single-File Full-Stack programming language. We replaced the chaos of Webpack, pip, and Docker with a unified Rust-based Bytecode VM. Built-in Database, Server, Zero-Copy Tensors, and UI. Fast, honest, and zero-config.
+              The first programming language designed natively for the AI Era. AAYU solves token limits and hallucination bugs for AI agents by packing Database, Server, UI, and Math directly into a fast Rust Bytecode VM.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
@@ -121,13 +121,12 @@ export default function Home() {
             
             <div className="flex flex-wrap gap-4 text-sm font-semibold text-zinc-500">
               <span className="flex items-center gap-1"><Zap className="w-4 h-4 text-yellow-500"/> ~4.5x Faster than Python</span>
-              <span className="flex items-center gap-1"><Server className="w-4 h-4 text-cyan-500"/> Native Rust VM</span>
-              <span className="flex items-center gap-1"><Database className="w-4 h-4 text-emerald-500"/> Zero-Copy Tensors</span>
+              <span className="flex items-center gap-1"><ShieldCheck className="w-4 h-4 text-emerald-500"/> Zero Hallucinations</span>
             </div>
           </div>
 
           {/* CODE SHOWCASE */}
-          <div className="relative">
+          <div className="relative mt-8 lg:mt-0">
             <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 rounded-2xl blur-xl pointer-events-none" />
             <div className="relative bg-[#0a0a0a] border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
               <div className="flex items-center px-4 py-3 bg-[#111] border-b border-white/5">
@@ -156,27 +155,26 @@ export default function Home() {
       <section className="bg-[#050505] border-y border-white/5 py-24">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">No Fake Benchmarks. <span className="text-purple-400">Just Real Engineering.</span></h2>
+            <h2 className="text-3xl md:text-5xl font-bold mb-4">Vibe Coders & AI Agents. <span className="text-purple-400">Finally United.</span></h2>
             <p className="text-zinc-400 max-w-3xl mx-auto text-lg">
-              We are not trying to beat C. AAYU is an interpreted Bytecode VM written in Rust. It takes ~40ms to run a 1M loop, making it roughly <strong>5x faster than Python</strong>, but it is not C. Our goal is ecosystem unity, not raw mathematical C-speed.
+              Don't waste time learning 10 different frameworks. Use your brain, act like an AI, and build tech empires. AAYU's architecture auto-checks errors, prevents AI hallucinations, and drastically reduces Context Token waste. 
             </p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-[#0a0a0a] border border-white/5 p-8 rounded-2xl hover:border-purple-500/30 transition-all">
               <Bot className="w-10 h-10 text-purple-400 mb-6" />
-              <h3 className="text-xl font-bold mb-3">Zero Hallucinations</h3>
+              <h3 className="text-xl font-bold mb-3">Solves Token Issues</h3>
               <p className="text-zinc-400 text-sm leading-relaxed">
-                AI agents (Cursor, Copilot, Gemini) break when they guess missing packages. AAYU has Database, Auth, UI, and Tensors built directly into the Rust Runtime.
+                By uniting Frontend, Backend, and DB into one file, AAYU drastically reduces the context window size. AI agents stay laser-focused without getting lost in folder hierarchies.
               </p>
             </div>
 
             <div className="bg-[#0a0a0a] border border-white/5 p-8 rounded-2xl hover:border-cyan-500/30 transition-all">
               <LayoutTemplate className="w-10 h-10 text-cyan-400 mb-6" />
-              <h3 className="text-xl font-bold mb-3">Single-File Full-Stack</h3>
+              <h3 className="text-xl font-bold mb-3">Zero Hallucinations</h3>
               <p className="text-zinc-400 text-sm leading-relaxed">
-                Forget 
-pm install, equirements.txt, or Dockerizing Postgres. AAYU brings models, routes, logic, and declarative UI into one beautiful .aayu file.
+                AI can't hallucinate non-existent pip packages if the language has no packages. Tensors, HTTP, and DB are statically baked into the runtime. It physically blocks the AI from making structural mistakes.
               </p>
             </div>
 
@@ -184,8 +182,33 @@ pm install, equirements.txt, or Dockerizing Postgres. AAYU brings models, route
               <Database className="w-10 h-10 text-emerald-400 mb-6" />
               <h3 className="text-xl font-bold mb-3">AI & Tensors Native</h3>
               <p className="text-zinc-400 text-sm leading-relaxed">
-                PyTorch and Pandas functionality are not external libraries. AAYU natively maps multidimensional strided Tensors (Zero-Copy) inside its memory heap.
+                PyTorch and Pandas functionality are built in. AAYU natively maps multidimensional strided Tensors (Zero-Copy) inside its memory heap.
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FOUNDER SECTION */}
+      <section className="py-24 container mx-auto px-4 max-w-7xl">
+        <div className="bg-gradient-to-br from-[#111] to-[#0a0a0a] border border-white/10 rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center gap-12">
+          <div className="w-48 h-48 md:w-64 md:h-64 shrink-0 rounded-full border-4 border-purple-500/30 overflow-hidden relative shadow-[0_0_50px_rgba(168,85,247,0.2)]">
+            <img 
+              src="https://avatars.githubusercontent.com/u/104391629?v=4" 
+              alt="Ayush Ghrit Kaushik"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div>
+            <h2 className="text-3xl font-bold mb-2">Created by <span className="text-purple-400">Ayush Ghrit Kaushik</span></h2>
+            <p className="text-zinc-500 font-mono text-sm mb-6">@Minato95-ayu • Creator & Lead Architect</p>
+            <p className="text-zinc-300 text-lg leading-relaxed mb-6">
+              "I built AAYU because modern programming has become bloated. We spend more time configuring Docker and fixing pip dependencies than actually building products. AAYU is the reset button. It is the first programming language designed from the ground up for Vibe Coders and AI Agents to build Silicon-ready empires."
+            </p>
+            <div className="flex gap-4">
+              <a href="https://github.com/Minato95-ayu" target="_blank" rel="noopener noreferrer" className="px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl font-semibold transition-colors">
+                GitHub Profile
+              </a>
             </div>
           </div>
         </div>

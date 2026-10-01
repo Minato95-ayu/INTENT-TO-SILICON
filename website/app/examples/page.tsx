@@ -1,4 +1,4 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 import { ArrowRight, Code2, Database, Layout, ShieldAlert } from 'lucide-react';
 
 export default function ExamplesPage() {
@@ -7,7 +7,7 @@ export default function ExamplesPage() {
       title: "AAYUGram (Social Network)",
       desc: "A full-stack Instagram clone built entirely in a single .aayu file. Features JWT Auth, SQLite Relational Models, Image Uploads, and a declarative feed UI.",
       tags: ["Full-Stack", "Auth", "UI Engine"],
-      code: pp AAYUGram
+      code: `app AAYUGram
 
 model Post
     id Int
@@ -32,13 +32,13 @@ Page Feed
     end
 end
 
-run Feed
+run Feed`
     },
     {
       title: "AI Trading Bot",
       desc: "An algorithmic trading bot using AAYU's native Zero-Copy Tensors to compute moving averages and execute trades via WebSockets.",
       tags: ["AI/Tensors", "Math Engine", "WebSockets"],
-      code: pp TradingBot
+      code: `app TradingBot
 
 action compute_sma(prices: Tensor, window: Int) -> Tensor
     // Native PyTorch-style Tensor math
@@ -56,7 +56,7 @@ route "wss://trade_stream"
             print("BUY SIGNAL")
         end
     end
-end
+end`
     }
   ];
 

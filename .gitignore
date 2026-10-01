@@ -45,3 +45,8 @@ vscode-aayu/node_modules/
 generated/
 !website/public/releases/*.exe
 
+
+# Protect Intellectual Property (Ayush's Secret Research)
+*SECRET*.md
+*MASTER_PLAN*.md
+*ARCHITECTURE_V*.md

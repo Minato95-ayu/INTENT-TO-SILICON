@@ -265,7 +265,7 @@ export default function HomePage() {
             {/* Install command */}
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
               <div className="flex-1 max-w-md bg-[#0a0a0a] border border-white/10 rounded-xl px-5 py-3.5 flex items-center justify-between group hover:border-purple-500/40 transition-colors">
-                <code className="text-sm text-green-400 font-mono">pip install aayu-lang</code>
+                <code className="text-sm text-green-400 font-mono">./aayu run app.aayu</code>
                 <button onClick={handleCopy} className="text-zinc-500 hover:text-white transition-colors ml-3">
                   {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
                 </button>

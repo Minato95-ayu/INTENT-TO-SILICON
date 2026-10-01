@@ -1,5 +1,4 @@
 ﻿use std::fs;
-use ureq;
 
 #[derive(Clone, Copy)]
 pub struct NanVal(u64);
@@ -173,6 +172,21 @@ impl AayuVM {
                             }
                         } else {
                             *stack.add(sp) = NanVal::null();
+                        }
+                        sp += 1;
+                    }
+                    
+                    0x65 => { // STRING_CONTAINS
+                        sp -= 1;
+                        let needle = *stack.add(sp);
+                        sp -= 1;
+                        let haystack = *stack.add(sp);
+                        if needle.is_string() && haystack.is_string() {
+                            let n_str = &self.string_heap[needle.as_string_idx()];
+                            let h_str = &self.string_heap[haystack.as_string_idx()];
+                            *stack.add(sp) = NanVal::bool(h_str.contains(n_str));
+                        } else {
+                            *stack.add(sp) = NanVal::bool(false);
                         }
                         sp += 1;
                     }

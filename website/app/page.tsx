@@ -298,7 +298,7 @@ export default function Home() {
         <div className="bg-gradient-to-br from-[#111] to-[#0a0a0a] border border-white/10 rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center gap-12">
           <div className="w-48 h-48 md:w-64 md:h-64 shrink-0 rounded-full border-4 border-purple-500/30 overflow-hidden relative shadow-[0_0_50px_rgba(168,85,247,0.2)]">
             <img 
-              src="https://avatars.githubusercontent.com/u/104391629?v=4" 
+              src="" 
               alt="Ayush Ghrit Kaushik"
               className="w-full h-full object-cover"
             />

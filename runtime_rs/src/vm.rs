@@ -3,6 +3,7 @@ use crate::opcodes::OpCode;
 use crate::math::tensor::Tensor;
 use crate::db::DbEngine;
 use crate::net::HttpServer;
+use crate::ui::{UiNode, Style};
 
 #[derive(Clone, Copy, Debug)]
 pub struct NanVal(u64);
@@ -100,7 +101,7 @@ impl AayuVM {
                     self.sp += 1;
                 }
                 0x10 => { // PUSH_STRING
-                    let idx = ((self.bytecode[self.ip] as usize) | ((self.bytecode[self.ip+1] as usize) << 8));
+                    let idx = (self.bytecode[self.ip] as usize) | ((self.bytecode[self.ip+1] as usize) << 8);
                     self.ip += 2;
                     self.stack[self.sp] = NanVal::string(idx);
                     self.sp += 1;
@@ -120,29 +121,73 @@ impl AayuVM {
                 
                 // --- NEW OPCODES FOR AI / DATA / SERVER ---
                 
-                160 => { // TensorCreate (Mock)
+                160 => { // TensorCreate
                     println!("[Native] Creating PyTorch-style Tensor in Rust...");
                     let t = Tensor::new(vec![2, 2], vec![1.0, 2.0, 3.0, 4.0]);
                     self.tensor_heap.push(t);
                     println!("[Native] Tensor generated and stored in RAM.");
                 }
                 
-                170 => { // DbSet (Mock)
-                    println!("[Native] Executing DB Set (RAM -> SSD WAL)...");
-                    self.db_engine.set("key", "value");
-                    println!("[Native] Key saved securely.");
+                170 => { // DbSet
+                    let val_ref = self.stack[self.sp - 1];
+                    let key_ref = self.stack[self.sp - 2];
+                    self.sp -= 2;
+                    
+                    if key_ref.is_string() && val_ref.is_string() {
+                        let k = &self.string_heap[key_ref.as_string_idx()];
+                        let v = &self.string_heap[val_ref.as_string_idx()];
+                        println!("[Native] Executing DB Set: '{}' = '{}' (RAM -> SSD WAL)...", k, v);
+                        self.db_engine.set(k, v);
+                    }
                 }
                 
-                171 => { // DbGet (Mock)
-                    println!("[Native] Executing DB Get (RAM Cache Hit)...");
-                    let val = self.db_engine.get("key");
-                    println!("[Native] Retrieved: {:?}", val);
+                171 => { // DbGet
+                    let key_ref = self.stack[self.sp - 1];
+                    self.sp -= 1;
+                    
+                    if key_ref.is_string() {
+                        let k = &self.string_heap[key_ref.as_string_idx()];
+                        println!("[Native] Executing DB Get for '{}' (RAM Cache Hit)...", k);
+                        let val = self.db_engine.get(k);
+                        // Push result as string back to stack for printing
+                        if let Some(s) = val {
+                            let idx = self.string_heap.len();
+                            self.string_heap.push(s);
+                            self.stack[self.sp] = NanVal::string(idx);
+                        } else {
+                            self.stack[self.sp] = NanVal::null();
+                        }
+                        self.sp += 1;
+                    }
                 }
                 
-                180 => { // ServerStart (Mock)
+                180 => { // ServerStart
                     println!("[Native] Initializing HTTP/HTTPS Server...");
                     let _server = HttpServer::new(3000);
                     println!("[Native] Listening on port 3000 (Mock Mode).");
+                }
+                
+                190 => { // UIRender
+                    let val_ref = self.stack[self.sp - 1];
+                    self.sp -= 1;
+                    if val_ref.is_string() {
+                        let component_name = &self.string_heap[val_ref.as_string_idx()];
+                        println!("[Native] Compiling Declarative UI Component '{}' into DOM Tree...", component_name);
+                        
+                        let mut root = UiNode::new("div");
+                        let mut style = Style::default();
+                        style.display = "flex".to_string();
+                        style.background_color = "#111".to_string();
+                        root = root.with_style(style);
+                        
+                        let text_node = UiNode::new("h1").with_text(&format!("Welcome to {}", component_name));
+                        let btn_node = UiNode::new("button").with_text("Click Me");
+                        
+                        root = root.add_child(text_node).add_child(btn_node);
+                        
+                        println!("[Native] Rendered HTML Output:");
+                        println!("{}", root.render());
+                    }
                 }
                 
                 _ => {

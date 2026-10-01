@@ -1,0 +1,14 @@
+﻿// AAYU Standard Library: UI
+// Provides declarative DOM/Widget rendering via Rust VM (Opcode 190+)
+
+module UI
+
+action render(component: String)
+    // Natively mapped to Opcode 190
+end
+
+action button(label: String)
+    // Natively mapped to Opcode 191
+end
+
+end

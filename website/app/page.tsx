@@ -180,7 +180,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-bold mb-4">Designed for the <span className="text-purple-400">Future of Code.</span></h2>
-            <p className="text-zinc-400 max-w-2xl mx-auto">AAYU solves the fundamental problems faced by modern AI coding agents and human "Vibe Coders". No more hallucinated packages or broken environments.</p>
+            <p className="text-zinc-400 max-w-2xl mx-auto">AAYU is ready for AI agents to build and you can build anything from scratch. AAYU solves the fundamental problems faced by modern AI coding agents and human "Vibe Coders". No more hallucinated packages or broken environments.</p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
@@ -268,3 +268,4 @@ export default function HomePage() {
     </main>
   );
 }
+

@@ -1,0 +1,6 @@
+﻿print("Starting Native Engine Test...")
+Tensor.new([2, 2], [1.0, 2.0, 3.0, 4.0])
+Db.set("username", "admin")
+Db.get("username")
+Server.start(3000)
+print("All Native Modules executed successfully without C files!")

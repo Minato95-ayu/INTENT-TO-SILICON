@@ -1,5 +1,4 @@
 ﻿use std::fs;
-// Ureq for native web requests
 use ureq;
 
 #[derive(Clone, Copy)]
@@ -9,7 +8,7 @@ const TAG_INT: u64 = 0x7FF8_0000_0000_0000;
 const TAG_FLOAT: u64 = 0x7FF9_0000_0000_0000;
 const TAG_BOOL: u64 = 0x7FFA_0000_0000_0000;
 const TAG_NULL: u64 = 0x7FFB_0000_0000_0000;
-const TAG_STR: u64  = 0x7FFC_0000_0000_0000; // Pointer/Index to String Heap
+const TAG_STR: u64  = 0x7FFC_0000_0000_0000;
 
 impl NanVal {
     #[inline(always)] pub fn int(v: i64) -> Self { NanVal(TAG_INT | (v as u64 & 0x0000_FFFF_FFFF_FFFF)) }
@@ -43,17 +42,19 @@ impl std::fmt::Display for NanVal {
 
 pub struct AayuVM {
     stack: [NanVal; 4096],
+    locals: [NanVal; 256],
     sp: usize,
     ip: usize,
     bytecode: Vec<u8>,
     constants: Vec<NanVal>,
-    string_heap: Vec<String>, // Arena for strings
+    pub string_heap: Vec<String>, 
 }
 
 impl AayuVM {
     pub fn new(bytecode: Vec<u8>, constants: Vec<NanVal>, strings: Vec<String>) -> Self {
         Self {
             stack: [NanVal::null(); 4096],
+            locals: [NanVal::null(); 256],
             sp: 0,
             ip: 0,
             bytecode,
@@ -67,41 +68,87 @@ impl AayuVM {
         let bc = self.bytecode.as_ptr();
         let consts = self.constants.as_ptr();
         let stack = self.stack.as_mut_ptr();
+        let locals = self.locals.as_mut_ptr();
+        
+        let mut ip = self.ip;
+        let mut sp = self.sp;
 
         unsafe {
             loop {
-                if self.ip >= len { break; }
-                let op = *bc.add(self.ip);
-                self.ip += 1;
+                if ip >= len { break; }
+                let op = *bc.add(ip);
+                ip += 1;
 
                 match op {
                     0x00 => break, // HALT
 
                     0x01 => { // PUSH_CONST
-                        let idx = ((*bc.add(self.ip) as usize) << 8) | *bc.add(self.ip + 1) as usize;
-                        self.ip += 2;
-                        *stack.add(self.sp) = *consts.add(idx);
-                        self.sp += 1;
+                        let idx = ((*bc.add(ip) as usize) << 8) | *bc.add(ip + 1) as usize;
+                        ip += 2;
+                        *stack.add(sp) = *consts.add(idx);
+                        sp += 1;
                     }
 
-                    0x02 => { self.sp -= 1; } // POP
+                    0x02 => { sp -= 1; } // POP
                     
-                    0x10 => { // ADD (Math)
-                        self.sp -= 1;
-                        let b = *stack.add(self.sp);
-                        self.sp -= 1;
-                        let a = *stack.add(self.sp);
+                    0x05 => { // LOAD_VAR
+                        let slot = *bc.add(ip) as usize;
+                        ip += 1;
+                        *stack.add(sp) = *locals.add(slot);
+                        sp += 1;
+                    }
+
+                    0x06 => { // STORE_VAR
+                        let slot = *bc.add(ip) as usize;
+                        ip += 1;
+                        sp -= 1;
+                        *locals.add(slot) = *stack.add(sp);
+                    }
+
+                    0x10 => { // ADD 
+                        sp -= 1;
+                        let b = *stack.add(sp);
+                        sp -= 1;
+                        let a = *stack.add(sp);
                         if a.is_int() && b.is_int() {
-                            *stack.add(self.sp) = NanVal::int(a.as_int() + b.as_int());
+                            *stack.add(sp) = NanVal::int(a.as_int() + b.as_int());
                         } else {
-                            *stack.add(self.sp) = NanVal::null();
+                            *stack.add(sp) = NanVal::null();
                         }
-                        self.sp += 1;
+                        sp += 1;
+                    }
+                    
+                    0x14 => { // LESS_THAN
+                        sp -= 1;
+                        let b = *stack.add(sp);
+                        sp -= 1;
+                        let a = *stack.add(sp);
+                        if a.is_int() && b.is_int() {
+                            *stack.add(sp) = NanVal::bool(a.as_int() < b.as_int());
+                        } else {
+                            *stack.add(sp) = NanVal::bool(false);
+                        }
+                        sp += 1;
+                    }
+                    
+                    0x20 => { // JUMP
+                        let offset = ((*bc.add(ip) as usize) << 8) | *bc.add(ip + 1) as usize;
+                        ip = offset;
+                    }
+                    
+                    0x21 => { // JUMP_IF_FALSE
+                        let offset = ((*bc.add(ip) as usize) << 8) | *bc.add(ip + 1) as usize;
+                        ip += 2;
+                        sp -= 1;
+                        let cond = *stack.add(sp);
+                        if cond.is_bool() && !cond.as_bool() {
+                            ip = offset;
+                        }
                     }
 
                     0x51 => { // PRINT
-                        self.sp -= 1;
-                        let val = *stack.add(self.sp);
+                        sp -= 1;
+                        let val = *stack.add(sp);
                         if val.is_string() {
                             let s = &self.string_heap[val.as_string_idx()];
                             println!("{}", s);
@@ -110,73 +157,32 @@ impl AayuVM {
                         }
                     }
 
-                    0x60 => { // FILE_READ (Pops filename string, pushes content string)
-                        self.sp -= 1;
-                        let val = *stack.add(self.sp);
+                    0x60 => { // FILE_READ
+                        sp -= 1;
+                        let val = *stack.add(sp);
                         if val.is_string() {
                             let filename = &self.string_heap[val.as_string_idx()];
                             match fs::read_to_string(filename) {
                                 Ok(content) => {
                                     self.string_heap.push(content);
-                                    *stack.add(self.sp) = NanVal::string(self.string_heap.len() - 1);
+                                    *stack.add(sp) = NanVal::string(self.string_heap.len() - 1);
                                 },
                                 Err(_) => {
-                                    *stack.add(self.sp) = NanVal::null();
+                                    *stack.add(sp) = NanVal::null();
                                 }
                             }
                         } else {
-                            *stack.add(self.sp) = NanVal::null();
+                            *stack.add(sp) = NanVal::null();
                         }
-                        self.sp += 1;
+                        sp += 1;
                     }
 
-                    0x61 => { // FILE_WRITE (Pops content, pops filename, pushes bool)
-                        self.sp -= 1;
-                        let content_val = *stack.add(self.sp);
-                        self.sp -= 1;
-                        let filename_val = *stack.add(self.sp);
-                        
-                        if filename_val.is_string() && content_val.is_string() {
-                            let filename = &self.string_heap[filename_val.as_string_idx()];
-                            let content = &self.string_heap[content_val.as_string_idx()];
-                            match fs::write(filename, content) {
-                                Ok(_) => *stack.add(self.sp) = NanVal::bool(true),
-                                Err(_) => *stack.add(self.sp) = NanVal::bool(false),
-                            }
-                        } else {
-                            *stack.add(self.sp) = NanVal::bool(false);
-                        }
-                        self.sp += 1;
-                    }
-
-                    0x70 => { // HTTP_GET (Pops URL string, fetches, pushes response string)
-                        self.sp -= 1;
-                        let val = *stack.add(self.sp);
-                        if val.is_string() {
-                            let url = &self.string_heap[val.as_string_idx()];
-                            // Perform blocking HTTP GET using ureq
-                            match ureq::get(url).call() {
-                                Ok(response) => {
-                                    if let Ok(text) = response.into_string() {
-                                        self.string_heap.push(text);
-                                        *stack.add(self.sp) = NanVal::string(self.string_heap.len() - 1);
-                                    } else {
-                                        *stack.add(self.sp) = NanVal::null();
-                                    }
-                                },
-                                Err(_) => {
-                                    *stack.add(self.sp) = NanVal::null();
-                                }
-                            }
-                        } else {
-                            *stack.add(self.sp) = NanVal::null();
-                        }
-                        self.sp += 1;
-                    }
-
-                    _ => {} // skip unknown
+                    _ => {}
                 }
             }
         }
+        
+        self.ip = ip;
+        self.sp = sp;
     }
 }

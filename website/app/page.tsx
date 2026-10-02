@@ -1,269 +1,322 @@
-﻿'use client';
-
-import Link from 'next/link';
+'use client';
 import { useState, useEffect } from 'react';
-import { Terminal, Code2, Zap, Server, Database, BrainCircuit, Cpu, Layers, Layout, ArrowRight, Download, CheckCircle2, Shield, Lock, Globe, MessageSquare, Image as ImageIcon, FileJson, FileDigit, Boxes, FileCode2 } from 'lucide-react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { ChevronRight, Terminal, Copy, Check, Bot, Sparkles, Zap, Server, Database, LayoutTemplate, ShieldCheck, Activity } from 'lucide-react';
+
+const codeString = `// Welcome to AAYU: The AI-Agent Language
+app CoreApp
+
+// 1. Built-in Database Models
+model User
+    id Int
+    username String
+end
+
+// 2. Built-in Web Server
+route "/api/users"
+    get
+        let users = User.all()
+        respond(users)
+    end
+end
+
+// 3. Built-in Tensors (Zero-Copy)
+action train_ai
+    let X = Tensor.new([2, 2], [1.0, 2.0, 3.0, 4.0])
+    let Y = X.transpose()
+    print("Training finished in 40ms.")
+end
+
+// 4. Built-in UI
+Page Home
+    Column
+        Text("Built for Silicon. Loved by AI.")
+        Button("Run AI", onClick: train_ai)
+    end
+end
+
+run Home`;
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState(0);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [displayed, setDisplayed] = useState<string[]>([]);
+  const [copied, setCopied] = useState(false);
+  const [done, setDone] = useState(false);
 
   useEffect(() => {
-    setIsLoaded(true);
+    const lines = codeString.split('\n');
+    let currentLine = 0;
+    
+    const interval = setInterval(() => {
+      if (currentLine < lines.length) {
+        setDisplayed(lines.slice(0, currentLine + 1));
+        currentLine++;
+      } else {
+        setDone(true);
+        clearInterval(interval);
+      }
+    }, 80);
+
+    return () => clearInterval(interval);
   }, []);
 
-  const libraries = [
-    { name: "aayu-gemini", desc: "Native Google Gemini AI integration", icon: <BrainCircuit className="w-6 h-6 text-blue-400" /> },
-    { name: "aayu-ml", desc: "Built-in machine learning models & clustering", icon: <Layers className="w-6 h-6 text-purple-400" /> },
-    { name: "aayu-auth", desc: "JWT, Session, and OAuth ready", icon: <Shield className="w-6 h-6 text-emerald-400" /> },
-    { name: "aayu-crypto", desc: "Blazing fast cryptography & hashing", icon: <Lock className="w-6 h-6 text-zinc-400" /> },
-    { name: "aayu-http", desc: "High-performance async HTTP client", icon: <Globe className="w-6 h-6 text-cyan-400" /> },
-    { name: "aayu-vision", desc: "Computer vision and image processing", icon: <ImageIcon className="w-6 h-6 text-rose-400" /> },
-    { name: "aayu-rag", desc: "Retrieval-Augmented Generation toolkit", icon: <Database className="w-6 h-6 text-orange-400" /> },
-    { name: "aayu-dataframe", desc: "Pandas-like data manipulation", icon: <FileJson className="w-6 h-6 text-green-400" /> },
-    { name: "aayu-math", desc: "Advanced mathematical computing", icon: <FileDigit className="w-6 h-6 text-yellow-400" /> }
-  ];
+  const handleCopy = () => {
+    navigator.clipboard.writeText("git clone https://github.com/Minato95-ayu/INTENT-TO-SILICON.git");
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
-  const comparisons = [
-    { lang: "AAYU (JIT)", speed: 98, color: "bg-blue-500", time: "50ms" },
-    { lang: "Rust", speed: 100, color: "bg-orange-500", time: "48ms" },
-    { lang: "Go", speed: 85, color: "bg-cyan-500", time: "80ms" },
-    { lang: "Node.js", speed: 60, color: "bg-green-500", time: "180ms" },
-    { lang: "Python", speed: 15, color: "bg-yellow-500", time: "1.2s" },
-  ];
-
-  const tabs = [
-    {
-      name: "1. Full-Stack in One File",
-      icon: <Server className="w-4 h-4 mr-2" />,
-      code: `app AAYUGram
-
-// 1. Database Model (SQLite Built-in)
-model Post
-    username String
-    content String
-    likes Int
-end
-
-// 2. REST API Route
-route "/api/feed"
-    get
-        let posts = Post.all()
-        respond(posts)
-    end
-end
-
-// 3. Declarative UI
-Page Home
-    Column padding="20px"
-        Heading "AAYUGram" color="#E1306C"
-        Button "Create Post" onClick="createPost"
-    end
-end`,
-      output: `[AAYU] Compiling AAYUGram.aayu -> Rust JIT Engine...
-[AAYU] SQLite In-Memory Database Initialized.
-[AAYU] Migrated model 'Post' successfully.
-[AAYU] Web Server started on http://localhost:3000
-[AAYU] API Server started on http://localhost:8080
---------------------------------------------------
-=> Visit http://localhost:3000 to see your UI
-=> API ready at GET /api/feed`
-    },
-    {
-      name: "2. Native AI/ML",
-      icon: <BrainCircuit className="w-4 h-4 mr-2" />,
-      code: `app AIAssistant
-
-import aayu-gemini
-import aayu-ml
-
-action analyze_data
-    // Train a model locally
-    let dataset = ml::load("data.csv")
-    let model = ml::KMeans(clusters: 3)
-    model.train(dataset)
+  const highlightLine = (line: string) => {
+    if (line.trim().startsWith('//')) return <span className="text-zinc-500">{line}</span>;
     
-    // Call Gemini API natively
-    let prompt = "Summarize these clusters: " + model.summary()
-    let response = gemini::generate(prompt)
-    
-    print(response)
-end`,
-      output: `[AAYU] Importing aayu-gemini (v1.0.0)...
-[AAYU] Importing aayu-ml (v1.0.0)...
-[ML] Training KMeans with 3 clusters on 10,000 rows...
-[ML] Converged in 12 iterations (14ms).
-[Gemini] Sending prompt via HTTP/2 stream...
-[Gemini] Response: "The clusters represent 3 distinct user segments..."
-=> Execution completed in 850ms.`
-    }
-  ];
+    return line.split(/(\s+|"[\s\S]*?"|{|\}|\(|\))/g).map((token, i) => {
+      if (!token) return null;
+      if (token.startsWith('"') && token.endsWith('"')) return <span key={i} className="text-yellow-300">{token}</span>;
+      if (['app', 'model', 'route', 'action', 'Page', 'run', 'end', 'let', 'get'].includes(token)) return <span key={i} className="text-purple-400 font-bold">{token}</span>;
+      if (['Int', 'String', 'Tensor', 'Column', 'Text', 'Button'].includes(token)) return <span key={i} className="text-cyan-400">{token}</span>;
+      if (['respond', 'print', 'all', 'new', 'transpose'].includes(token)) return <span key={i} className="text-blue-400">{token}</span>;
+      return <span key={i} className="text-zinc-200">{token}</span>;
+    });
+  };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-zinc-300 font-sans selection:bg-blue-500/30 overflow-x-hidden">
+    <main className="min-h-screen bg-black selection:bg-purple-500/30">
       
-      {/* GLOW BACKGROUND */}
-      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-blue-600/20 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-purple-600/20 blur-[120px] rounded-full pointer-events-none" />
-
       {/* HERO SECTION */}
-      <div className="relative max-w-7xl mx-auto px-6 pt-32 pb-20 flex flex-col items-center text-center">
-        <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-8 animate-fade-in">
-          <Zap className="w-4 h-4" />
-          <span>AAYU v1.1.0 is now live</span>
-        </div>
+      <section className="relative pt-32 pb-20 overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none" />
         
-        <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-white mb-6 leading-[1.1]">
-          INTENT TO <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">SILICON.</span>
-        </h1>
-        
-        <p className="text-xl md:text-2xl text-zinc-400 max-w-3xl mb-10 font-light">
-          The first <strong className="text-zinc-200">single-file full-stack</strong> programming language. 
-          Database, Backend, Frontend, and AI — all in one native binary. Zero dependencies.
-        </p>
-        
-        <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-          <Link href="/download" className="group relative inline-flex items-center justify-center px-8 py-4 bg-white text-black font-bold rounded-xl transition-all hover:scale-105 active:scale-95">
-            <Download className="w-5 h-5 mr-2" />
-            Download Executable
-          </Link>
-          <Link href="/playground" className="group inline-flex items-center justify-center px-8 py-4 bg-zinc-900 border border-zinc-800 text-white font-semibold rounded-xl hover:bg-zinc-800 transition-all">
-            <Terminal className="w-5 h-5 mr-2 group-hover:text-blue-400 transition-colors" />
-            Try in Playground
-          </Link>
-        </div>
-      </div>
-
-      {/* PROOF OF CONCEPT - INTERACTIVE CODE EDITOR */}
-      <div className="max-w-6xl mx-auto px-6 py-12 relative z-10">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold text-white mb-4">The Proof is in the Code</h2>
-          <p className="text-zinc-400">No configuration files. No package.json. No Dockerfiles.</p>
-        </div>
-
-        <div className="bg-[#0c0c0e] rounded-2xl border border-zinc-800/50 shadow-2xl overflow-hidden flex flex-col md:flex-row">
-          
-          {/* Editor Side */}
-          <div className="w-full md:w-1/2 border-b md:border-b-0 md:border-r border-zinc-800/50 flex flex-col">
-            <div className="flex bg-[#121215] border-b border-zinc-800/50 overflow-x-auto">
-              {tabs.map((tab, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveTab(idx)}
-                  className={`flex items-center px-6 py-3 text-sm font-medium transition-colors border-b-2 whitespace-nowrap ${
-                    activeTab === idx 
-                      ? 'border-blue-500 text-blue-400 bg-blue-500/5' 
-                      : 'border-transparent text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/30'
-                  }`}
-                >
-                  {tab.icon}
-                  {tab.name}
+        <div className="container mx-auto px-4 max-w-7xl grid lg:grid-cols-2 gap-12 items-center relative z-10">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm text-zinc-300 mb-6">
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              v1.1.0 Developer Preview
+            </div>
+            
+            <h1 className="text-5xl lg:text-7xl font-extrabold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-br from-white via-white to-zinc-500">
+              Built for Silicon.<br/>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">
+                Loved by AI.
+              </span>
+            </h1>
+            
+            <p className="text-lg text-zinc-400 mb-8 leading-relaxed max-w-xl">
+              The first programming language designed natively for the AI Era. AAYU solves token limits and hallucination bugs for AI agents by packing Database, Server, UI, and Math directly into a fast Rust Bytecode VM.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 mb-8">
+              <div className="flex items-center bg-[#111] border border-white/10 rounded-xl px-4 py-3">
+                <span className="text-purple-400 font-mono text-sm mr-3">$</span>
+                <code className="text-sm font-mono text-zinc-300">git clone https://github.com/Minato95-ayu/INTENT-TO-SILICON</code>
+                <button onClick={handleCopy} className="text-zinc-500 hover:text-white transition-colors ml-3">
+                  {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
                 </button>
-              ))}
-            </div>
-            <div className="p-4 bg-[#0c0c0e] flex-1 overflow-auto">
-              <pre className="font-mono text-[13px] leading-loose">
-                <code className="text-zinc-300">
-                  {tabs[activeTab].code.split('\n').map((line, i) => (
-                    <div key={i} className="table-row">
-                      <span className="table-cell text-zinc-700 pr-4 select-none">{i + 1}</span>
-                      <span className="table-cell">
-                        {line.replace(/\b(app|model|route|get|post|action|Page|end|let|return)\b/g, '$$$1')}
-                      </span>
-                    </div>
-                  ))}
-                </code>
-              </pre>
-            </div>
-          </div>
-          
-          {/* Terminal Side */}
-          <div className="w-full md:w-1/2 bg-[#050505] flex flex-col">
-            <div className="flex items-center px-4 py-3 bg-[#0a0a0a] border-b border-zinc-800/50">
-              <div className="flex space-x-2">
-                <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
-                <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
-                <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
               </div>
-              <span className="ml-4 text-xs font-mono text-zinc-500">aayu run main.aayu</span>
+              <Link href="/tutorial">
+                <Button className="h-full px-6 bg-purple-600 text-white hover:bg-purple-500 font-bold rounded-xl gap-2 py-3">
+                  <Terminal className="w-4 h-4" /> Start Tutorial
+                </Button>
+              </Link>
             </div>
-            <div className="p-6 font-mono text-sm flex-1 overflow-auto">
-              <pre className="text-zinc-400 leading-relaxed whitespace-pre-wrap">
-                {tabs[activeTab].output}
-              </pre>
+            
+            <div className="flex flex-wrap gap-4 text-sm font-semibold text-zinc-500">
+              <span className="flex items-center gap-1"><Zap className="w-4 h-4 text-yellow-500"/> ~4.5x Faster than Python</span>
+              <span className="flex items-center gap-1"><ShieldCheck className="w-4 h-4 text-emerald-500"/> Zero Hallucinations</span>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* PERFORMANCE BENCHMARKS */}
-      <div className="max-w-7xl mx-auto px-6 py-20 border-t border-zinc-800/50">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-white mb-4">C-Level Performance</h2>
-          <p className="text-zinc-400">AAYU compiles down to an optimized Rust-based JIT interpreter. Benchmarked on calculating Fibonacci(25).</p>
-        </div>
-
-        <div className="max-w-3xl mx-auto bg-[#0a0a0c] p-8 rounded-2xl border border-zinc-800">
-          <div className="space-y-6">
-            {comparisons.map((item, idx) => (
-              <div key={idx} className="relative">
-                <div className="flex justify-between mb-1 text-sm font-medium">
-                  <span className={idx === 0 ? "text-blue-400 font-bold" : "text-zinc-400"}>{item.lang}</span>
-                  <span className="text-zinc-500">{item.time}</span>
+          {/* CODE SHOWCASE */}
+          <div className="relative mt-8 lg:mt-0">
+            <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 rounded-2xl blur-xl pointer-events-none" />
+            <div className="relative bg-[#0a0a0a] border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
+              <div className="flex items-center px-4 py-3 bg-[#111] border-b border-white/5">
+                <div className="flex gap-1.5 mr-4">
+                  <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                  <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                  <div className="w-3 h-3 rounded-full bg-green-500/80" />
                 </div>
-                <div className="w-full bg-zinc-900 rounded-full h-3 overflow-hidden">
-                  <div 
-                    className={`h-3 rounded-full ${item.color} ${isLoaded ? 'transition-all duration-1000 ease-out' : 'w-0'}`}
-                    style={{ width: isLoaded ? `${item.speed}%` : '0%' }}
-                  ></div>
+                <span className="text-xs font-mono text-zinc-500">app.aayu</span>
+              </div>
+              <div className="p-5 font-mono text-[13px] leading-[1.7] min-h-[500px]">
+                {displayed.map((line, i) => (
+                  <div key={i} className="flex">
+                    <span className="w-8 text-right text-zinc-700 text-xs select-none mr-4 mt-[3px] shrink-0">{i + 1}</span>
+                    <div>{highlightLine(line)}</div>
+                  </div>
+                ))}
+                {!done && <span className="inline-block w-2 h-5 bg-purple-400 ml-12 animate-pulse rounded-sm" />}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* PROOF SECTION: TOKEN CONSUMPTION */}
+      <section className="py-24 bg-[#050505] border-y border-white/5">
+         <div className="container mx-auto px-4 max-w-7xl">
+         <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6">Built to save <span className="text-purple-400">Context Tokens.</span></h2>
+              <p className="text-zinc-400 mb-6 leading-relaxed">
+                Giving an AI a complex React/Node/SQL project burns through its context window and reduces reasoning quality. Vibe Coders struggle because AI agents lose context.
+              </p>
+              <ul className="space-y-4 text-zinc-300">
+                <li className="flex items-start gap-3">
+                  <div className="mt-1 bg-green-500/20 p-1 rounded"><Check className="w-4 h-4 text-green-400" /></div>
+                  <div>
+                    <strong className="text-white block">AAYU solves Context limits</strong>
+                    AAYU unites the Frontend, Backend, Database, and Math into ONE file. No more tracking imports across 50 files.
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="mt-1 bg-green-500/20 p-1 rounded"><Check className="w-4 h-4 text-green-400" /></div>
+                  <div>
+                    <strong className="text-white block">Self-Correcting Ecosystem</strong>
+                    The AAYU compiler explicitly blocks structural hallucination. There is no `npm install` for AI to hallucinate. Everything is native.
+                  </div>
+                </li>
+              </ul>
+            </div>
+            
+            <div className="bg-gradient-to-b from-zinc-900 to-[#0a0a0a] border border-white/10 p-8 rounded-2xl">
+                <h4 className="font-mono text-xs text-zinc-500 mb-6">TOKEN CONSUMPTION (Full Stack App)</h4>
+                
+                <div className="mb-6">
+                  <div className="flex justify-between text-sm mb-2">
+                    <span className="text-red-400 font-semibold">Node.js + React (Standard)</span>
+                    <span className="text-zinc-400">~8,500 Tokens</span>
+                  </div>
+                  <div className="h-3 bg-zinc-800 rounded-full overflow-hidden">
+                    <div className="h-full bg-red-500 w-[85%]" />
+                  </div>
+                </div>
+
+                <div className="mb-6">
+                  <div className="flex justify-between text-sm mb-2">
+                    <span className="text-yellow-400 font-semibold">Python + FastAPI + SQLAlchemy</span>
+                    <span className="text-zinc-400">~4,200 Tokens</span>
+                  </div>
+                  <div className="h-3 bg-zinc-800 rounded-full overflow-hidden">
+                    <div className="h-full bg-yellow-500 w-[42%]" />
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span className="text-green-400 font-semibold">AAYU (Single File Full-Stack)</span>
+                    <span className="text-zinc-400 font-bold">~300 Tokens</span>
+                  </div>
+                  <div className="h-3 bg-zinc-800 rounded-full overflow-hidden relative">
+                    <div className="absolute inset-0 bg-green-400/20 animate-pulse" />
+                    <div className="h-full bg-green-500 w-[5%]" />
+                  </div>
+                </div>
+            </div>
+         </div>
+         </div>
+      </section>
+
+      {/* BENCHMARKS & LIBRARIES SECTION */}
+      <section className="py-24 border-b border-white/5">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold mb-4">No Fake Claims. <span className="text-cyan-400">Pure Benchmarks.</span></h2>
+            <p className="text-zinc-400 max-w-3xl mx-auto text-lg">
+              AAYU doesn't try to beat C. It provides extreme ease-of-use while outperforming traditional interpreted languages using a custom Rust-based bytecode VM.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-12">
+            
+            {/* Speed Benchmark */}
+            <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl overflow-hidden">
+              <div className="bg-[#111] p-4 border-b border-white/5 flex items-center gap-3">
+                <Activity className="w-5 h-5 text-cyan-400" />
+                <h3 className="font-bold text-lg">Live Speed Test (Loop 1M)</h3>
+              </div>
+              <div className="p-6">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="text-xs uppercase tracking-wider text-zinc-500 border-b border-white/5">
+                      <th className="pb-3">Language</th>
+                      <th className="pb-3">Time (ms)</th>
+                      <th className="pb-3">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-sm divide-y divide-white/5">
+                    <tr className="bg-cyan-900/10">
+                      <td className="py-4 font-bold text-cyan-400">AAYU Rust VM</td>
+                      <td className="py-4 font-mono text-cyan-200">40.3 ms</td>
+                      <td className="py-4 text-green-400">~4.5x Faster</td>
+                    </tr>
+                    <tr>
+                      <td className="py-4 text-zinc-300">Python 3.12</td>
+                      <td className="py-4 font-mono text-zinc-400">179.2 ms</td>
+                      <td className="py-4 text-zinc-500">Baseline</td>
+                    </tr>
+                    <tr>
+                      <td className="py-4 text-zinc-300">C (-O2)</td>
+                      <td className="py-4 font-mono text-zinc-400">9.0 ms</td>
+                      <td className="py-4 text-zinc-500">Hardware Native</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Libraries comparison */}
+            <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl overflow-hidden">
+              <div className="bg-[#111] p-4 border-b border-white/5 flex items-center gap-3">
+                <Database className="w-5 h-5 text-emerald-400" />
+                <h3 className="font-bold text-lg">Native Ecosystem vs Chaos</h3>
+              </div>
+              <div className="p-6">
+                <div className="flex gap-4 mb-4 items-center">
+                  <div className="w-1/2 p-4 rounded-xl border border-red-500/20 bg-red-500/5 text-center">
+                    <p className="text-red-400 font-bold mb-2">Other Languages</p>
+                    <p className="text-zinc-400 text-xs leading-relaxed">
+                      npm install, pip install, virtualenv, Prisma, Express, PyTorch, React, Webpack. Endless configuration.
+                    </p>
+                  </div>
+                  <div className="text-zinc-600 font-bold text-xl">VS</div>
+                  <div className="w-1/2 p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5 text-center">
+                    <p className="text-emerald-400 font-bold mb-2">AAYU Engine</p>
+                    <p className="text-zinc-300 text-xs leading-relaxed">
+                      <strong>Zero Dependencies.</strong> Database Engine, HTTP Server, Tensor Math, and UI Widgets are pre-compiled into the Rust VM.
+                    </p>
+                  </div>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* OFFICIAL LIBRARIES GRID */}
-      <div className="max-w-7xl mx-auto px-6 py-20 border-t border-zinc-800/50">
-        <div className="flex flex-col items-center mb-16 text-center">
-          <Boxes className="w-12 h-12 text-blue-500 mb-6" />
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">The AAYU Ecosystem</h2>
-          <p className="text-zinc-400 max-w-2xl text-lg">
-            Stop pip installing. Stop npm installing. AAYU comes with an incredible standard library built specifically for modern Agentic workflows and Full-Stack apps.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {libraries.map((lib, i) => (
-            <div key={i} className="bg-zinc-900/40 border border-zinc-800 p-6 rounded-2xl hover:bg-zinc-800/50 transition-colors group cursor-default">
-              <div className="mb-4 p-3 bg-zinc-900 rounded-xl inline-block border border-zinc-800 group-hover:border-zinc-600 transition-colors">
-                {lib.icon}
-              </div>
-              <h3 className="text-lg font-bold text-white mb-2">{lib.name}</h3>
-              <p className="text-zinc-400 text-sm">{lib.desc}</p>
             </div>
-          ))}
-        </div>
-      </div>
 
-      {/* FOOTER */}
-      <footer className="border-t border-zinc-900 mt-20">
-        <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between">
-          <div className="flex items-center space-x-2 mb-4 md:mb-0">
-            <div className="w-6 h-6 rounded bg-blue-500 flex items-center justify-center">
-              <span className="text-white font-bold text-xs">A</span>
-            </div>
-            <span className="text-white font-semibold tracking-tight">AAYU</span>
-            <span className="text-zinc-600 text-sm ml-2">v1.1.0</span>
-          </div>
-          
-          <div className="flex space-x-6 text-sm text-zinc-500">
-            <Link href="/tutorial" className="hover:text-white transition-colors">Tutorial</Link>
-            <Link href="/docs" className="hover:text-white transition-colors">Documentation</Link>
-            <Link href="https://github.com/Minato95-ayu/INTENT-TO-SILICON" className="hover:text-white transition-colors">GitHub</Link>
           </div>
         </div>
-      </footer>
-    </div>
+      </section>
+
+      {/* FOUNDER SECTION */}
+      <section className="py-24 container mx-auto px-4 max-w-7xl">
+        <div className="bg-gradient-to-br from-[#111] to-[#0a0a0a] border border-white/10 rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center gap-12">
+          <div className="w-48 h-48 md:w-64 md:h-64 shrink-0 rounded-full border-4 border-purple-500/30 overflow-hidden relative shadow-[0_0_50px_rgba(168,85,247,0.2)]">
+            <img 
+              src="/ayush.png" 
+              alt="Ayush Ghrit Kaushik"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div>
+            <h2 className="text-3xl font-bold mb-2">Created by <span className="text-purple-400">Ayush Ghrit Kaushik</span></h2>
+            <p className="text-zinc-500 font-mono text-sm mb-6">@Minato95-ayu • Creator & Lead Architect</p>
+            <p className="text-zinc-300 text-lg leading-relaxed mb-6">
+              "I built AAYU because modern programming has become bloated. We spend more time configuring Docker and fixing pip dependencies than actually building products. AAYU is the reset button. It is the first programming language designed from the ground up for Vibe Coders and AI Agents to build Silicon-ready empires."
+            </p>
+            <div className="flex gap-4">
+              <a href="https://github.com/Minato95-ayu" target="_blank" rel="noopener noreferrer" className="px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl font-semibold transition-colors">
+                GitHub Profile
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }

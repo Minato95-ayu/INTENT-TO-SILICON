@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -31,15 +31,14 @@ export function Navbar() {
             <Link href="/docs" className="hover:text-white transition-colors">Documentation</Link>
             <Link href="/tutorial" className="hover:text-white transition-colors text-purple-400 font-bold">Tutorial</Link>
             <Link href="/reports" className="hover:text-white transition-colors text-cyan-400 font-bold">Benchmarks & Proofs</Link>
-            
-            <Link href="/playground" className="hover:text-white transition-colors text-emerald-400 font-bold flex items-center gap-1">
+            <Link href="/examples" className="hover:text-white transition-colors">Examples</Link>
+            <Link href="/download" className="hover:text-white transition-colors flex items-center gap-1">
               <span className="relative flex h-2 w-2 mr-1">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
               </span>
-              Playground
+              Download
             </Link>
-            <Link href="/download" className="hover:text-white transition-colors">Download</Link>
           </nav>
         </div>
         <div className="flex items-center gap-4">
@@ -48,6 +47,11 @@ export function Navbar() {
               <GitBranch className="h-4 w-4 text-white" />
               <span className="sr-only">GitHub</span>
             </div>
+          </Link>
+          <Link href="https://github.com/Minato95-ayu/INTENT-TO-SILICON" target="_blank" className="hidden sm:flex">
+            <Button className="bg-white text-black hover:bg-zinc-200 font-semibold shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+              View on GitHub
+            </Button>
           </Link>
           <button
             className="lg:hidden text-zinc-400 hover:text-white p-2"
@@ -65,8 +69,20 @@ export function Navbar() {
           <Link href="/docs" onClick={() => setMobileMenuOpen(false)} className="text-zinc-400 hover:text-white transition-colors block">Documentation</Link>
           <Link href="/tutorial" onClick={() => setMobileMenuOpen(false)} className="text-purple-400 font-bold hover:text-purple-300 transition-colors block">Tutorial</Link>
           <Link href="/reports" onClick={() => setMobileMenuOpen(false)} className="text-cyan-400 font-bold hover:text-cyan-300 transition-colors block">Benchmarks & Proofs</Link>
-          <Link href="/playground" onClick={() => setMobileMenuOpen(false)} className="text-emerald-400 font-bold hover:text-emerald-300 transition-colors block">Playground</Link>
-          <Link href="/download" onClick={() => setMobileMenuOpen(false)} className="text-zinc-400 hover:text-white transition-colors flex items-center gap-2">Download</Link>
+          <Link href="/examples" onClick={() => setMobileMenuOpen(false)} className="text-zinc-400 hover:text-white transition-colors block">Examples</Link>
+          <Link href="/download" onClick={() => setMobileMenuOpen(false)} className="text-zinc-400 hover:text-white transition-colors flex items-center gap-2">
+            <span className="relative flex h-2 w-2 mr-1">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+            </span>
+            Download AAYU
+          </Link>
+          <div className="pt-4 border-t border-zinc-800 flex flex-col gap-4">
+            <Link href="https://github.com/Minato95-ayu/INTENT-TO-SILICON" target="_blank" className="flex items-center gap-2 text-zinc-400 hover:text-white">
+              <GitBranch className="h-5 w-5" />
+              GitHub Repository
+            </Link>
+          </div>
         </div>
       )}
     </header>

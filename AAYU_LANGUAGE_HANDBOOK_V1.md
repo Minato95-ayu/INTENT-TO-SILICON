@@ -34,6 +34,7 @@ let missing = null         # Null (Handled safely)
 
 ```aayu
 # If / Else
+let cores = 8
 if cores > 4
     print("Fast PC")
 elif cores == 4
@@ -118,14 +119,16 @@ let all_users = find User
 
 ```aayu
 # 1. File I/O (Native)
+file::write("data.txt", "Hello AAYU")
 let text = file::read("data.txt")
-file::write("log.txt", "Server started")
 
 # 2. Web & Network (Native)
 let json = http::get("https://api.github.com/zen")
 
 # 3. AI / Math (Native)
-let prediction = ai::linear_regression(data_x, data_y)
+let data_x = [1, 2, 3]
+let data_y = [2, 4, 6]
+let prediction = ml::linear_regression_fit(data_x, data_y, 100)
 ```
 
 ---
@@ -144,15 +147,15 @@ model Note {
 route "/api/notes"
     get
         let notes = find Note
-        respond(notes)
+        respond notes
     end
 end
 
 # Frontend UI
 Page Home
     Column
-        Text("My Notes")
-        Button("Fetch", onClick: fetchNotes)
+        Text "My Notes"
+        Button "Fetch" onClick="fetchNotes"
     end
 end
 

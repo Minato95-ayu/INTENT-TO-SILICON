@@ -51,7 +51,7 @@ class SemanticAnalyzer:
             ("http::get", 1), ("http::post", 2), ("ai::generate", 1),
             ("ml::kmeans_fit", 3), ("ml::kmeans_predict", 2),
             ("ml::linear_regression_fit", 3), ("ml::linear_regression_predict", 2),
-            ("file.read", 1), ("file.write", 2), ("file.append", 2), ("file.delete", 1), ("file.exists", 1), ("file.mkdir", 1),
+            ("file::read", 1), ("file::write", 2), ("file::append", 2), ("file::delete", 1), ("file::exists", 1), ("file::mkdir", 1),
             ("json::parse", 1), ("json::stringify", 1),
             ("math::sin", 1), ("math::cos", 1), ("math::tan", 1), ("math::sqrt", 1), ("math::pow", 2),
             ("math::abs", 1), ("math::round", 1), ("math::min", 2), ("math::max", 2),

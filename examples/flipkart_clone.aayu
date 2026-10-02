@@ -48,7 +48,7 @@ action init_db()
 end
 
 action add_to_cart(p_title, p_price)
-    db::insert("CartItem", { "title": p_title, "price": p_price })
+    insert CartItem { title = p_title, price = p_price  }
     cart_count = db::count("CartItem", {})
     return true
 end

@@ -1,7 +1,19 @@
-app DatabaseDemo
+﻿app DatabaseDemo
+
+model User {
+    name: String
+    age: Int
+}
+
 action main
     print("Database connection initialized.")
+    print("Inserting user...")
+    insert User { name = "Ayush", age = 29 }
+    
     print("Querying users...")
-    print("Found 120 users.")
+    let users = find User
+    print(users)
+    print("Database test complete.")
 end
+
 run main

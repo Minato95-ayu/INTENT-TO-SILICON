@@ -72,6 +72,8 @@ class Parser:
                 self._consume(TokenType.OPERATOR, "Expect '=' after field name.", value="=")
                 value = self._parse_expression()
                 fields[key] = value
+                if self._match(TokenType.SYMBOL, ","):
+                    pass # consume optional comma
             self._consume(TokenType.SYMBOL, "Expect '}' after insert fields.", value="}")
             return InsertNode(line=line, column=col, model_name=model_name, fields=fields)
 

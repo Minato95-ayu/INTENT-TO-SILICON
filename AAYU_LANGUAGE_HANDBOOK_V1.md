@@ -98,17 +98,17 @@ let config = {
 **AAYU Solution:** `model`. It acts as a Class in memory AND a SQLite table automatically!
 
 ```aayu
-model User
-    id Int
-    name String
-    is_active Bool = true
-end
+model User {
+    id: Int
+    name: String
+    is_active: Bool
+}
 
-# Usage (Memory + Database instantly synced)
-let u = User.new(name: "Ayush")
-u.save() # Instantly writes to built-in SQLite
+# Usage (Memory + Database instantly synced using native keywords)
+insert User { id = 1, name = "Ayush", is_active = true }
 
-let all_users = User.all() # Fetch from DB
+# Fetch from DB natively
+let all_users = find User
 ```
 
 ---

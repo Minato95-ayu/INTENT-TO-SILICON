@@ -8,6 +8,7 @@ pub mod db;
 pub mod net;
 pub mod ui;
 pub mod vm;
+pub mod jit;
 
 use vm::{AayuVM, NanVal};
 
@@ -16,12 +17,12 @@ fn main() {
     
     if args.len() >= 3 && args[1] == "--sum" {
         let n: i64 = args[2].parse().expect("N must be an integer");
-        run_sum(n);
+        run_sum(n, args.contains(&"--jit".to_string()));
         return;
     }
 
     if args.len() == 1 {
-        println!("AAYU Native REPL (v1.1.0) - Fast Silicon Engine");
+        println!("AAYU Native REPL (v1.2.0) - Intent-to-Silicon Engine");
         return;
     }
 
@@ -54,11 +55,15 @@ fn main() {
     }
 
     let bytecode = data[pos..].to_vec();
-    let mut vm = AayuVM::new(bytecode, vec![], strings);
-    vm.run();
+    if args.contains(&"--jit".to_string()) {
+        jit::compile_and_run(&bytecode, &[]);
+    } else {
+        let mut vm = AayuVM::new(bytecode, vec![], strings);
+        vm.run();
+    }
 }
 
-fn run_sum(n: i64) {
+fn run_sum(n: i64, use_jit: bool) {
     let constants = vec![NanVal::int(0), NanVal::int(n), NanVal::int(1)];
     let mut bc: Vec<u8> = vec![];
     bc.extend([0x01,0,0, 0x06,0]);           // sum = 0
@@ -73,8 +78,13 @@ fn run_sum(n: i64) {
     let end = bc.len();
     bc[patch] = (end>>8) as u8; bc[patch+1] = (end&0xFF) as u8;
     bc.extend([0x05,0, 81, 0x00]);         // print(sum); halt -> Print opcode is 81
-    let mut vm = AayuVM::new(bc, constants, vec![]);
-    let t = std::time::Instant::now();
-    vm.run();
-    println!("AAYU_VM_NS {}", t.elapsed().as_nanos());
+    
+    if use_jit {
+        jit::compile_and_run(&bc, &constants);
+    } else {
+        let mut vm = AayuVM::new(bc, constants, vec![]);
+        let t = std::time::Instant::now();
+        vm.run();
+        println!("AAYU_VM_NS {}", t.elapsed().as_nanos());
+    }
 }

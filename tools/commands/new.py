@@ -24,7 +24,7 @@ def handle(args):
         
         main_aayu = os.path.join(project_name, "main.aayu")
         with open(main_aayu, "w") as f:
-            f.write(f'app {app_name}\n\npage Home\n    title "Welcome to {app_name}"\n    text "Your AAYU app is running!"\nend\n\nrun')
+            f.write(f'app {app_name}\n\npage Home\n    title "Welcome to {app_name}"\n    text "Your AAYU app is running!"\nend\n\nrun Home')
             
         aayu_json = os.path.join(project_name, "aayu.json")
         with open(aayu_json, "w") as f:

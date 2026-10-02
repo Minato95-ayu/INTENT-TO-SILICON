@@ -11,7 +11,7 @@ tests/** linguist-vendored
 examples/** linguist-vendored
 scripts/** linguist-vendored
 .archive/** linguist-vendored
-*.py linguist-vendored
+# *.py linguist-vendored
 *.c linguist-vendored
 *.cpp linguist-vendored
 *.js linguist-vendored

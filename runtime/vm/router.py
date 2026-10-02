@@ -307,11 +307,17 @@ class APIRouter:
         class AayuHTTPServer(ThreadingHTTPServer):
             allow_reuse_address = True
 
-        self.server = AayuHTTPServer((self.host, self.port), RequestHandler)
-        self.port = self.server.server_address[1]
-        import threading
-        self.thread = threading.Thread(target=self.server.serve_forever, daemon=True, name="aayu-api-router")
-        self.thread.start()
+        try:
+            self.server = AayuHTTPServer((self.host, self.port), RequestHandler)
+            self.port = self.server.server_address[1]
+            import threading
+            self.thread = threading.Thread(target=self.server.serve_forever, daemon=True, name="aayu-api-router")
+            self.thread.start()
+        except OSError as e:
+            if "in use" in str(e).lower():
+                logger.warning(f"Port {self.port} already in use. Assuming API server is already running globally.")
+            else:
+                raise e
 
     def stop(self):
         if self.server is not None:

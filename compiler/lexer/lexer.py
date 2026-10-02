@@ -15,11 +15,11 @@ from .tokens import Token, TokenType, KEYWORDS, OPERATORS, SYMBOLS
 
 class Lexer:
     def __init__(self, source: str):
-        self.source = source
+        self.source = source.lstrip("\ufeff")
         self.pos = 0
         self.line = 1
         self.column = 1
-        self.length = len(source)
+        self.length = len(self.source)
 
     def tokenize(self) -> List[Token]:
         tokens = []

@@ -7,4 +7,4 @@ page Home
     text count
 end
 
-run
+run Home

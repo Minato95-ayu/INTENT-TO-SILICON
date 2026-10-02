@@ -24,7 +24,7 @@ page Home
     text "Welcome to AAYU! Your first app is running successfully."
 end
 
-run
+run Home
 """,
     "02_counter": """app counter
 
@@ -52,7 +52,7 @@ page Home
     end
 end
 
-run
+run Home
 """,
     "03_login": """app login
 
@@ -78,7 +78,7 @@ page Login
     end
 end
 
-run
+run Home
 """,
     "04_todo": """app todo
 
@@ -103,7 +103,7 @@ page Todo
     end
 end
 
-run
+run Home
 """,
     "05_calculator": """app calculator
 
@@ -130,7 +130,7 @@ page Calculator
     end
 end
 
-run
+run Home
 """,
     "06_dashboard": """app dashboard
 
@@ -156,7 +156,7 @@ page Dashboard
     end
 end
 
-run
+run Home
 """,
     "07_notes": """app notes
 
@@ -178,7 +178,7 @@ page Notes
     end
 end
 
-run
+run Home
 """,
     "08_chat_ui": """app chat_ui
 
@@ -202,7 +202,7 @@ page Chat
     end
 end
 
-run
+run Home
 """,
     "09_weather_ui": """app weather_ui
 
@@ -227,7 +227,7 @@ page Weather
     end
 end
 
-run
+run Home
 """,
     "10_whatsapp_clone": """app whatsapp_clone
 
@@ -260,7 +260,7 @@ page App
     end
 end
 
-run
+run Home
 """
 }
 

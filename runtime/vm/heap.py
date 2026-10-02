@@ -1,0 +1,44 @@
+# ==============================================================================
+# COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
+# 
+# This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
+# GitHub: https://github.com/Minato95-ayu
+# 
+# UNAUTHORIZED COPYING, REPRODUCTION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
+# ANY ATTEMPT TO CLONE OR CREATE DERIVATIVE WORKS FROM AAYU WILL BE SUBJECT
+# TO LEGAL ACTION.
+# ==============================================================================
+
+from runtime.vm.allocator import Allocator
+from runtime.vm.gc import GarbageCollector
+
+class Heap:
+    __slots__ = ['allocator', 'gc']
+    '\n    Central memory manager exposing a reference table.\n    Bridges Allocator and GarbageCollector.\n    '
+
+    def __init__(self):
+        self.allocator = Allocator()
+        self.gc = GarbageCollector(self.allocator)
+
+    def set_vm(self, vm):
+        self.gc.vm = vm
+
+    def allocate(self, type_name: str, value: any) -> int:
+        return self.allocator.pool.allocate(type_name, value)
+
+    def read(self, ptr: int):
+        return self.allocator.pool.get(ptr)
+
+    def write(self, ptr: int, value: any):
+        obj = self.allocator.pool.get(ptr)
+        if obj:
+            obj['value'] = value
+
+    def retain(self, ptr: int):
+        self.gc.incref(ptr)
+
+    def release(self, ptr: int):
+        self.gc.decref(ptr)
+
+    def get_metrics(self):
+        return {'active_objects': len(self.allocator.pool.pool), 'allocated_bytes': len(self.allocator.pool.pool) * 64}

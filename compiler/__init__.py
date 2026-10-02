@@ -1,0 +1,2 @@
+__author__ = "Ayush Ghrit Kaushik"
+__copyright__ = "Copyright 2024-2026, Ayush Ghrit Kaushik"

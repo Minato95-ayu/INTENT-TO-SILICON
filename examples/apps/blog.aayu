@@ -1,11 +1,11 @@
 # AAYU Blog Platform
 
-model Post
+model Post {
     title: string
     body: string
     author: string
     date: string
-end
+}
 
 state posts = []
 state view_state = "list" # list, create, view

@@ -99,13 +99,12 @@ let config = {
 
 ```aayu
 model User {
-    id: Int
     name: String
     is_active: Bool
 }
 
 # Usage (Memory + Database instantly synced using native keywords)
-insert User { id = 1, name = "Ayush", is_active = true }
+insert User { name = "Ayush", is_active = true }
 
 # Fetch from DB natively
 let all_users = find User
@@ -137,15 +136,15 @@ AAYU combines Backend, Frontend, and Database gracefully.
 ```aayu
 app MyLegendApp
 
-model Note
-    id Int
-    text String
-end
+model Note {
+    text: String
+}
 
 # Backend Route
 route "/api/notes"
     get
-        respond(Note.all())
+        let notes = find Note
+        respond(notes)
     end
 end
 

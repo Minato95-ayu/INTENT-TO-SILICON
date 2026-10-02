@@ -1,0 +1,4 @@
+﻿action main
+    file::write("test.txt", "hello")
+end
+run main

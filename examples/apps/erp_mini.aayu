@@ -1,18 +1,18 @@
 # AAYU ERP Mini
 
-model Employee
+model Employee {
     name: string
     role: string
     salary: number
     department: string
-end
+}
 
-model InventoryItem
+model InventoryItem {
     sku: string
     name: string
     quantity: number
     price: number
-end
+}
 
 state tab = "HR"
 state employees = []

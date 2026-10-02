@@ -1,11 +1,11 @@
 # AAYU CRM System
 
-model Customer
+model Customer {
     name: string
     email: string
     company: string
     status: string # Lead, Active, Churned
-end
+}
 
 state customers = []
 state form_name = ""

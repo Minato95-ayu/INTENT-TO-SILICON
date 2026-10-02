@@ -1,17 +1,17 @@
 # Flipkart Clone in pure AAYU
 # Showcases Database, UI Rendering, Server, and Styling
 
-model Product
+model Product {
     title: String
     price: Int
     image: String
     rating: String
-end
+}
 
-model CartItem
+model CartItem {
     title: String
     price: Int
-end
+}
 
 let search_query = ""
 let cart_count = 0

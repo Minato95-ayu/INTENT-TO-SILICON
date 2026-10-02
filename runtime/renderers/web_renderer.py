@@ -113,6 +113,65 @@ class WebRenderer:
                 
         session = self.session_manager.get_or_create_session(session_id)
         
+        if path.startswith("/api/") and path not in ["/api/stream", "/api/event"]:
+            import urllib.request
+            import urllib.error
+            import asyncio
+            
+            method = scope['method']
+            
+            body = b''
+            more_body = True
+            while more_body:
+                message = await receive()
+                body += message.get('body', b'')
+                more_body = message.get('more_body', False)
+                
+            query_string = scope.get('query_string', b'').decode('utf-8')
+            target_url = f"http://127.0.0.1:8080{path}"
+            if query_string:
+                target_url += f"?{query_string}"
+                
+            req_headers = {}
+            for k, v in headers.items():
+                k_str = k.decode('utf-8')
+                if k_str.lower() not in ['host', 'connection']:
+                    req_headers[k_str] = v.decode('utf-8')
+                    
+            req = urllib.request.Request(target_url, data=body if body else None, method=method, headers=req_headers)
+            
+            try:
+                def do_req():
+                    return urllib.request.urlopen(req, timeout=5)
+                resp = await asyncio.to_thread(do_req)
+                resp_body = resp.read()
+                resp_status = resp.status
+                resp_headers = []
+                for k, v in resp.headers.items():
+                    resp_headers.append([k.encode('utf-8'), v.encode('utf-8')])
+            except urllib.error.HTTPError as e:
+                resp_body = e.read()
+                resp_status = e.code
+                resp_headers = []
+                for k, v in e.headers.items():
+                    resp_headers.append([k.encode('utf-8'), v.encode('utf-8')])
+            except Exception as e:
+                resp_body = str(e).encode('utf-8')
+                resp_status = 502
+                resp_headers = [[b'content-type', b'text/plain']]
+
+            await send({
+                'type': 'http.response.start',
+                'status': resp_status,
+                'headers': resp_headers
+            })
+            await send({
+                'type': 'http.response.body',
+                'body': resp_body,
+                'more_body': False
+            })
+            return
+
         if path == "/api/stream":
             
             await send({

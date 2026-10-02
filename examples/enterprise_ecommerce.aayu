@@ -3,28 +3,28 @@
 app EnterpriseShop
 
 # 1. Complex Memory-Safe Data Models (Structs)
-model User
+model User {
     id Int
     email String
     password_hash String
     role String = "CUSTOMER" # Admin or Customer
     created_at String
-end
+}
 
-model Product
+model Product {
     id Int
     name String
     description String
     price Float
     stock_count Int
-end
+}
 
-model Order
+model Order {
     id Int
     user_id Int
     total_amount Float
     status String = "PENDING"
-end
+}
 
 # 2. Initialization and Database Sync
 action init_db

@@ -1,17 +1,17 @@
 # AAYU Banking App
 
-model Account
+model Account {
     account_number: string
     owner: string
     balance: number
-end
+}
 
-model Transaction
+model Transaction {
     account_id: string
     amount: number
     type: string # Deposit, Withdrawal, Transfer
     date: string
-end
+}
 
 state current_account = "ACC-1001"
 state balance = 0

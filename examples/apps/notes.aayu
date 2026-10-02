@@ -1,10 +1,10 @@
 # AAYU Notes App
 # Demonstrates basic database models, state lists, and UI
 
-model Note
+model Note {
     title: string
     content: string
-end
+}
 
 state notes = []
 state current_title = ""

@@ -1,10 +1,10 @@
 # AAYU Chat App
 
-model Message
+model Message {
     sender: string
     text: string
     timestamp: string
-end
+}
 
 state messages = []
 state draft = ""

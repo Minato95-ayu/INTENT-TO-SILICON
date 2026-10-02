@@ -1,10 +1,10 @@
 # AAYU File Manager
 
-model File
+model File {
     name: string
     type: string
     size: string
-end
+}
 
 state current_path = "/home/user"
 state files = []

@@ -1,11 +1,11 @@
 # AAYU E-Commerce App
 
-model Product
+model Product {
     id: string
     name: string
     price: number
     image: string
-end
+}
 
 state products = []
 state cart = []

@@ -1,9 +1,9 @@
 # AAYU Todo App
 
-model Todo
+model Todo {
     task: string
     completed: boolean
-end
+}
 
 state todos = []
 state new_task = ""

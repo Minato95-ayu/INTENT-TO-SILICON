@@ -1,15 +1,11 @@
-// AAYU Official Package: fs
-// File system operations
+﻿app AayuFS
 
-fn read_file() {
-    // Native implementation hooked in VM
-}
+action readFile
+    print("Reading file...")
+    # Native implementation hooked in VM
+end
 
-fn write_file() {
-    // Native implementation hooked in VM
-}
-
-fn list_dir() {
-    // Native implementation hooked in VM
-}
-
+action writeFile
+    print("Writing file...")
+    # Native implementation hooked in VM
+end

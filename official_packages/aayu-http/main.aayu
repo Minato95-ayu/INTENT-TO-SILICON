@@ -1,31 +1,11 @@
-# aayu-http main module
+﻿app AayuHttp
 
-task get_request with url.
-    map options.
-    set "url" to url in options.
-    set "method" to "GET" in options.
-    return http_request(options).
-end.
+action getReq
+    print("Making GET request...")
+    # Native implementation hooked in VM
+end
 
-task post_request with url and data.
-    map options.
-    set "url" to url in options.
-    set "method" to "POST" in options.
-    set "body" to data in options.
-    return http_request(options).
-end.
-
-task put_request with url and data.
-    map options.
-    set "url" to url in options.
-    set "method" to "PUT" in options.
-    set "body" to data in options.
-    return http_request(options).
-end.
-
-task delete_request with url.
-    map options.
-    set "url" to url in options.
-    set "method" to "DELETE" in options.
-    return http_request(options).
-end.
+action postReq
+    print("Making POST request...")
+    # Native implementation hooked in VM
+end

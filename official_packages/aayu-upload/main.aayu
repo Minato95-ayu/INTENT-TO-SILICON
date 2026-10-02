@@ -1,1 +1,5 @@
-# aayu-upload main module
+﻿app AayuUpload
+
+action uploadFile
+    print("Uploading file...")
+end

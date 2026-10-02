@@ -1,1 +1,6 @@
-# aayu-email main module
+﻿app AayuEmail
+
+action sendEmail
+    print("Sending email...")
+    # Native implementation hooked in VM
+end

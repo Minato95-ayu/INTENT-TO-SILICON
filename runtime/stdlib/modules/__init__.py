@@ -1,4 +1,4 @@
-# ==============================================================================
+﻿# ==============================================================================
 # COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
 # 
 # This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
@@ -27,6 +27,7 @@ from .regex_lib import register_regex_lib
 from .env_lib import register_env_lib
 from .process_lib import register_process_lib
 from .storage_lib import register_storage_lib
+from .compiler_lib import register_compiler_lib
 
 from .logging_lib import register_logging_lib
 from .testing_lib import register_testing_lib
@@ -43,7 +44,7 @@ __all__ = [
     "register_database_lib", "register_regex_lib", "register_env_lib", "register_process_lib",
     "register_logging_lib", "register_testing_lib", "register_compression_lib",
     "register_concurrency_lib", "register_networking_lib", "register_encoding_lib",
-    "register_storage_lib", "register_auth_lib"
+    "register_storage_lib", "register_auth_lib", "register_compiler_lib"
 ]
 
 from .data_lib import register_data_lib

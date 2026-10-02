@@ -1,6 +1,6 @@
-# aayu-dataframe main module
-# Provides native CSV and dataframe operations
+﻿app AayuDataframe
 
-task read_csv with file_path.
-    return dataframe_read_csv(file_path).
-end.
+action loadCSV
+    print("Loading CSV into Dataframe...")
+    # Native implementation hooked in VM
+end

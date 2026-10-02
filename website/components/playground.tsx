@@ -1,4 +1,3 @@
-/* eslint-disable */
 ﻿"use client";
 
 import { motion } from "framer-motion";
@@ -7,16 +6,29 @@ import { Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function Playground() {
+  const [code, setCode] = useState("app Hello\naction main\n    print(\\"Hello AAYU!\\")\nend\nrun main");
   const [output, setOutput] = useState<string | null>(null);
   const [isRunning, setIsRunning] = useState(false);
 
-  const handleRun = () => {
+  const handleRun = async () => {
     setIsRunning(true);
     setOutput(null);
-    setTimeout(() => {
-      setOutput("Hello AAYU");
-      setIsRunning(false);
-    }, 800);
+    try {
+      const res = await fetch("http://localhost:3000/api/v1/compile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code })
+      });
+      const data = await res.json();
+      if (res.ok && data.output) {
+        setOutput(data.output.join("\\n"));
+      } else {
+        setOutput(data.error || "Compilation failed.");
+      }
+    } catch (e) {
+      setOutput("Error: AAYU API server is not running on localhost:3000.\nRun 'python -m tools.cli run api/playground.aayu --web' to start the local backend.");
+    }
+    setIsRunning(false);
   };
 
   return (
@@ -24,7 +36,7 @@ export function Playground() {
       <div className="container mx-auto px-4">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="text-3xl md:text-5xl font-bold mb-4">Experience AAYU</h2>
-          <p className="text-zinc-400">Write real AAYU code in your browser. Powered by WebAssembly (Coming Soon).</p>
+          <p className="text-zinc-400">Interactive playground connecting to the AAYU Compiler Backend.</p>
         </div>
 
         <div className="max-w-4xl mx-auto">
@@ -41,17 +53,16 @@ export function Playground() {
             </div>
             
             <div className="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-white/10 min-h-[300px]">
-              <div className="p-4 font-mono text-sm bg-[#0a0a0a]">
-                <div className="flex">
-                  <span className="text-zinc-600 select-none mr-4">1</span>
-                  <span className="text-blue-400">print</span>
-                  <span className="text-zinc-300">(</span>
-                  <span className="text-amber-300">"Hello AAYU"</span>
-                  <span className="text-zinc-300">)</span>
-                </div>
+              <div className="p-4 font-mono text-sm bg-[#0a0a0a] flex flex-col">
+                <textarea 
+                  value={code} 
+                  onChange={(e) => setCode(e.target.value)}
+                  className="w-full h-full bg-transparent text-zinc-300 resize-none outline-none"
+                  spellCheck={false}
+                />
               </div>
               
-              <div className="p-4 font-mono text-sm bg-black relative">
+              <div className="p-4 font-mono text-sm bg-black relative whitespace-pre-wrap">
                 <div className="text-zinc-500 mb-2 border-b border-white/5 pb-2">Output</div>
                 {isRunning && (
                   <div className="text-zinc-400 animate-pulse">Compiling and running...</div>
@@ -60,7 +71,7 @@ export function Playground() {
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="text-zinc-200"
+                    className={output.startsWith("Error:) ? "text-red-400" : "text-emerald-400"}
                   >
                     {output}
                   </motion.div>
@@ -73,4 +84,3 @@ export function Playground() {
     </section>
   );
 }
-

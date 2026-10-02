@@ -8,18 +8,17 @@ const codeString = `// Welcome to AAYU: The AI-Agent Language
 app CoreApp
 
 // 1. Built-in Database Models
-model User
-    id Int
-    username String
-end
+model User {
+      id: Int
+      username: String
+    }
 
 // 2. Built-in Web Server
 route "/api/users"
-    get
-        let users = User.all()
-        respond(users)
+      get
+        return User.all()
+      end
     end
-end
 
 // 3. Built-in Tensors (Zero-Copy)
 action train_ai
@@ -320,3 +319,4 @@ export default function Home() {
     </main>
   );
 }
+

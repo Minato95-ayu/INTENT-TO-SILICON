@@ -1,18 +1,5 @@
-# aayu-auth main module
-# Exposes clean wrappers for native authentication primitives
+﻿app AayuAuth
 
-task create_account with data.
-    return auth_create_account(data).
-end.
-
-task login with data.
-    return auth_login(data).
-end.
-
-task logout with req.
-    return auth_logout(req).
-end.
-
-task guard_session with req.
-    return auth_guard_session().
-end.
+action login
+    print("Logging in...")
+end

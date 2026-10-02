@@ -1,23 +1,5 @@
-// AAYU Official Package: math
-// Standard mathematical functions
+﻿app AayuMath
 
-fn sin() {
-    // Native implementation hooked in VM
-}
-
-fn cos() {
-    // Native implementation hooked in VM
-}
-
-fn floor() {
-    // Native implementation hooked in VM
-}
-
-fn ceil() {
-    // Native implementation hooked in VM
-}
-
-fn random() {
-    // Native implementation hooked in VM
-}
-
+action add
+    print("Adding...")
+end

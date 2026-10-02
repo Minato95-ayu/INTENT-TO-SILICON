@@ -12,16 +12,18 @@
     "Linters",
     "Formatters"
   ],
-  "activationEvents": [
-    "onLanguage:aayu"
-  ],
   "main": "./out/extension.js",
   "contributes": {
     "languages": [
       {
         "id": "aayu",
-        "aliases": ["AAYU", "aayu"],
-        "extensions": [".aayu"],
+        "aliases": [
+          "AAYU",
+          "aayu"
+        ],
+        "extensions": [
+          ".aayu"
+        ],
         "configuration": "./language-configuration.json"
       }
     ],

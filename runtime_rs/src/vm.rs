@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use crate::opcodes::OpCode;
+
 use crate::math::Tensor;
 use crate::db::DbEngine;
 use crate::net::HttpServer;
@@ -9,7 +9,7 @@ use crate::ui::{UiNode, Style};
 pub struct NanVal(u64);
 
 const TAG_INT: u64 = 0x7FF8_0000_0000_0000;
-const TAG_FLOAT: u64 = 0x7FF9_0000_0000_0000;
+
 const TAG_BOOL: u64 = 0x7FFA_0000_0000_0000;
 const TAG_NULL: u64 = 0x7FFB_0000_0000_0000;
 const TAG_STR: u64  = 0x7FFC_0000_0000_0000;

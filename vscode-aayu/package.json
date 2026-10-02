@@ -3,7 +3,8 @@
   "displayName": "AAYU",
   "description": "AAYU Programming Language Support for VS Code",
   "version": "1.2.0",
-  "publisher": "AyushGhritKaushik", "author": "Ayush Ghrit Kaushik <https://github.com/Minato95-ayu>",
+  "publisher": "AyushGhritKaushik",
+  "author": "Ayush Ghrit Kaushik <https://github.com/Minato95-ayu>",
   "engines": {
     "vscode": "^1.125.0"
   },
@@ -21,9 +22,6 @@
     "Snippets"
   ],
   "main": "./extension.js",
-  "activationEvents": [
-    "onLanguage:aayu"
-  ],
   "contributes": {
     "languages": [
       {

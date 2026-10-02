@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { useState } from 'react';
 import { Terminal, Download, Box, Cpu, ArrowRight, Monitor, Apple, HardDrive } from 'lucide-react';
 import Link from 'next/link';
@@ -28,7 +28,7 @@ export default function DownloadPage() {
               <h3 className="text-2xl font-bold mb-2">Windows</h3>
               <p className="text-zinc-400 text-sm mb-8">Windows 10 / 11 (64-bit)</p>
               <a 
-                href="/downloads/aayu-windows.exe" 
+                href="/downloads/AAYU_Windows_Installer.exe" 
                 download
                 className="w-full py-3 px-4 bg-white/5 hover:bg-blue-500/20 text-white border border-white/10 hover:border-blue-500/50 rounded-lg font-medium transition-all flex items-center justify-center gap-2"
               >
@@ -79,7 +79,7 @@ export default function DownloadPage() {
                 </p>
             </div>
             <a 
-                href="/downloads/aayu-android.apk" 
+                href="/downloads/aayu-termux-install.sh" 
                 download
                 className="mt-6 md:mt-0 shrink-0 py-3 px-6 bg-green-500/10 hover:bg-green-500/20 text-green-400 border border-green-500/30 rounded-lg font-medium transition-all flex items-center gap-2"
             >

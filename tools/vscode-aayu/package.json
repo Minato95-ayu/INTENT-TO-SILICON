@@ -17,8 +17,13 @@
     "languages": [
       {
         "id": "aayu",
-        "extensions": [".aayu"],
-        "aliases": ["AAYU", "aayu"],
+        "extensions": [
+          ".aayu"
+        ],
+        "aliases": [
+          "AAYU",
+          "aayu"
+        ],
         "icon": {
           "light": "./icons/aayu-logo.svg",
           "dark": "./icons/aayu-logo.svg"

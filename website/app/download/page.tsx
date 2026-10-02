@@ -44,7 +44,7 @@ export default function DownloadPage() {
               <h3 className="text-2xl font-bold mb-2">Linux / TailsOS</h3>
               <p className="text-zinc-400 text-sm mb-8">Ubuntu, Debian, Fedora, Tails</p>
               <a 
-                href="/downloads/aayu-linux" 
+                href="/downloads/aayu-linux.sh" 
                 download
                 className="w-full py-3 px-4 bg-white/5 hover:bg-orange-500/20 text-white border border-white/10 hover:border-orange-500/50 rounded-lg font-medium transition-all flex items-center justify-center gap-2"
               >
@@ -60,7 +60,7 @@ export default function DownloadPage() {
               <h3 className="text-2xl font-bold mb-2">macOS</h3>
               <p className="text-zinc-400 text-sm mb-8">Apple Silicon (M1/M2) & Intel</p>
               <a 
-                href="/downloads/aayu-macos" 
+                href="/downloads/aayu-macos.sh" 
                 download
                 className="w-full py-3 px-4 bg-white/5 hover:bg-zinc-300/20 text-white border border-white/10 hover:border-zinc-300/50 rounded-lg font-medium transition-all flex items-center justify-center gap-2"
               >

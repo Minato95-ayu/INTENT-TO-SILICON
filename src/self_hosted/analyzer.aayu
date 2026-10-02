@@ -218,12 +218,58 @@ action analyze_statement(stmt)
         
         return { "type": "SemanticActionDeclarationNode", "name": stmt["name"], "args": as_args, "statements": as_body }
     end
+    if as_type == "While"
+        let as_cond = analyze_expression(stmt["condition"])
+        push_scope()
+        let as_body = []
+        let as_stmts = stmt["body"]
+        while len(as_body) < len(as_stmts)
+            as_body = as_body + [analyze_statement(as_stmts[len(as_body)])]
+        end
+        pop_scope()
+        return { "type": "SemanticWhileNode", "condition": as_cond, "body": as_body }
+    end
+    if as_type == "ComponentDeclaration"
+        define_symbol(stmt["name"], "component")
+        push_scope()
+        let as_body = []
+        let as_stmts = stmt["body"]
+        while len(as_body) < len(as_stmts)
+            as_body = as_body + [analyze_statement(as_stmts[len(as_body)])]
+        end
+        pop_scope()
+        return { "type": "SemanticComponentNode", "name": stmt["name"], "body": as_body }
+    end
+    if as_type == "StateDeclaration"
+        define_symbol(stmt["name"], "state")
+        return { "type": "SemanticStateNode", "name": stmt["name"], "value": analyze_expression(stmt["value"]) }
+    end
+    if as_type == "RouteDeclaration"
+        push_scope()
+        let as_body = []
+        let as_stmts = stmt["body"]
+        while len(as_body) < len(as_stmts)
+            as_body = as_body + [analyze_statement(as_stmts[len(as_body)])]
+        end
+        pop_scope()
+        return { "type": "SemanticRouteNode", "path": stmt["path"], "body": as_body }
+    end
+    if as_type == "RespondNode"
+        return { "type": "SemanticRespondNode", "value": analyze_expression(stmt["value"]) }
+    end
+    if as_type == "ModelDeclaration"
+        define_symbol(stmt["name"], "model")
+        return { "type": "SemanticModelNode", "name": stmt["name"], "fields": stmt["fields"] }
+    end
     return stmt
 end
 
 action analyze(ast)
     define_symbol("print", "function")
     define_symbol("len", "function")
+    define_symbol("true", "local")
+    define_symbol("false", "local")
+    define_symbol("null", "local")
     
     if ast["type"] == "Program"
         let a_stmts = ast["statements"]

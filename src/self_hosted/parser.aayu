@@ -437,6 +437,28 @@ action parse_statement(tokens, pos)
         return [pos, make_let(stmt_name_tok["value"], stmt_value, stmt_line, stmt_col)]
     end
     
+    if match(tokens, pos, "KEYWORD", "respond")
+        stmt_line = tokens[pos]["line"]
+        stmt_col = tokens[pos]["column"]
+        pos = pos + 1
+        
+        let has_paren = match(tokens, pos, "PUNCTUATION", "(")
+        if has_paren
+            pos = pos + 1
+        end
+        
+        let resp_res = parse_expression(tokens, pos)
+        pos = resp_res[0]
+        let resp_val = resp_res[1]
+        
+        if has_paren
+            let resp_res2 = expect_val(tokens, pos, "PUNCTUATION", ")", "Expect ')' after respond arguments.")
+            pos = resp_res2[0]
+        end
+        
+        return [pos, { "type": "RespondNode", "value": resp_val, "line": stmt_line, "column": stmt_col }]
+    end
+    
     if match(tokens, pos, "KEYWORD", "if")
         stmt_line = tokens[pos]["line"]
         stmt_col = tokens[pos]["column"]

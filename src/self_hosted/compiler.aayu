@@ -276,6 +276,31 @@ action compile_statement(stmt)
         
         patch_jump(cs_jmp1)
     end
+    if cs_type == "ComponentDeclaration"
+        # In AAYU, components are just special actions that return widgets
+        cs_jmp1 = emit_patchable(OP_JMP)
+        
+        cs_body = stmt["body"]
+        cs_i = 0
+        cs_len = len(cs_body)
+        while cs_i < cs_len
+            compile_statement(cs_body[cs_i])
+            cs_i = cs_i + 1
+        end
+        
+        patch_jump(cs_jmp1)
+    end
+    if cs_type == "StateDeclaration"
+        compile_expression(stmt["value"])
+        cs_idx = add_constant(stmt["name"])
+        emit(OP_STORE_STATE, cs_idx, 0)
+    end
+    if cs_type == "RespondNode"
+        cs_idx = add_constant("respond")
+        emit(OP_PUSH_CONST, cs_idx, 0)
+        compile_expression(stmt["value"])
+        emit(OP_CALL, 1, 0)
+    end
     if cs_type == "ExpressionStatement"
         compile_expression(stmt["expression"])
         emit(OP_POP, 0, 0)

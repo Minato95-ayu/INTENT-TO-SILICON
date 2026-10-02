@@ -46,6 +46,7 @@ class Opcode:
     STORE_STATE = 0x30
     LOAD_STATE = 0x31
     INIT_STATE = 0x32
+    INIT_COMPONENT_STATE = 0x35
     ENTER_SCOPE = 0x33
     EXIT_SCOPE = 0x34
     

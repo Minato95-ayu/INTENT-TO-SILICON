@@ -21,10 +21,15 @@ def create_string(vm, text):
 def register_process_lib(registry: StdLibRegistry):
     def fn_exec(args, vm):
         try:
-            cmd = args[0].to_python()
+            cmd = args[0]
+            if hasattr(cmd, 'to_python'):
+                cmd = cmd.to_python()
+            elif hasattr(cmd, 'value'):
+                cmd = cmd.value
             result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
             return create_string(vm, result.stdout)
-        except Exception:
+        except Exception as e:
+            print("EXEC ERROR:", e)
             return NullValue()
             
     registry.register("process::exec", fn_exec)

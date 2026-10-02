@@ -1,0 +1,7 @@
+﻿let py_script = "
+print('{\"status\": \"success\"}')
+"
+file::write("temp_compile.py", py_script)
+let out = process::exec("python temp_compile.py")
+let result = json::parse(out)
+print(result)

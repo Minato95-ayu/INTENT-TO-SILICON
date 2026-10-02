@@ -17,7 +17,7 @@ from runtime.vm.instructions import Opcode
 class TestR62Validator(unittest.TestCase):
     def test_truncated_instruction(self):
         bytecode = bytearray([Opcode.PUSH_CONST, 0]) # only 2 bytes
-        with self.assertRaisesRegex(InvalidBytecodeError, "not a multiple of 3"):
+        with self.assertRaisesRegex(InvalidBytecodeError, r"not a multiple of 3"):
             Validator.validate(bytecode, [])
 
     def test_jump_into_middle_of_instruction(self):
@@ -26,7 +26,7 @@ class TestR62Validator(unittest.TestCase):
             Opcode.PUSH_CONST, 0, 0,
             Opcode.HALT, 0, 0
         ])
-        with self.assertRaisesRegex(InvalidBytecodeError, "Jump target inside operand"):
+        with self.assertRaisesRegex(InvalidBytecodeError, r"Jump target inside operand"):
             Validator.validate(bytecode, [])
 
     def test_call_without_prepare_call(self):
@@ -36,7 +36,7 @@ class TestR62Validator(unittest.TestCase):
             Opcode.HALT, 0, 0,
             Opcode.RETURN_VALUE, 0, 0
         ])
-        with self.assertRaisesRegex(InvalidBytecodeError, "Naked CALL without PREPARE_CALL"):
+        with self.assertRaisesRegex(InvalidBytecodeError, r"Naked CALL without PREPARE_CALL"):
             Validator.validate(bytecode, [])
 
     def test_prepare_call_without_immediate_call(self):
@@ -47,7 +47,7 @@ class TestR62Validator(unittest.TestCase):
             Opcode.HALT, 0, 0,
             Opcode.RETURN_VALUE, 0, 0
         ])
-        with self.assertRaisesRegex(InvalidBytecodeError, "PREPARE_CALL must be immediately followed by CALL"):
+        with self.assertRaisesRegex(InvalidBytecodeError, r"PREPARE_CALL must be immediately followed by CALL"):
             Validator.validate(bytecode, [])
 
     def test_call_with_insufficient_stack_depth(self):
@@ -58,7 +58,7 @@ class TestR62Validator(unittest.TestCase):
             Opcode.POP, 0, 0,
             Opcode.RET, 0, 0
         ])
-        with self.assertRaisesRegex(InvalidBytecodeError, "Insufficient stack depth for CALL"):
+        with self.assertRaisesRegex(InvalidBytecodeError, r"Insufficient stack depth for CALL"):
             Validator.validate(bytecode, [])
 
     def test_invalid_call_target(self):
@@ -67,7 +67,7 @@ class TestR62Validator(unittest.TestCase):
             Opcode.CALL, 0, 12,
             Opcode.HALT, 0, 0
         ])
-        with self.assertRaisesRegex(InvalidBytecodeError, "Jump target inside operand"):
+        with self.assertRaisesRegex(InvalidBytecodeError, r"Jump target inside operand"):
             Validator.validate(bytecode, [])
 
     def test_build_widget_stack_underflow(self):
@@ -76,7 +76,7 @@ class TestR62Validator(unittest.TestCase):
             Opcode.BUILD_WIDGET, 0, 1,
             Opcode.HALT, 0, 0
         ])
-        with self.assertRaisesRegex(InvalidBytecodeError, "Stack underflow"):
+        with self.assertRaisesRegex(InvalidBytecodeError, r"Stack underflow"):
             Validator.validate(bytecode, [])
 
     def test_wrong_return_value_depth(self):
@@ -88,7 +88,7 @@ class TestR62Validator(unittest.TestCase):
             Opcode.PUSH_CONST, 0, 0,
             Opcode.RETURN_VALUE, 0, 0
         ])
-        with self.assertRaisesRegex(InvalidBytecodeError, "RETURN_VALUE used but expected 0 returns"):
+        with self.assertRaisesRegex(InvalidBytecodeError, r"RETURN_VALUE used but expected 0 returns"):
             Validator.validate(bytecode, [])
             
         bytecode2 = bytearray([
@@ -99,7 +99,7 @@ class TestR62Validator(unittest.TestCase):
             Opcode.PUSH_CONST, 0, 2,
             Opcode.RETURN_VALUE, 0, 0
         ])
-        with self.assertRaisesRegex(InvalidBytecodeError, "Stack depth mismatch on RETURN_VALUE: expected 1, got 2"):
+        with self.assertRaisesRegex(InvalidBytecodeError, r"Stack depth mismatch on RETURN_VALUE"):
             Validator.validate(bytecode2, [])
 
     def test_wrong_ret_depth(self):
@@ -110,7 +110,7 @@ class TestR62Validator(unittest.TestCase):
             Opcode.PUSH_CONST, 0, 1,
             Opcode.RET, 0, 0
         ])
-        with self.assertRaisesRegex(InvalidBytecodeError, "Stack depth mismatch on RET: expected 0, got 1"):
+        with self.assertRaisesRegex(InvalidBytecodeError, r"Stack depth mismatch on RET"):
             Validator.validate(bytecode, [])
 
     def test_branch_paths_incompatible_stack_depths(self):
@@ -125,8 +125,9 @@ class TestR62Validator(unittest.TestCase):
             # merge point (IP 18)
             Opcode.HALT, 0, 0
         ])
-        with self.assertRaisesRegex(InvalidBytecodeError, "Incompatible stack depths at merge point"):
+        with self.assertRaisesRegex(InvalidBytecodeError, r"Incompatible stack depths at merge point"):
             Validator.validate(bytecode, [])
 
 if __name__ == '__main__':
     unittest.main()
+

@@ -53,6 +53,7 @@ class SemanticAnalyzer:
             ("ml::linear_regression_fit", 3), ("ml::linear_regression_predict", 2),
             ("file::read", 1), ("file::write", 2), ("file::append", 2), ("file::delete", 1), ("file::exists", 1), ("file::mkdir", 1),
             ("json::parse", 1), ("json::stringify", 1),
+            ("process::exec", 1),
             ("math::sin", 1), ("math::cos", 1), ("math::tan", 1), ("math::sqrt", 1), ("math::pow", 2),
             ("math::abs", 1), ("math::round", 1), ("math::min", 2), ("math::max", 2),
             ("math::floor", 1), ("math::ceil", 1),
@@ -84,6 +85,12 @@ class SemanticAnalyzer:
         sym_null.is_constant = True
         sym_null.data_type = "Null"
         self.global_scope.define(sym_null)
+        
+        sym_request = Symbol("request", "Object")
+        self.global_scope.define(sym_request)
+        
+        sym_request_body = Symbol("request.body", "Object")
+        self.global_scope.define(sym_request_body)
 
     def _analyze_if(self, node: IfNode):
         condition = self._analyze_node(node.condition)

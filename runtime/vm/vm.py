@@ -120,7 +120,10 @@ class VirtualMachine:
             if action_name.startswith('__PAGE_START__'):
                 self.interpreter.node_stack.clear()
                 self.interpreter.render_tree.root = None
-            self.call_stack.push((self.registers.ip, False, None, len(args_to_push), self.value_stack.depth()))
+                self.call_stack.push((self.registers.ip, True, None, len(args_to_push), self.value_stack.depth()))
+            else:
+                self.call_stack.push((self.registers.ip, False, None, len(args_to_push), self.value_stack.depth()))
+            
             self.registers.ip = target_ip
             for arg in args_to_push:
                 self.value_stack.push(arg)

@@ -51,6 +51,7 @@ class Interpreter:
         self.dispatch_table[Opcode.STORE_STATE] = self.op_STORE_STATE
         self.dispatch_table[Opcode.LOAD_STATE] = self.op_LOAD_STATE
         self.dispatch_table[Opcode.INIT_STATE] = self.op_INIT_STATE
+        self.dispatch_table[Opcode.INIT_COMPONENT_STATE] = self.op_INIT_COMPONENT_STATE
         self.dispatch_table[Opcode.ENTER_SCOPE] = self.op_ENTER_SCOPE
         self.dispatch_table[Opcode.EXIT_SCOPE] = self.op_EXIT_SCOPE
         self.dispatch_table[Opcode.CALL_COMPONENT] = self.op_CALL_COMPONENT
@@ -298,6 +299,19 @@ class Interpreter:
         current_scope = self.vm.state_scopes[-1]
         if name not in current_scope:
             current_scope[name] = val
+        return True
+
+    def op_INIT_COMPONENT_STATE(self, opcode):
+        idx = self.vm.decoder.fetch16(self.vm.registers.ip + 1)
+        self.vm.registers.ip += 3
+        name = self.vm.constant_pool[idx]
+        val = self.vm.value_stack.pop()
+        
+        is_comp = self.vm.call_stack.frames[-1][1]
+        scope_to_use = self.vm.state_scopes[-1] if is_comp else self.vm.state_scopes[0]
+        
+        if name not in scope_to_use:
+            scope_to_use[name] = val
         return True
 
     def op_CALL_COMPONENT(self, opcode):
@@ -662,7 +676,7 @@ class Interpreter:
         container = self.vm.value_stack.pop()
         try:
             val = container[index]
-        except (IndexError, KeyError, TypeError):
+        except (IndexError, KeyError, TypeError) as e:
             val = None
         self.vm.value_stack.push(val)
         return True
@@ -772,7 +786,8 @@ class Interpreter:
     def op_RESPOND(self, opcode):
         self.vm.registers.ip += 3
         val = self.vm.value_stack.pop()
-        print(f"[HTTP RESPONSE] {val}")
+        if hasattr(self.vm, 'state_scopes') and len(self.vm.state_scopes) > 0:
+            self.vm.state_scopes[0]["response"] = val
         return True
 
     def op_ENTER_SCOPE(self, opcode):

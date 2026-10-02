@@ -1,4 +1,4 @@
-# ==============================================================================
+﻿# ==============================================================================
 # COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
 # 
 # This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
@@ -60,7 +60,7 @@ class AayuSmokeTests(unittest.TestCase):
         
         from runtime.renderers.web_renderer import serialize_node
 
-        session.vm.call_action_by_name("Counter")
+        session.vm.call_action_by_name("__PAGE_START__")
         tree = serialize_node(session.vm.interpreter.render_tree.root, set())
         
         def get_text_value(node):
@@ -75,12 +75,12 @@ class AayuSmokeTests(unittest.TestCase):
         self.assertEqual(str(get_text_value(tree)), "Count is: ")
         
         session.vm.call_action_by_name("inc")
-        session.vm.call_action_by_name("Counter")
+        session.vm.call_action_by_name("__PAGE_START__")
         tree = serialize_node(session.vm.interpreter.render_tree.root, set())
         self.assertEqual(str(get_text_value(tree)), "Count is: 1")
         
         session.vm.call_action_by_name("inc")
-        session.vm.call_action_by_name("Counter")
+        session.vm.call_action_by_name("__PAGE_START__")
         tree = serialize_node(session.vm.interpreter.render_tree.root, set())
         self.assertEqual(str(get_text_value(tree)), "Count is: 2")
         session.shutdown()

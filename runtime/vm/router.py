@@ -267,15 +267,25 @@ class APIRouter:
 
                 try:
                     with router._vm_lock:
-                        router.vm.state["request"] = {
+                        req_dict = {
                             "method": self.command,
                             "path": request.path,
                             "query": {key: values[-1] for key, values in parse_qs(request.query).items()},
                             "body": body,
                         }
-                        result = router.vm.execute_subroutine(route)
-                except Exception:
-                    self._send_error(500, "AAYU route execution failed", request_id)
+                        router.vm.state["request"] = req_dict
+                        router.vm.state["request.body"] = body
+                        router.vm.state["request.method"] = self.command
+                        router.vm.state["request.path"] = request.path
+                        router.vm.state["request.query"] = req_dict["query"]
+                        router.vm.execute_subroutine(route)
+                        result = router.vm.state.get("response", None)
+                        if hasattr(result, "to_python"):
+                            result = result.to_python()
+                except Exception as e:
+                    import traceback
+                    traceback.print_exc()
+                    self._send_error(500, f"AAYU route execution failed: {e}", request_id)
                     return
                 if isinstance(result, (dict, list)):
                     payload = json.dumps(result).encode("utf-8")

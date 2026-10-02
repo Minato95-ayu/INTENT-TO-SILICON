@@ -1,4 +1,4 @@
-# ==============================================================================
+﻿# ==============================================================================
 # COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
 # 
 # This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
@@ -375,7 +375,7 @@ class BytecodeEncoder:
         """
         name = node.operands[0]
         name_idx = self.pool.add(name)
-        self._emit(Opcode.INIT_STATE, name_idx)
+        self._emit(Opcode.INIT_COMPONENT_STATE, name_idx)
 
     def _encode_load_var(self, node: LIRNode):
         """LOAD_VAR [name] â†’ LOAD_STATE name_idx"""

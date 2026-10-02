@@ -89,7 +89,6 @@ class WebRenderer:
         self.thread = None
         
     async def asgi_app(self, scope, receive, send):
-        print('ENTERED ASGI APP!', flush=True)
         try:
             await self._asgi_app_inner(scope, receive, send)
         except Exception as e:
@@ -98,6 +97,10 @@ class WebRenderer:
             raise
 
     async def _asgi_app_inner(self, scope, receive, send):
+        import urllib.request
+        import urllib.error
+        import asyncio
+
         if scope['type'] != 'http':
             return
             
@@ -114,9 +117,6 @@ class WebRenderer:
         session = self.session_manager.get_or_create_session(session_id)
         
         if path.startswith("/api/") and path not in ["/api/stream", "/api/event"]:
-            import urllib.request
-            import urllib.error
-            import asyncio
             
             method = scope['method']
             

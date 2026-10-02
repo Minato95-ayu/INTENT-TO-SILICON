@@ -107,7 +107,7 @@ class Validator:
             
             if opcode in (Opcode.PUSH_CONST, Opcode.DUP, Opcode.LOAD_STATE):
                 new_depth += 1
-            elif opcode in (Opcode.POP, Opcode.STORE_STATE, Opcode.INIT_STATE, Opcode.CREATE_MODEL, Opcode.PRINT, Opcode.THROW, Opcode.RETHROW):
+            elif opcode in (Opcode.POP, Opcode.STORE_STATE, Opcode.INIT_STATE, Opcode.INIT_COMPONENT_STATE, Opcode.CREATE_MODEL, Opcode.PRINT, Opcode.THROW, Opcode.RETHROW):
                 new_depth -= 1
             elif opcode in (Opcode.ADD, Opcode.SUB, Opcode.MUL, Opcode.DIV, Opcode.CMP_EQ, Opcode.CMP_NEQ, Opcode.CMP_LT, Opcode.CMP_GT, Opcode.CMP_LTE, Opcode.CMP_GTE):
                 new_depth -= 1 # pop 2, push 1
@@ -135,6 +135,8 @@ class Validator:
                 
             elif opcode == Opcode.DB_FIND:
                 new_depth += 1  # DB_FIND pushes the found model/array
+            elif opcode == Opcode.RESPOND:
+                new_depth -= 1  # RESPOND pops the payload
             elif opcode == Opcode.BUILD_DICT:
                 num_keys = (bytecode[ip+1] << 8) | bytecode[ip+2]
                 new_depth -= num_keys  # pops list of keys (1) + num_keys values, then pushes 1 dict. Net = -num_keys
@@ -170,9 +172,10 @@ class Validator:
                     raise InvalidBytecodeError(f"Stack depth mismatch on RETURN_VALUE: expected 1, got {new_depth}", ip)
                 continue
             elif opcode == Opcode.RET:
-                # if expected_returns is not None and expected_returns != 0:
-                #     raise InvalidBytecodeError(f"RET used but expected {expected_returns} returns. IP={ip}. subroutines={subroutines}", ip)
-                if False: pass
+                if expected_returns is not None and expected_returns != 0:
+                    raise InvalidBytecodeError(f"RET used but expected {expected_returns} returns. IP={ip}. subroutines={subroutines}", ip)
+                if new_depth != 0:
+                    raise InvalidBytecodeError(f"Stack depth mismatch on RET: expected 0, got {new_depth}", ip)
                 continue
             elif opcode == Opcode.HALT:
                 continue

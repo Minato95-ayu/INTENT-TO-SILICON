@@ -43,6 +43,10 @@ jobs:
         run: |
           python -m pytest tests/compiler tests/unit tests/vm tests/runtime tests/integration -v --tb=short
 
+      - name: Run AAYU Probes & Examples
+        run: |
+          python run_probes.py --repo .
+
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()

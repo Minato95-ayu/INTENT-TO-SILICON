@@ -11,6 +11,8 @@
 
 from runtime.renderers.console import ConsoleRenderer
 import sys
+from tools.ide_server import start_ide
+
 import os
 sys.path.insert(0, os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 import argparse
@@ -45,7 +47,10 @@ class AAYUCLI:
             module = importlib.import_module(f"tools.commands.{command}")
             if hasattr(module, "handle"):
                 module.handle(args)
-            else:
+            
+    elif command == 'ide':
+        start_ide()
+    else:
                 print(f"Error: Command module '{command}' is missing a handle() function.")
                 sys.exit(1)
         except ModuleNotFoundError as e:
@@ -53,7 +58,10 @@ class AAYUCLI:
                 print(f"aayu: '{command}' is not a recognized command.")
                 print("Run 'aayu --help' for usage.")
                 sys.exit(1)
-            else:
+            
+    elif command == 'ide':
+        start_ide()
+    else:
                 # If the error is inside the command module, raise it
                 raise
 

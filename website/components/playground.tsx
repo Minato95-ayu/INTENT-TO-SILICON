@@ -6,7 +6,13 @@ import { Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function Playground() {
-  const [code, setCode] = useState("app Hello\naction main\n    print(\\"Hello AAYU!\\")\nend\nrun main");
+  const [code, setCode] = useState(`app Hello
+
+action main
+    print("Hello AAYU!")
+end
+
+run main`);
   const [output, setOutput] = useState<string | null>(null);
   const [isRunning, setIsRunning] = useState(false);
 
@@ -71,7 +77,7 @@ export function Playground() {
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className={output.startsWith("Error:) ? "text-red-400" : "text-emerald-400"}
+                    className={output.startsWith("Error:") ? "text-red-400" : "text-emerald-400"}
                   >
                     {output}
                   </motion.div>
@@ -84,3 +90,4 @@ export function Playground() {
     </section>
   );
 }
+

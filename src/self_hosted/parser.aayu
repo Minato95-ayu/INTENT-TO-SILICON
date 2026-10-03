@@ -418,6 +418,333 @@ action parse_statement(tokens, pos)
     let stmt_loop = 1 == 1
     let stmt_else_loop = 1 == 1
 
+
+    if match(tokens, pos, "KEYWORD", "app")
+        stmt_line = tokens[pos]["line"]
+        stmt_col = tokens[pos]["column"]
+        pos = pos + 1
+        
+        stmt_res = expect(tokens, pos, "IDENTIFIER", "Expect app name.")
+        pos = stmt_res[0]
+        stmt_name_tok = stmt_res[1]
+        
+        return [pos, make_app_decl(stmt_name_tok["value"], stmt_line, stmt_col)]
+    end
+
+    if match(tokens, pos, "KEYWORD", "state")
+        stmt_line = tokens[pos]["line"]
+        stmt_col = tokens[pos]["column"]
+        pos = pos + 1
+        
+        stmt_res = expect(tokens, pos, "IDENTIFIER", "Expect state variable name.")
+        pos = stmt_res[0]
+        stmt_name_tok = stmt_res[1]
+        
+        stmt_res = expect_val(tokens, pos, "PUNCTUATION", "=", "Expect '='.")
+        pos = stmt_res[0]
+        
+        stmt_res = parse_expression(tokens, pos)
+        pos = stmt_res[0]
+        stmt_value = stmt_res[1]
+        
+        return [pos, make_state_decl(stmt_name_tok["value"], stmt_value, stmt_line, stmt_col)]
+    end
+
+
+    if match(tokens, pos, "KEYWORD", "model")
+        stmt_line = tokens[pos]["line"]
+        stmt_col = tokens[pos]["column"]
+        pos = pos + 1
+        stmt_res = expect(tokens, pos, "IDENTIFIER", "Expect model name.")
+        pos = stmt_res[0]
+        let m_name = stmt_res[1]["value"]
+        let m_body = []
+        let m_loop = 1 == 1
+        while m_loop
+            if match(tokens, pos, "KEYWORD", "end")
+                m_loop = 1 == 0
+            else
+                if pos >= len(tokens)
+                    m_loop = 1 == 0
+                else
+                    stmt_res = parse_statement(tokens, pos)
+                    pos = stmt_res[0]
+                    m_body = m_body + [stmt_res[1]]
+                end
+            end
+        end
+        stmt_res = expect_val(tokens, pos, "KEYWORD", "end", "Expect 'end' after model block.")
+        pos = stmt_res[0]
+        return [pos, make_model_decl(m_name, m_body, stmt_line, stmt_col)]
+    end
+
+    if match(tokens, pos, "KEYWORD", "route")
+        stmt_line = tokens[pos]["line"]
+        stmt_col = tokens[pos]["column"]
+        pos = pos + 1
+        stmt_res = expect(tokens, pos, "STRING", "Expect route path.")
+        pos = stmt_res[0]
+        let r_path = stmt_res[1]["value"]
+        let r_body = []
+        let r_loop = 1 == 1
+        while r_loop
+            if match(tokens, pos, "KEYWORD", "end")
+                r_loop = 1 == 0
+            else
+                if pos >= len(tokens)
+                    r_loop = 1 == 0
+                else
+                    stmt_res = parse_statement(tokens, pos)
+                    pos = stmt_res[0]
+                    r_body = r_body + [stmt_res[1]]
+                end
+            end
+        end
+        stmt_res = expect_val(tokens, pos, "KEYWORD", "end", "Expect 'end' after route block.")
+        pos = stmt_res[0]
+        return [pos, make_route_decl(r_path, r_body, stmt_line, stmt_col)]
+    end
+
+    if match(tokens, pos, "KEYWORD", "page")
+        stmt_line = tokens[pos]["line"]
+        stmt_col = tokens[pos]["column"]
+        pos = pos + 1
+        stmt_res = expect(tokens, pos, "IDENTIFIER", "Expect page name.")
+        pos = stmt_res[0]
+        let p_name = stmt_res[1]["value"]
+        let p_body = []
+        let p_loop = 1 == 1
+        while p_loop
+            if match(tokens, pos, "KEYWORD", "end")
+                p_loop = 1 == 0
+            else
+                if pos >= len(tokens)
+                    p_loop = 1 == 0
+                else
+                    stmt_res = parse_statement(tokens, pos)
+                    pos = stmt_res[0]
+                    p_body = p_body + [stmt_res[1]]
+                end
+            end
+        end
+        stmt_res = expect_val(tokens, pos, "KEYWORD", "end", "Expect 'end' after page block.")
+        pos = stmt_res[0]
+        return [pos, make_page_decl(p_name, p_body, stmt_line, stmt_col)]
+    end
+
+
+    if match(tokens, pos, "KEYWORD", "throw")
+        stmt_line = tokens[pos]["line"]
+        stmt_col = tokens[pos]["column"]
+        pos = pos + 1
+        stmt_res = parse_expression(tokens, pos)
+        pos = stmt_res[0]
+        return [pos, make_throw(stmt_res[1], stmt_line, stmt_col)]
+    end
+
+    if match(tokens, pos, "KEYWORD", "rethrow")
+        stmt_line = tokens[pos]["line"]
+        stmt_col = tokens[pos]["column"]
+        pos = pos + 1
+        return [pos, make_rethrow(stmt_line, stmt_col)]
+    end
+
+    if match(tokens, pos, "KEYWORD", "try")
+        stmt_line = tokens[pos]["line"]
+        stmt_col = tokens[pos]["column"]
+        pos = pos + 1
+        
+        let t_try_b = []
+        let t_catch_var = ""
+        let t_catch_b = []
+        let t_fin_b = []
+        
+        let t_loop = 1 == 1
+        while t_loop
+            if check(tokens, pos, "KEYWORD")
+                let t_tok = tokens[pos]["value"]
+                if t_tok == "catch"
+                    t_loop = 1 == 0
+                end
+                if t_tok == "finally"
+                    t_loop = 1 == 0
+                end
+                if t_tok == "end"
+                    t_loop = 1 == 0
+                end
+            end
+            
+            if t_loop
+                if pos >= len(tokens)
+                    t_loop = 1 == 0
+                else
+                    stmt_res = parse_statement(tokens, pos)
+                    pos = stmt_res[0]
+                    t_try_b = t_try_b + [stmt_res[1]]
+                end
+            end
+        end
+        
+        if match(tokens, pos, "KEYWORD", "catch")
+            pos = pos + 1
+            if match(tokens, pos, "PUNCTUATION", "(")
+                pos = pos + 1
+                stmt_res = expect(tokens, pos, "IDENTIFIER", "Expect variable in catch.")
+                pos = stmt_res[0]
+                t_catch_var = stmt_res[1]["value"]
+                stmt_res = expect_val(tokens, pos, "PUNCTUATION", ")", "Expect ')'.")
+                pos = stmt_res[0]
+            end
+            
+            let c_loop = 1 == 1
+            while c_loop
+                if check(tokens, pos, "KEYWORD")
+                    let c_tok = tokens[pos]["value"]
+                    if c_tok == "finally"
+                        c_loop = 1 == 0
+                    end
+                    if c_tok == "end"
+                        c_loop = 1 == 0
+                    end
+                end
+                
+                if c_loop
+                    if pos >= len(tokens)
+                        c_loop = 1 == 0
+                    else
+                        stmt_res = parse_statement(tokens, pos)
+                        pos = stmt_res[0]
+                        t_catch_b = t_catch_b + [stmt_res[1]]
+                    end
+                end
+            end
+        end
+        
+        if match(tokens, pos, "KEYWORD", "finally")
+            pos = pos + 1
+            let f_loop = 1 == 1
+            while f_loop
+                if check(tokens, pos, "KEYWORD")
+                    if tokens[pos]["value"] == "end"
+                        f_loop = 1 == 0
+                    end
+                end
+                
+                if f_loop
+                    if pos >= len(tokens)
+                        f_loop = 1 == 0
+                    else
+                        stmt_res = parse_statement(tokens, pos)
+                        pos = stmt_res[0]
+                        t_fin_b = t_fin_b + [stmt_res[1]]
+                    end
+                end
+            end
+        end
+        
+        stmt_res = expect_val(tokens, pos, "KEYWORD", "end", "Expect 'end' at end of try.")
+        pos = stmt_res[0]
+        
+        return [pos, make_try(t_try_b, t_catch_var, t_catch_b, t_fin_b, stmt_line, stmt_col)]
+    end
+
+
+    if match(tokens, pos, "KEYWORD", "widget")
+        stmt_line = tokens[pos]["line"]
+        stmt_col = tokens[pos]["column"]
+        pos = pos + 1
+        stmt_res = expect(tokens, pos, "IDENTIFIER", "Expect widget name.")
+        pos = stmt_res[0]
+        let w_name = stmt_res[1]["value"]
+        let w_body = []
+        let w_loop = 1 == 1
+        while w_loop
+            if match(tokens, pos, "KEYWORD", "end")
+                w_loop = 1 == 0
+            else
+                if pos >= len(tokens)
+                    w_loop = 1 == 0
+                else
+                    stmt_res = parse_statement(tokens, pos)
+                    pos = stmt_res[0]
+                    w_body = w_body + [stmt_res[1]]
+                end
+            end
+        end
+        stmt_res = expect_val(tokens, pos, "KEYWORD", "end", "Expect 'end' after widget block.")
+        pos = stmt_res[0]
+        return [pos, make_widget(w_name, w_body, stmt_line, stmt_col)]
+    end
+
+    if match(tokens, pos, "KEYWORD", "component")
+        stmt_line = tokens[pos]["line"]
+        stmt_col = tokens[pos]["column"]
+        pos = pos + 1
+        stmt_res = expect(tokens, pos, "IDENTIFIER", "Expect component name.")
+        pos = stmt_res[0]
+        let c_name = stmt_res[1]["value"]
+        let c_body = []
+        let comp_loop = 1 == 1
+        while comp_loop
+            if match(tokens, pos, "KEYWORD", "end")
+                comp_loop = 1 == 0
+            else
+                if pos >= len(tokens)
+                    comp_loop = 1 == 0
+                else
+                    stmt_res = parse_statement(tokens, pos)
+                    pos = stmt_res[0]
+                    c_body = c_body + [stmt_res[1]]
+                end
+            end
+        end
+        stmt_res = expect_val(tokens, pos, "KEYWORD", "end", "Expect 'end' after component block.")
+        pos = stmt_res[0]
+        return [pos, make_component(c_name, c_body, stmt_line, stmt_col)]
+    end
+
+    if match(tokens, pos, "KEYWORD", "theme")
+        stmt_line = tokens[pos]["line"]
+        stmt_col = tokens[pos]["column"]
+        pos = pos + 1
+        stmt_res = expect(tokens, pos, "IDENTIFIER", "Expect theme name.")
+        pos = stmt_res[0]
+        let th_name = stmt_res[1]["value"]
+        let th_body = []
+        let th_loop = 1 == 1
+        while th_loop
+            if match(tokens, pos, "KEYWORD", "end")
+                th_loop = 1 == 0
+            else
+                if pos >= len(tokens)
+                    th_loop = 1 == 0
+                else
+                    stmt_res = parse_statement(tokens, pos)
+                    pos = stmt_res[0]
+                    th_body = th_body + [stmt_res[1]]
+                end
+            end
+        end
+        stmt_res = expect_val(tokens, pos, "KEYWORD", "end", "Expect 'end' after theme block.")
+        pos = stmt_res[0]
+        return [pos, make_theme(th_name, th_body, stmt_line, stmt_col)]
+    end
+
+    if match(tokens, pos, "KEYWORD", "bind")
+        stmt_line = tokens[pos]["line"]
+        stmt_col = tokens[pos]["column"]
+        pos = pos + 1
+        stmt_res = expect(tokens, pos, "IDENTIFIER", "Expect bind target.")
+        pos = stmt_res[0]
+        let b_target = stmt_res[1]["value"]
+        stmt_res = expect_val(tokens, pos, "PUNCTUATION", "=", "Expect '=' in bind.")
+        pos = stmt_res[0]
+        stmt_res = parse_expression(tokens, pos)
+        pos = stmt_res[0]
+        let b_val = stmt_res[1]
+        return [pos, make_bind(b_target, b_val, stmt_line, stmt_col)]
+    end
+
     if match(tokens, pos, "KEYWORD", "let")
         stmt_line = tokens[pos]["line"]
         stmt_col = tokens[pos]["column"]
@@ -673,3 +1000,55 @@ print("AST parsed successfully!")
 print(ast["type"])
 print(ast["statements"])
 
+
+action make_app_decl(name, line, column)
+    return {
+        "type": "AppDecl",
+        "name": name,
+        "line": line,
+        "column": column
+    }
+end
+
+action make_state_decl(name, value, line, column)
+    return {
+        "type": "StateDecl",
+        "name": name,
+        "value": value,
+        "line": line,
+        "column": column
+    }
+end
+
+action make_model_decl(name, body, line, column)
+    return { "type": "ModelDecl", "name": name, "body": body, "line": line, "column": column }
+end
+action make_route_decl(path, body, line, column)
+    return { "type": "RouteDecl", "path": path, "body": body, "line": line, "column": column }
+end
+action make_page_decl(name, body, line, column)
+    return { "type": "PageDecl", "name": name, "body": body, "line": line, "column": column }
+end
+
+action make_try(try_b, c_var, catch_b, fin_b, line, column)
+    return { "type": "Try", "try_block": try_b, "catch_var": c_var, "catch_block": catch_b, "finally_block": fin_b, "line": line, "column": column }
+end
+action make_throw(value, line, column)
+    return { "type": "Throw", "value": value, "line": line, "column": column }
+end
+action make_rethrow(line, column)
+    return { "type": "Rethrow", "line": line, "column": column }
+end
+
+action make_widget(name, body, line, column)
+    return { "type": "Widget", "name": name, "body": body, "line": line, "column": column }
+end
+action make_component(name, body, line, column)
+    return { "type": "Component", "name": name, "body": body, "line": line, "column": column }
+end
+action make_theme(name, body, line, column)
+    return { "type": "Theme", "name": name, "body": body, "line": line, "column": column }
+end
+action make_bind(target, value, line, column)
+    return { "type": "Bind", "target": target, "value": value, "line": line, "column": column }
+end

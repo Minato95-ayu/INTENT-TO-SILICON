@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ChevronRight, Terminal, Copy, Check, Bot, Sparkles, Zap, Server, Database, LayoutTemplate, ShieldCheck, Activity } from 'lucide-react';
+import { ChevronRight, Terminal, Copy, Check, Bot, Sparkles, Zap, Server, Database, LayoutTemplate, ShieldCheck, Activity , Download} from 'lucide-react';
 
 const codeString = `// Welcome to AAYU: The AI-Agent Language
 app CoreApp
@@ -104,13 +104,11 @@ export default function Home() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
-              <div className="flex items-center bg-[#111] border border-white/10 rounded-xl px-4 py-3">
-                <span className="text-purple-400 font-mono text-sm mr-3">$</span>
-                <code className="text-sm font-mono text-zinc-300">git clone https://github.com/Minato95-ayu/INTENT-TO-SILICON</code>
-                <button onClick={handleCopy} className="text-zinc-500 hover:text-white transition-colors ml-3">
-                  {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
-                </button>
-              </div>
+              <Link href="/download">
+                  <Button className="h-full px-6 bg-zinc-800 text-white hover:bg-zinc-700 font-bold rounded-xl gap-2 py-3 border border-white/10 transition-colors">
+                    <Download className="w-4 h-4" /> Download IDE & SDK
+                  </Button>
+                </Link>
               <Link href="/tutorial">
                 <Button className="h-full px-6 bg-purple-600 text-white hover:bg-purple-500 font-bold rounded-xl gap-2 py-3">
                   <Terminal className="w-4 h-4" /> Start Tutorial
@@ -319,4 +317,5 @@ export default function Home() {
     </main>
   );
 }
+
 

@@ -1,4 +1,4 @@
-# AAYU Self-Hosted Lexer (Draft 3)
+﻿# AAYU Self-Hosted Lexer (Draft 3)
 # Implemented using a single tokenize function and local variables.
 
 
@@ -144,6 +144,9 @@ tokens = tokens + [{ "type": "EOF", "value": "", "line": line, "column": column 
                     tok_type = "KEYWORD"
                 end
                 if value == "respond"
+                    tok_type = "KEYWORD"
+                end
+                if value == "struct"
                     tok_type = "KEYWORD"
                 end
                 if value == "rethrow"
@@ -388,3 +391,4 @@ while i < len(tokens)
     print(t["value"])
     i = i + 1
 end
+

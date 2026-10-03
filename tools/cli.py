@@ -42,15 +42,16 @@ class AAYUCLI:
         if command in ["--version", "-v"]:
             command = "version"
             
+        if command == 'ide':
+            start_ide()
+            return
+
         try:
             # Dynamically load the command module from tools.commands
             module = importlib.import_module(f"tools.commands.{command}")
             if hasattr(module, "handle"):
                 module.handle(args)
-            
-    elif command == 'ide':
-        start_ide()
-    else:
+            else:
                 print(f"Error: Command module '{command}' is missing a handle() function.")
                 sys.exit(1)
         except ModuleNotFoundError as e:
@@ -58,11 +59,7 @@ class AAYUCLI:
                 print(f"aayu: '{command}' is not a recognized command.")
                 print("Run 'aayu --help' for usage.")
                 sys.exit(1)
-            
-    elif command == 'ide':
-        start_ide()
-    else:
-                # If the error is inside the command module, raise it
+            else:
                 raise
 
 def main():

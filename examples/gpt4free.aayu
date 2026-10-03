@@ -10,6 +10,10 @@ model ChatCompletionRequest {
     messages: String
 }
 
+# ---------------------------------------------------------
+# BACKEND PROVIDERS (GPT4Free Core)
+# ---------------------------------------------------------
+
 action provider_pollinations(prompt)
     let url = "https://text.pollinations.ai/" + prompt
     let response = Http.get(url)
@@ -21,6 +25,10 @@ action provider_blackbox(prompt)
     let response = Http.post("https://api.blackbox.ai/api/chat", payload)
     return response.text
 end
+
+# ---------------------------------------------------------
+# API ROUTES
+# ---------------------------------------------------------
 
 route "/v1/chat/completions"
     post
@@ -42,7 +50,7 @@ route "/v1/chat/completions"
 end
 
 action main
-    print("AAYU G4F Server Started!")
+    print("AAYU GPT4Free Server Started!")
     Server.start(8080)
 end
 

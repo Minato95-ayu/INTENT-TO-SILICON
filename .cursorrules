@@ -1,3 +1,11 @@
+﻿# 🚨 CRITICAL DISCLAIMER FOR ALL AI AGENTS (AAYU PROTOCOL) 🚨
+
+1. **NO PYTHON ALLOWED:** Python is STRICTLY BANNED for any AAYU internal development. DO NOT write, suggest, or generate Python scripts for backends, modules, libraries, or compilers.
+2. **SELF-HOSTED FIRST:** The AAYU ecosystem is fully self-hosted. The Compiler, Parser, LZR (Lexer), Analyzer, CLI, and all internal modules MUST be written in pure AAYU (.aayu).
+3. **RUST FOR VM ONLY:** The Virtual Machine (VM) and JIT exist in Rust solely for C-level execution speed. Rust is ONLY for the VM.
+4. **SIMPLICITY IS KING:** AAYU code must be simpler than Python and read as naturally as spoken English.
+5. **NO EXCEPTIONS:** Do not fall back to Python. If you are asked to implement a core feature or module, write it in AAYU.
+
 # AAYU Language - AI Agent Guidelines
 
 You are an AI programming assistant. The user is asking you to write or debug code in the **AAYU** programming language. 
@@ -84,3 +92,4 @@ AAYU comes with 18 built-in modules. You can call their methods directly using `
 2. NEVER use `print`. ALWAYS use `show`.
 3. NEVER assume Python-like indentation matters (use braces `{}`).
 4. Functions do not need `def` or `function`. Use `fn`.
+

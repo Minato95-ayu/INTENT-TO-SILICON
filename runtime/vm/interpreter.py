@@ -705,6 +705,15 @@ class Interpreter:
         val = self.vm.value_stack.pop()
         if isinstance(val, (list, str, dict)):
             self.vm.value_stack.push(len(val))
+        elif hasattr(val, 'to_python'):
+            # Handle AAYU runtime values (StringValue, ArrayValue, DictValue)
+            py_val = val.to_python()
+            if hasattr(py_val, '__len__'):
+                self.vm.value_stack.push(len(py_val))
+            else:
+                self.vm.value_stack.push(0)
+        elif hasattr(val, '__len__'):
+            self.vm.value_stack.push(len(val))
         else:
             self.vm.value_stack.push(0)
         return True
@@ -714,7 +723,24 @@ class Interpreter:
         index = self.vm.value_stack.pop()
         container = self.vm.value_stack.pop()
         try:
-            val = container[index]
+            # Handle AAYU runtime values (StringValue, ArrayValue, DictValue)
+            if hasattr(container, 'get') and hasattr(container, 'heap_id'):
+                from runtime.values.number import NumberValue
+                if isinstance(index, int):
+                    key = NumberValue(index)
+                else:
+                    key = index
+                result = container.get(key)
+                # Convert StringValue chars to raw Python strings for self-hosted compiler compat
+                if hasattr(result, 'to_python'):
+                    val = result.to_python()
+                else:
+                    val = result
+            elif hasattr(container, 'to_python'):
+                py_container = container.to_python()
+                val = py_container[index]
+            else:
+                val = container[index]
         except (IndexError, KeyError, TypeError) as e:
             val = None
         self.vm.value_stack.push(val)

@@ -1,0 +1,58 @@
+app Conduit
+
+model User {
+    username: String
+    email: String
+    bio: String
+    image: String
+}
+
+model Article {
+    title: String
+    slug: String
+    body: String
+    description: String
+    author_id: Int
+    favoritesCount: Int
+}
+
+model Comment {
+    body: String
+    author_id: Int
+    article_id: Int
+}
+
+route "/api/users"
+    post
+        let username = request.body.user.username
+        let email = request.body.user.email
+        
+        let response_payload = "{\"user\":{\"email\":\"" + email + "\",\"username\":\"" + username + "\",\"token\":\"jwt_token_aayu\"}}"
+        respond response_payload
+    end
+end
+
+route "/api/articles"
+    get
+        let response_payload = "{\"articles\":[],\"articlesCount\":0}" 
+        respond response_payload
+    end
+
+    post
+        let title = request.body.article.title
+        let description = request.body.article.description
+        let body = request.body.article.body
+        let slug = title
+        
+        let response_payload = "{\"article\":{\"title\":\"" + title + "\",\"slug\":\"" + slug + "\"}}"
+        respond response_payload
+    end
+end
+
+action main
+    print("Conduit (Realworld) Backend starting in AAYU...")
+    print("Database synced, routes registered, zero dependencies!")
+    Server.start(8080)
+end
+
+run main

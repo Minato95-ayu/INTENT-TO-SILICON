@@ -1,4 +1,4 @@
-# ==============================================================================
+﻿# ==============================================================================
 # COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
 # 
 # This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
@@ -34,6 +34,7 @@ def handle(args):
     renderer_type = "desktop"
     backend = "tkinter"
     target = "main.aayu"
+    script_args = []
     debug = False
     port = 3000
     
@@ -51,7 +52,10 @@ def handle(args):
         elif arg == "--debug":
             debug = True
         elif not arg.startswith("-"):
-            target = arg
+            if target == "main.aayu":
+                target = arg
+            else:
+                script_args.append(arg)
 
     import urllib.request
     import hashlib
@@ -160,6 +164,7 @@ def handle(args):
         print(f"BYTECODE: {program.bytecode}")
         print(f"ACTIONS: {program.action_addresses}")
         vm = VirtualMachine(VMConfig.development() if debug else VMConfig.production())
+        vm.script_args = script_args
         vm.load(program.bytecode, program.constant_pool.values(), program.action_addresses)
         vm.execute()
         

@@ -1614,41 +1614,40 @@ end
 # ==========================================
 # MAIN PIPELINE
 # ==========================================
+action main
+    let args = process::args()
+    if len(args) == 0
+        print("Usage: aayu run aayuc.aayu <file.aayu>")
+        return 0
+    end
+    let filepath = args[0]
+    
+    if file::exists(filepath) == 0
+        print("Error: File not found")
+        return 0
+    end
+    
+    let code = file::read(filepath)
+    print("Compiling source: " + filepath)
+    print("Code length: ")
+    print(len(code))
 
-let code = "let i = 0
-let sum = 0
-while i != 5
-  sum = sum + i
-  i = i + 1
+    # 1. Lex
+    let tokens = tokenize(code)
+    print("Lexer finished. Tokens: ")
+    print(len(tokens))
+
+    # 2. Parse
+    let ast = parse(tokens)
+    print("Parser finished. Statements:")
+    print(len(ast["statements"]))
+
+    # 4. Compile
+    compile(ast)
+    
+    print("BYTECODE LENGTH: ")
+    print(len(bytecode))
+    print("SUCCESS: " + filepath + " compiled successfully by AAYU Self-Hosted Compiler!")
 end
-print(sum)"
 
-print("Compiling source:")
-print(code)
-print("----------------")
-
-# 1. Lex
-let tokens = tokenize(code)
-print("Lexer finished. Tokens: ")
-print(len(tokens))
-
-# 2. Parse
-let ast = parse(tokens)
-print("Parser finished. Statements:")
-print(len(ast["statements"]))
-
-# 3. Semantic Analysis
-# Currently analyzer outputs Semantic* nodes, so we skip it to match compiler.aayu's expected AST.
-# let sem_ast = analyze(ast)
-print("Semantic Analysis finished.")
-
-# 4. Compile
-compile(ast)
-print("Compilation finished. Bytecode length:")
-print(len(bytecode))
-
-print("BYTECODE DUMP:")
-print(bytecode)
-print("CONSTANT POOL:")
-print(constants)
-print("AAYUC Execution Complete.")
+run main

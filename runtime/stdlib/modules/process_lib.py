@@ -1,4 +1,4 @@
-# ==============================================================================
+﻿# ==============================================================================
 # COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
 # 
 # This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
@@ -33,5 +33,11 @@ def register_process_lib(registry: StdLibRegistry):
             return NullValue()
             
     registry.register("process::exec", fn_exec)
+
+    def fn_args(args, vm):
+        import sys
+        # The first arg to tools/cli.py is run, 2nd is the file, so args are 3+
+        return getattr(vm, "script_args", [])
+    registry.register("process::args", fn_args)
 
 

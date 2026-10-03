@@ -74,7 +74,15 @@ export default function DownloadPage() {
               <div key={i} className={"bg-[#0a0a0a] border border-white/5 rounded-xl p-6 transition-all duration-300 group " + d.color}>
                 <div className="flex justify-between items-start mb-4">
                   {d.icon}
-                  <a href="#" className="p-2 bg-white/5 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-colors">
+                  <a 
+                    href={https://github.com/Minato95-ayu/INTENT-TO-SILICON/releases/download/v1.1.0/}
+                    onClick={(e) => {
+                      // Temporarily intercepting since CI hasn't finished the release yet
+                      e.preventDefault();
+                      alert("v1.1.0 binaries are currently building in our CI pipeline! Please use the 'Build From Source' option below for now, or check back in 10 minutes.");
+                    }}
+                    className="p-2 bg-white/5 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-colors"
+                  >
                     <Download className="w-4 h-4" />
                   </a>
                 </div>

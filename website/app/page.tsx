@@ -106,7 +106,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
               <Link href="/download">
                   <Button className="h-full px-6 bg-zinc-800 text-white hover:bg-zinc-700 font-bold rounded-xl gap-2 py-3 border border-white/10 transition-colors">
-                    <Download className="w-4 h-4" /> Download IDE & SDK
+                    <Download className="w-4 h-4" /> Download AAYU
                   </Button>
                 </Link>
               <Link href="/tutorial">

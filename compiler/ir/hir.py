@@ -17,6 +17,12 @@ class HIRNode:
     """High-level Intermediate Representation. Closely maps to semantic tree but flattens blocks."""
     pass
 
+
+@dataclass
+class HIRLetDecl(HIRNode):
+    name: str
+    value: Any
+
 @dataclass
 class HIRStateDecl(HIRNode):
     name: str

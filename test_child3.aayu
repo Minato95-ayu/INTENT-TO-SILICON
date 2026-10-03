@@ -1,0 +1,39 @@
+﻿app TestRender2
+action render_node(node)
+    print("INSIDE ACTION, NODE IS: ")
+    print(node)
+    let type = node["type"]
+    let children = node["children"]
+    
+    print("TYPE IS: " + type)
+    print("CHILDREN IS: ")
+    print(children)
+    
+    let ch_len = list::length(children)
+    
+    let i = 0
+    while i < ch_len
+        let child_type = children[i]["type"]
+        if child_type == "heading"
+            render_node(children[i])
+        end
+        i = i + 1
+    end
+    return ""
+end
+
+action main
+    let sample_node = {
+        "type": "Column",
+        "props": {},
+        "children": [
+            {
+                "type": "heading",
+                "props": {},
+                "children": ["Hello AAYU SSR!"]
+            }
+        ]
+    }
+    render_node(sample_node)
+end
+run main

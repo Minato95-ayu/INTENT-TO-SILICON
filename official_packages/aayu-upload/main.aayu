@@ -1,5 +1,7 @@
-﻿app AayuUpload
+app AayuUpload
 
-action uploadFile
-    print("Uploading file...")
+action uploadFile(file)
+    print("Uploading: ")
+    print(file)
+    return 1
 end

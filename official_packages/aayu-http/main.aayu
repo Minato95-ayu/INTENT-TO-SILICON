@@ -1,11 +1,9 @@
-﻿app AayuHttp
+app AayuHttp
 
-action getReq
-    print("Making GET request...")
-    # Native implementation hooked in VM
+action getReq(url)
+    return http::get(url)
 end
 
-action postReq
-    print("Making POST request...")
-    # Native implementation hooked in VM
+action postReq(url, data)
+    return http::post(url, data)
 end

@@ -1,6 +1,5 @@
-﻿app AayuCrypto
+app AayuCrypto
 
-action hash
-    print("Hashing data...")
-    # Native implementation hooked in VM
+action hash(data)
+    return crypto::sha256(data)
 end

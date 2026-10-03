@@ -1,5 +1,5 @@
-﻿app AayuOpenAI
+app AayuOpenAI
 
-action generateText
-    print("Generating from OpenAI...")
+action generateText(prompt)
+    return ai::generate(prompt)
 end

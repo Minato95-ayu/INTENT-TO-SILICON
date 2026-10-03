@@ -177,13 +177,15 @@ class BytecodeEncoder:
 
         if opcode == "STATE_INIT":
             self._encode_state_init(node)
+        elif opcode == "INIT_VAR":
+            self._encode_init_var(node)
         elif opcode == "LOAD_VAR":
             self._encode_load_var(node)
         elif opcode == "STORE_VAR":
             self._encode_store_var(node)
         elif opcode.startswith("BUILD_") and opcode != "BUILD_DICT":
             self._encode_build_widget(node)
-        elif opcode.startswith("INIT_") and opcode not in ["INIT_STATE"]:
+        elif opcode.startswith("INIT_") and opcode not in ["INIT_STATE", "INIT_VAR"]:
             node.opcode = "BUILD_" + opcode[5:]
             self._encode_build_widget(node)
         elif opcode == "CREATE_CLOSURE":
@@ -368,6 +370,11 @@ class BytecodeEncoder:
             # Unknown LIR opcode â€” emit as DISPATCH for extensibility
             self._emit(Opcode.DISPATCH, 0)
 
+    def _encode_init_var(self, node: LIRNode):
+        name = node.operands[0]
+        name_idx = self.pool.add(name)
+        self._emit(Opcode.INIT_VAR, name_idx)
+
     def _encode_state_init(self, node: LIRNode):
         """STATE_INIT [name]
         Value is already on stack!
@@ -462,6 +469,8 @@ class BytecodeEncoder:
 
         self._action_addresses[action_name] = len(self.bytecode)
         self._action_addresses_upper[action_name.upper()] = len(self.bytecode)
+        
+        self._emit(Opcode.ENTER_SCOPE, 0)
 
         if len(node.operands) > 2:
             args = node.operands[2]
@@ -478,6 +487,7 @@ class BytecodeEncoder:
                         self._encode_node(sub_node)
 
         # Return from action
+        self._emit(Opcode.EXIT_SCOPE, 0)
         self._emit(Opcode.RET, 0)
         
         # Patch the JMP operand
@@ -519,7 +529,7 @@ class BytecodeEncoder:
         elif opcode == "PRINT":
             return 6  # PUSH_CONST + PRINT
         elif opcode == "ACTION_DECL":
-            return 3  # RET only
+            return 9  # RET only
         elif opcode == "REGISTER_ROUTE":
             return 6  # PUSH_CONST + REGISTER_ROUTE (methods counted recursively)
         elif opcode == "CALL_ACTION":

@@ -23,7 +23,7 @@ from compiler.semantic.nodes import (
     SemanticTryNode, SemanticThrowNode, SemanticRethrowNode, SemanticInsertNode, SemanticFindNode, SemanticRespondNode
 )
 from compiler.ir.hir import (
-    HIRNode, HIRStateDecl, HIRWidget, HIRAssignment,
+    HIRNode, HIRStateDecl, HIRLetDecl, HIRWidget, HIRAssignment,
     HIRActionDecl, HIRActionCall, HIRLoadVar, HIRPrint, HIRImport,
     HIRIf, HIRFor, HIRBinaryOp, HIRLoadConst,
     HIRModel, HIRModelField, HIRModelAttribute, HIRRoute, HIRMethod, HIRReturn,
@@ -54,7 +54,7 @@ class IRPipeline:
         elif type(node).__name__ == "SemanticLetDeclNode":
             val_hir = self._semantic_to_hir(node.value)
             if isinstance(val_hir, HIRPrint): val_hir = HIRLoadConst(val_hir.value)
-            return HIRAssignment(node.name, val_hir)
+            return HIRLetDecl(node.name, val_hir)
         elif isinstance(node, SemanticWidgetNode):
             children_hir = []
             for child in node.children:
@@ -282,10 +282,13 @@ class IRPipeline:
         builder = SSABuilder(cfg, dt)
         builder.build()
         return cfg
-    def _hir_to_mir(self, hir, mir_list: list):
+    def _hir_to_mir(self, hir, mir_list: list, is_expr: bool = False):
         if isinstance(hir, HIRStateDecl):
-            self._hir_to_mir(hir.value, mir_list)
+            self._hir_to_mir(hir.value, mir_list, is_expr=True)
             mir_list.append(MIRInstruction("INIT_STATE", [hir.name]))
+        elif isinstance(hir, HIRLetDecl):
+            self._hir_to_mir(hir.value, mir_list, is_expr=True)
+            mir_list.append(MIRInstruction("INIT_VAR", [hir.name]))
         elif isinstance(hir, HIRWidget):
             if hir.w_type.lower() in ["text", "heading", "button"]:
                 # First recursively process children
@@ -299,7 +302,7 @@ class IRPipeline:
                         mir_list.append(MIRInstruction("PUSH_CONST", [v.value]))
                         props[k] = "$STACK"
                     elif hasattr(v, 'opcode') or type(v).__name__.startswith("HIR"):
-                        self._hir_to_mir(v, mir_list)
+                        self._hir_to_mir(v, mir_list, is_expr=True)
                         props[k] = "$STACK"
                     elif type(v).__name__ == "SemanticIdentifierNode":
                         mir_list.append(MIRInstruction("LOAD_VAR", [v.name]))
@@ -340,7 +343,7 @@ class IRPipeline:
                         mir_list.append(MIRInstruction("PUSH_CONST", [v.value]))
                         props[k] = "$STACK"
                     elif hasattr(v, 'opcode') or type(v).__name__.startswith("HIR"):
-                        self._hir_to_mir(v, mir_list)
+                        self._hir_to_mir(v, mir_list, is_expr=True)
                         props[k] = "$STACK"
                     elif type(v).__name__ == "SemanticIdentifierNode":
                         mir_list.append(MIRInstruction("LOAD_VAR", [v.name]))
@@ -351,7 +354,7 @@ class IRPipeline:
                 
                 mir_list.append(MIRInstruction(f"INIT_{hir.w_type.upper()}", [props]))
         elif isinstance(hir, HIRAssignment):
-            self._hir_to_mir(hir.value, mir_list)
+            self._hir_to_mir(hir.value, mir_list, is_expr=True)
             mir_list.append(MIRInstruction("SET_STATE", [hir.target]))
         elif isinstance(hir, HIRActionDecl):
             body_mir = []
@@ -434,7 +437,7 @@ class IRPipeline:
                 self._hir_to_mir(stmt, mir_list)
                 if self._needs_pop(stmt): mir_list.append(MIRInstruction("POP", []))
         elif isinstance(hir, HIRThrow):
-            self._hir_to_mir(hir.value, mir_list)
+            self._hir_to_mir(hir.value, mir_list, is_expr=True)
             mir_list.append(MIRInstruction("THROW", []))
         elif isinstance(hir, HIRRethrow):
             mir_list.append(MIRInstruction("RETHROW", []))
@@ -444,11 +447,11 @@ class IRPipeline:
             # Imports are resolved at semantic stage; skip in IR
             pass
         elif isinstance(hir, HIRBinaryOp):
-            self._hir_to_mir(hir.left, mir_list)
-            self._hir_to_mir(hir.right, mir_list)
+            self._hir_to_mir(hir.left, mir_list, is_expr=True)
+            self._hir_to_mir(hir.right, mir_list, is_expr=True)
             mir_list.append(MIRInstruction("BINARY_OP", [hir.op]))
         elif isinstance(hir, HIRIf):
-            self._hir_to_mir(hir.condition, mir_list)
+            self._hir_to_mir(hir.condition, mir_list, is_expr=True)
             
             import uuid
             else_label = f"else_{uuid.uuid4().hex[:8]}"
@@ -474,7 +477,7 @@ class IRPipeline:
             end_label = f"while_end_{uid}"
             
             mir_list.append(MIRInstruction("LABEL", [start_label]))
-            self._hir_to_mir(hir.condition, mir_list)
+            self._hir_to_mir(hir.condition, mir_list, is_expr=True)
             mir_list.append(MIRInstruction("JUMP_IF_FALSE", [end_label]))
             
             mir_list.append(MIRInstruction("ENTER_SCOPE", []))
@@ -495,7 +498,7 @@ class IRPipeline:
             len_var = f"__len_{uid}"
             array_var = f"__arr_{uid}"
             # Evaluate iterable and store in hidden array var
-            self._hir_to_mir(hir.iterable, mir_list)
+            self._hir_to_mir(hir.iterable, mir_list, is_expr=True)
             mir_list.append(MIRInstruction("SET_STATE", [array_var]))
             # Store length
             mir_list.append(MIRInstruction("LOAD_VAR", [array_var]))
@@ -550,29 +553,29 @@ class IRPipeline:
             mir_list.append(MIRInstruction("REGISTER_ROUTE", [hir.path, methods_mir]))
         elif isinstance(hir, HIRInsert):
             for k, v in hir.fields.items():
-                self._hir_to_mir(v, mir_list)
+                self._hir_to_mir(v, mir_list, is_expr=True)
                 mir_list.append(MIRInstruction("PUSH_CONST", [k]))
             mir_list.append(MIRInstruction("DB_INSERT", [hir.model_name, len(hir.fields)]))
             mir_list.append(MIRInstruction("PUSH_CONST", [0])) # Dummy push to balance stack
         elif isinstance(hir, HIRFind):
             mir_list.append(MIRInstruction("DB_FIND", [hir.model_name]))
         elif isinstance(hir, HIRRespond):
-            self._hir_to_mir(hir.value, mir_list)
+            self._hir_to_mir(hir.value, mir_list, is_expr=True)
             mir_list.append(MIRInstruction("RESPOND", []))
         elif isinstance(hir, HIRReturn):
-            self._hir_to_mir(hir.value, mir_list)
+            self._hir_to_mir(hir.value, mir_list, is_expr=True)
             mir_list.append(MIRInstruction("RETURN_VALUE", []))
         elif isinstance(hir, HIRNavigate):
             num_args = len(hir.kwargs)
             keys = []
             for k, v in hir.kwargs.items():
-                self._hir_to_mir(v, mir_list)
+                self._hir_to_mir(v, mir_list, is_expr=True)
                 keys.append(k)
             mir_list.append(MIRInstruction("NAVIGATE", [hir.target, keys]))
         elif isinstance(hir, HIRDictionary):
             keys = []
             for k, v in hir.pairs.items():
-                self._hir_to_mir(v, mir_list)
+                self._hir_to_mir(v, mir_list, is_expr=True)
                 keys.append(k)
             mir_list.append(MIRInstruction("BUILD_DICT", [keys]))
         elif isinstance(hir, HIRSubscript):
@@ -609,7 +612,7 @@ class IRPipeline:
             # Evaluate all properties and push them, then build the animate block
             keys = []
             for k, v in hir.properties.items():
-                self._hir_to_mir(v, mir_list)
+                self._hir_to_mir(v, mir_list, is_expr=True)
                 keys.append(k)
             mir_list.append(MIRInstruction("SET_ANIMATION", [keys]))
             
@@ -637,6 +640,8 @@ class IRPipeline:
         if mir.opcode == "INIT_STATE":
             # INIT_STATE [name] → STATE_INIT [name]
             lir_list.append(LIRNode("STATE_INIT", [mir.operands[0]]))
+        elif mir.opcode == "INIT_VAR":
+            lir_list.append(LIRNode("INIT_VAR", [mir.operands[0]]))
         elif mir.opcode == "SET_STATE":
             # Value is already on stack from evaluating the expression
             lir_list.append(LIRNode("STORE_VAR", [mir.operands[0]]))
@@ -654,7 +659,8 @@ class IRPipeline:
             if len(mir.operands) > 1 and isinstance(mir.operands[1], list):
                 for sub_mir in mir.operands[1]:
                     self._mir_to_lir(sub_mir, body_lir)
-            body_lir.append(LIRNode("RET", []))
+            body_lir.append(LIRNode("PUSH_CONST", [None]))
+            body_lir.append(LIRNode("RETURN_VALUE", []))
             args = mir.operands[2] if len(mir.operands) > 2 else []
             lir_list.append(LIRNode("ACTION_DECL", [mir.operands[0], body_lir, args]))
         elif mir.opcode == "CALL_ACTION":

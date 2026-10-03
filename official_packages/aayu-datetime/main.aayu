@@ -1,6 +1,5 @@
-﻿app AayuDatetime
+app AayuDatetime
 
-action now
-    print("Getting current time...")
-    # Native implementation hooked in VM
+action now()
+    return time::now()
 end

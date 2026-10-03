@@ -1,6 +1,5 @@
-﻿app AayuGemini
+app AayuGemini
 
-action generateContent
-    print("Generating content from Gemini...")
-    # Native implementation hooked in VM
+action generateContent(prompt)
+    return ai::generate(prompt)
 end

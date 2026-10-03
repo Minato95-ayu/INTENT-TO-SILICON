@@ -1,6 +1,9 @@
-﻿app AayuJson
+app AayuJson
 
-action parse
-    print("Parsing JSON...")
-    # Native implementation hooked in VM
+action parse(data)
+    return json::parse(data)
+end
+
+action stringify(data)
+    return json::stringify(data)
 end

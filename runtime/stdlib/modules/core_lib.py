@@ -63,6 +63,7 @@ def register_core_lib(registry: StdLibRegistry):
         if not args: return NullValue()
         return make_string(vm, args[0].type_name()) if hasattr(args[0], 'type_name') else str(type(args[0]).__name__)
     registry.register("core::typeof", fn_typeof)
+    registry.register("typeof", fn_typeof)
     
     def fn_float(args, vm):
         if not args: return 0.0

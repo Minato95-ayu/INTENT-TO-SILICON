@@ -364,7 +364,14 @@ def handle(args):
         print(f"\n{e}")
         sys.exit(1)
     except Exception as e:
-        print(f"\nRuntime Error: {e}")
-        import traceback
-        traceback.print_exc()
+        from runtime.vm.exceptions import AayuException
+        if isinstance(e, AayuException):
+            print(f"\n[AAYU PANIC] {e.exc_type}: {e.message}")
+            if hasattr(e, 'stacktrace') and e.stacktrace:
+                print("--- AAYU Stack Trace ---")
+                for frame in e.stacktrace:
+                    print(f"  at {frame}")
+        else:
+            print(f"\n[AAYU INTERNAL ERROR] Something went wrong in the AAYU engine.")
+            print(f"Error: {str(e)}")
         sys.exit(1)

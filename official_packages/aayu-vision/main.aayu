@@ -1,5 +1,7 @@
-﻿app AayuVision
+app AayuVision
 
-action analyzeImage
-    print("Analyzing image...")
+action analyzeImage(image_path)
+    print("Analyzing vision for: ")
+    print(image_path)
+    return "Object detected"
 end

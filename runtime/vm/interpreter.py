@@ -52,6 +52,7 @@ class Interpreter:
         self.dispatch_table[Opcode.LOAD_STATE] = self.op_LOAD_STATE
         self.dispatch_table[Opcode.INIT_STATE] = self.op_INIT_STATE
         self.dispatch_table[Opcode.INIT_COMPONENT_STATE] = self.op_INIT_COMPONENT_STATE
+        self.dispatch_table[Opcode.INIT_VAR] = self.op_INIT_VAR
         self.dispatch_table[Opcode.ENTER_SCOPE] = self.op_ENTER_SCOPE
         self.dispatch_table[Opcode.EXIT_SCOPE] = self.op_EXIT_SCOPE
         self.dispatch_table[Opcode.CALL_COMPONENT] = self.op_CALL_COMPONENT
@@ -277,6 +278,8 @@ class Interpreter:
         for scope in reversed(self.vm.state_scopes):
             if name in scope:
                 val = scope[name]
+                if name in ["type", "node", "child_type"]:
+                    print(f"[DEBUG LOAD_STATE] Found {name} = {val} in scope id {id(scope)}")
                 found = True
                 break
         if not found:
@@ -284,7 +287,21 @@ class Interpreter:
                 val = name
             else:
                 val = None
+            if name in ["type", "node", "child_type"]:
+                print(f"[DEBUG LOAD_STATE] {name} NOT FOUND, defaulting to {val}")
         self.vm.value_stack.push(val)
+        return True
+
+    def op_INIT_VAR(self, opcode):
+        idx = self.vm.decoder.fetch16(self.vm.registers.ip + 1)
+        self.vm.registers.ip += 3
+        name = self.vm.constant_pool[idx]
+        val = self.vm.value_stack.pop()
+        if not self.vm.state_scopes:
+            from runtime.vm.exceptions import KernelError
+            raise KernelError(f"state_scopes is empty at IP {self.vm.registers.ip - 3}")
+        current_scope = self.vm.state_scopes[-1]
+        current_scope[name] = val
         return True
 
     def op_INIT_STATE(self, opcode):
@@ -295,10 +312,9 @@ class Interpreter:
         if not self.vm.state_scopes:
             from runtime.vm.exceptions import KernelError
             raise KernelError(f"state_scopes is empty at IP {self.vm.registers.ip - 3}")
-        # Store in current (local) scope, not global scope[0]
         current_scope = self.vm.state_scopes[-1]
-        if name not in current_scope:
-            current_scope[name] = val
+        
+        current_scope[name] = val
         return True
 
     def op_INIT_COMPONENT_STATE(self, opcode):
@@ -307,7 +323,7 @@ class Interpreter:
         name = self.vm.constant_pool[idx]
         val = self.vm.value_stack.pop()
         
-        is_comp = self.vm.call_stack.frames[-1][1]
+        is_comp = len(self.vm.call_stack.frames) > 0 and self.vm.call_stack.frames[-1][1]
         scope_to_use = self.vm.state_scopes[-1] if is_comp else self.vm.state_scopes[0]
         
         if name not in scope_to_use:
@@ -317,7 +333,7 @@ class Interpreter:
     def op_CALL_COMPONENT(self, opcode):
         target = self.vm.decoder.fetch16(self.vm.registers.ip + 1)
         base_depth = self.vm.value_stack.depth()
-        self.vm.call_stack.push((self.vm.registers.ip + 3, True, 0, 1, base_depth))
+        self.vm.call_stack.push((self.vm.registers.ip + 3, True, 0, 1, base_depth, len(self.vm.state_scopes)))
         props = self.vm.value_stack.pop()
         scope = {}
         if isinstance(props, dict):
@@ -341,7 +357,7 @@ class Interpreter:
             return False
         target = self.vm.decoder.fetch16(self.vm.registers.ip + 1)
         base_depth = self.vm.value_stack.depth()
-        self.vm.call_stack.push((self.vm.registers.ip + 3, False, returns, args, base_depth))
+        self.vm.call_stack.push((self.vm.registers.ip + 3, False, returns, args, base_depth, len(self.vm.state_scopes)))
         if hasattr(self.vm, 'state_scopes'):
             self.vm.state_scopes.append({})
         self.vm.registers.ip = target
@@ -478,7 +494,14 @@ class Interpreter:
         if opcode == Opcode.RETURN_VALUE:
             self.vm.registers.ip += 3
         if self.vm.call_stack.depth() > 0:
-            ret_ip, is_comp, expected_returns, args, base_depth = self.vm.call_stack.pop()
+            
+            frame = self.vm.call_stack.pop()
+            if len(frame) == 6:
+                ret_ip, is_comp, expected_returns, args, base_depth, base_scope_depth = frame
+            else:
+                ret_ip, is_comp, expected_returns, args, base_depth = frame
+                base_scope_depth = 0
+
             if opcode == Opcode.RETURN_VALUE:
                 if expected_returns is not None and expected_returns != 1:
                     self.vm.raise_exception(f'Runtime ABI violation: RETURN_VALUE expected 1 return but action was declared with {expected_returns} returns')
@@ -495,6 +518,9 @@ class Interpreter:
                 return False
             if hasattr(self.vm, 'state_scopes') and len(self.vm.state_scopes) > 1:
                 self.vm.state_scopes.pop()
+            if hasattr(self.vm, 'state_scopes'):
+                while len(self.vm.state_scopes) > base_scope_depth:
+                    self.vm.state_scopes.pop()
             if is_comp:
                 if self.node_stack:
                     self.node_stack.pop()
@@ -507,7 +533,14 @@ class Interpreter:
         if opcode == Opcode.RETURN_VALUE:
             self.vm.registers.ip += 3
         if self.vm.call_stack.depth() > 0:
-            ret_ip, is_comp, expected_returns, args, base_depth = self.vm.call_stack.pop()
+            
+            frame = self.vm.call_stack.pop()
+            if len(frame) == 6:
+                ret_ip, is_comp, expected_returns, args, base_depth, base_scope_depth = frame
+            else:
+                ret_ip, is_comp, expected_returns, args, base_depth = frame
+                base_scope_depth = 0
+
             if opcode == Opcode.RETURN_VALUE:
                 if expected_returns is not None and expected_returns != 1:
                     self.vm.raise_exception(f'Runtime ABI violation: RETURN_VALUE expected 1 return but action was declared with {expected_returns} returns')
@@ -524,6 +557,9 @@ class Interpreter:
                 return False
             if hasattr(self.vm, 'state_scopes') and len(self.vm.state_scopes) > 1:
                 self.vm.state_scopes.pop()
+            if hasattr(self.vm, 'state_scopes'):
+                while len(self.vm.state_scopes) > base_scope_depth:
+                    self.vm.state_scopes.pop()
             if is_comp:
                 if self.node_stack:
                     self.node_stack.pop()
@@ -583,12 +619,15 @@ class Interpreter:
         for _ in range(num_args):
             args.insert(0, self.vm.value_stack.pop())
         stdlib = self.vm.stdlib
+
         if func_name in stdlib.registry.functions:
             func = stdlib.registry.functions[func_name]
             try:
                 result = func(args, self.vm)
                 self.vm.value_stack.push(result)
+                return True
             except Exception as e:
+
                 self._throw_exception(KernelError(str(e)))
                 return True
         elif isinstance(func_name, str) and (external := stdlib.registry.lookup_external(func_name)):
@@ -801,3 +840,4 @@ class Interpreter:
         if hasattr(self.vm, 'state_scopes') and len(self.vm.state_scopes) > 1:
             self.vm.state_scopes.pop()
         return True
+

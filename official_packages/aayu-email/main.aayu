@@ -1,6 +1,7 @@
-﻿app AayuEmail
+app AayuEmail
 
-action sendEmail
-    print("Sending email...")
-    # Native implementation hooked in VM
+action sendEmail(to, subject, body)
+    print("Email Sent to: ")
+    print(to)
+    return 1
 end

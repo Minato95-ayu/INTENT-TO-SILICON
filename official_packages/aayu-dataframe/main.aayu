@@ -1,6 +1,5 @@
-﻿app AayuDataframe
+app AayuDataframe
 
-action loadCSV
-    print("Loading CSV into Dataframe...")
-    # Native implementation hooked in VM
+action loadCSV(path)
+    return df_read_csv(path)
 end

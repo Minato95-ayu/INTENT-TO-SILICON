@@ -1,11 +1,9 @@
-﻿app AayuFS
+app AayuFS
 
-action readFile
-    print("Reading file...")
-    # Native implementation hooked in VM
+action readFile(path)
+    return file::read(path)
 end
 
-action writeFile
-    print("Writing file...")
-    # Native implementation hooked in VM
+action writeFile(path, content)
+    return file::write(path, content)
 end

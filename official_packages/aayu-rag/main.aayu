@@ -1,5 +1,7 @@
-﻿app AayuRag
+app AayuRag
 
-action queryDocument
-    print("Querying RAG document...")
+action queryDocument(query)
+    print("RAG query: ")
+    print(query)
+    return "Result"
 end

@@ -107,7 +107,7 @@ class Validator:
             
             if opcode in (Opcode.PUSH_CONST, Opcode.DUP, Opcode.LOAD_STATE):
                 new_depth += 1
-            elif opcode in (Opcode.POP, Opcode.STORE_STATE, Opcode.INIT_STATE, Opcode.INIT_COMPONENT_STATE, Opcode.CREATE_MODEL, Opcode.PRINT, Opcode.THROW, Opcode.RETHROW):
+            elif opcode in (Opcode.POP, Opcode.STORE_STATE, Opcode.INIT_STATE, Opcode.INIT_COMPONENT_STATE, Opcode.INIT_VAR, Opcode.CREATE_MODEL, Opcode.PRINT, Opcode.THROW, Opcode.RETHROW):
                 new_depth -= 1
             elif opcode in (Opcode.ADD, Opcode.SUB, Opcode.MUL, Opcode.DIV, Opcode.CMP_EQ, Opcode.CMP_NEQ, Opcode.CMP_LT, Opcode.CMP_GT, Opcode.CMP_LTE, Opcode.CMP_GTE):
                 new_depth -= 1 # pop 2, push 1

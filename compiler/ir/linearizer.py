@@ -260,7 +260,9 @@ class Linearizer:
                 self._push_value(term.value)
                 self._emit("RETURN_VALUE", [])
             else:
-                self._emit("RET", [])
+                # Force void actions to return null to satisfy CALL_ACTION expecting 1 return
+                self._push_value(None)
+                self._emit("RETURN_VALUE", [])
 
     # ------------------------------------------------------------------
     # Lowering helpers for specific opcodes

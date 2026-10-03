@@ -172,6 +172,8 @@ def web(repo, rep, port=3199):
             rep.add("web", f"GET /api/feed on same port :{port}", code == 200, f"got {code}")
         finally:
             proc.kill()
+            proc.wait()
+            time.sleep(1)
 
 
 def main():
@@ -194,3 +196,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

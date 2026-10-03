@@ -1,5 +1,9 @@
-﻿app AayuAuth
+app AayuAuth
 
-action login
-    print("Logging in...")
+action login(username, password)
+    return auth.login(username, password)
+end
+
+action register(username, password)
+    return auth.register(username, password)
 end

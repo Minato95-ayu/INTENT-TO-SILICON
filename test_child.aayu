@@ -1,0 +1,17 @@
+﻿app TestRender
+action main
+    let heading = {
+        "type": "heading",
+        "props": {},
+        "children": ["Hello AAYU SSR!"]
+    }
+    
+    let children = heading["children"]
+    print("CHILDREN IS: ")
+    print(children)
+    
+    let i = 0
+    print("CHILD 0 IS: ")
+    print(children[i])
+end
+run main

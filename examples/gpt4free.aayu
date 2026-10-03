@@ -1,84 +1,49 @@
 ﻿app Gpt4Free
 
-// Models for OpenAI Compatible API
-model Message
-    role String
-    content String
-end
+model Message {
+    role: String
+    content: String
+}
 
-model ChatCompletionRequest
-    model String
-    messages List
-end
+model ChatCompletionRequest {
+    reqModel: String
+    messages: String
+}
 
-// Provider 1: Pollinations AI (Free Text AI)
-action provider_pollinations(prompt String) -> String
-    // We send a direct GET request to pollinations free endpoint
+action provider_pollinations(prompt)
     let url = "https://text.pollinations.ai/" + prompt
-    let response = http.get(url)
+    let response = Http.get(url)
     return response.text
 end
 
-// Provider 2: Free AI (Mocking another endpoint style)
-action provider_blackbox(prompt String) -> String
-    let payload = {
-        "messages": [{"role": "user", "content": prompt}],
-        "model": "blackbox",
-        "max_tokens": 1024
-    }
-    let response = http.post("https://api.blackbox.ai/api/chat", json: payload)
+action provider_blackbox(prompt)
+    let payload = "{\"messages\":[{\"role\":\"user\",\"content\":\"" + prompt + "\"}],\"model\":\"blackbox\",\"max_tokens\":1024}"
+    let response = Http.post("https://api.blackbox.ai/api/chat", payload)
     return response.text
 end
 
-// Web Host Server (OpenAI Compatible API Route)
 route "/v1/chat/completions"
     post
-        // Parse request body
-        let req_model = request.body.model
-        let user_prompt = request.body.messages[0].content
-
+        let req_model = request.body.reqModel
+        let user_prompt = request.body.messages
         let result = ""
         
-        // Smart Routing (Like g4f Provider switching)
         if req_model == "blackbox"
             result = provider_blackbox(user_prompt)
         elif req_model == "pollinations"
             result = provider_pollinations(user_prompt)
         else
-            // Default fallback
             result = provider_pollinations(user_prompt)
         end
 
-        // Construct OpenAI standard response format
-        let response_payload = {
-            "id": "chatcmpl-aayu-g4f",
-            "object": "chat.completion",
-            "model": req_model,
-            "choices": [
-                {
-                    "index": 0,
-                    "message": {
-                        "role": "assistant",
-                        "content": result
-                    },
-                    "finish_reason": "stop"
-                }
-            ]
-        }
-        
-        // Send JSON response
-        respond(response_payload)
+        let response_payload = "{\"id\":\"chatcmpl-aayu-g4f\",\"object\":\"chat.completion\",\"model\":\"" + req_model + "\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"" + result + "\"},\"finish_reason\":\"stop\"}]}"
+        respond response_payload
     end
 end
 
 action main
-    print("🚀 AAYU G4F (gpt4free) Server Started!")
-    print("📡 OpenAI-Compatible API listening on: http://localhost:8080")
-    print("🧠 Available Models: blackbox, pollinations")
-    print("---------------------------------------------------------")
-    print("Test with: curl -X POST http://localhost:8080/v1/chat/completions -d '{\"model\": \"pollinations\", \"messages\": [{\"role\": \"user\", \"content\": \"Hello!\"}]}'")
-    
-    server.start(8080)
+    print("AAYU G4F Server Started!")
+    Server.start(8080)
 end
 
 run main

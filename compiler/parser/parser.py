@@ -811,9 +811,6 @@ class Parser:
             self._consume(TokenType.SYMBOL, "Expect '}' after dictionary elements.", value="}")
             from compiler.ast.nodes import DictionaryNode
             expr = DictionaryNode(line=line, column=col, pairs=pairs)
-        elif self._match(TokenType.SYMBOL, "("):
-            expr = self._parse_expression()
-            self._consume(TokenType.SYMBOL, "Expect ')' after expression.", value=")")
         else:
             token = self._peek()
             raise CompilerError(f"Expect expression, got {token.type.name} at line {token.line}", token.line, token.column, token.source_line)

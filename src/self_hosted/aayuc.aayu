@@ -440,6 +440,32 @@ end
 action make_if(cond, then_b, else_b, line, column)
     return { "type": "If", "condition": cond, "then_branch": then_b, "else_branch": else_b, "line": line, "column": column }
 end
+
+action make_app(name, line, column)
+    return { "type": "AppDeclaration", "name": name, "line": line, "column": column }
+end
+action make_model(name, fields, line, column)
+    return { "type": "ModelDeclaration", "name": name, "fields": fields, "line": line, "column": column }
+end
+action make_route(path, methods, line, column)
+    return { "type": "RouteDeclaration", "path": path, "methods": methods, "line": line, "column": column }
+end
+action make_run(name, line, column)
+    return { "type": "RunNode", "action_name": name, "line": line, "column": column }
+end
+action make_state(name, value, line, column)
+    return { "type": "StateDeclaration", "name": name, "value": value, "line": line, "column": column }
+end
+action make_respond(value, line, column)
+    return { "type": "RespondNode", "value": value, "line": line, "column": column }
+end
+action make_for(var_name, iterable, body, line, column)
+    return { "type": "For", "variable": var_name, "iterable": iterable, "body": body, "line": line, "column": column }
+end
+action make_try(body, catch_var, catch_body, line, column)
+    return { "type": "Try", "body": body, "catch_var": catch_var, "catch_body": catch_body, "line": line, "column": column }
+end
+
 action make_while(cond, body, line, column)
     return { "type": "While", "condition": cond, "body": body, "line": line, "column": column }
 end
@@ -798,6 +824,44 @@ action parse_statement(tokens, pos)
     let stmt_loop = 1 == 1
     let stmt_else_loop = 1 == 1
 
+    
+    if match(tokens, pos, "KEYWORD", "app")
+        stmt_line = tokens[pos]["line"]
+        stmt_col = tokens[pos]["column"]
+        pos = pos + 1
+        stmt_res = expect(tokens, pos, "IDENTIFIER", "Expect app name.")
+        pos = stmt_res[0]
+        return [pos, make_app(stmt_res[1]["value"], stmt_line, stmt_col)]
+    end
+    if match(tokens, pos, "KEYWORD", "run")
+        stmt_line = tokens[pos]["line"]
+        stmt_col = tokens[pos]["column"]
+        pos = pos + 1
+        stmt_res = expect(tokens, pos, "IDENTIFIER", "Expect run target.")
+        pos = stmt_res[0]
+        return [pos, make_run(stmt_res[1]["value"], stmt_line, stmt_col)]
+    end
+    if match(tokens, pos, "KEYWORD", "state")
+        stmt_line = tokens[pos]["line"]
+        stmt_col = tokens[pos]["column"]
+        pos = pos + 1
+        stmt_res = expect(tokens, pos, "IDENTIFIER", "Expect state name.")
+        pos = stmt_res[0]
+        stmt_name = stmt_res[1]["value"]
+        stmt_res = expect_val(tokens, pos, "PUNCTUATION", "=", "Expect '='.")
+        pos = stmt_res[0]
+        stmt_res = parse_expression(tokens, pos)
+        pos = stmt_res[0]
+        return [pos, make_state(stmt_name, stmt_res[1], stmt_line, stmt_col)]
+    end
+    if match(tokens, pos, "KEYWORD", "respond")
+        stmt_line = tokens[pos]["line"]
+        stmt_col = tokens[pos]["column"]
+        pos = pos + 1
+        stmt_res = parse_expression(tokens, pos)
+        pos = stmt_res[0]
+        return [pos, make_respond(stmt_res[1], stmt_line, stmt_col)]
+    end
     if match(tokens, pos, "KEYWORD", "let")
         stmt_line = tokens[pos]["line"]
         stmt_col = tokens[pos]["column"]

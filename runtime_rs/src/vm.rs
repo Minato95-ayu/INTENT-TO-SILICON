@@ -62,8 +62,7 @@ pub struct AayuVM {
     bytecode: Vec<u8>,
     constants: Vec<NanVal>,
     pub string_heap: Vec<String>,
-    pub array_heap: Vec<Vec<NanVal>>,
-    pub dict_heap: Vec<HashMap<String, NanVal>>,
+    pub memory: crate::memory::MemoryManager,
     
     pub tensor_heap: Vec<Tensor>,
     pub db_engine: DbEngine,
@@ -79,8 +78,7 @@ impl AayuVM {
             bytecode,
             constants,
             string_heap: strings,
-            array_heap: Vec::new(),
-            dict_heap: Vec::new(),
+            memory: crate::memory::MemoryManager::new(),
             tensor_heap: Vec::new(),
             db_engine: DbEngine::new("aayu_db.rsdb"),
         }
@@ -287,6 +285,60 @@ impl AayuVM {
                     self.stack[self.sp] = self.stack[self.sp - 1];
                     self.sp += 1;
                 }
+                134 => { // CreateArray
+                    let len = ((self.bytecode[self.ip] as usize) << 8) | self.bytecode[self.ip + 1] as usize;
+                    self.ip += 2;
+                    let mut arr = Vec::with_capacity(len);
+                    for _ in 0..len {
+                        arr.push(self.stack[self.sp - 1]);
+                        self.sp -= 1;
+                    }
+                    arr.reverse();
+                    
+                    let idx = self.memory.allocate(crate::memory::HeapObject::AArray(arr));
+                    self.stack[self.sp] = NanVal::array(idx);
+                    self.sp += 1;
+                }
+                
+                136 => { // LoadSubscr
+                    let index_val = self.stack[self.sp - 1].as_int() as usize;
+                    let arr_ref = self.stack[self.sp - 2];
+                    self.sp -= 2;
+                    
+                    if arr_ref.is_array() {
+                        let idx = arr_ref.as_array_idx();
+                        if let crate::memory::HeapObject::AArray(arr) = self.memory.get(idx) {
+                            if index_val < arr.len() {
+                                self.stack[self.sp] = arr[index_val];
+                            } else {
+                                panic!("Array Index Out of Bounds!");
+                            }
+                        }
+                    } else {
+                        panic!("LoadSubscr on non-array!");
+                    }
+                    self.sp += 1;
+                }
+
+                137 => { // StoreSubscr
+                    let val = self.stack[self.sp - 1];
+                    let index_val = self.stack[self.sp - 2].as_int() as usize;
+                    let arr_ref = self.stack[self.sp - 3];
+                    self.sp -= 3;
+                    
+                    if arr_ref.is_array() {
+                        let idx = arr_ref.as_array_idx();
+                        if let crate::memory::HeapObject::AArray(arr) = self.memory.get_mut(idx) {
+                            if index_val < arr.len() {
+                                arr[index_val] = val;
+                            } else {
+                                panic!("Array Index Out of Bounds!");
+                            }
+                        }
+                    } else {
+                        panic!("StoreSubscr on non-array!");
+                    }
+                }
                 _ => {
                     panic!("[Runtime Error] Unknown instruction opcode: 0x{:02X} at IP: {}", op, self.ip - 1);
                 }
@@ -382,7 +434,46 @@ mod tests {
         assert_eq!(vm.stack[0].as_int(), 77);
         assert_eq!(vm.stack[1].as_int(), 77);
     }
+    #[test]
+    fn test_gc_array_allocation() {
+        // [10, 20, 30] -> CreateArray(3) -> ArrayRef
+        let mut vm = AayuVM::new(
+            vec![
+                0x01, 0x00, 0x00, // push 10
+                0x01, 0x00, 0x01, // push 20
+                0x01, 0x00, 0x02, // push 30
+                134, 0x00, 0x03,  // CreateArray len 3
+                0x01, 0x00, 0x03, // push index 1 (to read)
+                136,              // LoadSubscr (reads array[1])
+                0x00              // HALT
+            ], 
+            vec![NanVal::int(10), NanVal::int(20), NanVal::int(30), NanVal::int(1)], 
+            vec![]
+        );
+        vm.run();
+        
+        // Stack top should be array[1], which is 20
+        assert_eq!(vm.stack[0].as_int(), 20);
+        
+        // Memory should have 1 allocated object (the array)
+        assert_eq!(vm.memory.total_allocated, 1);
+        
+        // Let's trigger a mock GC Mark & Sweep
+        // We push the array ref back to stack manually to act as a root
+        vm.stack[0] = NanVal::array(0); // The array is at index 0
+        vm.memory.mark_roots(&vm.stack[0..1]); // Mark
+        let freed = vm.memory.sweep(); // Sweep
+        
+        assert_eq!(freed, 0); // Array should survive because it's on stack!
+        assert_eq!(vm.memory.total_allocated, 1);
+        
+        // Now kill the root and sweep again
+        vm.stack[0] = NanVal::null();
+        vm.memory.mark_roots(&vm.stack[0..1]);
+        let freed_after = vm.memory.sweep();
+        
+        assert_eq!(freed_after, 1); // Array is dead! GC cleans it up!
+        assert_eq!(vm.memory.total_allocated, 0); // RAM is completely free!
+    }
 }
-
-
 

@@ -1296,7 +1296,8 @@ let OP_CREATE_ARRAY = 134
 let OP_BUILD_DICT = 128
 let OP_LOAD_SUBSCR = 136
 let OP_STORE_SUBSCR = 137
-let OP_HALT = 0
+let OP_HALT = 255
+let OP_PREPARE_CALL = 45
 
 
 action update_array(arr, index, val)
@@ -1385,7 +1386,7 @@ action compile_expression(expr)
     let ce_args = []
     
     if ce_type == "Number"
-        ce_idx = add_constant(expr["value"])
+        ce_idx = add_constant(int(expr["value"]))
         emit(OP_PUSH_CONST, ce_idx, 0)
     end
     if ce_type == "String"
@@ -1439,6 +1440,7 @@ action compile_expression(expr)
             compile_expression(ac_args[ac_i])
             ac_i = ac_i + 1
         end
+        emit(OP_PREPARE_CALL, ac_len * 256 + 1, 0)
         emit(OP_CALL, ac_len, 0)
     end
     if ce_type == "BinaryOp"

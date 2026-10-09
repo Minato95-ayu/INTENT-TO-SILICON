@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from 'react';
 import { Terminal, Copy, Download, Monitor, Apple, Code2, Cpu } from 'lucide-react';
 
@@ -53,7 +53,7 @@ export default function DownloadPage() {
               <div key={i} className={"bg-[#0a0a0a] border border-white/5 rounded-xl p-6 transition-all duration-300 group " + d.color}>
                 <div className="flex justify-between items-start mb-4">
                   {d.icon}
-                  <a href={https://github.com/Minato95-ayu/INTENT-TO-SILICON/releases/download/v1.1.0/} onClick={handleDownload} className="p-2 bg-white/5 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-colors">
+                  <a href="https://github.com/Minato95-ayu/INTENT-TO-SILICON/releases/download/v1.1.0/" onClick={handleDownload} className="p-2 bg-white/5 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-colors">
                     <Download className="w-4 h-4" />
                   </a>
                 </div>
@@ -75,7 +75,7 @@ export default function DownloadPage() {
               <div key={i} className={"bg-[#0a0a0a] border border-white/5 rounded-xl p-6 transition-all duration-300 group " + d.color}>
                 <div className="flex justify-between items-start mb-4">
                   {d.icon}
-                  <a href={https://github.com/Minato95-ayu/INTENT-TO-SILICON/releases/download/v1.1.0/} onClick={handleDownload} className="p-2 bg-white/5 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-colors">
+                  <a href="https://github.com/Minato95-ayu/INTENT-TO-SILICON/releases/download/v1.1.0/" onClick={handleDownload} className="p-2 bg-white/5 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-colors">
                     <Download className="w-4 h-4" />
                   </a>
                 </div>
@@ -110,3 +110,4 @@ export default function DownloadPage() {
     </main>
   );
 }
+

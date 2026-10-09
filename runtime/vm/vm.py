@@ -1,4 +1,4 @@
-# ==============================================================================
+﻿# ==============================================================================
 # COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
 # 
 # This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
@@ -120,9 +120,9 @@ class VirtualMachine:
             if action_name.startswith('__PAGE_START__'):
                 self.interpreter.node_stack.clear()
                 self.interpreter.render_tree.root = None
-                self.call_stack.push((self.registers.ip, True, None, len(args_to_push), self.value_stack.depth()))
+                self.call_stack.push((self.registers.ip, True, None, len(args_to_push), self.value_stack.depth(), len(self.state_scopes) if hasattr(self, "state_scopes") else 0))
             else:
-                self.call_stack.push((self.registers.ip, False, None, len(args_to_push), self.value_stack.depth()))
+                self.call_stack.push((self.registers.ip, False, None, len(args_to_push), self.value_stack.depth(), len(self.state_scopes) if hasattr(self, "state_scopes") else 0))
             
             self.registers.ip = target_ip
             for arg in args_to_push:
@@ -138,7 +138,7 @@ class VirtualMachine:
         old_ip = self.registers.ip
         base_depth = self.value_stack.depth()
         halt_ip = max(0, len(self.decoder.bytecode) - 3)
-        self.call_stack.push((halt_ip, False, 1, len(args), base_depth))
+        self.call_stack.push((halt_ip, False, 1, len(args), base_depth, len(self.state_scopes) if hasattr(self, "state_scopes") else 0))
         self.registers.ip = target_ip
         for arg in args:
             self.value_stack.push(arg)
@@ -146,7 +146,7 @@ class VirtualMachine:
         try:
             self.interpreter.run()
         except Exception as e:
-            self.registers.ip = old_ip
+            self.registers.ip = old_ip; print(f"DEBUG: execute_subroutine finished, state_scopes len: {len(self.state_scopes)}")
             raise e
         return self.value_stack.pop() if self.value_stack.depth() > base_depth else None
 
@@ -193,7 +193,7 @@ class VirtualMachine:
         result = None
         if self.value_stack.depth() > 0:
             result = self.value_stack.pop()
-        self.registers.ip = old_ip
+        self.registers.ip = old_ip; print(f"DEBUG: execute_subroutine finished, state_scopes len: {len(self.state_scopes)}")
         return result
 
     def execute(self):
@@ -206,3 +206,5 @@ class VirtualMachine:
 
     def kernel_dispatch(self) -> RuntimeResult:
         return RuntimeResult.ok()
+
+

@@ -378,5 +378,6 @@ def handle(args):
                     print(f"  at {frame}")
         else:
             print(f"\n[AAYU INTERNAL ERROR] Something went wrong in the AAYU engine.")
-            print(f"Error: {str(e)}")
+            import traceback; traceback.print_exc()
         sys.exit(1)
+

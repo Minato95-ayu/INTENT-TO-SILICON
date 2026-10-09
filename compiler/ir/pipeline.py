@@ -1,4 +1,4 @@
-# ==============================================================================
+﻿# ==============================================================================
 # COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
 # 
 # This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
@@ -37,8 +37,8 @@ class IRPipeline:
     def _needs_pop(self, stmt):
         from compiler.ir.hir import HIRActionCall, HIRInsert, HIRFind, HIRBinaryOp, HIRLoadVar, HIRLoadConst, HIRArrayNode, HIRSubscript, HIRDictionary, HIRAwait
         return isinstance(stmt, (HIRActionCall, HIRInsert, HIRFind, HIRBinaryOp, HIRLoadVar, HIRLoadConst, HIRArrayNode, HIRSubscript, HIRDictionary, HIRAwait))
-    """Three-stage IR lowering: Semantic AST → HIR → MIR → LIR"""
-    # ── HIR Stage ──────────────────────────────────────────────
+    """Three-stage IR lowering: Semantic AST â†’ HIR â†’ MIR â†’ LIR"""
+    # â”€â”€ HIR Stage â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     def to_hir(self, semantic_ast: SemanticProgramNode) -> List[HIRNode]:
         hir_list = []
         for stmt in semantic_ast.statements:
@@ -155,7 +155,9 @@ class IRPipeline:
         elif isinstance(node, SemanticFindNode):
             return HIRFind(node.model_name)
         elif isinstance(node, SemanticRespondNode):
-            return HIRRespond(self._semantic_to_hir(node.value))
+            val_hir = self._semantic_to_hir(node.value)
+            if isinstance(val_hir, HIRPrint): val_hir = HIRLoadConst(val_hir.value)
+            return HIRRespond(val_hir)
         elif isinstance(node, SemanticReturnNode):
             val_hir = self._semantic_to_hir(node.value)
             if isinstance(val_hir, HIRPrint): val_hir = HIRLoadConst(val_hir.value)
@@ -191,7 +193,9 @@ class IRPipeline:
         elif isinstance(node, SemanticFindNode):
             return HIRFind(node.model_name)
         elif isinstance(node, SemanticRespondNode):
-            return HIRRespond(self._semantic_to_hir(node.value))
+            val_hir = self._semantic_to_hir(node.value)
+            if isinstance(val_hir, HIRPrint): val_hir = HIRLoadConst(val_hir.value)
+            return HIRRespond(val_hir)
         elif isinstance(node, SemanticReturnNode):
             val_hir = self._semantic_to_hir(node.value)
             if isinstance(val_hir, HIRPrint): val_hir = HIRLoadConst(val_hir.value)
@@ -262,7 +266,7 @@ class IRPipeline:
             from compiler.ir.hir import HIRClosure
             return HIRClosure(node.action_name, arg_hirs)
         return None
-    # ── MIR Stage ──────────────────────────────────────────────
+    # â”€â”€ MIR Stage â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     def to_mir(self, hir_list: List[HIRNode]) -> List[MIRNode]:
         self._has_page_start = False
         mir_list = []
@@ -628,7 +632,7 @@ class IRPipeline:
                 if self._needs_pop(stmt):
                     body_mir.append(MIRInstruction("POP", []))
             mir_list.append(MIRInstruction("DECLARE_LIFECYCLE", [hir.hook, body_mir]))
-    # ── LIR Stage ──────────────────────────────────────────────
+    # â”€â”€ LIR Stage â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     def to_lir(self, mir_list: List[MIRNode]) -> List[LIRNode]:
         lir_list = []
         for mir in mir_list:
@@ -638,7 +642,7 @@ class IRPipeline:
         if not isinstance(mir, MIRInstruction):
             return
         if mir.opcode == "INIT_STATE":
-            # INIT_STATE [name] → STATE_INIT [name]
+            # INIT_STATE [name] â†’ STATE_INIT [name]
             lir_list.append(LIRNode("STATE_INIT", [mir.operands[0]]))
         elif mir.opcode == "INIT_VAR":
             lir_list.append(LIRNode("INIT_VAR", [mir.operands[0]]))
@@ -650,7 +654,7 @@ class IRPipeline:
         elif mir.opcode == "MARK_BLOCK_START":
             lir_list.append(LIRNode("MARK_BLOCK_START", []))
         elif mir.opcode.startswith("INIT_"):
-            # INIT_TEXT, INIT_BUTTON, etc. → BUILD_*
+            # INIT_TEXT, INIT_BUTTON, etc. â†’ BUILD_*
             widget_type = mir.opcode[5:]  # strip "INIT_"
             lir_list.append(LIRNode(f"BUILD_{widget_type}", [mir.operands[0] if mir.operands else {}]))
         elif mir.opcode == "ACTION_DECL":
@@ -659,8 +663,6 @@ class IRPipeline:
             if len(mir.operands) > 1 and isinstance(mir.operands[1], list):
                 for sub_mir in mir.operands[1]:
                     self._mir_to_lir(sub_mir, body_lir)
-            body_lir.append(LIRNode("PUSH_CONST", [None]))
-            body_lir.append(LIRNode("RETURN_VALUE", []))
             args = mir.operands[2] if len(mir.operands) > 2 else []
             lir_list.append(LIRNode("ACTION_DECL", [mir.operands[0], body_lir, args]))
         elif mir.opcode == "CALL_ACTION":
@@ -723,3 +725,6 @@ class IRPipeline:
             lir_list.append(LIRNode("DECLARE_LIFECYCLE", [mir.operands[0], body_lir]))
         elif mir.opcode in ("DB_INSERT", "DB_FIND", "RESPOND"):
             lir_list.append(LIRNode(mir.opcode, mir.operands))
+
+
+

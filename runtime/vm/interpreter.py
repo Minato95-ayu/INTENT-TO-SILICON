@@ -1,4 +1,4 @@
-# ==============================================================================
+﻿# ==============================================================================
 # COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
 # 
 # This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
@@ -516,15 +516,14 @@ class Interpreter:
             if current_depth != expected_exit_depth:
                 self.vm.raise_exception(f'Runtime ABI violation: Stack depth mismatch on return. Expected {expected_exit_depth}, got {current_depth}. Stack dump: {self.vm.value_stack.stack}')
                 return False
-            if hasattr(self.vm, 'state_scopes') and len(self.vm.state_scopes) > 1:
-                self.vm.state_scopes.pop()
+
             if hasattr(self.vm, 'state_scopes'):
                 while len(self.vm.state_scopes) > base_scope_depth:
                     self.vm.state_scopes.pop()
             if is_comp:
                 if self.node_stack:
                     self.node_stack.pop()
-            self.vm.registers.ip = ret_ip
+            self.vm.registers.ip = ret_ip; print(f"DEBUG: op_RET finished, state_scopes len: {len(self.vm.state_scopes)}")
         else:
             return False
         return True
@@ -555,15 +554,14 @@ class Interpreter:
             if current_depth != expected_exit_depth:
                 self.vm.raise_exception(f'Runtime ABI violation: Stack depth mismatch on return. Expected {expected_exit_depth}, got {current_depth}. Stack dump: {self.vm.value_stack.stack}')
                 return False
-            if hasattr(self.vm, 'state_scopes') and len(self.vm.state_scopes) > 1:
-                self.vm.state_scopes.pop()
+
             if hasattr(self.vm, 'state_scopes'):
                 while len(self.vm.state_scopes) > base_scope_depth:
                     self.vm.state_scopes.pop()
             if is_comp:
                 if self.node_stack:
                     self.node_stack.pop()
-            self.vm.registers.ip = ret_ip
+            self.vm.registers.ip = ret_ip; print(f"DEBUG: op_RET finished, state_scopes len: {len(self.vm.state_scopes)}")
         else:
             return False
         return True
@@ -866,4 +864,6 @@ class Interpreter:
         if hasattr(self.vm, 'state_scopes') and len(self.vm.state_scopes) > 1:
             self.vm.state_scopes.pop()
         return True
+
+
 

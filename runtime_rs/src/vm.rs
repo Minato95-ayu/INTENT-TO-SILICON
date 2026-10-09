@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+﻿use std::collections::HashMap;
 
 use crate::math::Tensor;
 use crate::db::DbEngine;
@@ -234,5 +234,56 @@ impl AayuVM {
                 }
             }
         }
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::NanVal;
+
+    #[test]
+    fn test_push_and_add() {
+        let bytecode = vec![
+            0x01, 0x00, 0x00, // PUSH_CONST 0
+            0x01, 0x00, 0x01, // PUSH_CONST 1
+            0x10,             // ADD
+            0x00              // HALT
+        ];
+        let constants = vec![NanVal::int(10), NanVal::int(20)];
+        let strings = vec![];
+        let mut vm = AayuVM::new(bytecode, constants, strings);
+        vm.run();
+        assert_eq!(vm.stack[0].as_int(), 30);
+    }
+    #[test]
+    fn test_lt() {
+        let bytecode = vec![
+            0x01, 0x00, 0x00, // PUSH_CONST 10
+            0x01, 0x00, 0x01, // PUSH_CONST 20
+            0x14,             // LT (10 < 20 -> true)
+            0x00              // HALT
+        ];
+        let constants = vec![NanVal::int(10), NanVal::int(20)];
+        let strings = vec![];
+        let mut vm = AayuVM::new(bytecode, constants, strings);
+        vm.run();
+        assert_eq!(vm.stack[0].as_bool(), true);
+    }
+
+    #[test]
+    fn test_jump() {
+        let bytecode = vec![
+            0x20, 0x00, 0x05, // JUMP to index 5
+            0x00, 0x00,       // Skip these (would be index 3, 4)
+            0x01, 0x00, 0x00, // PUSH_CONST 42 (index 5, 6, 7)
+            0x00              // HALT (index 8)
+        ];
+        let constants = vec![NanVal::int(42)];
+        let strings = vec![];
+        let mut vm = AayuVM::new(bytecode, constants, strings);
+        vm.run();
+        assert_eq!(vm.stack[0].as_int(), 42);
     }
 }

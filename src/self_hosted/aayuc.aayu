@@ -1,4 +1,4 @@
-# AAYU Self-Hosted Compiler Pipeline
+﻿# AAYU Self-Hosted Compiler Pipeline
 # Lexer -> Parser -> Semantic Analyzer -> Compiler
 
 # AAYU Self-Hosted Lexer (Draft 3)
@@ -1241,6 +1241,22 @@ action analyze_statement(stmt)
     let as_l = 0
     let as_target = {}
     
+    if as_type == "AppDeclaration"
+        return stmt
+    end
+    if as_type == "RunNode"
+        return stmt
+    end
+    if as_type == "StateDeclaration"
+        define_symbol(stmt["name"], "state")
+        as_val = analyze_expression(stmt["value"])
+        return { "type": "StateDeclaration", "name": stmt["name"], "value": as_val }
+    end
+    if as_type == "RespondNode"
+        as_val = analyze_expression(stmt["value"])
+        return { "type": "RespondNode", "value": as_val }
+    end
+    
     if as_type == "LetDeclaration"
         define_symbol(stmt["name"], "local")
         as_val = analyze_expression(stmt["value"])
@@ -1362,6 +1378,13 @@ let OP_LOAD_SUBSCR = 136
 let OP_STORE_SUBSCR = 137
 let OP_HALT = 255
 let OP_PREPARE_CALL = 45
+let OP_RESPOND = 102
+let OP_CREATE_MODEL = 96
+let OP_REGISTER_ROUTE = 97
+let OP_GET_ITER = 36
+let OP_FOR_ITER = 37
+let OP_SETUP_EXCEPT = 144
+let OP_POP_EXCEPT = 145
 
 
 action update_array(arr, index, val)
@@ -1717,3 +1740,9 @@ action main
 end
 
 run main
+
+
+
+
+
+

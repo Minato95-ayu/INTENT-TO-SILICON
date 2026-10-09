@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles, BrainCircuit, TerminalSquare, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 export default function BlogPage() {
   return (
@@ -119,3 +120,4 @@ export default function BlogPage() {
     </main>
   );
 }
+

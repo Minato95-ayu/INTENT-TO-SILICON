@@ -1,6 +1,6 @@
 ﻿"use client";
 import { useState } from 'react';
-import { Terminal, Copy, Download, Monitor, Apple, Code2, Cpu } from 'lucide-react';
+import { Terminal, Copy, Download, Monitor, Apple, Code2, Cpu, Check } from 'lucide-react';
 
 export default function DownloadPage() {
   const [copied, setCopied] = useState(false);
@@ -97,10 +97,8 @@ export default function DownloadPage() {
               </button>
             </div>
             <pre className="text-zinc-300 font-mono text-sm overflow-x-auto whitespace-pre-wrap">
-              <code className="text-purple-300">git clone</code> https://github.com/Minato95-ayu/INTENT-TO-SILICON.git{'
-'}
-              <code className="text-purple-300">cd</code> INTENT-TO-SILICON{'
-'}
+              <code className="text-purple-300">git clone</code> https://github.com/Minato95-ayu/INTENT-TO-SILICON.git{'\n'}
+              <code className="text-purple-300">cd</code> INTENT-TO-SILICON{'\n'}
               <code className="text-purple-300">pip install</code> -e .
             </pre>
           </div>
@@ -110,4 +108,6 @@ export default function DownloadPage() {
     </main>
   );
 }
+
+
 

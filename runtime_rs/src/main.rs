@@ -3,6 +3,7 @@ use std::fs::File;
 use std::io::Read;
 
 pub mod opcodes;
+pub mod memory;
 pub mod math;
 pub mod db;
 pub mod net;
@@ -88,3 +89,4 @@ fn run_sum(n: i64, use_jit: bool) {
         println!("AAYU_VM_NS {}", t.elapsed().as_nanos());
     }
 }
+

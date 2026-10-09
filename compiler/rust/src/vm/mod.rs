@@ -79,9 +79,8 @@ impl VM {
                 }
                 "JUMP_IF_FALSE" => {
                     if let Some(RuntimeValue::Bool(false)) = self.stack.pop() {
-                            self.ip += operand.unwrap();
-                            continue;
-                        }
+                        self.ip += operand.unwrap();
+                        continue;
                     }
                 }
                 "JUMP_FORWARD" => {
@@ -116,4 +115,5 @@ impl VM {
         }
     }
 }
+
 

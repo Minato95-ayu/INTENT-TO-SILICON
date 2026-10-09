@@ -1,0 +1,23 @@
+﻿app MLClassifier
+
+action train_and_predict
+    print("Loading dataset...")
+    let dataset = [
+        {"features": [5.1, 3.5, 1.4, 0.2], "label": 0},
+        {"features": [7.0, 3.2, 4.7, 1.4], "label": 1},
+        {"features": [6.3, 3.3, 6.0, 2.5], "label": 2}
+    ]
+    
+    print("Training Decision Tree...")
+    let model = ml::DecisionTree(max_depth: 3)
+    model.train(dataset)
+    
+    let accuracy = model.evaluate(dataset)
+    print("Model accuracy: " + string(accuracy * 100.0) + "%")
+    
+    let new_flower = [5.9, 3.0, 5.1, 1.8]
+    let prediction = model.predict(new_flower)
+    print("Predicted class for new flower: " + string(prediction))
+end
+
+run train_and_predict

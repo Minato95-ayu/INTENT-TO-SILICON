@@ -120,7 +120,7 @@ impl AayuVM {
                     self.stack[self.sp - 2] = NanVal::int(a + b);
                     self.sp -= 1;
                 }
-                0x14 => { // LT
+                41 => { // LT
                     let b = self.stack[self.sp - 1].as_int();
                     let a = self.stack[self.sp - 2].as_int();
                     self.stack[self.sp - 2] = NanVal::bool(a < b);
@@ -139,7 +139,7 @@ impl AayuVM {
                         self.ip = offset;
                     }
                 }
-                0x12 => { // PUSH_STRING (was 0x10 in old mock, changed to avoid ADD collision)
+                145 => { // PUSH_STRING_SAFE
                     let idx = (self.bytecode[self.ip] as usize) | ((self.bytecode[self.ip+1] as usize) << 8);
                     self.ip += 2;
                     self.stack[self.sp] = NanVal::string(idx);
@@ -227,10 +227,68 @@ impl AayuVM {
                         println!("[Native] Rendered HTML Output:");
                         println!("{}", root.render());
                     }
+                }                17 => { // SUB
+                    let b = self.stack[self.sp - 1].as_int();
+                    let a = self.stack[self.sp - 2].as_int();
+                    self.stack[self.sp - 2] = NanVal::int(a - b);
+                    self.sp -= 1;
                 }
-                
+                18 => { // MUL
+                    let b = self.stack[self.sp - 1].as_int();
+                    let a = self.stack[self.sp - 2].as_int();
+                    self.stack[self.sp - 2] = NanVal::int(a * b);
+                    self.sp -= 1;
+                }
+                19 => { // DIV
+                    let b = self.stack[self.sp - 1].as_int();
+                    let a = self.stack[self.sp - 2].as_int();
+                    if b == 0 { panic!("Division by zero"); }
+                    self.stack[self.sp - 2] = NanVal::int(a / b);
+                    self.sp -= 1;
+                }
+                20 => { // MOD
+                    let b = self.stack[self.sp - 1].as_int();
+                    let a = self.stack[self.sp - 2].as_int();
+                    if b == 0 { panic!("Modulo by zero"); }
+                    self.stack[self.sp - 2] = NanVal::int(a % b);
+                    self.sp -= 1;
+                }
+                38 => { // CmpEq
+                    let b = self.stack[self.sp - 1].as_int();
+                    let a = self.stack[self.sp - 2].as_int();
+                    self.stack[self.sp - 2] = NanVal::bool(a == b);
+                    self.sp -= 1;
+                }
+                39 => { // CmpNeq
+                    let b = self.stack[self.sp - 1].as_int();
+                    let a = self.stack[self.sp - 2].as_int();
+                    self.stack[self.sp - 2] = NanVal::bool(a != b);
+                    self.sp -= 1;
+                }
+                42 => { // CmpGt
+                    let b = self.stack[self.sp - 1].as_int();
+                    let a = self.stack[self.sp - 2].as_int();
+                    self.stack[self.sp - 2] = NanVal::bool(a > b);
+                    self.sp -= 1;
+                }
+                43 => { // CmpLte
+                    let b = self.stack[self.sp - 1].as_int();
+                    let a = self.stack[self.sp - 2].as_int();
+                    self.stack[self.sp - 2] = NanVal::bool(a <= b);
+                    self.sp -= 1;
+                }
+                44 => { // CmpGte
+                    let b = self.stack[self.sp - 1].as_int();
+                    let a = self.stack[self.sp - 2].as_int();
+                    self.stack[self.sp - 2] = NanVal::bool(a >= b);
+                    self.sp -= 1;
+                }
+                0x03 => { // DUP
+                    self.stack[self.sp] = self.stack[self.sp - 1];
+                    self.sp += 1;
+                }
                 _ => {
-                    // Skip
+                    panic!("[Runtime Error] Unknown instruction opcode: 0x{:02X} at IP: {}", op, self.ip - 1);
                 }
             }
         }
@@ -262,7 +320,7 @@ mod tests {
         let bytecode = vec![
             0x01, 0x00, 0x00, // PUSH_CONST 10
             0x01, 0x00, 0x01, // PUSH_CONST 20
-            0x14,             // LT (10 < 20 -> true)
+            41,             // LT (10 < 20 -> true)
             0x00              // HALT
         ];
         let constants = vec![NanVal::int(10), NanVal::int(20)];
@@ -286,4 +344,45 @@ mod tests {
         vm.run();
         assert_eq!(vm.stack[0].as_int(), 42);
     }
+    #[test]
+    fn test_math_extended() {
+        // Test MUL
+        let mut vm = AayuVM::new(vec![0x01, 0x00, 0x00, 0x01, 0x00, 0x01, 18, 0x00], vec![NanVal::int(10), NanVal::int(5)], vec![]);
+        vm.run();
+        assert_eq!(vm.stack[0].as_int(), 50);
+
+        // Test SUB
+        let mut vm2 = AayuVM::new(vec![0x01, 0x00, 0x00, 0x01, 0x00, 0x01, 17, 0x00], vec![NanVal::int(20), NanVal::int(8)], vec![]);
+        vm2.run();
+        assert_eq!(vm2.stack[0].as_int(), 12);
+
+        // Test DIV
+        let mut vm3 = AayuVM::new(vec![0x01, 0x00, 0x00, 0x01, 0x00, 0x01, 19, 0x00], vec![NanVal::int(100), NanVal::int(4)], vec![]);
+        vm3.run();
+        assert_eq!(vm3.stack[0].as_int(), 25);
+    }
+
+    #[test]
+    fn test_cmp_extended() {
+        // Test CmpEq (True)
+        let mut vm = AayuVM::new(vec![0x01, 0x00, 0x00, 0x01, 0x00, 0x00, 38, 0x00], vec![NanVal::int(42)], vec![]);
+        vm.run();
+        assert_eq!(vm.stack[0].as_bool(), true);
+
+        // Test CmpGt (True)
+        let mut vm2 = AayuVM::new(vec![0x01, 0x00, 0x00, 0x01, 0x00, 0x01, 42, 0x00], vec![NanVal::int(10), NanVal::int(5)], vec![]);
+        vm2.run();
+        assert_eq!(vm2.stack[0].as_bool(), true);
+    }
+    
+    #[test]
+    fn test_dup() {
+        let mut vm = AayuVM::new(vec![0x01, 0x00, 0x00, 0x03, 0x00], vec![NanVal::int(77)], vec![]);
+        vm.run();
+        assert_eq!(vm.stack[0].as_int(), 77);
+        assert_eq!(vm.stack[1].as_int(), 77);
+    }
 }
+
+
+

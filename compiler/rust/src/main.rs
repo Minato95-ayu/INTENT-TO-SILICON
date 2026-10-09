@@ -37,3 +37,23 @@ fn main() {
     let mut virtual_machine = vm::VM::new();
     virtual_machine.execute(&contents);
 }
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_compiler_pipeline_instantiation() {
+        let _mem = memory::MemoryManager::new();
+        let _bc = bytecode::Bytecode::new();
+        let _ent = entity::EntityManager::new();
+        let _wf = workflow::WorkflowEngine::new();
+        let _http = http::HttpServer::new();
+        
+        // components constructed successfully
+        // Simple sanity check that the modules exist and can be wired
+    }
+}
+
+

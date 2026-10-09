@@ -16,12 +16,12 @@ pub fn compile_and_run(bytecode: &[u8], constants: &[NanVal]) {
     
     // Try gcc, then clang
     let mut compiler = Command::new("gcc");
-    compiler.args(&["-O2", "-march=native", source_path, "-o", exe_path]);
+    compiler.args(["-O2", "-march=native", source_path, "-o", exe_path]);
     
     let status = compiler.status();
     if status.is_err() || !status.unwrap().success() {
         let mut clang = Command::new("clang");
-        clang.args(&["-O2", "-march=native", source_path, "-o", exe_path]);
+        clang.args(["-O2", "-march=native", source_path, "-o", exe_path]);
         let clang_status = clang.status();
         if clang_status.is_err() || !clang_status.unwrap().success() {
             println!("[AAYU JIT] Compiler not found! Falling back to Interpreter...");

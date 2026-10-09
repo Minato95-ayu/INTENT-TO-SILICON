@@ -1,5 +1,4 @@
-﻿use std::collections::HashMap;
-
+﻿
 use crate::math::Tensor;
 use crate::db::DbEngine;
 use crate::net::HttpServer;
@@ -212,9 +211,7 @@ impl AayuVM {
                         println!("[Native] Compiling Declarative UI Component '{}' into DOM Tree...", component_name);
                         
                         let mut root = UiNode::new("div");
-                        let mut style = Style::default();
-                        style.display = "flex".to_string();
-                        style.background_color = "#111".to_string();
+                        let style = Style { display: "flex".to_string(), background_color: "#111".to_string(), ..Default::default() };
                         root = root.with_style(style);
                         
                         let text_node = UiNode::new("h1").with_text(&format!("Welcome to {}", component_name));
@@ -379,7 +376,7 @@ mod tests {
         let strings = vec![];
         let mut vm = AayuVM::new(bytecode, constants, strings);
         vm.run();
-        assert_eq!(vm.stack[0].as_bool(), true);
+        assert!(vm.stack[0].as_bool());
     }
 
     #[test]
@@ -419,12 +416,12 @@ mod tests {
         // Test CmpEq (True)
         let mut vm = AayuVM::new(vec![0x01, 0x00, 0x00, 0x01, 0x00, 0x00, 38, 0x00], vec![NanVal::int(42)], vec![]);
         vm.run();
-        assert_eq!(vm.stack[0].as_bool(), true);
+        assert!(vm.stack[0].as_bool());
 
         // Test CmpGt (True)
         let mut vm2 = AayuVM::new(vec![0x01, 0x00, 0x00, 0x01, 0x00, 0x01, 42, 0x00], vec![NanVal::int(10), NanVal::int(5)], vec![]);
         vm2.run();
-        assert_eq!(vm2.stack[0].as_bool(), true);
+        assert!(vm2.stack[0].as_bool());
     }
     
     #[test]
@@ -476,4 +473,5 @@ mod tests {
         assert_eq!(vm.memory.total_allocated, 0); // RAM is completely free!
     }
 }
+
 

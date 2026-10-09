@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+﻿use std::collections::HashMap;
 use serde_json::Value;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -78,8 +78,7 @@ impl VM {
                     }
                 }
                 "JUMP_IF_FALSE" => {
-                    if let Some(condition) = self.stack.pop() {
-                        if let RuntimeValue::Bool(false) = condition {
+                    if let Some(RuntimeValue::Bool(false)) = self.stack.pop() {
                             self.ip += operand.unwrap();
                             continue;
                         }
@@ -117,3 +116,4 @@ impl VM {
         }
     }
 }
+

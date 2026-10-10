@@ -5,6 +5,8 @@ pub enum OpCode {
     PushConst = 0x01,
     Pop = 0x02,
     Dup = 0x03,
+    LoadVar = 0x05,
+    StoreVar = 0x06,
     
     Add = 16,        
     Sub = 17,        
@@ -70,3 +72,4 @@ impl From<u8> for OpCode {
         unsafe { std::mem::transmute(byte) }
     }
 }
+

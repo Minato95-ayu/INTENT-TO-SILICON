@@ -1,0 +1,18 @@
+﻿// AAYU Standard Library: Crypto
+// Provides native cryptographic functions mapped to VM opcodes
+
+module Crypto
+
+action hash_sha256(data: String) -> String
+    // Natively mapped to Opcode 250
+end
+
+action encrypt_aes(data: String, key: String) -> String
+    // Natively mapped to Opcode 251
+end
+
+action decrypt_aes(data: String, key: String) -> String
+    // Natively mapped to Opcode 252
+end
+
+end

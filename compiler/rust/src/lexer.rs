@@ -2,9 +2,16 @@
 pub enum Token {
     Let,
     Print,
+    If,
+    Else,
+    While,
+    End,
     Identifier(String),
     Integer(i64),
     Plus,
+    LessThan,
+    GreaterThan,
+    DoubleEqual,
     LeftParen,
     RightParen,
     Equal,
@@ -12,71 +19,78 @@ pub enum Token {
     Eof,
 }
 
-pub struct Lexer {
-    chars: Vec<char>,
+pub struct Lexer<'a> {
+    input: &'a str,
     pos: usize,
 }
 
-impl Lexer {
-    pub fn new(source: &str) -> Self {
-        Self {
-            chars: source.chars().collect(),
-            pos: 0,
-        }
+impl<'a> Lexer<'a> {
+    pub fn new(input: &'a str) -> Self {
+        Self { input, pos: 0 }
     }
 
     pub fn tokenize(&mut self) -> Vec<Token> {
         let mut tokens = Vec::new();
-        while self.pos < self.chars.len() {
-            let c = self.chars[self.pos];
-            match c {
-                ' ' | '\r' | '\t' => self.pos += 1,
-                '\n' => {
+        while self.pos < self.input.len() {
+            let ch = self.current_char();
+            if ch.is_whitespace() {
+                if ch == '\n' {
                     tokens.push(Token::Newline);
+                }
+                self.pos += 1;
+            } else if ch.is_ascii_alphabetic() {
+                let start = self.pos;
+                while self.pos < self.input.len() && (self.current_char().is_ascii_alphanumeric() || self.current_char() == '_') {
                     self.pos += 1;
                 }
-                '+' => {
-                    tokens.push(Token::Plus);
+                let word = &self.input[start..self.pos];
+                match word {
+                    "let" => tokens.push(Token::Let),
+                    "print" => tokens.push(Token::Print),
+                    "if" => tokens.push(Token::If),
+                    "else" => tokens.push(Token::Else),
+                    "while" => tokens.push(Token::While),
+                    "end" => tokens.push(Token::End),
+                    _ => tokens.push(Token::Identifier(word.to_string())),
+                }
+            } else if ch.is_ascii_digit() {
+                let start = self.pos;
+                while self.pos < self.input.len() && self.current_char().is_ascii_digit() {
                     self.pos += 1;
                 }
-                '=' => {
-                    tokens.push(Token::Equal);
-                    self.pos += 1;
-                }
-                '(' => {
-                    tokens.push(Token::LeftParen);
-                    self.pos += 1;
-                }
-                ')' => {
-                    tokens.push(Token::RightParen);
-                    self.pos += 1;
-                }
-                _ if c.is_ascii_digit() => {
-                    let mut num_str = String::new();
-                    while self.pos < self.chars.len() && self.chars[self.pos].is_ascii_digit() {
-                        num_str.push(self.chars[self.pos]);
-                        self.pos += 1;
+                let num_str = &self.input[start..self.pos];
+                tokens.push(Token::Integer(num_str.parse().unwrap()));
+            } else {
+                match ch {
+                    '+' => tokens.push(Token::Plus),
+                    '(' => tokens.push(Token::LeftParen),
+                    ')' => tokens.push(Token::RightParen),
+                    '=' => {
+                        if self.peek_char() == '=' {
+                            self.pos += 1;
+                            tokens.push(Token::DoubleEqual);
+                        } else {
+                            tokens.push(Token::Equal);
+                        }
                     }
-                    tokens.push(Token::Integer(num_str.parse().unwrap()));
+                    '<' => tokens.push(Token::LessThan),
+                    '>' => tokens.push(Token::GreaterThan),
+                    _ => {} // Ignore unknown for MVP
                 }
-                _ if c.is_alphabetic() => {
-                    let mut id_str = String::new();
-                    while self.pos < self.chars.len() && (self.chars[self.pos].is_alphanumeric() || self.chars[self.pos] == '_') {
-                        id_str.push(self.chars[self.pos]);
-                        self.pos += 1;
-                    }
-                    match id_str.as_str() {
-                        "let" => tokens.push(Token::Let),
-                        "print" => tokens.push(Token::Print),
-                        _ => tokens.push(Token::Identifier(id_str)),
-                    }
-                }
-                _ => {
-                    self.pos += 1; // Ignore unknown
-                }
+                self.pos += 1;
             }
         }
         tokens.push(Token::Eof);
         tokens
+    }
+
+    fn current_char(&self) -> char {
+        self.input[self.pos..].chars().next().unwrap_or('\0')
+    }
+
+    fn peek_char(&self) -> char {
+        let mut it = self.input[self.pos..].chars();
+        it.next();
+        it.next().unwrap_or('\0')
     }
 }

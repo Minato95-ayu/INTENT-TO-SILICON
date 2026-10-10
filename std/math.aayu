@@ -1,0 +1,22 @@
+﻿// AAYU Standard Library: Math
+// Provides native math functions mapped to VM opcodes
+
+module Math
+
+action abs(value: Int) -> Int
+    // Natively mapped to Opcode 50
+end
+
+action max(a: Int, b: Int) -> Int
+    // Natively mapped to Opcode 51
+end
+
+action min(a: Int, b: Int) -> Int
+    // Natively mapped to Opcode 52
+end
+
+action sqrt(value: Float) -> Float
+    // Natively mapped to Opcode 53
+end
+
+end

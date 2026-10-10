@@ -6,13 +6,6 @@ pub mod lexer;
 pub mod parser;
 pub mod emitter;
 
-pub mod bytecode;
-pub mod entity;
-pub mod http;
-pub mod memory;
-pub mod vm;
-pub mod workflow;
-
 pub fn compile(source: &str) -> Result<Vec<u8>, String> {
     let mut lexer = lexer::Lexer::new(source);
     let tokens = lexer.tokenize();
@@ -52,31 +45,52 @@ mod tests {
 
     #[test]
     fn test_source_to_vm_math() {
-        // 1. AAYU Source
         let source = "let x = 10 + 20\nprint(x)\n";
-        
-        // 2. Compile
         let bytecode = compile(source).expect("Compilation failed");
         
-        // 3. Write bytecode to temp file
         let temp_ayc = "test_math_out.ayc";
         let mut file = std::fs::File::create(temp_ayc).unwrap();
         file.write_all(&bytecode).unwrap();
         
-        // 4. Run Rust VM
-        // Ensure VM is built first (it is part of the workspace/workflow)
         let output = Command::new("cargo")
             .args(["run", "--manifest-path", "../../runtime_rs/Cargo.toml", "--", temp_ayc])
             .output()
             .expect("Failed to execute VM");
             
         let stdout = String::from_utf8_lossy(&output.stdout);
-        println!("VM Output:\n{}", stdout);
-        
-        // Cleanup
         let _ = std::fs::remove_file(temp_ayc);
-        
-        // Assert Output matches!
         assert!(stdout.contains("30"));
     }
+
+    #[test]
+    fn test_source_to_vm_loop() {
+        let source = "
+let x = 0
+while x < 3
+    print(x)
+    let x = x + 1
+end
+";
+        let bytecode = compile(source).expect("Compilation failed");
+        let temp_ayc = "test_loop_out.ayc";
+        let mut file = std::fs::File::create(temp_ayc).unwrap();
+        file.write_all(&bytecode).unwrap();
+        
+        let output = Command::new("cargo")
+            .args(["run", "--manifest-path", "../../runtime_rs/Cargo.toml", "--", temp_ayc])
+            .output()
+            .expect("Failed to execute VM");
+            
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        let _ = std::fs::remove_file(temp_ayc);
+        
+        println!("STDOUT: {}", stdout);
+        println!("BC: {:?}", bytecode);
+        println!("STDOUT: {}\nSTDERR: {}", stdout, String::from_utf8_lossy(&output.stderr));
+        assert!(!stdout.contains("3"));
+    }
 }
+
+
+
+

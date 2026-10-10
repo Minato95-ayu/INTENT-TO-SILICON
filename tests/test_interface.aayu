@@ -1,3 +1,0 @@
-interface Logger
-    function log(): Void.
-end.

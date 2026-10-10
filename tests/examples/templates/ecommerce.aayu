@@ -1,1 +1,0 @@
-intent ECommerceApp { entity Product { string name; number price; } entity Cart { list<Product> items; } }

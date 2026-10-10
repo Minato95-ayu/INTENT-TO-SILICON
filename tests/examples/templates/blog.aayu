@@ -1,1 +1,0 @@
-intent Blog { entity Post { string title; string body; } }

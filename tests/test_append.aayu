@@ -1,8 +1,0 @@
-action main()
-    let arr = [10]
-    append(arr, 20)
-    print(arr)
-    return 0
-end
-
-run main()

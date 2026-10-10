@@ -1,4 +1,4 @@
-name: Cross-Platform Native Release
+﻿name: Cross-Platform Native Release
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-native:
-    name: Build Native Installer on ${{ matrix.os }}
+    name: Build Native Rust Binaries on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -21,42 +21,44 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: "pip"
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
 
-      - name: Install dependencies & PyInstaller
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e .
-          pip install pyinstaller
+      - name: Build aayu-vm
+        run: cargo build --release --manifest-path runtime_rs/Cargo.toml
 
-      - name: Build Native Binary (Windows)
+      - name: Build aayu compiler
+        run: cargo build --release --manifest-path compiler/rust/Cargo.toml
+
+      - name: Package Windows (zip)
         if: matrix.os == 'windows-latest'
-        run: pyinstaller --clean --onefile --name aayu --hidden-import runtime.renderers.web_renderer --hidden-import uvicorn --hidden-import fastapi --hidden-import starlette --hidden-import pydantic --hidden-import anyio build_entry.py
-
-      - name: Build Native Binary (Linux/Mac)
-        if: matrix.os != 'windows-latest'
-        run: pyinstaller --clean --onefile --name aayu --hidden-import runtime.renderers.web_renderer --hidden-import uvicorn --hidden-import fastapi --hidden-import starlette --hidden-import pydantic --hidden-import anyio build_entry.py
+        run: |
+          mkdir dist
+          copy runtime_rs\target\release\aayu-vm.exe dist\aayu-vm.exe
+          copy compiler\rust\target\release\aayuc.exe dist\aayuc.exe
+          Compress-Archive -Path dist\* -DestinationPath aayu-windows.zip
+        shell: powershell
 
       - name: Package Linux (tar.gz)
         if: matrix.os == 'ubuntu-latest'
         run: |
-          cd dist
-          tar -czvf aayu-linux.tar.gz aayu
+          mkdir dist
+          cp runtime_rs/target/release/aayu-vm dist/
+          cp compiler/rust/target/release/aayuc dist/
+          cd dist && tar -czvf ../aayu-linux.tar.gz *
 
       - name: Package macOS (zip)
         if: matrix.os == 'macos-latest'
         run: |
-          cd dist
-          zip aayu-macos.zip aayu
+          mkdir dist
+          cp runtime_rs/target/release/aayu-vm dist/
+          cp compiler/rust/target/release/aayuc dist/
+          cd dist && zip -r ../aayu-macos.zip *
 
-      - name: Rename and Upload
+      - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist/aayu.exe
-            dist/aayu-linux.tar.gz
-            dist/aayu-macos.zip
+            aayu-windows.zip
+            aayu-linux.tar.gz
+            aayu-macos.zip

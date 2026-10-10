@@ -11,10 +11,7 @@ export default function DownloadPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleDownload = (e: any) => {
-    e.preventDefault();
-    alert("v1.1.0 binaries are currently building in our CI pipeline! Please use the 'Build From Source' option below for now, or check back later.");
-  };
+  
 
   const ideDownloads = [
     { os: 'Windows', icon: <Monitor className="w-8 h-8 text-blue-400" />, desc: 'AAYU Studio Installer (.exe)', file: 'aayu-studio-windows-x64.exe', color: 'hover:border-blue-500/50' },
@@ -23,9 +20,9 @@ export default function DownloadPage() {
   ];
 
   const sdkDownloads = [
-    { os: 'Windows (SDK)', icon: <Cpu className="w-8 h-8 text-blue-400" />, desc: 'CLI & Compiler (.zip)', file: 'aayuc-windows-v1.1.0.zip', color: 'hover:border-blue-500/50' },
-    { os: 'macOS (SDK)', icon: <Cpu className="w-8 h-8 text-zinc-300" />, desc: 'CLI & Compiler (.tar.gz)', file: 'aayuc-macos-v1.1.0.tar.gz', color: 'hover:border-zinc-500/50' },
-    { os: 'Linux (SDK)', icon: <Cpu className="w-8 h-8 text-orange-400" />, desc: 'CLI & Compiler (.tar.gz)', file: 'aayuc-linux-v1.1.0.tar.gz', color: 'hover:border-orange-500/50' }
+    { os: 'Windows (SDK)', icon: <Cpu className="w-8 h-8 text-blue-400" />, desc: 'CLI & Compiler (.zip)', file: 'aayu-windows.zip', color: 'hover:border-blue-500/50' },
+    { os: 'macOS (SDK)', icon: <Cpu className="w-8 h-8 text-zinc-300" />, desc: 'CLI & Compiler (.tar.gz)', file: 'aayu-macos.zip', color: 'hover:border-zinc-500/50' },
+    { os: 'Linux (SDK)', icon: <Cpu className="w-8 h-8 text-orange-400" />, desc: 'CLI & Compiler (.tar.gz)', file: 'aayu-linux.tar.gz', color: 'hover:border-orange-500/50' }
   ];
 
   return (
@@ -53,7 +50,7 @@ export default function DownloadPage() {
               <div key={i} className={"bg-[#0a0a0a] border border-white/5 rounded-xl p-6 transition-all duration-300 group " + d.color}>
                 <div className="flex justify-between items-start mb-4">
                   {d.icon}
-                  <a href="https://github.com/Minato95-ayu/INTENT-TO-SILICON/releases/download/v1.1.0/" onClick={handleDownload} className="p-2 bg-white/5 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-colors">
+                  <a href={"https://github.com/Minato95-ayu/INTENT-TO-SILICON/releases/download/v1.3.0/" + d.file}  className="p-2 bg-white/5 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-colors">
                     <Download className="w-4 h-4" />
                   </a>
                 </div>
@@ -75,7 +72,7 @@ export default function DownloadPage() {
               <div key={i} className={"bg-[#0a0a0a] border border-white/5 rounded-xl p-6 transition-all duration-300 group " + d.color}>
                 <div className="flex justify-between items-start mb-4">
                   {d.icon}
-                  <a href="https://github.com/Minato95-ayu/INTENT-TO-SILICON/releases/download/v1.1.0/" onClick={handleDownload} className="p-2 bg-white/5 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-colors">
+                  <a href={"https://github.com/Minato95-ayu/INTENT-TO-SILICON/releases/download/v1.3.0/" + d.file}  className="p-2 bg-white/5 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-colors">
                     <Download className="w-4 h-4" />
                   </a>
                 </div>
@@ -108,6 +105,8 @@ export default function DownloadPage() {
     </main>
   );
 }
+
+
 
 
 

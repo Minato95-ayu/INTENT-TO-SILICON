@@ -13,3 +13,7 @@ byteorder = "1.5" # For fast bytecode decoding
 ureq = { version = "2.9", features = ["tls"] }
 
 
+
+[build-dependencies]
+winres = "0.1"
+

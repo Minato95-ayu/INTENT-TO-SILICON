@@ -1,9 +1,0 @@
-﻿app TestLoop
-action main
-    let i = 0
-    while i < 3
-        print("i is " + i)
-        i = i + 1
-    end
-end
-run main

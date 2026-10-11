@@ -1,5 +1,0 @@
-﻿action hello()
-    print("hi")
-end
-
-hello()

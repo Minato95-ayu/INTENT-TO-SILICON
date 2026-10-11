@@ -1,5 +1,0 @@
-app TestApp
-action main
-    let x = {"ok": true}
-end
-run main

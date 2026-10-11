@@ -63,6 +63,11 @@ action add_constant(value)
     return ac_len
 end
 
+action emit_op(opcode)
+    bytecode = bytecode + [opcode]
+    return 0
+end
+
 action emit(opcode, arg1, arg2)
     bytecode = bytecode + [opcode, arg1, arg2]
     return 0
@@ -129,7 +134,7 @@ action compile_expression(expr)
     if ce_type == "Subscript"
         compile_expression(expr["target"])
         compile_expression(expr["index"])
-        emit(OP_LOAD_SUBSCR, 0, 0)
+        emit_op(OP_LOAD_SUBSCR)
     end
     if ce_type == "ActionCall"
         ce_idx = add_constant(expr["name"])
@@ -148,34 +153,34 @@ action compile_expression(expr)
         compile_expression(expr["right"])
         ce_op = expr["operator"]
         if ce_op == "+"
-            emit(OP_ADD, 0, 0)
+            emit_op(OP_ADD)
         end
         if ce_op == "-"
-            emit(OP_SUB, 0, 0)
+            emit_op(OP_SUB)
         end
         if ce_op == "*"
-            emit(OP_MUL, 0, 0)
+            emit_op(OP_MUL)
         end
         if ce_op == "/"
-            emit(OP_DIV, 0, 0)
+            emit_op(OP_DIV)
         end
         if ce_op == "=="
-            emit(OP_CMP_EQ, 0, 0)
+            emit_op(OP_CMP_EQ)
         end
         if ce_op == "!="
-            emit(OP_CMP_NEQ, 0, 0)
+            emit_op(OP_CMP_NEQ)
         end
         if ce_op == "<"
-            emit(OP_CMP_LT, 0, 0)
+            emit_op(OP_CMP_LT)
         end
         if ce_op == ">"
-            emit(OP_CMP_GT, 0, 0)
+            emit_op(OP_CMP_GT)
         end
         if ce_op == "<="
-            emit(OP_CMP_LTE, 0, 0)
+            emit_op(OP_CMP_LTE)
         end
         if ce_op == ">="
-            emit(OP_CMP_GTE, 0, 0)
+            emit_op(OP_CMP_GTE)
         end
     end
     return 0
@@ -207,7 +212,7 @@ action compile_statement(stmt)
             compile_expression(cs_target["target"])
             compile_expression(cs_target["index"])
             compile_expression(stmt["value"])
-            emit(OP_STORE_SUBSCR, 0, 0)
+            emit_op(OP_STORE_SUBSCR)
         end
     end
     if cs_type == "If"
@@ -261,7 +266,7 @@ action compile_statement(stmt)
             cs_idx = add_constant("")
             emit(OP_PUSH_CONST, cs_idx, 0)
         end
-        emit(OP_RETURN_VALUE, 0, 0)
+        emit_op(OP_RETURN_VALUE)
     end
     if cs_type == "ActionDeclaration"
         cs_jmp1 = emit_patchable(OP_JMP)
@@ -303,7 +308,7 @@ action compile_statement(stmt)
     end
     if cs_type == "ExpressionStatement"
         compile_expression(stmt["expression"])
-        emit(OP_POP, 0, 0)
+        emit_op(OP_POP)
     end
     return 0
 end

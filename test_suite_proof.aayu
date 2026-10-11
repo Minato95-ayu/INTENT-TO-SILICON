@@ -1,0 +1,31 @@
+# AAYU Verification Test Suite Proof
+# 1. Variables Test
+let lang = "AAYU"
+let version = 1
+print("Language: " + lang)
+
+# 2. Float and Arithmetic Test
+let val = 180.0
+let half = val / 2.0
+print(val)
+print(half)
+
+# 3. Loop & Fibonacci(20) Test
+let a = 0
+let b = 1
+let i = 0
+while i < 20
+    let temp = a + b
+    a = b
+    b = temp
+    i = i + 1
+end
+print("fib(20):")
+print(a)
+
+# 4. If-Else Condition Test
+if a == 6765
+    print("TEST PASSED: Fibonacci matches 6765!")
+else
+    print("TEST FAILED")
+end

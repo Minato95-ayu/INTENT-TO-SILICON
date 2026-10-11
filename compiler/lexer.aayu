@@ -428,6 +428,7 @@ tokens = tokens + [{ "type": "STRING", "value": value, "line": start_line, "colu
         end
     end
     
+    end
     return tokens
 end
 

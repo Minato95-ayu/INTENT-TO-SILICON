@@ -485,22 +485,42 @@ impl AayuVM {
                         println!("{}", root.render());
                     }
                 }                17 => { // SUB
-                    let b = self.stack[self.sp - 1].as_int();
-                    let a = self.stack[self.sp - 2].as_int();
-                    self.stack[self.sp - 2] = NanVal::int(a - b);
+                    let b = self.stack[self.sp - 1];
+                    let a = self.stack[self.sp - 2];
+                    if a.is_float() || b.is_float() {
+                        let fa = if a.is_float() { a.as_float() } else { a.as_int() as f64 };
+                        let fb = if b.is_float() { b.as_float() } else { b.as_int() as f64 };
+                        self.stack[self.sp - 2] = NanVal::float(fa - fb);
+                    } else {
+                        self.stack[self.sp - 2] = NanVal::int(a.as_int() - b.as_int());
+                    }
                     self.sp -= 1;
                 }
                 18 => { // MUL
-                    let b = self.stack[self.sp - 1].as_int();
-                    let a = self.stack[self.sp - 2].as_int();
-                    self.stack[self.sp - 2] = NanVal::int(a * b);
+                    let b = self.stack[self.sp - 1];
+                    let a = self.stack[self.sp - 2];
+                    if a.is_float() || b.is_float() {
+                        let fa = if a.is_float() { a.as_float() } else { a.as_int() as f64 };
+                        let fb = if b.is_float() { b.as_float() } else { b.as_int() as f64 };
+                        self.stack[self.sp - 2] = NanVal::float(fa * fb);
+                    } else {
+                        self.stack[self.sp - 2] = NanVal::int(a.as_int() * b.as_int());
+                    }
                     self.sp -= 1;
                 }
                 19 => { // DIV
-                    let b = self.stack[self.sp - 1].as_int();
-                    let a = self.stack[self.sp - 2].as_int();
-                    if b == 0 { panic!("Division by zero"); }
-                    self.stack[self.sp - 2] = NanVal::int(a / b);
+                    let b = self.stack[self.sp - 1];
+                    let a = self.stack[self.sp - 2];
+                    if a.is_float() || b.is_float() {
+                        let fa = if a.is_float() { a.as_float() } else { a.as_int() as f64 };
+                        let fb = if b.is_float() { b.as_float() } else { b.as_int() as f64 };
+                        if fb == 0.0 { panic!("Division by zero"); }
+                        self.stack[self.sp - 2] = NanVal::float(fa / fb);
+                    } else {
+                        let ib = b.as_int();
+                        if ib == 0 { panic!("Division by zero"); }
+                        self.stack[self.sp - 2] = NanVal::int(a.as_int() / ib);
+                    }
                     self.sp -= 1;
                 }
                 20 => { // MOD
@@ -727,17 +747,6 @@ impl AayuVM {
                     println!("AAYU Native Web Server & Runtime Engine started.");
                     println!("Available at: http://localhost:{}", chosen_port);
 
-                    // Native Ledger State in pure Rust VM memory
-                    let mut block_height: u64 = 104;
-                    let mut latest_hash = "0000a7b489c1f0e2417d9e83b4a2c1f9d8e7b6a5c4d3e2f1a0b9c8d7e6f5a4b3".to_string();
-                    let _canonical_103_hash = "000084f912c3b4d5e6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9".to_string();
-                    let mut is_tampered = false;
-                    let mut treasury_bal: f64 = 10000.0;
-                    let mut alice_bal: f64 = 450.0;
-                    let mut bob_bal: f64 = 120.0;
-                    let mut miner_bal: f64 = 50.0;
-                    let mut pool_bal: f64 = 500.0;
-
                     #[derive(Clone)]
                     struct ServerTx {
                         id: String,
@@ -751,30 +760,17 @@ impl AayuVM {
                         gas: f64,
                     }
 
-                    let mut mempool: Vec<ServerTx> = vec![
-                        ServerTx {
-                            id: "tx_901".to_string(),
-                            from: "Alice".to_string(),
-                            to: "Bob".to_string(),
-                            amount: 15.0,
-                            fee: 0.1,
-                            velocity: 0.42,
-                            volume: 15.0,
-                            entropy: 0.08,
-                            gas: 1.05,
-                        },
-                        ServerTx {
-                            id: "tx_902".to_string(),
-                            from: "Bob".to_string(),
-                            to: "ContractPool".to_string(),
-                            amount: 5.0,
-                            fee: 0.05,
-                            velocity: 0.35,
-                            volume: 5.0,
-                            entropy: 0.12,
-                            gas: 1.0,
-                        },
-                    ];
+                    struct ServerState {
+                        block_height: u64,
+                        latest_hash: String,
+                        is_tampered: bool,
+                        treasury_bal: f64,
+                        alice_bal: f64,
+                        bob_bal: f64,
+                        miner_bal: f64,
+                        pool_bal: f64,
+                        mempool: Vec<ServerTx>,
+                    }
 
                     fn esc_json(s: &str) -> String {
                         let mut o = String::new();
@@ -842,364 +838,425 @@ impl AayuVM {
                         let _ = stream.flush();
                     }
 
-                    for stream in listener.incoming() {
-                        match stream {
-                            Ok(mut stream) => {
-                                use std::io::Read;
-                                let mut buf = [0u8; 8192];
-                                let n = match stream.read(&mut buf) {
-                                    Ok(bytes) if bytes > 0 => bytes,
-                                    _ => continue,
-                                };
-                                let raw = String::from_utf8_lossy(&buf[..n]);
-                                let mut lines = raw.lines();
-                                let first_line = lines.next().unwrap_or("GET / HTTP/1.1");
-                                let mut parts = first_line.split_whitespace();
-                                let method = parts.next().unwrap_or("GET");
-                                let path = parts.next().unwrap_or("/");
+                    fn handle_connection(
+                        mut stream: std::net::TcpStream,
+                        state: std::sync::Arc<std::sync::Mutex<ServerState>>,
+                        html: std::sync::Arc<String>,
+                    ) {
+                        use std::io::Read;
+                        let mut buf = [0u8; 8192];
+                        let n = match stream.read(&mut buf) {
+                            Ok(bytes) if bytes > 0 => bytes,
+                            _ => return,
+                        };
+                        let raw = String::from_utf8_lossy(&buf[..n]);
+                        let mut lines = raw.lines();
+                        let first_line = lines.next().unwrap_or("GET / HTTP/1.1");
+                        let mut parts = first_line.split_whitespace();
+                        let method = parts.next().unwrap_or("GET");
+                        let path = parts.next().unwrap_or("/");
 
-                                if method == "OPTIONS" {
-                                    send_http(&mut stream, 204, "text/plain", "");
-                                    continue;
+                        if method == "OPTIONS" {
+                            send_http(&mut stream, 204, "text/plain", "");
+                            return;
+                        }
+
+                        if path == "/favicon.ico" {
+                            send_http(&mut stream, 404, "text/plain", "Not Found");
+                            return;
+                        }
+
+                        let mut content_len = 0;
+                        for line in raw.lines() {
+                            if line.to_ascii_lowercase().starts_with("content-length:") {
+                                if let Some(val) = line.split(':').nth(1) {
+                                    content_len = val.trim().parse::<usize>().unwrap_or(0);
                                 }
+                            }
+                        }
 
-                                if path == "/favicon.ico" {
-                                    send_http(&mut stream, 404, "text/plain", "Not Found");
-                                    continue;
+                        let body_start = raw.find("\r\n\r\n").map(|p| p + 4)
+                            .or_else(|| raw.find("\n\n").map(|p| p + 2))
+                            .unwrap_or(n);
+                        let mut body = if body_start < n { raw[body_start..].to_string() } else { String::new() };
+                        if body.len() < content_len {
+                            let mut rem = vec![0u8; content_len - body.len()];
+                            if let Ok(rn) = stream.read(&mut rem) {
+                                body.push_str(&String::from_utf8_lossy(&rem[..rn]));
+                            }
+                        }
+
+                        if path == "/api/mine" {
+                            let t_seed = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos();
+                            let mut st = state.lock().unwrap();
+                            if st.mempool.is_empty() {
+                                st.mempool.push(ServerTx {
+                                    id: format!("tx_batch_{}", (t_seed % 899) + 100),
+                                    from: "GenesisTreasury".to_string(),
+                                    to: "Alice".to_string(),
+                                    amount: 20.0,
+                                    fee: 0.1,
+                                    velocity: 0.45,
+                                    volume: 20.0,
+                                    entropy: 0.10,
+                                    gas: 1.0,
+                                });
+                            }
+
+                            let mut approved = Vec::new();
+                            let mut logs = Vec::new();
+                            logs.push(format!("âš¡ HYBRID PoUW MINING: Evaluating Neural MLP Consensus on {} mempool transactions...", st.mempool.len()));
+
+                            for tx in &st.mempool {
+                                let h1_0 = (tx.velocity * 0.45 - tx.entropy * 0.12).max(0.0);
+                                let h1_1 = (tx.volume * 0.04 + tx.gas * 0.35).max(0.0);
+                                let h1_2 = (tx.entropy * 0.88 - 0.20).max(0.0);
+                                let h1_3 = (tx.velocity * 0.20 + 0.15).max(0.0);
+                                let sig = |x: f64| 1.0 / (1.0 + (-x).exp());
+                                let h2_0 = sig(h1_0 * 0.50 - h1_1 * 0.30);
+                                let h2_1 = sig(h1_1 * 0.40 - h1_2 * 0.60);
+                                let h2_2 = sig(h1_3 * 0.30 + 0.10);
+                                let mut score = h2_0 * 0.15 + h2_1 * 0.10 - h2_2 * 0.05;
+                                if tx.entropy > 0.6 { score += 0.35; }
+                                if score < 0.15 {
+                                    approved.push(tx.clone());
+                                    logs.push(format!("ðŸ§  PoUW Neural Consensus: Tx [{}] verified (Score: {:.3}) -> APPROVED", tx.id, score));
+                                } else {
+                                    logs.push(format!("ðŸš¨ MALICIOUS TX DETECTED: [{}] Risk Score {:.3} >= 0.15 -> Quarantined by PoUW!", tx.id, score));
                                 }
+                            }
 
-                                let mut content_len = 0;
-                                for line in raw.lines() {
-                                    if line.to_ascii_lowercase().starts_with("content-length:") {
-                                        if let Some(val) = line.split(':').nth(1) {
-                                            content_len = val.trim().parse::<usize>().unwrap_or(0);
-                                        }
-                                    }
+                            for tx in &approved {
+                                let f = tx.from.to_lowercase();
+                                let t = tx.to.to_lowercase();
+                                if f.contains("alice") { st.alice_bal -= tx.amount; }
+                                else if f.contains("bob") { st.bob_bal -= tx.amount; }
+                                else if f.contains("treasury") { st.treasury_bal -= tx.amount; }
+
+                                if t.contains("alice") { st.alice_bal += tx.amount; }
+                                else if t.contains("bob") { st.bob_bal += tx.amount; }
+                                else if t.contains("pool") { st.pool_bal += tx.amount; }
+                            }
+
+                            st.miner_bal += 5.0;
+                            st.block_height += 1;
+                            let nonce: u64 = ((t_seed % 89999) + 10000) as u64;
+                            let new_hash = format!("0000{:08x}{:08x}{:016x}{:016x}", (nonce as u32), ((t_seed >> 16) as u32), t_seed as u64, (t_seed ^ 0xFEEDFACE) as u64);
+                            let merkle = format!("{:016x}{:016x}", t_seed as u64, (t_seed ^ 0xCAFEBABE) as u64);
+                            let prev_hash = st.latest_hash.clone();
+                            st.latest_hash = new_hash.clone();
+                            let tx_cnt = approved.len();
+                            st.mempool.clear();
+
+                            logs.push(format!("âœ… BLOCK #{} MINED! Hash: {} | Nonce: {} | Merkle: {} | Miner Reward: +5.00 AYU", st.block_height, new_hash, nonce, merkle));
+
+                            let mut logs_json = String::from("[");
+                            for (i, l) in logs.iter().enumerate() {
+                                if i > 0 { logs_json.push(','); }
+                                logs_json.push('"');
+                                logs_json.push_str(&esc_json(l));
+                                logs_json.push('"');
+                            }
+                            logs_json.push(']');
+
+                            let resp = format!(
+                                r#"{{"success":true,"block":{{"height":{},"hash":"{}","prev_hash":"{}","merkle_root":"{}","nonce":{},"tx_count":{},"miner_reward":5.0}},"balances":{{"treasury":{:.2},"alice":{:.2},"bob":{:.2},"miner":{:.2},"pool":{:.2}}},"mempool":[],"logs":{}}}"#,
+                                st.block_height, new_hash, prev_hash, merkle, nonce, tx_cnt, st.treasury_bal, st.alice_bal, st.bob_bal, st.miner_bal, st.pool_bal, logs_json
+                            );
+                            send_http(&mut stream, 200, "application/json", &resp);
+                        } else if path == "/api/command" {
+                            let cmd = find_json_val(&body, "cmd").unwrap_or_else(|| body.clone());
+                            let lower = cmd.to_lowercase();
+                            let mut logs = Vec::new();
+
+                            let mut st = state.lock().unwrap();
+                            if lower.contains("mine") {
+                                let t_seed = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos();
+                                st.block_height += 1;
+                                st.miner_bal += 5.0;
+                                let nonce: u64 = ((t_seed % 89999) + 10000) as u64;
+                                let new_hash = format!("0000{:08x}{:08x}{:016x}{:016x}", (nonce as u32), ((t_seed >> 16) as u32), t_seed as u64, (t_seed ^ 0xFEEDFACE) as u64);
+                                let merkle = format!("{:016x}{:016x}", t_seed as u64, (t_seed ^ 0xCAFEBABE) as u64);
+                                let _prev_hash = st.latest_hash.clone();
+                                st.latest_hash = new_hash.clone();
+                                logs.push(format!("âš¡ HYBRID MINING TRIGGERED: Mining Block #{}...", st.block_height));
+                                logs.push(format!("âœ… BLOCK #{} MINED! Hash: {} | Nonce: {} | Merkle: {} | Miner Reward: +5.00 AYU", st.block_height, new_hash, nonce, merkle));
+                                st.mempool.clear();
+                            } else if lower.contains("audit") {
+                                logs.push("ðŸ›¡ï¸ STARTING CRYPTOGRAPHIC AUDIT: Verifying Genesis hash -> Block 103 -> Block 104...".to_string());
+                                if st.is_tampered {
+                                    logs.push("ðŸš¨ CRITICAL INVARIANT FAILURE: Block #103 hash does not match Block #104 prev_hash pointer!".to_string());
+                                    logs.push("âŒ INTEGRITY CHECK FAILED: Hash mismatch at Block #103. Cryptographic chain broken!".to_string());
+                                } else {
+                                    logs.push("âœ… 1/3 Genesis pointer verified: 000000000019d668... OK".to_string());
+                                    logs.push("âœ… 2/3 Merkle tree roots verified across all blocks... OK".to_string());
+                                    logs.push("âœ… 3/3 UTXO & Invariant integrity verified: 100% Invariants Intact. Zero chain splits.".to_string());
                                 }
-
-                                let body_start = raw.find("\r\n\r\n").map(|p| p + 4)
-                                    .or_else(|| raw.find("\n\n").map(|p| p + 2))
-                                    .unwrap_or(n);
-                                let mut body = if body_start < n { raw[body_start..].to_string() } else { String::new() };
-                                if body.len() < content_len {
-                                    let mut rem = vec![0u8; content_len - body.len()];
-                                    if let Ok(rn) = stream.read(&mut rem) {
-                                        body.push_str(&String::from_utf8_lossy(&rem[..rn]));
-                                    }
+                            } else if lower.contains("tamper") || lower.contains("corrupt") || lower.contains("attack") {
+                                st.is_tampered = true;
+                                logs.push("âš ï¸ SIMULATED ATTACK: Attacker altered Block #103 transaction payload & hash in VM memory!".to_string());
+                                logs.push("ðŸš¨ CONSENSUS GUARD: Hash mismatch! Prev_hash pointer broken at Block #104.".to_string());
+                            } else if lower.contains("heal") || lower.contains("recover") {
+                                st.is_tampered = false;
+                                logs.push("ðŸ”§ CONSENSUS SELF-HEAL: Re-synced with canonical longest chain. Restored Block #103 state.".to_string());
+                            } else if lower.contains("contract") || lower.contains("intent") {
+                                if st.treasury_bal >= 2.5 {
+                                    st.treasury_bal -= 2.5;
+                                    st.pool_bal += 2.5;
+                                    logs.push("ðŸ“œ Smart Intent Triggered: 'AutoLiquidity.intent'".to_string());
+                                    logs.push("âš¡ State Transition Executed: 2.50 AYU transferred from Treasury -> ContractPool. Invariant: Validated.".to_string());
+                                } else {
+                                    logs.push("âŒ CONTRACT REJECTED: Treasury has insufficient funds to rebalance liquidity.".to_string());
                                 }
+                            } else if lower.contains("send") || lower.contains("transfer") {
+                                st.alice_bal -= 15.0;
+                                st.bob_bal += 15.0;
+                                logs.push("âš¡ Intent Executed: Transferred 15.00 AYU from Alice to Bob. Invariant verified.".to_string());
+                            } else if lower.contains("balance") || lower.contains("wallet") {
+                                logs.push(format!("ðŸ’° Ledger State: Treasury={:.2} AYU | Alice={:.2} | Bob={:.2} | Miner={:.2} | Pool={:.2}", st.treasury_bal, st.alice_bal, st.bob_bal, st.miner_bal, st.pool_bal));
+                            } else {
+                                logs.push(format!("ðŸ¤– [Autonomous AAYU Agent]: Intent accepted: \"{}\". Executing PoUW neural evaluation & state verification...", cmd));
+                                logs.push("ðŸ§  Neural MLP Forward Pass: Score 0.084 [SAFE INTENT] -> Passed PoUW Consensus Invariant".to_string());
+                            }
 
-                                if path == "/api/mine" {
-                                    let t_seed = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos();
-                                    if mempool.is_empty() {
-                                        mempool.push(ServerTx {
-                                            id: format!("tx_batch_{}", (t_seed % 899) + 100),
-                                            from: "GenesisTreasury".to_string(),
-                                            to: "Alice".to_string(),
-                                            amount: 20.0,
-                                            fee: 0.1,
-                                            velocity: 0.45,
-                                            volume: 20.0,
-                                            entropy: 0.10,
-                                            gas: 1.0,
-                                        });
-                                    }
+                            let mut logs_json = String::from("[");
+                            for (i, l) in logs.iter().enumerate() {
+                                if i > 0 { logs_json.push(','); }
+                                logs_json.push('"');
+                                logs_json.push_str(&esc_json(l));
+                                logs_json.push('"');
+                            }
+                            logs_json.push(']');
 
-                                    let mut approved = Vec::new();
-                                    let mut logs = Vec::new();
-                                    logs.push(format!("⚡ HYBRID PoUW MINING: Evaluating Neural MLP Consensus on {} mempool transactions...", mempool.len()));
+                            let resp = format!(
+                                r#"{{"success":true,"is_tampered":{},"balances":{{"treasury":{:.2},"alice":{:.2},"bob":{:.2},"miner":{:.2},"pool":{:.2}}},"logs":{}}}"#,
+                                st.is_tampered, st.treasury_bal, st.alice_bal, st.bob_bal, st.miner_bal, st.pool_bal, logs_json
+                            );
+                            send_http(&mut stream, 200, "application/json", &resp);
+                        } else if path == "/api/tx" {
+                            let from = find_json_val(&body, "from").unwrap_or_else(|| "Alice".to_string());
+                            let to = find_json_val(&body, "to").unwrap_or_else(|| "Bob".to_string());
+                            let amt: f64 = find_json_val(&body, "amount").and_then(|v| v.parse().ok()).unwrap_or(10.0);
+                            let fee: f64 = find_json_val(&body, "fee").and_then(|v| v.parse().ok()).unwrap_or(0.05);
 
-                                    for tx in &mempool {
-                                        let h1_0 = (tx.velocity * 0.45 - tx.entropy * 0.12).max(0.0);
-                                        let h1_1 = (tx.volume * 0.04 + tx.gas * 0.35).max(0.0);
-                                        let h1_2 = (tx.entropy * 0.88 - 0.20).max(0.0);
-                                        let h1_3 = (tx.velocity * 0.20 + 0.15).max(0.0);
-                                        let sig = |x: f64| 1.0 / (1.0 + (-x).exp());
-                                        let h2_0 = sig(h1_0 * 0.50 - h1_1 * 0.30);
-                                        let h2_1 = sig(h1_1 * 0.40 - h1_2 * 0.60);
-                                        let h2_2 = sig(h1_3 * 0.30 + 0.10);
-                                        let mut score = h2_0 * 0.15 + h2_1 * 0.10 - h2_2 * 0.05;
-                                        if tx.entropy > 0.6 { score += 0.35; }
-                                        if score < 0.15 {
-                                            approved.push(tx.clone());
-                                            logs.push(format!("🧠 PoUW Neural Consensus: Tx [{}] verified (Score: {:.3}) -> APPROVED", tx.id, score));
-                                        } else {
-                                            logs.push(format!("🚨 MALICIOUS TX DETECTED: [{}] Risk Score {:.3} >= 0.15 -> Quarantined by PoUW!", tx.id, score));
-                                        }
-                                    }
+                            let mut st = state.lock().unwrap();
+                            let sender_bal = if from.to_lowercase().contains("alice") { st.alice_bal } else { st.bob_bal };
+                            if sender_bal < (amt + fee) {
+                                let resp = format!(r#"{{"success":false,"error":"{} has insufficient balance ({:.2} AYU) for transfer of {:.2} + {:.2} AYU!"}}"#, from, sender_bal, amt, fee);
+                                send_http(&mut stream, 200, "application/json", &resp);
+                            } else {
+                                let t_seed = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos();
+                                let tx_id = format!("tx_{}", (t_seed % 8999) + 1000);
+                                st.mempool.push(ServerTx {
+                                    id: tx_id.clone(),
+                                    from: from.clone(),
+                                    to: to.clone(),
+                                    amount: amt,
+                                    fee,
+                                    velocity: 0.42,
+                                    volume: amt,
+                                    entropy: 0.08,
+                                    gas: fee,
+                                });
 
-                                    for tx in &approved {
-                                        let f = tx.from.to_lowercase();
-                                        let t = tx.to.to_lowercase();
-                                        if f.contains("alice") { alice_bal -= tx.amount; }
-                                        else if f.contains("bob") { bob_bal -= tx.amount; }
-                                        else if f.contains("treasury") { treasury_bal -= tx.amount; }
+                                let mut mem_json = String::from("[");
+                                for (i, tx) in st.mempool.iter().enumerate() {
+                                    if i > 0 { mem_json.push(','); }
+                                    mem_json.push_str(&format!(
+                                        r#"{{"id":"{}","from":"{}","to":"{}","amount":{:.2},"fee":{:.2},"entropy":{:.2}}}"#,
+                                        tx.id, tx.from, tx.to, tx.amount, tx.fee, tx.entropy
+                                    ));
+                                }
+                                mem_json.push(']');
 
-                                        if t.contains("alice") { alice_bal += tx.amount; }
-                                        else if t.contains("bob") { bob_bal += tx.amount; }
-                                        else if t.contains("pool") { pool_bal += tx.amount; }
-                                    }
+                                let resp = format!(
+                                    r#"{{"success":true,"logs":["ðŸ“ Transaction Signed & Broadcast to Native VM: [{}] {} -> {} ({:.2} AYU) | Fee: {:.2} AYU"],"mempool":{}}}"#,
+                                    tx_id, from, to, amt, fee, mem_json
+                                );
+                                send_http(&mut stream, 200, "application/json", &resp);
+                            }
+                        } else if path == "/api/infer" {
+                            let vel: f64 = find_json_val(&body, "velocity").and_then(|v| v.parse().ok()).unwrap_or(0.35);
+                            let vol: f64 = find_json_val(&body, "volume").and_then(|v| v.parse().ok()).unwrap_or(12.0);
+                            let ent: f64 = find_json_val(&body, "entropy").and_then(|v| v.parse().ok()).unwrap_or(0.08);
+                            let gas: f64 = find_json_val(&body, "gas").and_then(|v| v.parse().ok()).unwrap_or(1.02);
 
-                                    miner_bal += 5.0;
-                                    block_height += 1;
-                                    let nonce: u64 = ((t_seed % 89999) + 10000) as u64;
-                                    let new_hash = format!("0000{:08x}{:08x}{:016x}{:016x}", (nonce as u32), ((t_seed >> 16) as u32), t_seed as u64, (t_seed ^ 0xFEEDFACE) as u64);
-                                    let merkle = format!("{:016x}{:016x}", t_seed as u64, (t_seed ^ 0xCAFEBABE) as u64);
-                                    let prev_hash = latest_hash.clone();
-                                    latest_hash = new_hash.clone();
-                                    let tx_cnt = approved.len();
-                                    mempool.clear();
+                            let h1_0 = (vel * 0.45 - ent * 0.12).max(0.0);
+                            let h1_1 = (vol * 0.04 + gas * 0.35).max(0.0);
+                            let h1_2 = (ent * 0.88 - 0.20).max(0.0);
+                            let h1_3 = (vel * 0.20 + 0.15).max(0.0);
+                            let sig = |x: f64| 1.0 / (1.0 + (-x).exp());
+                            let h2_0 = sig(h1_0 * 0.50 - h1_1 * 0.30);
+                            let h2_1 = sig(h1_1 * 0.40 - h1_2 * 0.60);
+                            let h2_2 = sig(h1_3 * 0.30 + 0.10);
+                            let mut score = h2_0 * 0.15 + h2_1 * 0.10 - h2_2 * 0.05;
+                            if ent > 0.6 { score += 0.35; }
+                            let approved = score < 0.15;
 
-                                    logs.push(format!("✅ BLOCK #{} MINED! Hash: {} | Nonce: {} | Merkle: {} | Miner Reward: +5.00 AYU", block_height, new_hash, nonce, merkle));
+                            let log_msg = if approved {
+                                format!("ðŸ§  Neural MLP Forward Pass: Score {:.3} [SAFE TX] -> Passed PoUW Consensus", score)
+                            } else {
+                                format!("ðŸš¨ Neural Anomaly Detector: Score {:.3} [HIGH RISK ATTACK] -> Quarantined by PoUW!", score)
+                            };
 
-                                    let mut logs_json = String::from("[");
-                                    for (i, l) in logs.iter().enumerate() {
-                                        if i > 0 { logs_json.push(','); }
-                                        logs_json.push('"');
-                                        logs_json.push_str(&esc_json(l));
-                                        logs_json.push('"');
-                                    }
-                                    logs_json.push(']');
+                            let resp = format!(
+                                r#"{{"success":true,"score":{:.3},"approved":{},"h1":[{:.3},{:.3},{:.3},{:.3}],"h2":[{:.3},{:.3},{:.3}],"logs":["{}"]}}"#,
+                                score, approved, h1_0, h1_1, h1_2, h1_3, h2_0, h2_1, h2_2, esc_json(&log_msg)
+                            );
+                            send_http(&mut stream, 200, "application/json", &resp);
+                        } else if path == "/api/audit" {
+                            let mut logs = Vec::new();
+                            logs.push("ðŸ›¡ï¸ STARTING CRYPTOGRAPHIC AUDIT: Verifying Genesis hash -> Block 103 -> Block 104...".to_string());
+                            let st = state.lock().unwrap();
+                            if st.is_tampered {
+                                logs.push("ðŸš¨ CRITICAL INVARIANT FAILURE: Block #103 hash does not match Block #104 prev_hash pointer!".to_string());
+                                logs.push("âŒ INTEGRITY CHECK FAILED: Hash mismatch at Block #103. Cryptographic chain broken!".to_string());
+                            } else {
+                                logs.push("âœ… 1/3 Genesis pointer verified: 000000000019d668... OK".to_string());
+                                logs.push("âœ… 2/3 Merkle tree roots verified across all blocks... OK".to_string());
+                                logs.push("âœ… 3/3 UTXO & Invariant integrity verified: 100% Invariants Intact. Zero chain splits.".to_string());
+                            }
+                            let mut logs_json = String::from("[");
+                            for (i, l) in logs.iter().enumerate() {
+                                if i > 0 { logs_json.push(','); }
+                                logs_json.push('"');
+                                logs_json.push_str(&esc_json(l));
+                                logs_json.push('"');
+                            }
+                            logs_json.push(']');
+                            let resp = format!(r#"{{"success":true,"logs":{}}}"#, logs_json);
+                            send_http(&mut stream, 200, "application/json", &resp);
+                        } else if path == "/api/tamper" {
+                            let mut st = state.lock().unwrap();
+                            st.is_tampered = true;
+                            let resp = r#"{"success":true,"is_tampered":true,"logs":["âš ï¸ SIMULATED ATTACK: Attacker altered Block #103 payload & hash in VM memory!","ðŸš¨ CONSENSUS GUARD: Hash mismatch! Prev_hash pointer broken at Block #104."]}"#;
+                            send_http(&mut stream, 200, "application/json", resp);
+                        } else if path == "/api/heal" {
+                            let mut st = state.lock().unwrap();
+                            st.is_tampered = false;
+                            let resp = r#"{"success":true,"is_tampered":false,"logs":["ðŸ”§ CONSENSUS SELF-HEAL: Re-synced with canonical longest chain. Restored Block #103 state."]}"#;
+                            send_http(&mut stream, 200, "application/json", resp);
+                        } else if path == "/api/compile" {
+                            let code = find_json_val(&body, "code").unwrap_or_else(|| body.clone());
+                            let temp_dir = std::env::temp_dir();
+                            let aayu_path = temp_dir.join("playground_code.aayu");
+                            let ayc_path = temp_dir.join("playground_code.ayc");
+                            let _ = std::fs::write(&aayu_path, &code);
 
-                                    let resp = format!(
-                                        r#"{{"success":true,"block":{{"height":{},"hash":"{}","prev_hash":"{}","merkle_root":"{}","nonce":{},"tx_count":{},"miner_reward":5.0}},"balances":{{"treasury":{:.2},"alice":{:.2},"bob":{:.2},"miner":{:.2},"pool":{:.2}}},"mempool":[],"logs":{}}}"#,
-                                        block_height, new_hash, prev_hash, merkle, nonce, tx_cnt, treasury_bal, alice_bal, bob_bal, miner_bal, pool_bal, logs_json
-                                    );
-                                    send_http(&mut stream, 200, "application/json", &resp);
-                                } else if path == "/api/command" {
-                                    let cmd = find_json_val(&body, "cmd").unwrap_or_else(|| body.clone());
-                                    let lower = cmd.to_lowercase();
-                                    let mut logs = Vec::new();
+                            let aayuc_path = if std::path::Path::new(r"D:\INTENT-TO-SILICON\.archive\compiler_rust_bootstrap\target\release\aayuc.exe").exists() {
+                                r"D:\INTENT-TO-SILICON\.archive\compiler_rust_bootstrap\target\release\aayuc.exe".to_string()
+                            } else {
+                                "aayuc.exe".to_string()
+                            };
+                            let vm_path = std::env::current_exe().unwrap_or_else(|_| std::path::PathBuf::from(r"D:\INTENT-TO-SILICON\runtime_rs\target_server2\release\aayu-vm.exe"));
 
-                                    if lower.contains("mine") {
-                                        // Execute mining
-                                        let t_seed = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos();
-                                        block_height += 1;
-                                        miner_bal += 5.0;
-                                        let nonce: u64 = ((t_seed % 89999) + 10000) as u64;
-                                        let new_hash = format!("0000{:08x}{:08x}{:016x}{:016x}", (nonce as u32), ((t_seed >> 16) as u32), t_seed as u64, (t_seed ^ 0xFEEDFACE) as u64);
-                                        let merkle = format!("{:016x}{:016x}", t_seed as u64, (t_seed ^ 0xCAFEBABE) as u64);
-                                        let _prev_hash = latest_hash.clone();
-                                        latest_hash = new_hash.clone();
-                                        logs.push(format!("⚡ HYBRID MINING TRIGGERED: Mining Block #{}...", block_height));
-                                        logs.push(format!("✅ BLOCK #{} MINED! Hash: {} | Nonce: {} | Merkle: {} | Miner Reward: +5.00 AYU", block_height, new_hash, nonce, merkle));
-                                        mempool.clear();
-                                    } else if lower.contains("audit") {
-                                        logs.push("🛡️ STARTING CRYPTOGRAPHIC AUDIT: Verifying Genesis hash -> Block 103 -> Block 104...".to_string());
-                                        if is_tampered {
-                                            logs.push("🚨 CRITICAL INVARIANT FAILURE: Block #103 hash does not match Block #104 prev_hash pointer!".to_string());
-                                            logs.push("❌ INTEGRITY CHECK FAILED: Hash mismatch at Block #103. Cryptographic chain broken!".to_string());
-                                        } else {
-                                            logs.push("✅ 1/3 Genesis pointer verified: 000000000019d668... OK".to_string());
-                                            logs.push("✅ 2/3 Merkle tree roots verified across all blocks... OK".to_string());
-                                            logs.push("✅ 3/3 UTXO & Invariant integrity verified: 100% Invariants Intact. Zero chain splits.".to_string());
-                                        }
-                                    } else if lower.contains("tamper") || lower.contains("corrupt") || lower.contains("attack") {
-                                        is_tampered = true;
-                                        logs.push("⚠️ SIMULATED ATTACK: Attacker altered Block #103 transaction payload & hash in VM memory!".to_string());
-                                        logs.push("🚨 CONSENSUS GUARD: Hash mismatch! Prev_hash pointer broken at Block #104.".to_string());
-                                    } else if lower.contains("heal") || lower.contains("recover") {
-                                        is_tampered = false;
-                                        logs.push("🔧 CONSENSUS SELF-HEAL: Re-synced with canonical longest chain. Restored Block #103 state.".to_string());
-                                    } else if lower.contains("contract") || lower.contains("intent") {
-                                        if treasury_bal >= 2.5 {
-                                            treasury_bal -= 2.5;
-                                            pool_bal += 2.5;
-                                            logs.push("📜 Smart Intent Triggered: 'AutoLiquidity.intent'".to_string());
-                                            logs.push("⚡ State Transition Executed: 2.50 AYU transferred from Treasury -> ContractPool. Invariant: Validated.".to_string());
-                                        } else {
-                                            logs.push("❌ CONTRACT REJECTED: Treasury has insufficient funds to rebalance liquidity.".to_string());
-                                        }
-                                    } else if lower.contains("send") || lower.contains("transfer") {
-                                        alice_bal -= 15.0;
-                                        bob_bal += 15.0;
-                                        logs.push("⚡ Intent Executed: Transferred 15.00 AYU from Alice to Bob. Invariant verified.".to_string());
-                                    } else if lower.contains("balance") || lower.contains("wallet") {
-                                        logs.push(format!("💰 Ledger State: Treasury={:.2} AYU | Alice={:.2} | Bob={:.2} | Miner={:.2} | Pool={:.2}", treasury_bal, alice_bal, bob_bal, miner_bal, pool_bal));
-                                    } else {
-                                        logs.push(format!("🤖 [Autonomous AAYU Agent]: Intent accepted: \"{}\". Executing PoUW neural evaluation & state verification...", cmd));
-                                        logs.push("🧠 Neural MLP Forward Pass: Score 0.084 [SAFE INTENT] -> Passed PoUW Consensus Invariant".to_string());
-                                    }
+                            let compile_output = std::process::Command::new(&aayuc_path)
+                                .arg(&aayu_path)
+                                .arg("-o")
+                                .arg(&ayc_path)
+                                .output();
 
-                                    let mut logs_json = String::from("[");
-                                    for (i, l) in logs.iter().enumerate() {
-                                        if i > 0 { logs_json.push(','); }
-                                        logs_json.push('"');
-                                        logs_json.push_str(&esc_json(l));
-                                        logs_json.push('"');
-                                    }
-                                    logs_json.push(']');
-
-                                    let resp = format!(
-                                        r#"{{"success":true,"is_tampered":{},"balances":{{"treasury":{:.2},"alice":{:.2},"bob":{:.2},"miner":{:.2},"pool":{:.2}}},"logs":{}}}"#,
-                                        is_tampered, treasury_bal, alice_bal, bob_bal, miner_bal, pool_bal, logs_json
-                                    );
-                                    send_http(&mut stream, 200, "application/json", &resp);
-                                } else if path == "/api/tx" {
-                                    let from = find_json_val(&body, "from").unwrap_or_else(|| "Alice".to_string());
-                                    let to = find_json_val(&body, "to").unwrap_or_else(|| "Bob".to_string());
-                                    let amt: f64 = find_json_val(&body, "amount").and_then(|v| v.parse().ok()).unwrap_or(10.0);
-                                    let fee: f64 = find_json_val(&body, "fee").and_then(|v| v.parse().ok()).unwrap_or(0.05);
-
-                                    let sender_bal = if from.to_lowercase().contains("alice") { alice_bal } else { bob_bal };
-                                    if sender_bal < (amt + fee) {
-                                        let resp = format!(r#"{{"success":false,"error":"{} has insufficient balance ({:.2} AYU) for transfer of {:.2} + {:.2} AYU!"}}"#, from, sender_bal, amt, fee);
+                            match compile_output {
+                                Ok(c_res) => {
+                                    if !c_res.status.success() {
+                                        let err_msg = String::from_utf8_lossy(&c_res.stderr);
+                                        let out_msg = String::from_utf8_lossy(&c_res.stdout);
+                                        let full_err = format!("[AAYU Compiler Diagnostic]\n{}\n{}", err_msg, out_msg);
+                                        let resp = format!(r#"{{"success":false,"output":"{}"}}"#, esc_json(&full_err));
                                         send_http(&mut stream, 200, "application/json", &resp);
                                     } else {
-                                        let t_seed = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos();
-                                        let tx_id = format!("tx_{}", (t_seed % 8999) + 1000);
-                                        mempool.push(ServerTx {
-                                            id: tx_id.clone(),
-                                            from: from.clone(),
-                                            to: to.clone(),
-                                            amount: amt,
-                                            fee,
-                                            velocity: 0.42,
-                                            volume: amt,
-                                            entropy: 0.08,
-                                            gas: fee,
-                                        });
+                                        let t0 = std::time::Instant::now();
+                                        let vm_output = std::process::Command::new(&vm_path)
+                                            .arg(&ayc_path)
+                                            .output();
+                                        let elapsed = t0.elapsed().as_nanos();
 
-                                        let mut mem_json = String::from("[");
-                                        for (i, tx) in mempool.iter().enumerate() {
-                                            if i > 0 { mem_json.push(','); }
-                                            mem_json.push_str(&format!(
-                                                r#"{{"id":"{}","from":"{}","to":"{}","amount":{:.2},"fee":{:.2},"entropy":{:.2}}}"#,
-                                                tx.id, tx.from, tx.to, tx.amount, tx.fee, tx.entropy
-                                            ));
-                                        }
-                                        mem_json.push(']');
-
-                                        let resp = format!(
-                                            r#"{{"success":true,"logs":["📝 Transaction Signed & Broadcast to Native VM: [{}] {} -> {} ({:.2} AYU) | Fee: {:.2} AYU"],"mempool":{}}}"#,
-                                            tx_id, from, to, amt, fee, mem_json
-                                        );
-                                        send_http(&mut stream, 200, "application/json", &resp);
-                                    }
-                                } else if path == "/api/infer" {
-                                    let vel: f64 = find_json_val(&body, "velocity").and_then(|v| v.parse().ok()).unwrap_or(0.35);
-                                    let vol: f64 = find_json_val(&body, "volume").and_then(|v| v.parse().ok()).unwrap_or(12.0);
-                                    let ent: f64 = find_json_val(&body, "entropy").and_then(|v| v.parse().ok()).unwrap_or(0.08);
-                                    let gas: f64 = find_json_val(&body, "gas").and_then(|v| v.parse().ok()).unwrap_or(1.02);
-
-                                    let h1_0 = (vel * 0.45 - ent * 0.12).max(0.0);
-                                    let h1_1 = (vol * 0.04 + gas * 0.35).max(0.0);
-                                    let h1_2 = (ent * 0.88 - 0.20).max(0.0);
-                                    let h1_3 = (vel * 0.20 + 0.15).max(0.0);
-                                    let sig = |x: f64| 1.0 / (1.0 + (-x).exp());
-                                    let h2_0 = sig(h1_0 * 0.50 - h1_1 * 0.30);
-                                    let h2_1 = sig(h1_1 * 0.40 - h1_2 * 0.60);
-                                    let h2_2 = sig(h1_3 * 0.30 + 0.10);
-                                    let mut score = h2_0 * 0.15 + h2_1 * 0.10 - h2_2 * 0.05;
-                                    if ent > 0.6 { score += 0.35; }
-                                    let approved = score < 0.15;
-
-                                    let log_msg = if approved {
-                                        format!("🧠 Neural MLP Forward Pass: Score {:.3} [SAFE TX] -> Passed PoUW Consensus", score)
-                                    } else {
-                                        format!("🚨 Neural Anomaly Detector: Score {:.3} [HIGH RISK ATTACK] -> Quarantined by PoUW!", score)
-                                    };
-
-                                    let resp = format!(
-                                        r#"{{"success":true,"score":{:.3},"approved":{},"h1":[{:.3},{:.3},{:.3},{:.3}],"h2":[{:.3},{:.3},{:.3}],"logs":["{}"]}}"#,
-                                        score, approved, h1_0, h1_1, h1_2, h1_3, h2_0, h2_1, h2_2, esc_json(&log_msg)
-                                    );
-                                    send_http(&mut stream, 200, "application/json", &resp);
-                                } else if path == "/api/audit" {
-                                    let mut logs = Vec::new();
-                                    logs.push("🛡️ STARTING CRYPTOGRAPHIC AUDIT: Verifying Genesis hash -> Block 103 -> Block 104...".to_string());
-                                    if is_tampered {
-                                        logs.push("🚨 CRITICAL INVARIANT FAILURE: Block #103 hash does not match Block #104 prev_hash pointer!".to_string());
-                                        logs.push("❌ INTEGRITY CHECK FAILED: Hash mismatch at Block #103. Cryptographic chain broken!".to_string());
-                                    } else {
-                                        logs.push("✅ 1/3 Genesis pointer verified: 000000000019d668... OK".to_string());
-                                        logs.push("✅ 2/3 Merkle tree roots verified across all blocks... OK".to_string());
-                                        logs.push("✅ 3/3 UTXO & Invariant integrity verified: 100% Invariants Intact. Zero chain splits.".to_string());
-                                    }
-                                    let mut logs_json = String::from("[");
-                                    for (i, l) in logs.iter().enumerate() {
-                                        if i > 0 { logs_json.push(','); }
-                                        logs_json.push('"');
-                                        logs_json.push_str(&esc_json(l));
-                                        logs_json.push('"');
-                                    }
-                                    logs_json.push(']');
-                                    let resp = format!(r#"{{"success":true,"logs":{}}}"#, logs_json);
-                                    send_http(&mut stream, 200, "application/json", &resp);
-                                } else if path == "/api/tamper" {
-                                    is_tampered = true;
-                                    let resp = r#"{"success":true,"is_tampered":true,"logs":["⚠️ SIMULATED ATTACK: Attacker altered Block #103 payload & hash in VM memory!","🚨 CONSENSUS GUARD: Hash mismatch! Prev_hash pointer broken at Block #104."]}"#;
-                                    send_http(&mut stream, 200, "application/json", resp);
-                                } else if path == "/api/heal" {
-                                    is_tampered = false;
-                                    let resp = r#"{"success":true,"is_tampered":false,"logs":["🔧 CONSENSUS SELF-HEAL: Re-synced with canonical longest chain. Restored Block #103 state."]}"#;
-                                    send_http(&mut stream, 200, "application/json", resp);
-                                } else if path == "/api/compile" {
-                                    let code = find_json_val(&body, "code").unwrap_or_else(|| body.clone());
-                                    let temp_dir = std::env::temp_dir();
-                                    let aayu_path = temp_dir.join("playground_code.aayu");
-                                    let ayc_path = temp_dir.join("playground_code.ayc");
-                                    let _ = std::fs::write(&aayu_path, &code);
-
-                                    let aayuc_path = if std::path::Path::new(r"D:\INTENT-TO-SILICON\.archive\compiler_rust_bootstrap\target\release\aayuc.exe").exists() {
-                                        r"D:\INTENT-TO-SILICON\.archive\compiler_rust_bootstrap\target\release\aayuc.exe".to_string()
-                                    } else {
-                                        "aayuc.exe".to_string()
-                                    };
-                                    let vm_path = std::env::current_exe().unwrap_or_else(|_| std::path::PathBuf::from(r"D:\INTENT-TO-SILICON\runtime_rs\target_server2\release\aayu-vm.exe"));
-
-                                    let compile_output = std::process::Command::new(&aayuc_path)
-                                        .arg(&aayu_path)
-                                        .arg("-o")
-                                        .arg(&ayc_path)
-                                        .output();
-
-                                    match compile_output {
-                                        Ok(c_res) => {
-                                            if !c_res.status.success() {
-                                                let err_msg = String::from_utf8_lossy(&c_res.stderr);
-                                                let out_msg = String::from_utf8_lossy(&c_res.stdout);
-                                                let full_err = format!("[AAYU Compiler Diagnostic]\n{}\n{}", err_msg, out_msg);
-                                                let resp = format!(r#"{{"success":false,"output":"{}"}}"#, esc_json(&full_err));
-                                                send_http(&mut stream, 200, "application/json", &resp);
-                                            } else {
-                                                let t0 = std::time::Instant::now();
-                                                let vm_output = std::process::Command::new(&vm_path)
-                                                    .arg(&ayc_path)
-                                                    .output();
-                                                let elapsed = t0.elapsed().as_nanos();
-
-                                                match vm_output {
-                                                    Ok(v_res) => {
-                                                        let stdout_str = String::from_utf8_lossy(&v_res.stdout);
-                                                        let stderr_str = String::from_utf8_lossy(&v_res.stderr);
-                                                        let mut final_out = format!(">> AAYU VM JIT Execution (v1.2.0):\n");
-                                                        if !stdout_str.trim().is_empty() {
-                                                            final_out.push_str(&stdout_str);
-                                                        } else if !stderr_str.trim().is_empty() {
-                                                            final_out.push_str(&stderr_str);
-                                                        } else {
-                                                            final_out.push_str("Program executed cleanly. Exit code: 0\n");
-                                                        }
-                                                        final_out.push_str(&format!("\n[Execution time: {}ns | Pure AAYU Silicon Stack]", elapsed));
-                                                        let resp = format!(r#"{{"success":true,"output":"{}"}}"#, esc_json(&final_out));
-                                                        send_http(&mut stream, 200, "application/json", &resp);
-                                                    }
-                                                    Err(e) => {
-                                                        let resp = format!(r#"{{"success":false,"output":"VM Execution failed: {}"}}"#, esc_json(&e.to_string()));
-                                                        send_http(&mut stream, 200, "application/json", &resp);
-                                                    }
+                                        match vm_output {
+                                            Ok(v_res) => {
+                                                let stdout_str = String::from_utf8_lossy(&v_res.stdout);
+                                                let stderr_str = String::from_utf8_lossy(&v_res.stderr);
+                                                let mut final_out = format!(">> AAYU VM JIT Execution (v1.2.0):\n");
+                                                if !stdout_str.trim().is_empty() {
+                                                    final_out.push_str(&stdout_str);
+                                                } else if !stderr_str.trim().is_empty() {
+                                                    final_out.push_str(&stderr_str);
+                                                } else {
+                                                    final_out.push_str("Program executed cleanly. Exit code: 0\n");
                                                 }
+                                                final_out.push_str(&format!("\n[Execution time: {}ns | Pure AAYU Silicon Stack]", elapsed));
+                                                let resp = format!(r#"{{"success":true,"output":"{}"}}"#, esc_json(&final_out));
+                                                send_http(&mut stream, 200, "application/json", &resp);
+                                            }
+                                            Err(e) => {
+                                                let resp = format!(r#"{{"success":false,"output":"VM Execution failed: {}"}}"#, esc_json(&e.to_string()));
+                                                send_http(&mut stream, 200, "application/json", &resp);
                                             }
                                         }
-                                        Err(e) => {
-                                            let resp = format!(r#"{{"success":false,"output":"Could not invoke aayuc: {}"}}"#, esc_json(&e.to_string()));
-                                            send_http(&mut stream, 200, "application/json", &resp);
-                                        }
                                     }
-                                } else {
-                                    // Default: Render HTML Page
-                                    send_http(&mut stream, 200, "text/html; charset=utf-8", &html);
                                 }
+                                Err(e) => {
+                                    let resp = format!(r#"{{"success":false,"output":"Could not invoke aayuc: {}"}}"#, esc_json(&e.to_string()));
+                                    send_http(&mut stream, 200, "application/json", &resp);
+                                }
+                            }
+                        } else {
+                            // Default: Render HTML Page
+                            send_http(&mut stream, 200, "text/html; charset=utf-8", &html);
+                        }
+                    }
+
+                    let initial_mempool = vec![
+                        ServerTx {
+                            id: "tx_901".to_string(),
+                            from: "Alice".to_string(),
+                            to: "Bob".to_string(),
+                            amount: 15.0,
+                            fee: 0.1,
+                            velocity: 0.42,
+                            volume: 15.0,
+                            entropy: 0.08,
+                            gas: 1.05,
+                        },
+                        ServerTx {
+                            id: "tx_902".to_string(),
+                            from: "Bob".to_string(),
+                            to: "ContractPool".to_string(),
+                            amount: 5.0,
+                            fee: 0.05,
+                            velocity: 0.35,
+                            volume: 5.0,
+                            entropy: 0.12,
+                            gas: 1.0,
+                        },
+                    ];
+
+                    let state_arc = std::sync::Arc::new(std::sync::Mutex::new(ServerState {
+                        block_height: 104,
+                        latest_hash: "0000a7b489c1f0e2417d9e83b4a2c1f9d8e7b6a5c4d3e2f1a0b9c8d7e6f5a4b3".to_string(),
+                        is_tampered: false,
+                        treasury_bal: 10000.0,
+                        alice_bal: 450.0,
+                        bob_bal: 120.0,
+                        miner_bal: 50.0,
+                        pool_bal: 500.0,
+                        mempool: initial_mempool,
+                    }));
+                    let html_arc = std::sync::Arc::new(html);
+
+                    for stream in listener.incoming() {
+                        match stream {
+                            Ok(stream) => {
+                                let _ = stream.set_nodelay(true);
+                                let _ = stream.set_read_timeout(Some(std::time::Duration::from_secs(5)));
+                                let _ = stream.set_write_timeout(Some(std::time::Duration::from_secs(5)));
+                                let state_clone = std::sync::Arc::clone(&state_arc);
+                                let html_clone = std::sync::Arc::clone(&html_arc);
+
+                                std::thread::spawn(move || {
+                                    let _ = std::panic::catch_unwind(std::panic::AssertUnwindSafe(move || {
+                                        handle_connection(stream, state_clone, html_clone);
+                                    }));
+                                });
                             }
                             Err(_) => {}
                         }

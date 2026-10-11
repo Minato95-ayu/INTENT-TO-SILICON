@@ -1,7 +1,7 @@
 # ==============================================================================
 # AAYU Native Self-Hosted UI Renderer (v1.2.0)
 # Intent-to-Silicon Declarative UI Transpiler
-# 100% Pure AAYU — Zero Python, Zero External Dependencies
+# 100% Pure AAYU -- Zero Python, Zero External Dependencies
 # ==============================================================================
 
 action render_props(props)

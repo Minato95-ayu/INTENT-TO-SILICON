@@ -51,30 +51,39 @@ In response to technical peer review and external community audits, this documen
 
 ## 🛡️ 3. Direct Resolutions to Community Audit Inquiries
 
-### 1. Compiler Security & Malformed Bytecode Validation
-* **Auditor Finding:** Successful build is not a substitute for security audits; invalid bytecode must be rejected prior to execution without panicking the VM.
-* **Resolution Implemented:** Added `AayuVM::validate(&self) -> Result<(), String>` inside [`runtime_rs/src/vm.rs`](runtime_rs/src/vm.rs) and bounds-checked parsing in [`runtime_rs/src/main.rs`](runtime_rs/src/main.rs).
-* **Automated Evidence:** Created [`tests/test_malformed_bytecode.ps1`](tests/test_malformed_bytecode.ps1) covering 6 corruption vectors:
+### 1. Compiler & JIT Security: Malformed Bytecode Validation
+* **Auditor Finding:** Successful build is not a substitute for security audits; invalid bytecode must be rejected prior to execution without panicking the VM. Crucially, the `--jit` path was previously bypassing the verifier.
+* **Resolution Implemented:** 
+  1. Added `AayuVM::validate(&self) -> Result<(), String>` inside [`runtime_rs/src/vm.rs`](runtime_rs/src/vm.rs) and bounds-checked parsing in [`runtime_rs/src/main.rs`](runtime_rs/src/main.rs).
+  2. Enforced bytecode validation across **BOTH** execution paths (`AayuVM::validate` runs prior to JIT code generation or interpretation; errors trigger clean `exit(1)` rejections).
+  3. Added `jit::can_compile(&bytecode)` opcode safety analysis: unsupported opcodes or compilation failures safely fall back to the VM interpreter rather than dropping instructions as comments.
+* **Automated Evidence:** Created [`tests/test_malformed_bytecode.ps1`](tests/test_malformed_bytecode.ps1) asserting exact error messages and non-zero exit codes across 6 corruption vectors in both Interpreter and JIT modes:
   1. Empty bytecode file
   2. Corrupted magic header
   3. Truncated string table
   4. Illegal instruction opcode (`0xEE`)
   5. Out-of-bounds jump offset (`0xFF00`)
   6. Truncated instruction operand
-  * **Result:** **6 Passed | 0 Failed**. Every vector safely rejected with exit code 0 and invariant preserved.
+  * **Result:** **6 Passed | 0 Failed** on both Interpreter and JIT modes.
+* **CI Integration:** Security verification suite is wired directly into [`.github/workflows/ci.yml`](.github/workflows/ci.yml) to block pull requests on security regressions.
 
-### 2. Precise "Zero Dependencies" Definition
-* **Auditor Finding:** The runtime `Cargo.toml` declares `byteorder` and `ureq`. Claiming literally zero dependencies across the entire build toolchain is imprecise.
-* **Resolution Implemented:** Formally separated the two tiers in [`README.md`](README.md) and [`ARCHITECTURE.md`](ARCHITECTURE.md):
+### 2. Precise "Zero Dependencies" Definition & Build Toolchain
+* **Auditor Finding:** The runtime `Cargo.toml` declares `byteorder` and `ureq`, and `compiler_bootstrap/Cargo.toml` declares `serde` and `serde_json`.
+* **Resolution Implemented:** Reconciled documentation across [`README.md`](README.md) and [`ARCHITECTURE.md`](ARCHITECTURE.md):
   * **Application Tier (End Developer):** **100% Zero Dependencies.** A developer building an AAYU app requires zero external runtimes (no Node.js, Python, pip, npm, or libc header dependencies). Full-stack servers, database, and UI run from the single standalone binary.
-  * **Engine Build Tier (VM Toolchain):** The Silicon VM is compiled with Rust using a minimal, audited set of crates (`byteorder`, `ureq`) and compiles down to a statically linked native binary.
+  * **Engine Build Tier (VM Core):** The Silicon VM is compiled with Rust using a minimal, audited set of crates (`byteorder`, `ureq`) and compiles down to a statically linked native binary.
+  * **Bootstrap Seed Compiler (`compiler_bootstrap/`):** Uses standard Rust serialization (`serde`, `serde_json`) for reproducible AST dumps during cold bootstrapping.
 
-### 3. Reproducible Performance Benchmarks
-* **Auditor Finding:** Performance numbers must be accompanied by benchmark code, OS/hardware info, warmup iterations, and min/max/median numbers.
-* **Resolution Implemented:** Created [`benchmarks/run_benchmarks.ps1`](benchmarks/run_benchmarks.ps1) which queries hardware info, executes a warmup run, conducts 5 timed iterations, and publishes results to [`benchmarks/BENCHMARK_RESULTS.md`](benchmarks/BENCHMARK_RESULTS.md).
-* **Live Measured Numbers (Intel i5-8350U, Windows 11):**
-  * **100k Data Crunching Loop:** Median **161.19 ms** (Min: 146.76 ms, Mean: 188.24 ms)
-  * **15-level Recursive Fibonacci:** Median **83.82 ms** (Min: 77.87 ms, Mean: 83.66 ms)
+### 3. Reproducible Performance Benchmarks (Two Categories)
+* **Auditor Finding:** Benchmark scripts that launch a new process measure process initialization overhead rather than pure VM dispatch. Both should be clearly separated and published.
+* **Resolution Implemented:** Enhanced [`benchmarks/run_benchmarks.ps1`](benchmarks/run_benchmarks.ps1) and [`benchmarks/BENCHMARK_RESULTS.md`](benchmarks/BENCHMARK_RESULTS.md):
+  * **Category A: End-to-End Cold Execution (Wall-Clock):** Measures OS process boot, binary initialization, bytecode verifier pass, and execution:
+    * **100k Data Crunching Loop:** Median **169.73 ms** (Min: 145.24 ms)
+    * **15-level Recursive Fibonacci:** Median **82.94 ms** (Min: 82.11 ms)
+  * **Category B: In-Process Micro-Execution (Pure Dispatch):** Measures pure opcode loop using high-precision performance counters (zero process boot overhead):
+    * **Silicon VM (Interpreter, 1,000,000 iterations):** **713.71 ms** (~713 ns/op)
+    * **Silicon VM (Native JIT, 1,000,000 iterations):** **47.98 ms** (~48 ns/op)
+    * **Pure C Baseline (-O2, 10,000,000 loop):** **220.83 ms** (~22 ns/op)
 
 ### 4. True Self-Hosting Bootstrap Verification Protocol
 * **Auditor Finding:** Compiling in AAYU is not enough; reproducible bootstrap requires comparing compiler outputs across stages.

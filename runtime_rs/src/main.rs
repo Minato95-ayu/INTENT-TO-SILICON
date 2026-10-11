@@ -210,16 +210,36 @@ fn execute_bytecode(filename: &str, use_jit: bool) {
         Ok(parsed) => parsed,
         Err(e) => {
             eprintln!("[AAYU Security Error] Malformed Bytecode Rejected: {}", e);
-            return;
+            std::process::exit(1);
         }
     };
 
+    let mut vm = AayuVM::new(bytecode.clone(), constants.clone(), strings.clone());
+    if let Err(e) = vm.validate() {
+        eprintln!("[AAYU Security Error] Bytecode Verification Failed: {}", e);
+        std::process::exit(1);
+    }
+
     if use_jit {
-        jit::compile_and_run(&bytecode, &constants);
+        if jit::can_compile(&bytecode) {
+            if !jit::compile_and_run(&bytecode, &constants) {
+                eprintln!("[AAYU JIT] Native C compiler unavailable or build failed. Safely executing via Silicon VM...");
+                if let Err(e) = vm.run() {
+                    eprintln!("[AAYU Runtime Error] Execution halted: {}", e);
+                    std::process::exit(1);
+                }
+            }
+        } else {
+            eprintln!("[AAYU JIT] Bytecode contains full-stack opcodes. Executing via Silicon VM...");
+            if let Err(e) = vm.run() {
+                eprintln!("[AAYU Runtime Error] Execution halted: {}", e);
+                std::process::exit(1);
+            }
+        }
     } else {
-        let mut vm = AayuVM::new(bytecode, constants, strings);
         if let Err(e) = vm.run() {
             eprintln!("[AAYU Runtime Error] Execution halted: {}", e);
+            std::process::exit(1);
         }
     }
 }

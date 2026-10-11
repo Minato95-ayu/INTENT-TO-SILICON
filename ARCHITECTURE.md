@@ -108,7 +108,7 @@ INTENT-TO-SILICON/
                                     ▼
 ┌────────────────────────────────────────────────────────────────────────┐
 │                   3. BOOTSTRAP LAYER (compiler_bootstrap)              │
-│  Zero-dependency Rust seed compiler for cold reproducible builds       │
+│  Minimal Rust seed compiler (serde AST dump) for reproducible builds   │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 

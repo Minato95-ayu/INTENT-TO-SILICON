@@ -107,7 +107,7 @@ run Home
 | **[`bin/`](bin/)** | Official binaries (`aayu`, `aayu-vm`, `aayuc`) & compiled seed (`aayuc.ayc`) | Precompiled Native Executables |
 | **[`compiler/`](compiler/)** | Pure Self-Hosted AAYU Compiler Pipeline | Pure `.aayu` (5,661 lines) |
 | **[`runtime_rs/`](runtime_rs/)** | Silicon VM, JIT Engine, Memory Manager, Multi-threaded TCP Sockets, SQLite | Rust (C-level bare-metal speed) |
-| **[`compiler_bootstrap/`](compiler_bootstrap/)** | Minimal seed compiler for 100% cold reproducible builds | Rust (Zero external dependencies) |
+| **[`compiler_bootstrap/`](compiler_bootstrap/)** | Minimal seed compiler for reproducible cold bootstrap builds | Rust (serde AST serializer) |
 | **[`tests/`](tests/)** | Automated test suite & test harness (`run_tests.ps1`) | Native `.aayu` verification tests |
 | **[`examples/`](examples/)** | Full-Stack Production Showcases (Todo, Chat, NeuroLedger, Auth, etc.) | Pure `.aayu` |
 | **[`std/`](std/)** | Official AAYU Standard Libraries & Packages | Native Modules |

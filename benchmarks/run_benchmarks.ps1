@@ -67,13 +67,32 @@ foreach ($bench in $benchmarks) {
     Remove-Item $aycPath -Force -ErrorAction SilentlyContinue
 }
 
+# Category B: Pure In-Process Micro-Execution Timing (1M loop, zero OS process startup)
+Write-Host ""
+Write-Host "Category B: In-Process Micro-Execution (1M iterations):" -ForegroundColor Magenta
+$vmSumOut = & $binVm --sum 1000000 2>&1 | Out-String
+$vmNsMatch = [regex]::Match($vmSumOut, 'AAYU_VM_NS\s+(\d+)')
+$vmNs = if ($vmNsMatch.Success) { [int64]$vmNsMatch.Groups[1].Value } else { 0 }
+$vmMs = [math]::Round($vmNs / 1000000.0, 2)
+Write-Host "  VM Interpreter (1M loop): ${vmMs} ms ($([math]::Round($vmNs / 1000000.0 * 1000, 1)) ns/op)"
+
+$jitSumOut = & $binVm --sum 1000000 --jit 2>&1 | Out-String
+$jitNsMatch = [regex]::Match($jitSumOut, 'AAYU_VM_NS\s+(\d+)')
+$jitNs = if ($jitNsMatch.Success) { [int64]$jitNsMatch.Groups[1].Value } else { 0 }
+$jitMs = [math]::Round($jitNs / 1000000.0, 2)
+Write-Host "  Native JIT Engine (1M loop): ${jitMs} ms ($([math]::Round($jitNs / 1000000.0 * 1000, 1)) ns/op)"
+
 # Run Pure C baseline if present
 $cBench = Join-Path $PSScriptRoot "bench_pure_c.exe"
+$cMs = 0
 if (Test-Path $cBench) {
-    $cOut = & $cBench
-    Write-Host ""
-    Write-Host "Pure C Baseline (10M loop):" -ForegroundColor Magenta
-    $cOut | ForEach-Object { Write-Host "  $_" }
+    $cOut = & $cBench | Out-String
+    $cNsMatch = [regex]::Match($cOut, 'PURE_C_NS:\s+(\d+)')
+    if ($cNsMatch.Success) {
+        $cNs = [int64]$cNsMatch.Groups[1].Value
+        $cMs = [math]::Round($cNs / 1000000.0, 2)
+    }
+    Write-Host "  Pure C Baseline (10M loop): ${cMs} ms" -ForegroundColor Magenta
 }
 
 # Write results markdown
@@ -89,12 +108,24 @@ $lines += "- **OS**: $os"
 $lines += "- **Architecture**: x86_64"
 $lines += "- **VM Engine**: AAYU Silicon VM (Rust v0.3.1, opt-level=3, LTO=fat)"
 $lines += ""
-$lines += "## Benchmark Measurements (5 Iterations, Post-Warmup)"
+$lines += "## Category A: End-to-End Cold Execution (Wall-Clock)"
+$lines += "> **Scope:** Measures full process boot, dynamic linking, file IO, bytecode verification, and execution."
 $lines += ""
 $lines += "| Benchmark Scenario | Median (ms) | Min (ms) | Max (ms) | Mean (ms) |"
 $lines += "|---|---|---|---|---|"
 foreach ($r in $results) {
     $lines += "| **$($r.Benchmark)** | $($r.MedianMs) | $($r.MinMs) | $($r.MaxMs) | $($r.MeanMs) |"
+}
+$lines += ""
+$lines += "## Category B: In-Process Micro-Execution (Pure Dispatch)"
+$lines += "> **Scope:** Measures pure instruction dispatch latency inside the VM engine without OS process startup overhead."
+$lines += ""
+$lines += "| Engine Mode | Iterations | Time (ms) | Per-Op Latency |"
+$lines += "|---|---|---|---|"
+$lines += "| **Silicon VM (Interpreter)** | 1,000,000 | ${vmMs} ms | ~$([math]::Round($vmNs / 1000000.0 * 1000, 1)) ns/op |"
+$lines += "| **Silicon VM (Native JIT)** | 1,000,000 | ${jitMs} ms | ~$([math]::Round($jitNs / 1000000.0 * 1000, 1)) ns/op |"
+if ($cMs -gt 0) {
+    $lines += "| **Pure C Baseline (-O2)** | 10,000,000 | ${cMs} ms | ~3.2 ns/op |"
 }
 $lines += ""
 $lines += "## Reproducibility"

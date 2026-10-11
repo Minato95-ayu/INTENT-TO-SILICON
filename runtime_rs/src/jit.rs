@@ -3,8 +3,35 @@ use std::io::Write;
 use std::process::Command;
 use crate::vm::NanVal;
 
-pub fn compile_and_run(bytecode: &[u8], constants: &[NanVal]) {
-    // Generate C Code
+pub fn can_compile(bytecode: &[u8]) -> bool {
+    let mut ip = 0;
+    while ip < bytecode.len() {
+        let op = bytecode[ip];
+        ip += 1;
+        match op {
+            0x00 | 0xFF => {}
+            0x01 => {
+                if ip + 2 > bytecode.len() { return false; }
+                ip += 2;
+            }
+            0x05 | 0x06 => {
+                if ip + 1 > bytecode.len() { return false; }
+                ip += 1;
+            }
+            16 | 17 | 18 | 19 | 20 => {}
+            38 | 39 | 41 | 42 | 43 | 44 => {}
+            32 | 33 => {
+                if ip + 2 > bytecode.len() { return false; }
+                ip += 2;
+            }
+            81 => {}
+            _ => return false,
+        }
+    }
+    true
+}
+
+pub fn compile_and_run(bytecode: &[u8], constants: &[NanVal]) -> bool {
     let c_code = generate_c(bytecode, constants);
     
     let source_path = "aayu_jit_temp.c";
@@ -12,34 +39,50 @@ pub fn compile_and_run(bytecode: &[u8], constants: &[NanVal]) {
     let run_path = if cfg!(windows) { ".\\aayu_jit_temp.exe" } else { "./aayu_jit_temp" };
     
     {
-        let mut file = File::create(source_path).expect("Failed to create temporary JIT C file");
-        file.write_all(c_code.as_bytes()).expect("Failed to write JIT C code");
-        file.flush().expect("Failed to flush JIT C file");
+        let mut file = match File::create(source_path) {
+            Ok(f) => f,
+            Err(_) => return false,
+        };
+        if file.write_all(c_code.as_bytes()).is_err() || file.flush().is_err() {
+            let _ = std::fs::remove_file(source_path);
+            return false;
+        }
     }
     
     // Try gcc, then clang
     let mut compiler = Command::new("gcc");
     compiler.args(["-O2", "-march=native", source_path, "-o", exe_path]);
     
-    let status = compiler.status();
-    if status.is_err() || !status.unwrap().success() {
-        let mut clang = Command::new("clang");
-        clang.args(["-O2", "-march=native", source_path, "-o", exe_path]);
-        let clang_status = clang.status();
-        if clang_status.is_err() || !clang_status.unwrap().success() {
-            eprintln!("[AAYU JIT] C Compiler error! Falling back to Interpreter...");
-            return;
+    let mut compiled = false;
+    if let Ok(s) = compiler.status() {
+        if s.success() {
+            compiled = true;
         }
     }
-    
-    // Run Native Code
-    let run_res = Command::new(run_path).status();
-    if let Err(e) = run_res {
-        eprintln!("[AAYU JIT] Execution error: {}", e);
+
+    if !compiled {
+        let mut clang = Command::new("clang");
+        clang.args(["-O2", "-march=native", source_path, "-o", exe_path]);
+        if let Ok(s) = clang.status() {
+            if s.success() {
+                compiled = true;
+            }
+        }
+    }
+
+    if !compiled {
+        let _ = std::fs::remove_file(source_path);
+        return false;
     }
     
+    let run_res = Command::new(run_path).status();
     let _ = std::fs::remove_file(source_path);
     let _ = std::fs::remove_file(exe_path);
+
+    match run_res {
+        Ok(s) => s.success(),
+        Err(_) => false,
+    }
 }
 
 fn generate_c(bytecode: &[u8], constants: &[NanVal]) -> String {

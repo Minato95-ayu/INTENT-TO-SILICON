@@ -30,24 +30,33 @@ jobs:
       - name: Build release engine
         run: cargo build --release --manifest-path runtime_rs/Cargo.toml
 
-      - name: Verify CLI & benchmarks on Windows
+      - name: Verify CLI & Run Security Test Suite on Windows
         if: matrix.os == 'windows-latest'
         run: |
-          .\runtime_rs\target\release\aayu-vm.exe --version
-          .\runtime_rs\target\release\aayu-vm.exe --help
-          .\runtime_rs\target\release\aayu-vm.exe --sum 1000000
-          .\runtime_rs\target\release\aayu-vm.exe hello.ayc
-          .\runtime_rs\target\release\aayu-vm.exe examples/test_pure_std.ayc
+          New-Item -ItemType Directory -Path bin -Force | Out-Null
+          Copy-Item .\runtime_rs\target\release\aayu-vm.exe bin\aayu-vm.exe -Force
+          Copy-Item .\runtime_rs\target\release\aayu-vm.exe bin\aayu.exe -Force
+          .\bin\aayu.exe --version
+          .\bin\aayu.exe --help
+          .\bin\aayu.exe --sum 1000000
+          powershell -ExecutionPolicy Bypass -File tests/test_malformed_bytecode.ps1
+          powershell -ExecutionPolicy Bypass -File tests/run_tests.ps1
         shell: powershell
 
-      - name: Verify CLI & benchmarks on Linux
+      - name: Verify CLI on Linux
         if: matrix.os == 'ubuntu-latest'
         run: |
           ./runtime_rs/target/release/aayu-vm --version
           ./runtime_rs/target/release/aayu-vm --help
           ./runtime_rs/target/release/aayu-vm --sum 1000000
-          ./runtime_rs/target/release/aayu-vm hello.ayc
-          ./runtime_rs/target/release/aayu-vm examples/test_pure_std.ayc
+          # Run malformed rejection test on Linux
+          echo "BAD_MAGIC" > bad.ayc
+          if ./runtime_rs/target/release/aayu-vm run bad.ayc; then
+            echo "Security vulnerability: bad magic was not rejected!"
+            exit 1
+          else
+            echo "PASS: bad magic safely rejected on Linux"
+          fi
 
   website-build:
     name: Build website

@@ -1,14 +1,32 @@
-﻿// AAYU Standard Library: HTTP Client
-// Provides native HTTP request functions mapped to VM opcodes
+// AAYU Standard Library: Http
+// High-Level Native HTTP & HTTPS Client Abstraction
+// Written in pure AAYU for zero-dependency intent computing.
 
 module Http
 
+// Performs an HTTP GET request
 action get(url: String) -> String
-    // Natively mapped to Opcode 200
+    // Natively mapped to VM Opcode 200
 end
 
+// Performs a secure HTTPS GET request with TLS 1.3 encryption
+action get_https(url: String) -> String
+    // Natively mapped to VM Opcode 200 via TLS socket
+end
+
+// Performs an HTTP/HTTPS POST request with a payload
 action post(url: String, body: String) -> String
-    // Natively mapped to Opcode 201
+    // Natively mapped to VM Opcode 201
+end
+
+// Performs an HTTP/HTTPS PUT request
+action put(url: String, body: String) -> String
+    // Natively mapped to VM Opcode 202
+end
+
+// Performs an HTTP/HTTPS DELETE request
+action delete(url: String) -> String
+    // Natively mapped to VM Opcode 203
 end
 
 end

@@ -44,6 +44,7 @@ impl HttpServer {
         for stream in listener.incoming() {
             match stream {
                 Ok(mut stream) => {
+                    let _ = stream.set_nodelay(true);
                     let handler_clone = Arc::clone(&handler);
                     thread::spawn(move || {
                         let _ = catch_unwind(AssertUnwindSafe(|| {

@@ -1,4 +1,4 @@
-﻿#[repr(u8)]
+#[repr(u8)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum OpCode {
     Halt = 0x00,
@@ -32,6 +32,11 @@ pub enum OpCode {
     StoreState = 48, 
     LoadState = 49,  
     InitState = 50,  
+    EnterScope = 51,
+    ExitScope = 52,
+    InitVar = 53,
+    PrepareCall = 54,
+    AsyncCall = 55,
     
     Print = 81,      
     ReturnValue = 98, 
@@ -69,7 +74,61 @@ pub enum OpCode {
 impl From<u8> for OpCode {
     #[inline(always)]
     fn from(byte: u8) -> Self {
-        unsafe { std::mem::transmute(byte) }
+        match byte {
+            0x00 => OpCode::Halt,
+            0x01 => OpCode::PushConst,
+            0x02 => OpCode::Pop,
+            0x03 => OpCode::Dup,
+            0x05 => OpCode::LoadVar,
+            0x06 => OpCode::StoreVar,
+            16 => OpCode::Add,
+            17 => OpCode::Sub,
+            18 => OpCode::Mul,
+            19 => OpCode::Div,
+            20 => OpCode::Mod,
+            21 => OpCode::CastInt,
+            22 => OpCode::CastStr,
+            32 => OpCode::Jmp,
+            33 => OpCode::JmpIfFalse,
+            34 => OpCode::Call,
+            35 => OpCode::Ret,
+            38 => OpCode::CmpEq,
+            39 => OpCode::CmpNeq,
+            41 => OpCode::CmpLt,
+            42 => OpCode::CmpGt,
+            43 => OpCode::CmpLte,
+            44 => OpCode::CmpGte,
+            48 => OpCode::StoreState,
+            49 => OpCode::LoadState,
+            50 => OpCode::InitState,
+            51 => OpCode::EnterScope,
+            52 => OpCode::ExitScope,
+            53 => OpCode::InitVar,
+            54 => OpCode::PrepareCall,
+            55 => OpCode::AsyncCall,
+            81 => OpCode::Print,
+            98 => OpCode::ReturnValue,
+            128 => OpCode::BuildDict,
+            134 => OpCode::CreateArray,
+            136 => OpCode::LoadSubscr,
+            137 => OpCode::StoreSubscr,
+            140 => OpCode::StringConcat,
+            141 => OpCode::StringSlice,
+            142 => OpCode::StringLen,
+            150 => OpCode::ConsoleRead,
+            160 => OpCode::TensorCreate,
+            161 => OpCode::TensorAdd,
+            162 => OpCode::TensorMatMul,
+            170 => OpCode::DbSet,
+            171 => OpCode::DbGet,
+            172 => OpCode::DbFlush,
+            180 => OpCode::ServerStart,
+            181 => OpCode::ServerRoute,
+            190 => OpCode::UiCreateNode,
+            191 => OpCode::UiRender,
+            0xFF => OpCode::Halt,
+            _ => OpCode::Halt, // Safe fallback preventing memory corruption
+        }
     }
 }
 

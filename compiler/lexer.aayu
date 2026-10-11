@@ -1,4 +1,4 @@
-﻿# AAYU Self-Hosted Lexer (Draft 3)
+# AAYU Self-Hosted Lexer (Draft 3)
 # Implemented using a single tokenize function and local variables.
 
 
@@ -74,7 +74,24 @@ action tokenize(src)
                                 line = line + 1
                                 column = 1
                             else
-                                ws_loop = 1 == 0
+                                if c == "#"
+                                    let comment_loop = 1 == 1
+                                    while comment_loop
+                                        if pos >= length
+                                            comment_loop = 1 == 0
+                                        else
+                                            let cc = src[pos]
+                                            if cc == "\n"
+                                                comment_loop = 1 == 0
+                                            else
+                                                pos = pos + 1
+                                                column = column + 1
+                                            end
+                                        end
+                                    end
+                                else
+                                    ws_loop = 1 == 0
+                                end
                             end
                         end
                     end
@@ -158,7 +175,7 @@ tokens = tokens + [{ "type": "EOF", "value": "", "line": line, "column": column 
                 if value == "for"
                     tok_type = "KEYWORD"
                 end
-                if value == "task"
+                if value == "_task_reserved"
                     tok_type = "KEYWORD"
                 end
                 if value == "insert"
@@ -273,7 +290,45 @@ tokens = tokens + [{ "type": tok_type, "value": value, "line": start_line, "colu
                     end
 tokens = tokens + [{ "type": "NUMBER", "value": value, "line": start_line, "column": start_col }]
                 else
+                    let is_quote = 1 == 0
                     if c == "\""
+                        is_quote = 1 == 1
+                    end
+                    if c == "'"
+                        is_quote = 1 == 1
+                    end
+                    if is_quote
+                        let quote_c = c
+                        start_line = line
+                        start_col = column
+                        pos = pos + 1
+                        column = column + 1
+                        
+                        value = ""
+                        let str_loop = 1 == 1
+                        while str_loop
+                            if pos >= length
+                                str_loop = 1 == 0
+                            else
+                                let cur = src[pos]
+                                if cur == quote_c
+                                    str_loop = 1 == 0
+                                else
+                                    value = value + cur
+                                    pos = pos + 1
+                                    column = column + 1
+                                end
+                            end
+                        end
+                        
+                        if pos < length
+                            pos = pos + 1
+                            column = column + 1
+                        end
+                        
+                        tokens = tokens + [{ "type": "STRING", "value": value, "line": start_line, "column": start_col }]
+                    else
+                    if 1 == 0
                         start_line = line
                         start_col = column
                         pos = pos + 1 # consume "

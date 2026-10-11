@@ -357,6 +357,24 @@ action parse_primary(tokens, pos)
         
         prim_loop = 1 == 1
         while prim_loop
+            if match(tokens, pos, "PUNCTUATION", ".")
+                pos = pos + 1
+                prim_res = expect(tokens, pos, "IDENTIFIER", "Expect member after '.'")
+                pos = prim_res[0]
+                let dot_tok = prim_res[1]
+                let full_dot_name = prim_expr["name"] + "." + dot_tok["value"]
+                prim_expr = make_identifier(full_dot_name, prim_line, prim_col)
+                continue
+            end
+            if match(tokens, pos, "PUNCTUATION", "::")
+                pos = pos + 1
+                prim_res = expect(tokens, pos, "IDENTIFIER", "Expect member after '::'")
+                pos = prim_res[0]
+                let col_tok = prim_res[1]
+                let full_col_name = prim_expr["name"] + "::" + col_tok["value"]
+                prim_expr = make_identifier(full_col_name, prim_line, prim_col)
+                continue
+            end
             if match(tokens, pos, "PUNCTUATION", "[")
                 pos = pos + 1
                 prim_res = parse_expression(tokens, pos)

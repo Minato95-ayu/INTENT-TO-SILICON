@@ -158,7 +158,7 @@ tokens = tokens + [{ "type": "EOF", "value": "", "line": line, "column": column 
                 if value == "for"
                     tok_type = "KEYWORD"
                 end
-                if value == "task"
+                if value == "_task_reserved"
                     tok_type = "KEYWORD"
                 end
                 if value == "insert"

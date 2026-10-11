@@ -1,5 +1,8 @@
-use std::net::{TcpListener};
+use std::net::TcpListener;
 use std::io::{Read, Write};
+use std::sync::Arc;
+use std::thread;
+use std::panic::{catch_unwind, AssertUnwindSafe};
 
 pub struct HttpRequest {
     pub method: String,
@@ -32,39 +35,53 @@ impl HttpServer {
         Self { port }
     }
 
-    pub fn listen<F>(&self, mut handler: F) 
-    where F: FnMut(HttpRequest) -> HttpResponse {
-        let listener = TcpListener::bind(format!("127.0.0.1:{}", self.port)).unwrap();
+    pub fn listen<F>(&self, handler: F) 
+    where F: Fn(HttpRequest) -> HttpResponse + Send + Sync + 'static {
+        let listener = TcpListener::bind(format!("0.0.0.0:{}", self.port)).unwrap();
         println!("AAYU Native Server running on port {}", self.port);
+        let handler = Arc::new(handler);
         
-        for mut stream in listener.incoming().flatten() {
-            let mut buffer = [0; 4096];
-            if let Ok(bytes_read) = stream.read(&mut buffer) {
-                if bytes_read == 0 { continue; }
-                let raw_request = String::from_utf8_lossy(&buffer[..bytes_read]);
-                
-                let req = Self::parse_request(&raw_request);
-                let res = handler(req);
-                
-                let status_text = match res.status {
-                    200 => "OK",
-                    201 => "Created",
-                    400 => "Bad Request",
-                    404 => "Not Found",
-                    500 => "Internal Server Error",
-                    _ => "Unknown",
-                };
+        for stream in listener.incoming() {
+            match stream {
+                Ok(mut stream) => {
+                    let handler_clone = Arc::clone(&handler);
+                    thread::spawn(move || {
+                        let _ = catch_unwind(AssertUnwindSafe(|| {
+                            let mut buffer = [0; 4096];
+                            if let Ok(bytes_read) = stream.read(&mut buffer) {
+                                if bytes_read == 0 { return; }
+                                let raw_request = String::from_utf8_lossy(&buffer[..bytes_read]);
+                                
+                                let req = Self::parse_request(&raw_request);
+                                let res = handler_clone(req);
+                                
+                                let status_text = match res.status {
+                                    200 => "OK",
+                                    201 => "Created",
+                                    400 => "Bad Request",
+                                    404 => "Not Found",
+                                    500 => "Internal Server Error",
+                                    _ => "Unknown",
+                                };
 
-                let response = format!(
-                    "HTTP/1.1 {} {}\r\nContent-Type: {}\r\nContent-Length: {}\r\n\r\n{}",
-                    res.status,
-                    status_text,
-                    res.content_type,
-                    res.body.len(),
-                    res.body
-                );
-                
-                let _ = stream.write_all(response.as_bytes());
+                                let response = format!(
+                                    "HTTP/1.1 {} {}\r\nContent-Type: {}\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}",
+                                    res.status,
+                                    status_text,
+                                    res.content_type,
+                                    res.body.len(),
+                                    res.body
+                                );
+                                
+                                let _ = stream.write_all(response.as_bytes());
+                                let _ = stream.flush();
+                            }
+                        }));
+                    });
+                }
+                Err(e) => {
+                    eprintln!("[AAYU Server] TCP accept error: {}", e);
+                }
             }
         }
     }

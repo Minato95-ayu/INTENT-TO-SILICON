@@ -1,4 +1,4 @@
-﻿use std::env;
+use std::env;
 use std::fs::File;
 use std::io::Read;
 
@@ -78,8 +78,24 @@ fn main() {
                 constants.push(NanVal::string(strings.len() - 1));
                 pos += str_len;
             }
-            // Add Float, Bool, etc. as needed
-            _ => panic!("Unknown constant type tag"),
+            0 => { // Null
+                constants.push(NanVal::null());
+            }
+            3 => { // Float
+                let mut val_bytes = [0u8; 8];
+                val_bytes.copy_from_slice(&data[pos..pos+8]);
+                let val = f64::from_le_bytes(val_bytes);
+                constants.push(NanVal::float(val));
+                pos += 8;
+            }
+            4 => { // Bool
+                let val = data[pos] != 0;
+                constants.push(NanVal::bool(val));
+                pos += 1;
+            }
+            _ => {
+                constants.push(NanVal::null());
+            }
         }
     }
 

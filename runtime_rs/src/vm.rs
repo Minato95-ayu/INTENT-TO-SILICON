@@ -65,6 +65,7 @@ pub struct AayuVM {
     
     pub tensor_heap: Vec<Tensor>,
     pub db_engine: DbEngine,
+    pub state: std::collections::HashMap<String, NanVal>,
 }
 
 impl AayuVM {
@@ -80,6 +81,41 @@ impl AayuVM {
             memory: crate::memory::MemoryManager::new(),
             tensor_heap: Vec::new(),
             db_engine: DbEngine::new("aayu_db.rsdb"),
+            state: std::collections::HashMap::new(),
+        }
+    }
+
+    #[inline(always)]
+    fn vals_eq(&self, a: NanVal, b: NanVal) -> bool {
+        if a.is_int() && b.is_int() {
+            a.as_int() == b.as_int()
+        } else if a.is_float() && b.is_float() {
+            a.as_float() == b.as_float()
+        } else if a.is_string() && b.is_string() {
+            self.string_heap.get(a.as_string_idx()) == self.string_heap.get(b.as_string_idx())
+        } else if a.is_bool() && b.is_bool() {
+            a.as_bool() == b.as_bool()
+        } else {
+            a.0 == b.0
+        }
+    }
+
+    #[inline(always)]
+    fn cmp_vals(&self, a: NanVal, b: NanVal) -> Option<std::cmp::Ordering> {
+        if a.is_int() && b.is_int() {
+            Some(a.as_int().cmp(&b.as_int()))
+        } else if a.is_float() || b.is_float() {
+            let fa = if a.is_float() { a.as_float() } else { a.as_int() as f64 };
+            let fb = if b.is_float() { b.as_float() } else { b.as_int() as f64 };
+            fa.partial_cmp(&fb)
+        } else if a.is_string() && b.is_string() {
+            let sa = self.string_heap.get(a.as_string_idx())?;
+            let sb = self.string_heap.get(b.as_string_idx())?;
+            Some(sa.cmp(sb))
+        } else if a.is_bool() && b.is_bool() {
+            Some(a.as_bool().cmp(&b.as_bool()))
+        } else {
+            Some(a.0.cmp(&b.0))
         }
     }
 
@@ -92,7 +128,7 @@ impl AayuVM {
             self.ip += 1;
 
             match op {
-                0x00 => break, // HALT
+                0x00 | 0xFF => break, // HALT
                 0x01 => { // PUSH_CONST
                     let idx = ((self.bytecode[self.ip] as usize) << 8) | self.bytecode[self.ip + 1] as usize;
                     self.ip += 2;
@@ -111,13 +147,201 @@ impl AayuVM {
                     self.locals[idx] = self.stack[self.sp - 1];
                     self.sp -= 1;
                 }
-                0x10 => { // ADD
+                0x10 => { // ADD (Polymorphic: Int, Float, String, Array)
+                    let b = self.stack[self.sp - 1];
+                    let a = self.stack[self.sp - 2];
+                    self.sp -= 1;
+                    if a.is_int() && b.is_int() {
+                        self.stack[self.sp - 1] = NanVal::int(a.as_int() + b.as_int());
+                    } else if a.is_string() && b.is_string() {
+                        let sa = self.string_heap.get(a.as_string_idx()).cloned().unwrap_or_default();
+                        let sb = self.string_heap.get(b.as_string_idx()).cloned().unwrap_or_default();
+                        let mut res = sa;
+                        res.push_str(&sb);
+                        let idx = self.string_heap.len();
+                        self.string_heap.push(res);
+                        self.stack[self.sp - 1] = NanVal::string(idx);
+                    } else if a.is_array() && b.is_array() {
+                        let arr_a = match self.memory.get(a.as_array_idx()) {
+                            crate::memory::HeapObject::AArray(arr) => arr.clone(),
+                            _ => Vec::new(),
+                        };
+                        let arr_b = match self.memory.get(b.as_array_idx()) {
+                            crate::memory::HeapObject::AArray(arr) => arr.clone(),
+                            _ => Vec::new(),
+                        };
+                        let mut merged = arr_a;
+                        merged.extend(arr_b);
+                        let idx = self.memory.allocate(crate::memory::HeapObject::AArray(merged));
+                        self.stack[self.sp - 1] = NanVal::array(idx);
+                    } else if a.is_float() || b.is_float() {
+                        let fa = if a.is_float() { a.as_float() } else { a.as_int() as f64 };
+                        let fb = if b.is_float() { b.as_float() } else { b.as_int() as f64 };
+                        self.stack[self.sp - 1] = NanVal::float(fa + fb);
+                    } else {
+                        self.stack[self.sp - 1] = NanVal::int(a.as_int() + b.as_int());
+                    }
+                    continue;
+                }
+                41 => { // LT
+                    let b = self.stack[self.sp - 1];
+                    let a = self.stack[self.sp - 2];
+                    self.stack[self.sp - 2] = NanVal::bool(self.cmp_vals(a, b) == Some(std::cmp::Ordering::Less));
+                    self.sp -= 1;
+                }
+                48 => { // STORE_STATE
+                    let idx = ((self.bytecode[self.ip] as usize) << 8) | self.bytecode[self.ip + 1] as usize;
+                    self.ip += 2;
+                    if self.sp > 0 {
+                        let val = self.stack[self.sp - 1];
+                        self.sp -= 1;
+                        self.locals[idx % 256] = val;
+                        let var_name = if idx < self.constants.len() && self.constants[idx].is_string() {
+                            let s_idx = self.constants[idx].as_string_idx();
+                            if s_idx < self.string_heap.len() { self.string_heap[s_idx].clone() } else { format!("var_{}", idx) }
+                        } else if idx < self.string_heap.len() {
+                            self.string_heap[idx].clone()
+                        } else {
+                            format!("var_{}", idx)
+                        };
+                        self.state.insert(var_name, val);
+                    }
+                }
+                49 => { // LOAD_STATE
+                    let idx = ((self.bytecode[self.ip] as usize) << 8) | self.bytecode[self.ip + 1] as usize;
+                    self.ip += 2;
+                    let var_name = if idx < self.constants.len() && self.constants[idx].is_string() {
+                        let s_idx = self.constants[idx].as_string_idx();
+                        if s_idx < self.string_heap.len() { self.string_heap[s_idx].clone() } else { format!("var_{}", idx) }
+                    } else if idx < self.string_heap.len() {
+                        self.string_heap[idx].clone()
+                    } else {
+                        format!("var_{}", idx)
+                    };
+                    let val = if let Some(&v) = self.state.get(&var_name) {
+                        v
+                    } else {
+                        self.locals[idx % 256]
+                    };
+                    self.stack[self.sp] = val;
+                    self.sp += 1;
+                }
+                50 => { self.ip += 2; } // InitState
+                51 | 52 => {} // EnterScope / ExitScope
+                53 => { self.ip += 2; } // InitVar
+                54 => { self.ip += 2; } // PrepareCall
+                55 => { self.ip += 2; } // AsyncCall
+                34 => { // CALL
+                    let argc = ((self.bytecode[self.ip] as usize) << 8) | self.bytecode[self.ip + 1] as usize;
+                    self.ip += 2;
+                    if self.sp >= argc + 1 {
+                        let func_val = self.stack[self.sp - 1 - argc];
+                        let func_name = if func_val.is_string() && func_val.as_string_idx() < self.string_heap.len() {
+                            self.string_heap[func_val.as_string_idx()].clone()
+                        } else {
+                            String::new()
+                        };
+                        if func_name == "print" {
+                            for i in 0..argc {
+                                let a = self.stack[self.sp - argc + i];
+                                if a.is_string() && a.as_string_idx() < self.string_heap.len() {
+                                    print!("{}", self.string_heap[a.as_string_idx()]);
+                                } else {
+                                    print!("{}", a);
+                                }
+                                if i + 1 < argc { print!(" "); }
+                            }
+                            println!();
+                            self.sp -= argc + 1;
+                            self.stack[self.sp] = NanVal::null();
+                            self.sp += 1;
+                        } else if func_name == "len" {
+                            let a = if argc > 0 { self.stack[self.sp - 1] } else { NanVal::null() };
+                            let l = if a.is_string() && a.as_string_idx() < self.string_heap.len() {
+                                self.string_heap[a.as_string_idx()].len()
+                            } else if a.is_array() {
+                                if let crate::memory::HeapObject::AArray(arr) = self.memory.get(a.as_array_idx()) {
+                                    arr.len()
+                                } else { 0 }
+                            } else { 0 };
+                            self.sp -= argc + 1;
+                            self.stack[self.sp] = NanVal::int(l as i64);
+                            self.sp += 1;
+                        } else {
+                            let ret_val = if argc > 0 { self.stack[self.sp - 1] } else { NanVal::null() };
+                            self.sp -= argc + 1;
+                            self.stack[self.sp] = ret_val;
+                            self.sp += 1;
+                        }
+                    }
+                }
+                35 | 98 => { // Ret / ReturnValue
+                    // Value is at self.stack[self.sp - 1]
+                }
+                128 => { // BUILD_DICT
+                    let num_pairs = ((self.bytecode[self.ip] as usize) << 8) | self.bytecode[self.ip + 1] as usize;
+                    self.ip += 2;
+                    let mut dict = std::collections::HashMap::new();
+                    for _ in 0..num_pairs {
+                        if self.sp >= 2 {
+                            let key = self.stack[self.sp - 1];
+                            let val = self.stack[self.sp - 2];
+                            self.sp -= 2;
+                            let key_str = if key.is_string() && key.as_string_idx() < self.string_heap.len() {
+                                self.string_heap[key.as_string_idx()].clone()
+                            } else {
+                                key.to_string()
+                            };
+                            dict.insert(key_str, val);
+                        }
+                    }
+                    let idx = self.memory.allocate(crate::memory::HeapObject::ADict(dict));
+                    self.stack[self.sp] = NanVal::dict(idx);
+                    self.sp += 1;
+                }
+                140 => { // StringConcat
+                    let b = self.stack[self.sp - 1];
+                    let a = self.stack[self.sp - 2];
+                    self.sp -= 2;
+                    let sa = if a.is_string() && a.as_string_idx() < self.string_heap.len() { &self.string_heap[a.as_string_idx()] } else { "" };
+                    let sb = if b.is_string() && b.as_string_idx() < self.string_heap.len() { &self.string_heap[b.as_string_idx()] } else { "" };
+                    let mut res = sa.to_string();
+                    res.push_str(sb);
+                    let idx = self.string_heap.len();
+                    self.string_heap.push(res);
+                    self.stack[self.sp] = NanVal::string(idx);
+                    self.sp += 1;
+                }
+                141 => { // StringSlice
+                    let end = self.stack[self.sp - 1].as_int() as usize;
+                    let start = self.stack[self.sp - 2].as_int() as usize;
+                    let s_ref = self.stack[self.sp - 3];
+                    self.sp -= 3;
+                    let s = if s_ref.is_string() && s_ref.as_string_idx() < self.string_heap.len() { &self.string_heap[s_ref.as_string_idx()] } else { "" };
+                    let sliced: String = s.chars().skip(start).take(end.saturating_sub(start)).collect();
+                    let idx = self.string_heap.len();
+                    self.string_heap.push(sliced);
+                    self.stack[self.sp] = NanVal::string(idx);
+                    self.sp += 1;
+                }
+                142 => { // StringLen
+                    let s_ref = self.stack[self.sp - 1];
+                    let len = if s_ref.is_string() && s_ref.as_string_idx() < self.string_heap.len() {
+                        self.string_heap[s_ref.as_string_idx()].len()
+                    } else if s_ref.is_array() {
+                        if let crate::memory::HeapObject::AArray(arr) = self.memory.get(s_ref.as_array_idx()) {
+                            arr.len()
+                        } else { 0 }
+                    } else { 0 };
+                    self.stack[self.sp - 1] = NanVal::int(len as i64);
+                }
+                254 => {
                     let b = self.stack[self.sp - 1].as_int();
                     let a = self.stack[self.sp - 2].as_int();
                     self.stack[self.sp - 2] = NanVal::int(a + b);
                     self.sp -= 1;
                 }
-                41 => { // LT
+                253 => { // old LT
                     let b = self.stack[self.sp - 1].as_int();
                     let a = self.stack[self.sp - 2].as_int();
                     self.stack[self.sp - 2] = NanVal::bool(a < b);
@@ -145,6 +369,44 @@ impl AayuVM {
                 0x02 => { self.sp -= 1; } // POP
                 
                 81 => { // PRINT
+                    let val = self.stack[self.sp - 1];
+                    self.sp -= 1;
+                    if val.is_string() && val.as_string_idx() < self.string_heap.len() {
+                        let s = &self.string_heap[val.as_string_idx()];
+                        println!("{}", s);
+                    } else if val.is_array() {
+                        if let crate::memory::HeapObject::AArray(arr) = self.memory.get(val.as_array_idx()) {
+                            print!("[");
+                            for (i, elem) in arr.iter().enumerate() {
+                                if i > 0 { print!(", "); }
+                                if elem.is_string() && elem.as_string_idx() < self.string_heap.len() {
+                                    print!("\"{}\"", self.string_heap[elem.as_string_idx()]);
+                                } else {
+                                    print!("{}", elem);
+                                }
+                            }
+                            println!("]");
+                        }
+                    } else if val.is_dict() {
+                        if let crate::memory::HeapObject::ADict(dict) = self.memory.get(val.as_dict_idx()) {
+                            print!("{{");
+                            for (i, (k, v)) in dict.iter().enumerate() {
+                                if i > 0 { print!(", "); }
+                                print!("\"{}\": ", k);
+                                if v.is_string() && v.as_string_idx() < self.string_heap.len() {
+                                    print!("\"{}\"", self.string_heap[v.as_string_idx()]);
+                                } else {
+                                    print!("{}", v);
+                                }
+                            }
+                            println!("}}");
+                        }
+                    } else {
+                        println!("{}", val);
+                    }
+                    continue;
+                }
+                245 => {
                     let val = self.stack[self.sp - 1];
                     self.sp -= 1;
                     if val.is_string() {
@@ -249,30 +511,67 @@ impl AayuVM {
                     self.sp -= 1;
                 }
                 38 => { // CmpEq
+                    let b = self.stack[self.sp - 1];
+                    let a = self.stack[self.sp - 2];
+                    self.stack[self.sp - 2] = NanVal::bool(self.vals_eq(a, b));
+                    self.sp -= 1;
+                    continue;
+                }
+                252 => {
                     let b = self.stack[self.sp - 1].as_int();
                     let a = self.stack[self.sp - 2].as_int();
                     self.stack[self.sp - 2] = NanVal::bool(a == b);
                     self.sp -= 1;
                 }
                 39 => { // CmpNeq
+                    let b = self.stack[self.sp - 1];
+                    let a = self.stack[self.sp - 2];
+                    self.stack[self.sp - 2] = NanVal::bool(!self.vals_eq(a, b));
+                    self.sp -= 1;
+                    continue;
+                }
+                251 => {
                     let b = self.stack[self.sp - 1].as_int();
                     let a = self.stack[self.sp - 2].as_int();
                     self.stack[self.sp - 2] = NanVal::bool(a != b);
                     self.sp -= 1;
                 }
                 42 => { // CmpGt
+                    let b = self.stack[self.sp - 1];
+                    let a = self.stack[self.sp - 2];
+                    self.stack[self.sp - 2] = NanVal::bool(self.cmp_vals(a, b) == Some(std::cmp::Ordering::Greater));
+                    self.sp -= 1;
+                    continue;
+                }
+                250 => {
                     let b = self.stack[self.sp - 1].as_int();
                     let a = self.stack[self.sp - 2].as_int();
                     self.stack[self.sp - 2] = NanVal::bool(a > b);
                     self.sp -= 1;
                 }
                 43 => { // CmpLte
+                    let b = self.stack[self.sp - 1];
+                    let a = self.stack[self.sp - 2];
+                    let ord = self.cmp_vals(a, b);
+                    self.stack[self.sp - 2] = NanVal::bool(ord == Some(std::cmp::Ordering::Less) || ord == Some(std::cmp::Ordering::Equal));
+                    self.sp -= 1;
+                    continue;
+                }
+                249 => {
                     let b = self.stack[self.sp - 1].as_int();
                     let a = self.stack[self.sp - 2].as_int();
                     self.stack[self.sp - 2] = NanVal::bool(a <= b);
                     self.sp -= 1;
                 }
                 44 => { // CmpGte
+                    let b = self.stack[self.sp - 1];
+                    let a = self.stack[self.sp - 2];
+                    let ord = self.cmp_vals(a, b);
+                    self.stack[self.sp - 2] = NanVal::bool(ord == Some(std::cmp::Ordering::Greater) || ord == Some(std::cmp::Ordering::Equal));
+                    self.sp -= 1;
+                    continue;
+                }
+                248 => {
                     let b = self.stack[self.sp - 1].as_int();
                     let a = self.stack[self.sp - 2].as_int();
                     self.stack[self.sp - 2] = NanVal::bool(a >= b);
@@ -297,7 +596,48 @@ impl AayuVM {
                     self.sp += 1;
                 }
                 
-                136 => { // LoadSubscr
+                136 => { // LoadSubscr (Polymorphic: Array, Dict, String)
+                    let key_val = self.stack[self.sp - 1];
+                    let obj_ref = self.stack[self.sp - 2];
+                    self.sp -= 2;
+                    if obj_ref.is_array() {
+                        let index_val = key_val.as_int() as usize;
+                        let idx = obj_ref.as_array_idx();
+                        if let crate::memory::HeapObject::AArray(arr) = self.memory.get(idx) {
+                            if index_val < arr.len() {
+                                self.stack[self.sp] = arr[index_val];
+                            } else {
+                                self.stack[self.sp] = NanVal::null();
+                            }
+                        }
+                    } else if obj_ref.is_dict() {
+                        let idx = obj_ref.as_dict_idx();
+                        let key_str = if key_val.is_string() && key_val.as_string_idx() < self.string_heap.len() {
+                            self.string_heap[key_val.as_string_idx()].clone()
+                        } else {
+                            format!("{}", key_val)
+                        };
+                        if let crate::memory::HeapObject::ADict(dict) = self.memory.get(idx) {
+                            self.stack[self.sp] = dict.get(&key_str).copied().unwrap_or(NanVal::null());
+                        }
+                    } else if obj_ref.is_string() {
+                        let index_val = key_val.as_int() as usize;
+                        let s_idx = obj_ref.as_string_idx();
+                        let ch = if let Some(s) = self.string_heap.get(s_idx) {
+                            s.chars().nth(index_val).map(|c| c.to_string()).unwrap_or_default()
+                        } else {
+                            String::new()
+                        };
+                        let new_idx = self.string_heap.len();
+                        self.string_heap.push(ch);
+                        self.stack[self.sp] = NanVal::string(new_idx);
+                    } else {
+                        self.stack[self.sp] = NanVal::null();
+                    }
+                    self.sp += 1;
+                    continue;
+                }
+                247 => {
                     let index_val = self.stack[self.sp - 1].as_int() as usize;
                     let arr_ref = self.stack[self.sp - 2];
                     self.sp -= 2;
@@ -317,7 +657,33 @@ impl AayuVM {
                     self.sp += 1;
                 }
 
-                137 => { // StoreSubscr
+                137 => { // StoreSubscr (Polymorphic: Array, Dict)
+                    let val = self.stack[self.sp - 1];
+                    let key_val = self.stack[self.sp - 2];
+                    let obj_ref = self.stack[self.sp - 3];
+                    self.sp -= 3;
+                    if obj_ref.is_array() {
+                        let index_val = key_val.as_int() as usize;
+                        let idx = obj_ref.as_array_idx();
+                        if let crate::memory::HeapObject::AArray(arr) = self.memory.get_mut(idx) {
+                            if index_val < arr.len() {
+                                arr[index_val] = val;
+                            }
+                        }
+                    } else if obj_ref.is_dict() {
+                        let idx = obj_ref.as_dict_idx();
+                        let key_str = if key_val.is_string() && key_val.as_string_idx() < self.string_heap.len() {
+                            self.string_heap[key_val.as_string_idx()].clone()
+                        } else {
+                            format!("{}", key_val)
+                        };
+                        if let crate::memory::HeapObject::ADict(dict) = self.memory.get_mut(idx) {
+                            dict.insert(key_str, val);
+                        }
+                    }
+                    continue;
+                }
+                246 => {
                     let val = self.stack[self.sp - 1];
                     let index_val = self.stack[self.sp - 2].as_int() as usize;
                     let arr_ref = self.stack[self.sp - 3];

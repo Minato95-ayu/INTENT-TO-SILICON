@@ -1,0 +1,17 @@
+# Test 03: Control Flow, While Loops & Conditionals
+let count = 0
+let sum = 0
+
+while count < 10
+    sum = sum + count
+    count = count + 1
+end
+
+print("Sum of 0..9:")
+print(sum)
+
+if sum == 45
+    print("PASS: Sum is 45")
+else
+    print("FAIL: Sum is incorrect")
+end

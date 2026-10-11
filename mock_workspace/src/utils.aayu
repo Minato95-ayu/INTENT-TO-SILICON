@@ -1,5 +1,0 @@
-module utils.
-
-function print_util(x)
-    print(x).
-end.

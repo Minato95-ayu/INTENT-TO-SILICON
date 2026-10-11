@@ -1,0 +1,12 @@
+# Test 01: Variables, Strings, and Integers
+let name = "AAYU"
+let major = 1
+let minor = 2
+let patch = 0
+print(name)
+print(major)
+print(minor)
+print(patch)
+
+let greeting = "Hello from " + name
+print(greeting)

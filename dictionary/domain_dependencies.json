@@ -1,8 +1,0 @@
-{
-  "support": ["payment", "auth", "navigation", "performance", "trust_support"],
-  "trust_support": ["payment", "auth", "navigation", "performance"],
-  "payment": ["auth", "navigation", "performance"],
-  "auth": ["navigation", "performance"],
-  "navigation": ["performance"],
-  "performance": []
-}

@@ -1,0 +1,20 @@
+# Test 04: Fibonacci(20) Iterative Benchmark
+let a = 0
+let b = 1
+let i = 0
+
+while i < 20
+    let temp = a + b
+    a = b
+    b = temp
+    i = i + 1
+end
+
+print("fib(20):")
+print(a)
+
+if a == 6765
+    print("PASS: fib(20) matches 6765")
+else
+    print("FAIL: fib(20) failed")
+end

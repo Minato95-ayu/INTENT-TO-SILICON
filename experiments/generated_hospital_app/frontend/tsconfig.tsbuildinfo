@@ -1,1 +1,0 @@
-{"root":["./src/app.tsx","./src/main.tsx","./src/pages/appointmentform.tsx","./src/pages/appointmentlist.tsx","./src/pages/doctorform.tsx","./src/pages/doctorlist.tsx","./src/pages/patientform.tsx","./src/pages/patientlist.tsx","./src/services/api.ts"],"version":"5.9.3"}

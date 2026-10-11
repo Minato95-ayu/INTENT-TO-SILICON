@@ -1,0 +1,14 @@
+# Test 02: IEEE-754 Floats and Arithmetic Operations
+let pi = 3.14159
+let radius = 10.0
+let area = pi * radius * radius
+print("Area:")
+print(area)
+
+let total = 180.0
+let divided = total / 2.0
+let subtracted = total - 30.0
+print("Divided:")
+print(divided)
+print("Subtracted:")
+print(subtracted)

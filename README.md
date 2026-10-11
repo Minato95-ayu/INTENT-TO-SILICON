@@ -74,24 +74,45 @@ end
 run Home
 ```
 
-## 🏛️ Pure Self-Hosted Architecture (AAYU Protocol)
+## 🏛️ System Architecture & Repository Layout
 
-AAYU follows the industry standard for production programming languages:
+> Detailed technical specification available in **[ARCHITECTURE.md](ARCHITECTURE.md)**.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│             AAYU SELF-HOSTED COMPILER (compiler/*.aayu)      │
+│             1. AAYU COMPILER LAYER (compiler/*.aayu)        │
 │  5,661 Lines of Pure AAYU — Lexer, Parser, AST, Analyzer,   │
 │  Bytecode Emitter, and UI Transpiler                        │
 └──────────────────────────────┬──────────────────────────────┘
                                │ Compiles to .ayc Bytecode
                                ▼
 ┌─────────────────────────────────────────────────────────────┐
-│             AAYU SILICON VM & JIT (runtime_rs/)             │
-│  Written in Rust for C-level speed, NanBoxed value stack,   │
-│  zero-copy memory management, and Native TCP Sockets        │
+│             2. AAYU SILICON VM & JIT (runtime_rs/)          │
+│  Written in Rust for C-level speed, 64-bit NanBoxed stack,  │
+│  zero-copy memory management, and multi-threaded TCP Engine │
+└──────────────────────────────┬──────────────────────────────┘
+                               │ Bootstrapped cleanly by
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│             3. BOOTSTRAP LAYER (compiler_bootstrap/)        │
+│  Zero-dependency Rust seed compiler for reproducible builds │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+### 🗺️ Clear Repository Layout
+
+| Directory | Purpose | Core Technology |
+|---|---|---|
+| **[`bin/`](bin/)** | Official binaries (`aayu`, `aayu-vm`, `aayuc`) & compiled seed (`aayuc.ayc`) | Precompiled Native Executables |
+| **[`compiler/`](compiler/)** | Pure Self-Hosted AAYU Compiler Pipeline | Pure `.aayu` (5,661 lines) |
+| **[`runtime_rs/`](runtime_rs/)** | Silicon VM, JIT Engine, Memory Manager, Multi-threaded TCP Sockets, SQLite | Rust (C-level bare-metal speed) |
+| **[`compiler_bootstrap/`](compiler_bootstrap/)** | Minimal seed compiler for 100% cold reproducible builds | Rust (Zero external dependencies) |
+| **[`tests/`](tests/)** | Automated test suite & test harness (`run_tests.ps1`) | Native `.aayu` verification tests |
+| **[`examples/`](examples/)** | Full-Stack Production Showcases (Todo, Chat, NeuroLedger, Auth, etc.) | Pure `.aayu` |
+| **[`std/`](std/)** | Official AAYU Standard Libraries & Packages | Native Modules |
+| **[`docs/`](docs/)** | Architecture, Language Spec, and Developer Guides | Technical Markdown |
+| **[`website/`](website/)** | Official Documentation Portal, Interactive Playground & Tutorial | Next.js 15, React, Tailwind |
+| **[`vscode-aayu/`](vscode-aayu/)** | Official VS Code Extension (Syntax Highlighting, LSP) | TypeScript / VS Code Extension API |
 
 1. **Compiler (100% Pure AAYU):** All compiler stages (`lexer.aayu`, `parser.aayu`, `analyzer.aayu`, `compiler.aayu`, `aayuc.aayu`) are written in native AAYU code.
 2. **Virtual Machine (Rust Only):** The execution engine (`runtime_rs`) is written in Rust solely for bare-metal speed, JIT compilation, and hardware execution.

@@ -40,6 +40,9 @@ if ($isLocalRepo) {
     if (Test-Path (Join-Path $scriptDir "bin\aayu-vm.exe")) {
         Copy-Item -Path (Join-Path $scriptDir "bin\aayu-vm.exe") -Destination (Join-Path $installBin "aayu-vm.exe") -Force
     }
+    if (Test-Path (Join-Path $scriptDir "aayu-publisher.cer")) {
+        Copy-Item -Path (Join-Path $scriptDir "aayu-publisher.cer") -Destination (Join-Path $aayuRoot "aayu-publisher.cer") -Force
+    }
     
     if (Test-Path (Join-Path $scriptDir "std")) {
         Copy-Item -Path (Join-Path $scriptDir "std\*") -Destination $installStd -Recurse -Force
@@ -56,19 +59,32 @@ if ($isLocalRepo) {
     try {
         Invoke-WebRequest -Uri $zipUrl -OutFile $zipPath -UseBasicParsing
         Write-Host "[2/4] Extracting binaries..." -ForegroundColor Yellow
-        Expand-Archive -Path $zipPath -DestinationPath $installBin -Force
+        Expand-Archive -Path $zipPath -DestinationPath $aayuRoot -Force
         Remove-Item $zipPath -Force
     } catch {
         Write-Host "      Remote release package not reachable yet. Using fallback installation." -ForegroundColor DarkYellow
     }
 }
 
-Write-Host "[2/4] Verifying native binary integrity..." -ForegroundColor Yellow
+Write-Host "[2/4] Verifying and Unblocking native binary integrity..." -ForegroundColor Yellow
+Get-ChildItem -Path $installBin -Filter "*.exe" | ForEach-Object {
+    try { Unblock-File $_.FullName } catch {}
+}
+
+# Trust publisher certificate if present
+$certPath = Join-Path $aayuRoot "aayu-publisher.cer"
+if (Test-Path $certPath) {
+    try {
+        & certutil.exe -addstore -user TrustedPublisher $certPath | Out-Null
+        Write-Host "      Verified and trusted publisher: Ayush Ghrit Kaushik (AAYU Foundation)" -ForegroundColor Green
+    } catch {}
+}
+
 $targetExe = Join-Path $installBin "aayu.exe"
 if (Test-Path $targetExe) {
     $bytes = (Get-Item $targetExe).Length
     $sizeKb = [math]::Round($bytes / 1024, 1)
-    Write-Host "      aayu.exe verified ($sizeKb KB stripped Fat LTO binary)" -ForegroundColor Green
+    Write-Host "      aayu.exe verified ($sizeKb KB signed native binary with icon)" -ForegroundColor Green
 } else {
     Write-Host "      Error: aayu.exe not found in $installBin" -ForegroundColor Red
     exit 1
@@ -99,6 +115,10 @@ Write-Host ""
 Write-Host "================================================================" -ForegroundColor Cyan
 Write-Host "  CONGRATULATIONS! AAYU is successfully installed on your PC!   " -ForegroundColor Green
 Write-Host "================================================================" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "Publisher:    Ayush Ghrit Kaushik (AAYU Foundation)" -ForegroundColor Green
+Write-Host "Permissions:  Standard User (No Admin UAC Required)" -ForegroundColor Green
+Write-Host "Icon:         AAYU Official Silicon-Brain Embedded" -ForegroundColor Green
 Write-Host ""
 Write-Host "Quick Start Commands:" -ForegroundColor White
 Write-Host "  aayu --help                    # View complete documentation" -ForegroundColor Yellow

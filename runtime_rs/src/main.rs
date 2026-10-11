@@ -9,7 +9,7 @@ use aayu_vm::jit;
 
 fn print_banner() {
     println!("AAYU Intent-to-Silicon Engine v1.2.0");
-    println!("Architecture: x86_64-pc-windows-msvc (Stripped Fat LTO)");
+    println!("Architecture: {} ({})", env::consts::ARCH, env::consts::OS);
     println!("Memory Safety: 100% Guaranteed | Single-File Full-Stack");
     println!("Zero Dependencies | Sub-Millisecond Cold Start");
 }
@@ -30,20 +30,29 @@ fn print_help() {
 }
 
 fn find_compiler() -> Option<PathBuf> {
+    let names = if cfg!(windows) {
+        vec!["aayuc.exe", "aayuc"]
+    } else {
+        vec!["aayuc", "aayuc.exe"]
+    };
     if let Ok(current_exe) = env::current_exe() {
         if let Some(parent) = current_exe.parent() {
-            let direct = parent.join("aayuc.exe");
-            if direct.exists() { return Some(direct); }
-            let bin_dir = parent.join("bin").join("aayuc.exe");
-            if bin_dir.exists() { return Some(bin_dir); }
-            let parent_bin = parent.parent().unwrap_or(parent).join("bin").join("aayuc.exe");
-            if parent_bin.exists() { return Some(parent_bin); }
+            for name in &names {
+                let direct = parent.join(name);
+                if direct.exists() { return Some(direct); }
+                let bin_dir = parent.join("bin").join(name);
+                if bin_dir.exists() { return Some(bin_dir); }
+                let parent_bin = parent.parent().unwrap_or(parent).join("bin").join(name);
+                if parent_bin.exists() { return Some(parent_bin); }
+            }
         }
     }
-    let local = PathBuf::from("bin/aayuc.exe");
-    if local.exists() { return Some(local); }
-    let curr = PathBuf::from("aayuc.exe");
-    if curr.exists() { return Some(curr); }
+    for name in &names {
+        let local = PathBuf::from(format!("bin/{}", name));
+        if local.exists() { return Some(local); }
+        let curr = PathBuf::from(name);
+        if curr.exists() { return Some(curr); }
+    }
     None
 }
 

@@ -1,4 +1,4 @@
-﻿name: Cross-Platform Native Release
+name: Cross-Platform Native Release
 
 on:
   push:
@@ -27,15 +27,17 @@ jobs:
       - name: Build aayu-vm
         run: cargo build --release --manifest-path runtime_rs/Cargo.toml
 
-      - name: Build aayu compiler
-        run: cargo build --release --manifest-path compiler/rust/Cargo.toml
-
       - name: Package Windows (zip)
         if: matrix.os == 'windows-latest'
         run: |
           mkdir dist
           copy runtime_rs\target\release\aayu-vm.exe dist\aayu-vm.exe
-          copy compiler\rust\target\release\aayuc.exe dist\aayuc.exe
+          copy runtime_rs\target\release\aayu-vm.exe dist\aayu.exe
+          if (Test-Path bin\aayuc.exe) { copy bin\aayuc.exe dist\aayuc.exe }
+          if (Test-Path bin\aayuc.ayc) { copy bin\aayuc.ayc dist\aayuc.ayc }
+          if (Test-Path aayu-publisher.cer) { copy aayu-publisher.cer dist\aayu-publisher.cer }
+          Copy-Item std dist\std -Recurse
+          Copy-Item examples dist\examples -Recurse
           Compress-Archive -Path dist\* -DestinationPath aayu-windows.zip
         shell: powershell
 
@@ -43,16 +45,22 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           mkdir dist
-          cp runtime_rs/target/release/aayu-vm dist/
-          cp compiler/rust/target/release/aayuc dist/
+          cp runtime_rs/target/release/aayu-vm dist/aayu-vm
+          cp runtime_rs/target/release/aayu-vm dist/aayu
+          if [ -f bin/aayuc.ayc ]; then cp bin/aayuc.ayc dist/aayuc.ayc; fi
+          cp -r std dist/std
+          cp -r examples dist/examples
           cd dist && tar -czvf ../aayu-linux.tar.gz *
 
       - name: Package macOS (zip)
         if: matrix.os == 'macos-latest'
         run: |
           mkdir dist
-          cp runtime_rs/target/release/aayu-vm dist/
-          cp compiler/rust/target/release/aayuc dist/
+          cp runtime_rs/target/release/aayu-vm dist/aayu-vm
+          cp runtime_rs/target/release/aayu-vm dist/aayu
+          if [ -f bin/aayuc.ayc ]; then cp bin/aayuc.ayc dist/aayuc.ayc; fi
+          cp -r std dist/std
+          cp -r examples dist/examples
           cd dist && zip -r ../aayu-macos.zip *
 
       - name: Upload Release Assets

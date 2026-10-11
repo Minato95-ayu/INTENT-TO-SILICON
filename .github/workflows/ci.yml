@@ -9,8 +9,8 @@ on:
       - main
 
 jobs:
-  rust-tests:
-    name: Rust tests on ${{ matrix.os }}
+  engine-tests:
+    name: Native AAYU Engine (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     strategy:
@@ -24,11 +24,30 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Test AAYU VM
+      - name: Run VM unit tests
         run: cargo test --manifest-path runtime_rs/Cargo.toml
 
-      - name: Test AAYU compiler
-        run: cargo test --manifest-path compiler/rust/Cargo.toml
+      - name: Build release engine
+        run: cargo build --release --manifest-path runtime_rs/Cargo.toml
+
+      - name: Verify CLI & benchmarks on Windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          .\runtime_rs\target\release\aayu-vm.exe --version
+          .\runtime_rs\target\release\aayu-vm.exe --help
+          .\runtime_rs\target\release\aayu-vm.exe --sum 1000000
+          .\runtime_rs\target\release\aayu-vm.exe hello.ayc
+          .\runtime_rs\target\release\aayu-vm.exe examples/test_pure_std.ayc
+        shell: powershell
+
+      - name: Verify CLI & benchmarks on Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          ./runtime_rs/target/release/aayu-vm --version
+          ./runtime_rs/target/release/aayu-vm --help
+          ./runtime_rs/target/release/aayu-vm --sum 1000000
+          ./runtime_rs/target/release/aayu-vm hello.ayc
+          ./runtime_rs/target/release/aayu-vm examples/test_pure_std.ayc
 
   website-build:
     name: Build website

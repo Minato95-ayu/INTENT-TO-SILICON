@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <!-- Dark theme glow filters -->
+    <filter id="neon-glow-red" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="1.5" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="silver-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="1" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <!-- Gradients -->
+    <linearGradient id="frame-grad-dark" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#E2E8F0" />
+      <stop offset="48%" stop-color="#FFFFFF" />
+      <stop offset="52%" stop-color="#FF3366" />
+      <stop offset="100%" stop-color="#FF0033" />
+    </linearGradient>
+    <linearGradient id="brain-grad-main" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#CBD5E1" />
+      <stop offset="100%" stop-color="#94A3B8" />
+    </linearGradient>
+    <linearGradient id="brain-highlight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#E2E8F0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Outer Letter 'A' Frame -->
+  <!-- Left Side: Silver/White Outline -->
+  <path d="M 64 6 L 10 122 L 44 122 L 53 100 L 64 100 Z" fill="none" stroke="#E2E8F0" stroke-width="4.5" stroke-linejoin="round" />
+  <!-- Right Side: Electric Red Outline -->
+  <path d="M 64 6 L 118 122 L 84 122 L 75 100 L 64 100 Z" fill="none" stroke="#FF1E44" stroke-width="4.5" stroke-linejoin="round" filter="url(#neon-glow-red)" />
+  
+  <!-- Inner Triangular Cutout Frame -->
+  <polygon points="64,42 49,76 79,76" fill="#0B0F19" stroke="#94A3B8" stroke-width="3" stroke-linejoin="round" />
+
+  <!-- ============================================== -->
+  <!-- LEFT HALF: HUMAN BRAIN (INTENT)                -->
+  <!-- ============================================== -->
+  <g id="brain-hemisphere">
+    <!-- Brain Folds Background Mass -->
+    <path d="M 62 14 L 62 40 L 48 74 L 38 74 L 18 116 L 38 116 L 48 94 L 62 94 L 62 98 L 47 98 L 40 114 L 24 114 L 46 68 L 62 34 Z" fill="#475569" opacity="0.4" />
+    
+    <!-- Top Lobes -->
+    <path d="M 60 16 C 54 16, 50 20, 52 25 C 48 24, 44 28, 46 33 C 42 34, 40 39, 43 43" 
+          fill="none" stroke="url(#brain-grad-main)" stroke-width="5.5" stroke-linecap="round" />
+    <path d="M 59 16 C 53 17, 51 21, 53 25 C 49 25, 46 29, 48 33 C 44 35, 42 39, 45 43" 
+          fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" />
+
+    <!-- Upper-Mid Gyri -->
+    <path d="M 53 36 C 46 36, 42 42, 45 48 C 39 49, 36 55, 39 61" 
+          fill="none" stroke="url(#brain-grad-main)" stroke-width="5.5" stroke-linecap="round" />
+    <path d="M 52 37 C 46 38, 43 43, 46 48 C 40 50, 38 55, 40 60" 
+          fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" />
+
+    <!-- Lower-Mid Gyri -->
+    <path d="M 44 54 C 36 55, 33 62, 36 68 C 30 70, 27 77, 31 84" 
+          fill="none" stroke="url(#brain-grad-main)" stroke-width="5.5" stroke-linecap="round" />
+    <path d="M 43 55 C 37 56, 34 62, 37 68 C 31 71, 29 77, 32 83" 
+          fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" />
+
+    <!-- Bottom Lobes -->
+    <path d="M 36 76 C 29 78, 25 85, 29 92 C 22 95, 20 103, 24 110 C 27 114, 33 114, 37 110" 
+          fill="none" stroke="url(#brain-grad-main)" stroke-width="5.5" stroke-linecap="round" />
+    <path d="M 35 77 C 29 79, 26 86, 30 92 C 23 96, 22 103, 25 109 C 28 113, 33 113, 36 109" 
+          fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" />
+
+    <!-- Crossbar Brain Bridge (Left to Center) -->
+    <path d="M 46 84 C 52 82, 57 88, 62 85" 
+          fill="none" stroke="url(#brain-grad-main)" stroke-width="6" stroke-linecap="round" />
+    <path d="M 46 84 C 52 82, 57 88, 62 85" 
+          fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" />
+  </g>
+
+  <!-- ============================================== -->
+  <!-- RIGHT HALF: SILICON CIRCUITS (SILICON)         -->
+  <!-- ============================================== -->
+  <g id="silicon-hemisphere" filter="url(#neon-glow-red)">
+    <!-- Circuit Trace 1 (Inner Spine to Node) -->
+    <path d="M 66 16 L 70 24 L 70 42 L 80 54 L 80 68" 
+          fill="none" stroke="#FF003C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    
+    <!-- Circuit Trace 2 (Main Diagonal Highway) -->
+    <path d="M 75 16 L 82 28 L 82 46 L 94 62 L 94 88 L 104 104 L 104 114" 
+          fill="none" stroke="#FF1E44" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+    
+    <!-- Circuit Trace 3 (Outer Diagonal Branch) -->
+    <path d="M 86 36 L 96 50 L 96 66 L 108 82 L 108 112" 
+          fill="none" stroke="#FF2A4D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- Circuit Trace 4 (Bus into Crossbar) -->
+    <path d="M 64 82 L 78 82 L 86 92 L 96 92" 
+          fill="none" stroke="#FF0033" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 64 87 L 76 87 L 82 96 L 92 96" 
+          fill="none" stroke="#FF3366" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- IC Chip Package 1 (Upper Right) -->
+    <rect x="76" y="28" width="9" height="11" rx="1.5" fill="#1E050B" stroke="#FF1E44" stroke-width="1.8" />
+    <!-- Chip pins -->
+    <line x1="74" y1="31" x2="76" y2="31" stroke="#FFA6B6" stroke-width="1.2" />
+    <line x1="74" y1="35" x2="76" y2="35" stroke="#FFA6B6" stroke-width="1.2" />
+    <line x1="85" y1="31" x2="87" y2="31" stroke="#FFA6B6" stroke-width="1.2" />
+    <line x1="85" y1="35" x2="87" y2="35" stroke="#FFA6B6" stroke-width="1.2" />
+
+    <!-- IC Chip Package 2 (Lower Right) -->
+    <rect x="88" y="98" width="13" height="10" rx="1.5" fill="#1E050B" stroke="#FF1E44" stroke-width="1.8" />
+    <!-- Chip pins -->
+    <line x1="86" y1="101" x2="88" y2="101" stroke="#FFA6B6" stroke-width="1.2" />
+    <line x1="86" y1="105" x2="88" y2="105" stroke="#FFA6B6" stroke-width="1.2" />
+    <line x1="101" y1="101" x2="103" y2="101" stroke="#FFA6B6" stroke-width="1.2" />
+    <line x1="101" y1="105" x2="103" y2="105" stroke="#FFA6B6" stroke-width="1.2" />
+
+    <!-- Glowing Solder Nodes / Vias -->
+    <!-- Node Top -->
+    <circle cx="66" cy="16" r="3.2" fill="#FF003C" stroke="#FFFFFF" stroke-width="1.4" />
+    <!-- Node Mid-Upper -->
+    <circle cx="80" cy="68" r="3.2" fill="#FF003C" stroke="#FFFFFF" stroke-width="1.4" />
+    <!-- Node Branch -->
+    <circle cx="86" cy="36" r="2.8" fill="#FF1E44" stroke="#FFA6B6" stroke-width="1.2" />
+    <!-- Node Mid-Outer -->
+    <circle cx="96" cy="66" r="3.2" fill="#FF003C" stroke="#FFFFFF" stroke-width="1.4" />
+    <!-- Node Crossbar Out -->
+    <circle cx="96" cy="92" r="3" fill="#FF1E44" stroke="#FFFFFF" stroke-width="1.3" />
+    <!-- Node Bottom Bus -->
+    <circle cx="104" cy="114" r="3.5" fill="#FF003C" stroke="#FFFFFF" stroke-width="1.5" />
+    <!-- Node Far Bottom -->
+    <circle cx="108" cy="112" r="3" fill="#FF1E44" stroke="#FFA6B6" stroke-width="1.2" />
+  </g>
+
+  <!-- Center Divide Line (Brain meets Silicon) -->
+  <line x1="64" y1="8" x2="64" y2="42" stroke="#FFFFFF" stroke-width="1.5" opacity="0.6" stroke-dasharray="2,2" />
+</svg>

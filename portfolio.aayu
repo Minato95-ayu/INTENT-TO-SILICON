@@ -8,7 +8,7 @@ Page Home
             Row alignItems="center" gap="10px"
                 Button "About" onClick=scroll_about backgroundColor="transparent" color="#9ca3af" fontSize="15px" padding="8px 14px"
                 Button "Skills" onClick=scroll_skills backgroundColor="transparent" color="#9ca3af" fontSize="15px" padding="8px 14px"
-                Button "Projects (22)" onClick=scroll_work backgroundColor="transparent" color="#9ca3af" fontSize="15px" padding="8px 14px"
+                Button "Projects (23)" onClick=scroll_work backgroundColor="transparent" color="#9ca3af" fontSize="15px" padding="8px 14px"
                 Button "Contact" onClick=scroll_contact backgroundColor="#6366f1" color="#ffffff" fontSize="15px" padding="9px 20px" borderRadius="8px"
             end
         end
@@ -21,9 +21,9 @@ Page Home
                     Text "SYSTEMS BUILDER & COMPILER ARCHITECT" fontSize="13px" fontWeight="bold" color="#818cf8" letterSpacing="4px"
                     Heading "Hi, I am Ayush." fontSize="64px" fontWeight="900" color="#ffffff" textAlign="center"
                     Text "I build the infrastructure first, then the products on top of it." fontSize="22px" color="#d1d5db" textAlign="center"
-                    Text "Self-taught systems and full-stack engineer from Delhi. Creator of the AAYU programming language, Intent-to-Silicon research, and 20+ production systems." fontSize="16px" color="#9ca3af" textAlign="center" maxWidth="660px"
+                    Text "Self-taught systems and full-stack engineer from Delhi. Creator of the AAYU programming language, Intent-to-Silicon research, and 23+ production systems." fontSize="16px" color="#9ca3af" textAlign="center" maxWidth="660px"
                     Row gap="14px" marginTop="14px"
-                        Button "Explore 22+ Projects" onClick=scroll_work backgroundColor="#6366f1" color="#ffffff" fontSize="15px" padding="14px 28px" borderRadius="10px" fontWeight="bold"
+                    Button "Explore 23+ Projects" onClick=scroll_work backgroundColor="#6366f1" color="#ffffff" fontSize="15px" padding="14px 28px" borderRadius="10px" fontWeight="bold"
                         Button "GitHub Repo" href="https://github.com/Minato95-ayu/INTENT-TO-SILICON" backgroundColor="#1f2937" color="#ffffff" fontSize="15px" padding="14px 28px" borderRadius="10px"
                         Button "Get in touch" onClick=scroll_contact backgroundColor="#111827" color="#e5e7eb" fontSize="15px" padding="14px 28px" borderRadius="10px" border="1px solid #374151"
                     end
@@ -333,6 +333,17 @@ Page Home
                             Text "Mini-Database-Engine, Authentication-System, and Mini-API-Server: low-level scratch implementations serving as the foundation of AAYU." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                             Text "Status: Verified & Deployed" fontSize="12px" color="#818cf8"
                             Button "View Architecture & Code →" onClick=open_proj_22 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
+                        end
+
+                        # Project 23 (Flagship AI & Blockchain)
+                        Card onClick=open_proj_23 backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                            Row justifyContent="space-between" alignItems="center"
+                                Text "AAYU NeuroLedger (NexusChain)" fontSize="20px" fontWeight="bold" color="#ffffff"
+                                Text "AI & BLOCKCHAIN" fontSize="11px" fontWeight="bold" color="#10b981" backgroundColor="#064e3b" padding="3px 8px" borderRadius="6px"
+                            end
+                            Text "Autonomous neural blockchain where block mining is verified via Neural Network Proof-of-Useful-Work (PoUW) and declarative Intent smart contracts." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Status: 100% Pure AAYU | Zero Python" fontSize="12px" color="#38bdf8"
+                            Button "View Architecture & Details →" onClick=open_proj_23 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
                         end
 
                     end

@@ -1,4 +1,4 @@
-﻿
+
 use crate::math::Tensor;
 use crate::db::DbEngine;
 use crate::net::HttpServer;
@@ -340,10 +340,26 @@ impl AayuVM {
                     let str_idx = ((self.bytecode[self.ip] as usize) << 8) | self.bytecode[self.ip + 1] as usize;
                     self.ip += 2;
                     let html = self.string_heap[str_idx].clone();
-                    println!("AAYU Native Web Renderer started.");
-                    println!("Available at: http://localhost:3000");
+                    let default_port = std::env::var("PORT")
+                        .or_else(|_| std::env::var("AAYU_PORT"))
+                        .ok()
+                        .and_then(|p| p.parse::<u16>().ok())
+                        .unwrap_or(3000);
                     
-                    let listener = std::net::TcpListener::bind("0.0.0.0:3000").expect("Failed to bind to port 3000");
+                    let mut chosen_port = default_port;
+                    let listener = loop {
+                        match std::net::TcpListener::bind(format!("0.0.0.0:{}", chosen_port)) {
+                            Ok(l) => break l,
+                            Err(_) => {
+                                chosen_port += 1;
+                                if chosen_port > default_port + 50 {
+                                    panic!("Failed to find an available port starting from {}", default_port);
+                                }
+                            }
+                        }
+                    };
+                    println!("AAYU Native Web Renderer started.");
+                    println!("Available at: http://localhost:{}", chosen_port);
                     for stream in listener.incoming() {
                         match stream {
                             Ok(mut stream) => {

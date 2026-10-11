@@ -5,130 +5,354 @@ Page Home
 
         Row width="100%" padding="14px 48px" justifyContent="space-between" alignItems="center" borderBottom="1px solid #1f2937" backgroundColor="#0b0f19"
             Text "AYUSH" fontSize="20px" fontWeight="800" color="#ffffff" letterSpacing="3px"
-            Row alignItems="center" gap="8px"
+            Row alignItems="center" gap="10px"
                 Button "About" onClick=scroll_about backgroundColor="transparent" color="#9ca3af" fontSize="15px" padding="8px 14px"
                 Button "Skills" onClick=scroll_skills backgroundColor="transparent" color="#9ca3af" fontSize="15px" padding="8px 14px"
-                Button "Work" onClick=scroll_work backgroundColor="transparent" color="#9ca3af" fontSize="15px" padding="8px 14px"
+                Button "Projects (22)" onClick=scroll_work backgroundColor="transparent" color="#9ca3af" fontSize="15px" padding="8px 14px"
                 Button "Contact" onClick=scroll_contact backgroundColor="#6366f1" color="#ffffff" fontSize="15px" padding="9px 20px" borderRadius="8px"
             end
         end
 
         Column flex="1" minHeight="0" overflowY="auto"
 
-            Container flexShrink="0" width="100%" height="500px" padding="0 48px" alignItems="center" justifyContent="center" backgroundColor="#0b0f19"
-                Column alignItems="center" gap="20px"
-                    Text "SYSTEMS BUILDER" fontSize="14px" fontWeight="bold" color="#818cf8" letterSpacing="4px"
+            # ---------------- HERO SECTION ----------------
+            Container flexShrink="0" width="100%" minHeight="520px" padding="60px 48px" alignItems="center" justifyContent="center" backgroundColor="#0b0f19"
+                Column alignItems="center" gap="20px" maxWidth="900px"
+                    Text "SYSTEMS BUILDER & COMPILER ARCHITECT" fontSize="13px" fontWeight="bold" color="#818cf8" letterSpacing="4px"
                     Heading "Hi, I am Ayush." fontSize="64px" fontWeight="900" color="#ffffff" textAlign="center"
                     Text "I build the infrastructure first, then the products on top of it." fontSize="22px" color="#d1d5db" textAlign="center"
-                    Text "Self-taught full-stack and AI/ML developer from Delhi. Creator of the AAYU programming language and the Intent-to-Silicon research project." fontSize="16px" color="#9ca3af" textAlign="center" maxWidth="620px"
-                    Row gap="14px" marginTop="10px"
-                        Button "See my work" onClick=scroll_work backgroundColor="#6366f1" color="#ffffff" fontSize="16px" padding="14px 30px" borderRadius="10px" fontWeight="bold"
-                        Button "Get in touch" onClick=scroll_contact backgroundColor="#111827" color="#e5e7eb" fontSize="16px" padding="14px 30px" borderRadius="10px"
+                    Text "Self-taught systems and full-stack engineer from Delhi. Creator of the AAYU programming language, Intent-to-Silicon research, and 20+ production systems." fontSize="16px" color="#9ca3af" textAlign="center" maxWidth="660px"
+                    Row gap="14px" marginTop="14px"
+                        Button "Explore 22+ Projects" onClick=scroll_work backgroundColor="#6366f1" color="#ffffff" fontSize="15px" padding="14px 28px" borderRadius="10px" fontWeight="bold"
+                        Button "GitHub Repo" href="https://github.com/Minato95-ayu/INTENT-TO-SILICON" backgroundColor="#1f2937" color="#ffffff" fontSize="15px" padding="14px 28px" borderRadius="10px"
+                        Button "Get in touch" onClick=scroll_contact backgroundColor="#111827" color="#e5e7eb" fontSize="15px" padding="14px 28px" borderRadius="10px" border="1px solid #374151"
                     end
                 end
             end
 
-            Container flexShrink="0" width="100%" height="600px" padding="0 48px" alignItems="center" justifyContent="center" backgroundColor="#0d1220"
-                Column gap="22px" maxWidth="820px"
-                    Text "About" fontSize="34px" fontWeight="800" color="#ffffff"
-                    Text "I am a B.Sc. Mathematics (Hons) student at BRABU, expected 2027, and a self-taught developer. I like building the foundations myself: a database engine, an authentication system, an API server. Then I build products on top of them." fontSize="17px" color="#d1d5db" lineHeight="1.7"
-                    Text "I write research papers where every claim is tagged IMPLEMENTED, PROTOTYPE or FUTURE WORK, so nothing is oversold. I also teach students part-time and make short videos about how computers think." fontSize="17px" color="#d1d5db" lineHeight="1.7"
-                    Row gap="16px" marginTop="8px"
-                        Card backgroundColor="#111827" borderRadius="12px" padding="18px 22px" border="1px solid #1f2937" flexDirection="column" gap="4px"
-                            Text "Based in" fontSize="12px" color="#9ca3af"
-                            Text "Delhi, India" fontSize="17px" fontWeight="bold" color="#ffffff"
+            # ---------------- ABOUT SECTION ----------------
+            Container id="about" flexShrink="0" width="100%" minHeight="580px" padding="60px 48px" alignItems="center" justifyContent="center" backgroundColor="#0d1220"
+                Column gap="22px" maxWidth="960px"
+                    Text "About Me" fontSize="36px" fontWeight="800" color="#ffffff"
+                    Text "I am a B.Sc. Mathematics (Hons) student at BRABU (expected 2027) and a self-taught systems developer based in Delhi. I believe in writing the low-level foundations myself: custom bytecode compilers, memory-efficient virtual machines, embedded storage engines, and authentication systems." fontSize="17px" color="#d1d5db" lineHeight="1.8"
+                    Text "I author rigorous IEEE-format research papers where every single claim is tagged IMPLEMENTED, PROTOTYPE, or FUTURE WORK for complete scientific honesty. I also run an educational channel breaking down how compilers and computers think for engineers." fontSize="17px" color="#d1d5db" lineHeight="1.8"
+                    Row gap="16px" marginTop="12px"
+                        Card backgroundColor="#111827" borderRadius="12px" padding="20px 24px" border="1px solid #1f2937" flexDirection="column" gap="6px" flex="1"
+                            Text "Location" fontSize="12px" color="#9ca3af"
+                            Text "Delhi, India" fontSize="18px" fontWeight="bold" color="#ffffff"
                         end
-                        Card backgroundColor="#111827" borderRadius="12px" padding="18px 22px" border="1px solid #1f2937" flexDirection="column" gap="4px"
-                            Text "Studying" fontSize="12px" color="#9ca3af"
-                            Text "B.Sc. Mathematics (Hons)" fontSize="17px" fontWeight="bold" color="#ffffff"
+                        Card backgroundColor="#111827" borderRadius="12px" padding="20px 24px" border="1px solid #1f2937" flexDirection="column" gap="6px" flex="1"
+                            Text "Academic Background" fontSize="12px" color="#9ca3af"
+                            Text "B.Sc. Mathematics (Hons)" fontSize="18px" fontWeight="bold" color="#ffffff"
                         end
-                        Card backgroundColor="#111827" borderRadius="12px" padding="18px 22px" border="1px solid #1f2937" flexDirection="column" gap="4px"
-                            Text "Building" fontSize="12px" color="#9ca3af"
-                            Text "AAYU, I2S, Adumate" fontSize="17px" fontWeight="bold" color="#ffffff"
-                        end
-                    end
-                end
-            end
-
-            Container flexShrink="0" width="100%" height="700px" padding="0 48px" alignItems="center" justifyContent="center" backgroundColor="#0b0f19"
-                Column gap="26px" width="100%" maxWidth="1000px"
-                    Text "Skills" fontSize="34px" fontWeight="800" color="#ffffff"
-                    Grid gridTemplateColumns="repeat(auto-fit, minmax(280px, 1fr))" gap="18px" width="100%"
-                        Card backgroundColor="#111827" borderRadius="14px" padding="22px" border="1px solid #1f2937" flexDirection="column" gap="8px"
-                            Text "Language and compiler design" fontSize="17px" fontWeight="bold" color="#22d3ee"
-                            Text "Lexer, parser, bytecode compiler and VM for AAYU. Self-hosting is in progress." fontSize="14px" color="#9ca3af" lineHeight="1.6"
-                        end
-                        Card backgroundColor="#111827" borderRadius="14px" padding="22px" border="1px solid #1f2937" flexDirection="column" gap="8px"
-                            Text "Full-stack development" fontSize="17px" fontWeight="bold" color="#22d3ee"
-                            Text "TypeScript web apps deployed on Vercel with a Firebase backend." fontSize="14px" color="#9ca3af" lineHeight="1.6"
-                        end
-                        Card backgroundColor="#111827" borderRadius="14px" padding="22px" border="1px solid #1f2937" flexDirection="column" gap="8px"
-                            Text "AI and ML" fontSize="17px" fontWeight="bold" color="#22d3ee"
-                            Text "Multi-agent systems and multi-provider AI API rotation." fontSize="14px" color="#9ca3af" lineHeight="1.6"
-                        end
-                        Card backgroundColor="#111827" borderRadius="14px" padding="22px" border="1px solid #1f2937" flexDirection="column" gap="8px"
-                            Text "Databases and backend" fontSize="17px" fontWeight="bold" color="#22d3ee"
-                            Text "Database engine, auth system and API server built from scratch. SQLite and Firebase." fontSize="14px" color="#9ca3af" lineHeight="1.6"
-                        end
-                        Card backgroundColor="#111827" borderRadius="14px" padding="22px" border="1px solid #1f2937" flexDirection="column" gap="8px"
-                            Text "Systems programming" fontSize="17px" fontWeight="bold" color="#22d3ee"
-                            Text "A native Rust VM and a C backend for AAYU." fontSize="14px" color="#9ca3af" lineHeight="1.6"
-                        end
-                        Card backgroundColor="#111827" borderRadius="14px" padding="22px" border="1px solid #1f2937" flexDirection="column" gap="8px"
-                            Text "Research and teaching" fontSize="17px" fontWeight="bold" color="#22d3ee"
-                            Text "IEEE-format papers, part-time teaching and educational videos." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                        Card backgroundColor="#111827" borderRadius="12px" padding="20px 24px" border="1px solid #1f2937" flexDirection="column" gap="6px" flex="1"
+                            Text "Core Projects" fontSize="12px" color="#9ca3af"
+                            Text "AAYU, I2S, Adumate" fontSize="18px" fontWeight="bold" color="#ffffff"
                         end
                     end
                 end
             end
 
-            Container flexShrink="0" width="100%" height="700px" padding="0 48px" alignItems="center" justifyContent="center" backgroundColor="#0d1220"
-                Column gap="26px" width="100%" maxWidth="1000px"
-                    Text "Work" fontSize="34px" fontWeight="800" color="#ffffff"
-                    Grid gridTemplateColumns="repeat(auto-fit, minmax(280px, 1fr))" gap="18px" width="100%"
-                        Card backgroundColor="#111827" borderRadius="14px" padding="22px" border="1px solid #1f2937" flexDirection="column" gap="8px"
-                            Text "AAYU" fontSize="20px" fontWeight="800" color="#ffffff"
-                            Text "A programming language for UI, routes, data and logic, with a compiler, runtime, CLI, package manager and VS Code support." fontSize="14px" color="#9ca3af" lineHeight="1.6"
-                            Text "Status: public repo, self-hosting in progress" fontSize="12px" color="#818cf8"
+            # ---------------- SKILLS SECTION ----------------
+            Container id="skills" flexShrink="0" width="100%" minHeight="660px" padding="60px 48px" alignItems="center" justifyContent="center" backgroundColor="#0b0f19"
+                Column gap="26px" width="100%" maxWidth="1040px"
+                    Text "Core Competencies" fontSize="36px" fontWeight="800" color="#ffffff"
+                    Grid gridTemplateColumns="repeat(auto-fit, minmax(300px, 1fr))" gap="18px" width="100%"
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="8px"
+                            Text "Language & Compiler Design" fontSize="18px" fontWeight="bold" color="#22d3ee"
+                            Text "5,661-line self-hosted compiler pipeline (Lexer, Parser, AST, Analyzer, Bytecode Emitter) in pure AAYU." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                         end
-                        Card backgroundColor="#111827" borderRadius="14px" padding="22px" border="1px solid #1f2937" flexDirection="column" gap="8px"
-                            Text "Intent-to-Silicon (I2S)" fontSize="20px" fontWeight="800" color="#ffffff"
-                            Text "A research project written up as IEEE-format papers, with every claim tagged by how far it is actually built." fontSize="14px" color="#9ca3af" lineHeight="1.6"
-                            Text "Status: ongoing research" fontSize="12px" color="#818cf8"
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="8px"
+                            Text "Systems Programming & VM" fontSize="18px" fontWeight="bold" color="#22d3ee"
+                            Text "Native Silicon VM and x86_64 JIT in Rust. NanBoxed stack architecture achieving 50ns per opcode." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                         end
-                        Card backgroundColor="#111827" borderRadius="14px" padding="22px" border="1px solid #1f2937" flexDirection="column" gap="8px"
-                            Text "Adumate" fontSize="20px" fontWeight="800" color="#ffffff"
-                            Text "Free AI API rotation across several providers, plus map-based service discovery. adumate.in" fontSize="14px" color="#9ca3af" lineHeight="1.6"
-                            Text "Status: live" fontSize="12px" color="#818cf8"
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="8px"
+                            Text "AI & Multi-Agent Architecture" fontSize="18px" fontWeight="bold" color="#22d3ee"
+                            Text "Autonomous agent orchestration, token-efficient RAG embeddings, and multi-provider model rotation." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                         end
-                        Card backgroundColor="#111827" borderRadius="14px" padding="22px" border="1px solid #1f2937" flexDirection="column" gap="8px"
-                            Text "How Computers Think" fontSize="20px" fontWeight="800" color="#ffffff"
-                            Text "A YouTube Shorts channel, Zero to Research, that explains how computers work for engineers and ML practitioners." fontSize="14px" color="#9ca3af" lineHeight="1.6"
-                            Text "Status: publishing" fontSize="12px" color="#818cf8"
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="8px"
+                            Text "Databases & Storage Engines" fontSize="18px" fontWeight="bold" color="#22d3ee"
+                            Text "Custom SQLite integration, Write-Ahead Log (WAL) mode, query planning, and schema migration engines." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                         end
-                        Card backgroundColor="#111827" borderRadius="14px" padding="22px" border="1px solid #1f2937" flexDirection="column" gap="8px"
-                            Text "Foundations" fontSize="20px" fontWeight="800" color="#ffffff"
-                            Text "Mini-Database-Engine, Authentication-System and Mini-API-Server: the primitives under Adumate, AAYU and I2S." fontSize="14px" color="#9ca3af" lineHeight="1.6"
-                            Text "Status: built, in use" fontSize="12px" color="#818cf8"
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="8px"
+                            Text "Full-Stack Web Development" fontSize="18px" fontWeight="bold" color="#22d3ee"
+                            Text "Declarative SSR widget rendering, low-latency async HTTP sockets, Next.js, and TypeScript architectures." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                        end
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="8px"
+                            Text "Scientific Research & Education" fontSize="18px" fontWeight="bold" color="#22d3ee"
+                            Text "Author of Intent-to-Silicon IEEE papers, creator of technical shorts for engineers and researchers." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                         end
                     end
                 end
             end
 
-            Container flexShrink="0" width="100%" height="700px" padding="0 48px" alignItems="center" justifyContent="center" backgroundColor="#0b0f19"
-                Column gap="16px" maxWidth="820px"
-                    Text "Contact" fontSize="34px" fontWeight="800" color="#ffffff"
-                    Text "Want to build something, collaborate, or just talk about compilers? Find me here." fontSize="17px" color="#d1d5db"
-                    Text "GitHub: Minato95-ayu" fontSize="17px" color="#22d3ee"
-                    Text "YouTube: @ayushkaushik08" fontSize="17px" color="#22d3ee"
-                    Text "Instagram: @zeroto.researchAI" fontSize="17px" color="#22d3ee"
-                    Text "Web: adumate.in and intent-to-silicon.vercel.app" fontSize="17px" color="#22d3ee"
+            # ---------------- WORK / 22+ PROJECTS SECTION ----------------
+            Container id="work" flexShrink="0" width="100%" minHeight="1200px" padding="70px 48px" alignItems="center" justifyContent="center" backgroundColor="#0d1220"
+                Column gap="28px" width="100%" maxWidth="1100px"
+                    Column gap="8px"
+                        Text "Selected Projects & Systems (22)" fontSize="38px" fontWeight="800" color="#ffffff"
+                        Text "Every project is built from first principles: compilers, VMs, multi-agent frameworks, microservices, and libraries." fontSize="16px" color="#9ca3af"
+                    end
+                    Grid gridTemplateColumns="repeat(auto-fit, minmax(320px, 1fr))" gap="20px" width="100%"
+
+                        # Project 1
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                            Row justifyContent="space-between" alignItems="center"
+                                Text "AAYU Compiler Core" fontSize="20px" fontWeight="bold" color="#ffffff"
+                                Text "SELF-HOSTED" fontSize="11px" fontWeight="bold" color="#10b981" backgroundColor="#064e3b" padding="3px 8px" borderRadius="6px"
+                            end
+                            Text "A 5,661-line self-hosted compiler pipeline with Lexer, Parser, AST, Semantic Analyzer, and Bytecode Emitter written entirely in pure AAYU." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Stack: Pure AAYU (.aayu) | Zero Python" fontSize="12px" color="#818cf8"
+                        end
+
+                        # Project 2
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                            Row justifyContent="space-between" alignItems="center"
+                                Text "AAYU Silicon VM & JIT" fontSize="20px" fontWeight="bold" color="#ffffff"
+                                Text "RUST VM" fontSize="11px" fontWeight="bold" color="#3b82f6" backgroundColor="#1e3a8a" padding="3px 8px" borderRadius="6px"
+                            end
+                            Text "High-performance stack execution engine written in Rust. Features NanBoxed 64-bit value representations and x86_64 JIT running at 50ns/op." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Stack: Rust | NanBox | JIT Engine" fontSize="12px" color="#818cf8"
+                        end
+
+                        # Project 3
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                            Row justifyContent="space-between" alignItems="center"
+                                Text "Intent-to-Silicon (I2S)" fontSize="20px" fontWeight="bold" color="#ffffff"
+                                Text "RESEARCH" fontSize="11px" fontWeight="bold" color="#ec4899" backgroundColor="#831843" padding="3px 8px" borderRadius="6px"
+                            end
+                            Text "An academic research paradigm exploring intent-level specifications compiled directly to hardware-efficient bytecode with strict verification." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Status: IEEE Format Research Papers" fontSize="12px" color="#818cf8"
+                        end
+
+                        # Project 4
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                            Row justifyContent="space-between" alignItems="center"
+                                Text "Adumate Engine" fontSize="20px" fontWeight="bold" color="#ffffff"
+                                Text "LIVE" fontSize="11px" fontWeight="bold" color="#10b981" backgroundColor="#064e3b" padding="3px 8px" borderRadius="6px"
+                            end
+                            Text "Production multi-provider AI proxy rotating free inference keys across Gemini, Groq, and local models, plus geolocation discovery. adumate.in" fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Button "Visit adumate.in" href="https://adumate.in" color="#22d3ee" fontSize="13px" fontWeight="bold"
+                        end
+
+                        # Project 5
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                            Row justifyContent="space-between" alignItems="center"
+                                Text "MIT Nexus AI Engine" fontSize="20px" fontWeight="bold" color="#ffffff"
+                                Text "MULTI-AGENT" fontSize="11px" fontWeight="bold" color="#a855f7" backgroundColor="#581c87" padding="3px 8px" borderRadius="6px"
+                            end
+                            Text "Autonomous multi-agent system orchestrating specialized model personas with self-healing feedback loops and consensus validation." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Stack: AAYU Multi-Agent Framework" fontSize="12px" color="#818cf8"
+                        end
+
+                        # Project 6
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                            Row justifyContent="space-between" alignItems="center"
+                                Text "RAG Nexus AI" fontSize="20px" fontWeight="bold" color="#ffffff"
+                                Text "VECTOR AI" fontSize="11px" fontWeight="bold" color="#3b82f6" backgroundColor="#1e3a8a" padding="3px 8px" borderRadius="6px"
+                            end
+                            Text "Native in-memory vector search and Retrieval-Augmented Generation toolkit calculating cosine similarity over semantic embeddings." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Stack: Pure AAYU Vector Math" fontSize="12px" color="#818cf8"
+                        end
+
+                        # Project 7
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                            Row justifyContent="space-between" alignItems="center"
+                                Text "AAYUGram Social App" fontSize="20px" fontWeight="bold" color="#ffffff"
+                                Text "FULL-STACK" fontSize="11px" fontWeight="bold" color="#f59e0b" backgroundColor="#78350f" padding="3px 8px" borderRadius="6px"
+                            end
+                            Text "Single-file Instagram-style social platform combining database models, photo feeds, user comments, and reactive UI in one file." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Stack: Single-file .aayu application" fontSize="12px" color="#818cf8"
+                        end
+
+                        # Project 8
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                            Row justifyContent="space-between" alignItems="center"
+                                Text "RealWorld Conduit API" fontSize="20px" fontWeight="bold" color="#ffffff"
+                                Text "REST API" fontSize="11px" fontWeight="bold" color="#10b981" backgroundColor="#064e3b" padding="3px 8px" borderRadius="6px"
+                            end
+                            Text "Conduit Medium/Substack clone specification written in pure AAYU demonstrating REST endpoints, JWT authorization, and articles." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Stack: AAYU Routes & SQLite" fontSize="12px" color="#818cf8"
+                        end
+
+                        # Project 9
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                            Row justifyContent="space-between" alignItems="center"
+                                Text "Native TensorCore Engine" fontSize="20px" fontWeight="bold" color="#ffffff"
+                                Text "AI MATH" fontSize="11px" fontWeight="bold" color="#ec4899" backgroundColor="#831843" padding="3px 8px" borderRadius="6px"
+                            end
+                            Text "Multi-dimensional tensor mathematics engine supporting broadcasting, zero-copy strides, matrix multiplication, and dense layers." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Stack: Native C & Rust Tensor Kernel" fontSize="12px" color="#818cf8"
+                        end
+
+                        # Project 10
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                            Row justifyContent="space-between" alignItems="center"
+                                Text "AAYU Embedded SQLite" fontSize="20px" fontWeight="bold" color="#ffffff"
+                                Text "DATABASE" fontSize="11px" fontWeight="bold" color="#3b82f6" backgroundColor="#1e3a8a" padding="3px 8px" borderRadius="6px"
+                            end
+                            Text "Zero-config relational database with automated schema migration, transactional integrity, and Write-Ahead Log (WAL) mode." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Features: Zero setup, auto-create tables" fontSize="12px" color="#818cf8"
+                        end
+
+                        # Project 11
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                            Row justifyContent="space-between" alignItems="center"
+                                Text "WebSocket Chat Server" fontSize="20px" fontWeight="bold" color="#ffffff"
+                                Text "NETWORKING" fontSize="11px" fontWeight="bold" color="#10b981" backgroundColor="#064e3b" padding="3px 8px" borderRadius="6px"
+                            end
+                            Text "Low-latency bi-directional real-time messaging server supporting multiple channels, broadcast pub/sub, and SQLite history." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Stack: Native Async Sockets" fontSize="12px" color="#818cf8"
+                        end
+
+                        # Project 12
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                            Row justifyContent="space-between" alignItems="center"
+                                Text "JWT & Session Auth Engine" fontSize="20px" fontWeight="bold" color="#ffffff"
+                                Text "SECURITY" fontSize="11px" fontWeight="bold" color="#f59e0b" backgroundColor="#78350f" padding="3px 8px" borderRadius="6px"
+                            end
+                            Text "Cryptographic token issuance, PBKDF2 password hashing, bearer auth middleware, and session lifecycle management." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Stack: Native Cryptographic Core" fontSize="12px" color="#818cf8"
+                        end
+
+                        # Project 13
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                            Row justifyContent="space-between" alignItems="center"
+                                Text "ML Classifier API" fontSize="20px" fontWeight="bold" color="#ffffff"
+                                Text "MACHINE LEARNING" fontSize="11px" fontWeight="bold" color="#a855f7" backgroundColor="#581c87" padding="3px 8px" borderRadius="6px"
+                            end
+                            Text "K-Means clustering and linear classifier running directly on the AAYU runtime without external Python libraries or scikit-learn." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Stack: Native AAYU ML Module" fontSize="12px" color="#818cf8"
+                        end
+
+                        # Project 14
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                            Row justifyContent="space-between" alignItems="center"
+                                Text "TodoMVC REST API" fontSize="20px" fontWeight="bold" color="#ffffff"
+                                Text "CRUD APP" fontSize="11px" fontWeight="bold" color="#3b82f6" backgroundColor="#1e3a8a" padding="3px 8px" borderRadius="6px"
+                            end
+                            Text "Classic TodoMVC implemented in under 40 lines of AAYU combining database models, REST routes, and declarative UI." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Stack: Pure AAYU Full-Stack" fontSize="12px" color="#818cf8"
+                        end
+
+                        # Project 15
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                            Row justifyContent="space-between" alignItems="center"
+                                Text "URL Shortener Service" fontSize="20px" fontWeight="bold" color="#ffffff"
+                                Text "MICROSERVICE" fontSize="11px" fontWeight="bold" color="#10b981" backgroundColor="#064e3b" padding="3px 8px" borderRadius="6px"
+                            end
+                            Text "High-performance Bitly-style link redirection service with automated click counting and sub-millisecond route dispatch." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Stack: AAYU HTTP & Models" fontSize="12px" color="#818cf8"
+                        end
+
+                        # Project 16
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                            Row justifyContent="space-between" alignItems="center"
+                                Text "GPT4Free Multi-Router" fontSize="20px" fontWeight="bold" color="#ffffff"
+                                Text "AI PROXY" fontSize="11px" fontWeight="bold" color="#ec4899" backgroundColor="#831843" padding="3px 8px" borderRadius="6px"
+                            end
+                            Text "Smart AI model router providing seamless failover between OpenAI, Anthropic, Gemini, and local LLM endpoints." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Stack: aayu-http socket streaming" fontSize="12px" color="#818cf8"
+                        end
+
+                        # Project 17
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                            Row justifyContent="space-between" alignItems="center"
+                                Text "AAYU DataFrames" fontSize="20px" fontWeight="bold" color="#ffffff"
+                                Text "DATA SCIENCE" fontSize="11px" fontWeight="bold" color="#f59e0b" backgroundColor="#78350f" padding="3px 8px" borderRadius="6px"
+                            end
+                            Text "Pandas-like tabular data manipulation package in pure AAYU supporting CSV ingestion, column projection, group-by, and joins." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Stack: official_packages/aayu-dataframe" fontSize="12px" color="#818cf8"
+                        end
+
+                        # Project 18
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                            Row justifyContent="space-between" alignItems="center"
+                                Text "AAYU Crypto Suite" fontSize="20px" fontWeight="bold" color="#ffffff"
+                                Text "CRYPTOGRAPHY" fontSize="11px" fontWeight="bold" color="#3b82f6" backgroundColor="#1e3a8a" padding="3px 8px" borderRadius="6px"
+                            end
+                            Text "High-speed cryptographic library providing SHA-256 digests, HMAC message authentication, and Base64 stream encoding." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Stack: official_packages/aayu-crypto" fontSize="12px" color="#818cf8"
+                        end
+
+                        # Project 19
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                            Row justifyContent="space-between" alignItems="center"
+                                Text "AAYU Computer Vision" fontSize="20px" fontWeight="bold" color="#ffffff"
+                                Text "VISION" fontSize="11px" fontWeight="bold" color="#a855f7" backgroundColor="#581c87" padding="3px 8px" borderRadius="6px"
+                            end
+                            Text "Native computer vision package for image tensor decoding, color space transformation, resize matrices, and edge filters." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Stack: official_packages/aayu-vision" fontSize="12px" color="#818cf8"
+                        end
+
+                        # Project 20
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                            Row justifyContent="space-between" alignItems="center"
+                                Text "VS Code Extension" fontSize="20px" fontWeight="bold" color="#ffffff"
+                                Text "DEV TOOLS" fontSize="11px" fontWeight="bold" color="#10b981" backgroundColor="#064e3b" padding="3px 8px" borderRadius="6px"
+                            end
+                            Text "Official VS Code IDE extension (vscode-aayu) with custom syntax highlighting grammars, snippet engines, and LSP autocomplete." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Status: Packaged .vsix extension" fontSize="12px" color="#818cf8"
+                        end
+
+                        # Project 21
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                            Row justifyContent="space-between" alignItems="center"
+                                Text "Zero to Research AI" fontSize="20px" fontWeight="bold" color="#ffffff"
+                                Text="EDUCATION" fontSize="11px" fontWeight="bold" color="#ec4899" backgroundColor="#831843" padding="3px 8px" borderRadius="6px"
+                            end
+                            Text "Educational YouTube Shorts channel (@ayushkaushik08) breaking down computer architecture, compiler pipelines, and systems design." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Button "Visit YouTube Channel" href="https://youtube.com/@ayushkaushik08" color="#22d3ee" fontSize="13px" fontWeight="bold"
+                        end
+
+                        # Project 22
+                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                            Row justifyContent="space-between" alignItems="center"
+                                Text "Core Systems Foundations" fontSize="20px" fontWeight="bold" color="#ffffff"
+                                Text "SYSTEMS" fontSize="11px" fontWeight="bold" color="#3b82f6" backgroundColor="#1e3a8a" padding="3px 8px" borderRadius="6px"
+                            end
+                            Text "Mini-Database-Engine, Authentication-System, and Mini-API-Server: low-level scratch implementations serving as the foundation of AAYU." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Status: Verified & Deployed" fontSize="12px" color="#818cf8"
+                        end
+
+                    end
                 end
             end
 
-            Container flexShrink="0" width="100%" padding="24px 48px" backgroundColor="#060912" borderTop="1px solid #1f2937"
-                Text "Built with AAYU. Compiled by aayuc and served by aayu-vm." fontSize="13px" color="#6b7280"
+            # ---------------- CONTACT SECTION ----------------
+            Container id="contact" flexShrink="0" width="100%" minHeight="560px" padding="70px 48px" alignItems="center" justifyContent="center" backgroundColor="#0b0f19"
+                Column gap="24px" maxWidth="960px" width="100%"
+                    Text "Get In Touch" fontSize="36px" fontWeight="800" color="#ffffff"
+                    Text "Want to collaborate on compiler development, AI systems, or discuss Intent-to-Silicon? Reach out across any of my channels:" fontSize="17px" color="#d1d5db"
+                    Grid gridTemplateColumns="repeat(auto-fit, minmax(260px, 1fr))" gap="16px" width="100%" marginTop="10px"
+                        Card backgroundColor="#111827" borderRadius="12px" padding="20px" border="1px solid #1f2937" flexDirection="column" gap="6px"
+                            Text "GitHub" fontSize="12px" color="#9ca3af"
+                            Button "github.com/Minato95-ayu" href="https://github.com/Minato95-ayu" color="#22d3ee" fontSize="16px" fontWeight="bold"
+                        end
+                        Card backgroundColor="#111827" borderRadius="12px" padding="20px" border="1px solid #1f2937" flexDirection="column" gap="6px"
+                            Text "YouTube" fontSize="12px" color="#9ca3af"
+                            Button "@ayushkaushik08" href="https://youtube.com/@ayushkaushik08" color="#22d3ee" fontSize="16px" fontWeight="bold"
+                        end
+                        Card backgroundColor="#111827" borderRadius="12px" padding="20px" border="1px solid #1f2937" flexDirection="column" gap="6px"
+                            Text "Instagram" fontSize="12px" color="#9ca3af"
+                            Button "@zeroto.researchAI" href="https://instagram.com/zeroto.researchAI" color="#22d3ee" fontSize="16px" fontWeight="bold"
+                        end
+                        Card backgroundColor="#111827" borderRadius="12px" padding="20px" border="1px solid #1f2937" flexDirection="column" gap="6px"
+                            Text "Email" fontSize="12px" color="#9ca3af"
+                            Button "ayushkaushik1441@gmail.com" href="mailto:ayushkaushik1441@gmail.com" color="#22d3ee" fontSize="16px" fontWeight="bold"
+                        end
+                    end
+                end
             end
+
+            # ---------------- FOOTER ----------------
+            Container flexShrink="0" width="100%" padding="28px 48px" backgroundColor="#060912" borderTop="1px solid #1f2937"
+                Row width="100%" justifyContent="space-between" alignItems="center"
+                    Text "AAYU v1.1.0 — Pure Self-Hosted Intent-to-Silicon Architecture." fontSize="13px" color="#6b7280"
+                    Text "Designed & Built by Ayush Kaushik. Compiled by aayuc and served by aayu-vm." fontSize="13px" color="#6b7280"
+                end
+            end
+
         end
     end
 end

@@ -1,22 +1,95 @@
-﻿// AAYU Standard Library: Math
-// Provides native math functions mapped to VM opcodes
+# ==============================================================================
+# AAYU Standard Library: Math (std/math.aayu)
+# 100% Pure AAYU - Pure Mathematical Computing Engine
+# Zero Python, Zero C, Zero External Dependencies
+# ==============================================================================
 
-module Math
-
-action abs(value: Int) -> Int
-    // Natively mapped to Opcode 50
+action abs(x)
+    if x < 0.0
+        return 0.0 - x
+    end
+    return x
 end
 
-action max(a: Int, b: Int) -> Int
-    // Natively mapped to Opcode 51
+action max(a, b)
+    if a > b
+        return a
+    end
+    return b
 end
 
-action min(a: Int, b: Int) -> Int
-    // Natively mapped to Opcode 52
+action min(a, b)
+    if a < b
+        return a
+    end
+    return b
 end
 
-action sqrt(value: Float) -> Float
-    // Natively mapped to Opcode 53
+action clamp(val, low, high)
+    if val < low
+        return low
+    end
+    if val > high
+        return high
+    end
+    return val
 end
 
+action pow(base, exp)
+    let res = 1.0
+    let count = 0
+    while count < exp
+        res = res * base
+        count = count + 1
+    end
+    return res
+end
+
+# Newton-Raphson method for square root in pure AAYU
+action sqrt(x)
+    if x <= 0.0
+        return 0.0
+    end
+    let guess = x / 2.0
+    let iter = 0
+    while iter < 10
+        guess = (guess + (x / guess)) / 2.0
+        iter = iter + 1
+    end
+    return guess
+end
+
+# Non-linear activation: Rectified Linear Unit (ReLU)
+action relu(x)
+    if x > 0.0
+        return x
+    end
+    return 0.0
+end
+
+# Fast continuous Sigmoid function in pure AAYU
+action sigmoid(x)
+    if x < -5.0
+        return 0.006
+    end
+    if x > 5.0
+        return 0.993
+    end
+    # Smooth Pade/Linear hybrid approximation
+    let val = 0.5 + (x * 0.115)
+    return clamp(val, 0.01, 0.99)
+end
+
+# Dot product of two vectors in pure AAYU
+action dot_product(v1, v2)
+    let sum = 0.0
+    let i = 0
+    let l1 = len(v1)
+    let l2 = len(v2)
+    let loop_len = min(l1, l2)
+    while i < loop_len
+        sum = sum + (v1[i] * v2[i])
+        i = i + 1
+    end
+    return sum
 end

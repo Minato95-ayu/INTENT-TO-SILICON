@@ -10,7 +10,7 @@ use aayu_vm::jit;
 fn print_banner() {
     println!("AAYU Intent-to-Silicon Engine v1.2.0");
     println!("Architecture: {} ({})", env::consts::ARCH, env::consts::OS);
-    println!("Memory Safety: 100% Guaranteed | Single-File Full-Stack");
+    println!("Memory Model: 64-bit NaN-Box Stack | Single-File Full-Stack");
     println!("Zero Dependencies | Sub-Millisecond Cold Start");
 }
 
@@ -183,7 +183,7 @@ fn parse_bytecode_data(data: &[u8]) -> Result<(Vec<String>, Vec<NanVal>, Vec<u8>
                 pos += 1;
             }
             _ => {
-                constants.push(NanVal::null());
+                return Err(format!("Unknown constant type tag 0x{:02X} at constant index {}", type_tag, i));
             }
         }
     }

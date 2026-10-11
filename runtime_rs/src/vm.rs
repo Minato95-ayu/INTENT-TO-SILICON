@@ -122,9 +122,13 @@ impl AayuVM {
     pub fn validate(&self) -> Result<(), String> {
         let len = self.bytecode.len();
         let mut pc = 0;
+        let mut valid_starts = std::collections::HashSet::new();
+        let mut jumps = Vec::new();
         
         while pc < len {
+            valid_starts.insert(pc);
             let op = self.bytecode[pc];
+            let op_pc = pc;
             pc += 1;
             
             match op {
@@ -133,61 +137,63 @@ impl AayuVM {
                 }
                 0x01 => { // PUSH_CONST (2 bytes operand)
                     if pc + 2 > len {
-                        return Err(format!("Truncated operand for PUSH_CONST at offset {}", pc - 1));
+                        return Err(format!("Truncated operand for PUSH_CONST at offset {}", op_pc));
                     }
                     let idx = ((self.bytecode[pc] as usize) << 8) | self.bytecode[pc + 1] as usize;
                     pc += 2;
                     if idx >= self.constants.len() {
-                        return Err(format!("PUSH_CONST index {} exceeds constant pool bounds ({}) at offset {}", idx, self.constants.len(), pc - 3));
+                        return Err(format!("PUSH_CONST index {} exceeds constant pool bounds ({}) at offset {}", idx, self.constants.len(), op_pc));
                     }
                 }
                 0x02 => {} // POP
                 0x05 => { // LOAD_VAR (1 byte operand)
                     if pc + 1 > len {
-                        return Err(format!("Truncated operand for LOAD_VAR at offset {}", pc - 1));
+                        return Err(format!("Truncated operand for LOAD_VAR at offset {}", op_pc));
                     }
                     let idx = self.bytecode[pc] as usize;
                     pc += 1;
                     if idx >= 256 {
-                        return Err(format!("LOAD_VAR index {} exceeds local variable frame limit (256) at offset {}", idx, pc - 2));
+                        return Err(format!("LOAD_VAR index {} exceeds local variable frame limit (256) at offset {}", idx, op_pc));
                     }
                 }
                 0x06 => { // STORE_VAR (1 byte operand)
                     if pc + 1 > len {
-                        return Err(format!("Truncated operand for STORE_VAR at offset {}", pc - 1));
+                        return Err(format!("Truncated operand for STORE_VAR at offset {}", op_pc));
                     }
                     let idx = self.bytecode[pc] as usize;
                     pc += 1;
                     if idx >= 256 {
-                        return Err(format!("STORE_VAR index {} exceeds local variable frame limit (256) at offset {}", idx, pc - 2));
+                        return Err(format!("STORE_VAR index {} exceeds local variable frame limit (256) at offset {}", idx, op_pc));
                     }
                 }
-                0x10 | 17 | 18 | 19 | 20 | 21 | 22 => {
+                0x10..=0x16 => {
                     // Arithmetic & casting opcodes
                 }
                 0x20 => { // JUMP (2 bytes operand)
                     if pc + 2 > len {
-                        return Err(format!("Truncated operand for JUMP at offset {}", pc - 1));
+                        return Err(format!("Truncated operand for JUMP at offset {}", op_pc));
                     }
                     let target = ((self.bytecode[pc] as usize) << 8) | self.bytecode[pc + 1] as usize;
                     pc += 2;
                     if target > len {
                         return Err(format!("JUMP target offset {} exceeds bytecode bounds (length: {})", target, len));
                     }
+                    jumps.push((target, op_pc, "JUMP"));
                 }
                 0x21 => { // JUMP_IF_FALSE (2 bytes operand)
                     if pc + 2 > len {
-                        return Err(format!("Truncated operand for JUMP_IF_FALSE at offset {}", pc - 1));
+                        return Err(format!("Truncated operand for JUMP_IF_FALSE at offset {}", op_pc));
                     }
                     let target = ((self.bytecode[pc] as usize) << 8) | self.bytecode[pc + 1] as usize;
                     pc += 2;
                     if target > len {
                         return Err(format!("JUMP_IF_FALSE target offset {} exceeds bytecode bounds (length: {})", target, len));
                     }
+                    jumps.push((target, op_pc, "JUMP_IF_FALSE"));
                 }
                 34 => { // CALL (2 bytes operand)
                     if pc + 2 > len {
-                        return Err(format!("Truncated operand for CALL at offset {}", pc - 1));
+                        return Err(format!("Truncated operand for CALL at offset {}", op_pc));
                     }
                     pc += 2;
                 }
@@ -195,52 +201,52 @@ impl AayuVM {
                 38 | 39 | 41 | 42 | 43 | 44 => {} // CMP operators
                 48 => { // STORE_STATE (2 bytes)
                     if pc + 2 > len {
-                        return Err(format!("Truncated operand for STORE_STATE at offset {}", pc - 1));
+                        return Err(format!("Truncated operand for STORE_STATE at offset {}", op_pc));
                     }
                     pc += 2;
                 }
                 49 => { // LOAD_STATE (2 bytes)
                     if pc + 2 > len {
-                        return Err(format!("Truncated operand for LOAD_STATE at offset {}", pc - 1));
+                        return Err(format!("Truncated operand for LOAD_STATE at offset {}", op_pc));
                     }
                     pc += 2;
                 }
                 50 => { // INIT_STATE (2 bytes)
                     if pc + 2 > len {
-                        return Err(format!("Truncated operand for INIT_STATE at offset {}", pc - 1));
+                        return Err(format!("Truncated operand for INIT_STATE at offset {}", op_pc));
                     }
                     pc += 2;
                 }
                 51 | 52 => {} // EnterScope / ExitScope
                 53 => { // InitVar (2 bytes)
                     if pc + 2 > len {
-                        return Err(format!("Truncated operand for InitVar at offset {}", pc - 1));
+                        return Err(format!("Truncated operand for InitVar at offset {}", op_pc));
                     }
                     pc += 2;
                 }
                 54 => { // PrepareCall (2 bytes)
                     if pc + 2 > len {
-                        return Err(format!("Truncated operand for PrepareCall at offset {}", pc - 1));
+                        return Err(format!("Truncated operand for PrepareCall at offset {}", op_pc));
                     }
                     pc += 2;
                 }
                 55 => { // AsyncCall (2 bytes)
                     if pc + 2 > len {
-                        return Err(format!("Truncated operand for AsyncCall at offset {}", pc - 1));
+                        return Err(format!("Truncated operand for AsyncCall at offset {}", op_pc));
                     }
                     pc += 2;
                 }
                 81 => {} // PRINT
                 128 => { // BUILD_DICT (2 bytes)
                     if pc + 2 > len {
-                        return Err(format!("Truncated operand for BUILD_DICT at offset {}", pc - 1));
+                        return Err(format!("Truncated operand for BUILD_DICT at offset {}", op_pc));
                     }
                     pc += 2;
                 }
                 134 | 136 | 137 | 140 | 141 | 142 => {}
                 145 => { // PUSH_STRING_SAFE (2 bytes)
                     if pc + 2 > len {
-                        return Err(format!("Truncated operand for PUSH_STRING_SAFE at offset {}", pc - 1));
+                        return Err(format!("Truncated operand for PUSH_STRING_SAFE at offset {}", op_pc));
                     }
                     let idx = (self.bytecode[pc] as usize) | ((self.bytecode[pc+1] as usize) << 8);
                     pc += 2;
@@ -251,10 +257,18 @@ impl AayuVM {
                 150 | 160 | 161 | 162 | 170 | 171 | 172 | 180 | 181 | 190 | 191 => {}
                 245 | 252 | 253 | 254 => {} // Legacy opcodes
                 _ => {
-                    return Err(format!("Unknown or illegal opcode 0x{:02X} at offset {}", op, pc - 1));
+                    return Err(format!("Unknown or illegal opcode 0x{:02X} at offset {}", op, op_pc));
                 }
             }
         }
+
+        // Pass 2: Verify all jump targets land strictly on valid instruction boundaries or end-of-stream
+        for (target, op_pc, name) in jumps {
+            if target != len && !valid_starts.contains(&target) {
+                return Err(format!("{} target offset {} at offset {} is not aligned to an instruction boundary", name, target, op_pc));
+            }
+        }
+
         Ok(())
     }
 

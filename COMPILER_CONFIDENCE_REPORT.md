@@ -39,7 +39,7 @@ In response to technical peer review and external community audits, this documen
 | **Polymorphic Math & Floats** | **`PASS`** | [`tests/test_02_floats.aayu`](tests/test_02_floats.aayu) | Polymorphic `ADD`, `SUB`, `MUL`, `DIV` for Integers, IEEE-754 Floats, Strings, and Arrays. |
 | **Control Flow (if/else/while)** | **`PASS`** | [`tests/test_03_loops.aayu`](tests/test_03_loops.aayu) | Bytecode jumps (`JMP`, `JMP_IF_FALSE`) with stack condition evaluation. |
 | **Function Calls & Recursion** | **`PASS`** | [`tests/test_04_fibonacci.aayu`](tests/test_04_fibonacci.aayu) | Function calls via `CALL` / `RET` with argument cleanup and return value passing. |
-| **Bytecode Verifier & Security** | **`PASS`** | [`tests/test_malformed_bytecode.ps1`](tests/test_malformed_bytecode.ps1) | Pre-execution validator: rejects illegal opcodes, truncated operands, and out-of-bounds jumps (6/6 passing). |
+| **Bytecode Verifier & Security** | **`PASS`** | [`tests/test_malformed_bytecode.ps1`](tests/test_malformed_bytecode.ps1) | Pre-execution validator: rejects illegal opcodes, truncated operands, out-of-bounds jumps, and misaligned jump targets (7/7 passing). |
 | **Multi-Threaded HTTP Engine** | **`PASS`** | [`runtime_rs/src/vm.rs`](runtime_rs/src/vm.rs#L1390-L1405) | `thread::spawn` per connection with 5s socket timeout and `panic::catch_unwind` isolation. |
 | **In-Memory & SSD Storage (DB)** | **`PARTIAL`** | [`runtime_rs/src/db.rs`](runtime_rs/src/db.rs) | Key-value store with RAM cache and SSD Write-Ahead Log (WAL) operational. Full SQL query joins in development. |
 | **Declarative UI Widget Engine** | **`PARTIAL`** | [`runtime_rs/src/ui.rs`](runtime_rs/src/ui.rs) | Server-side DOM tree rendering (`UiNode`, `Style`) operational. Reactive client-side DOM diffing in progress. |
@@ -52,20 +52,21 @@ In response to technical peer review and external community audits, this documen
 ## 🛡️ 3. Direct Resolutions to Community Audit Inquiries
 
 ### 1. Compiler & JIT Security: Malformed Bytecode Validation
-* **Auditor Finding:** Successful build is not a substitute for security audits; invalid bytecode must be rejected prior to execution without panicking the VM. Crucially, the `--jit` path was previously bypassing the verifier.
+* **Auditor Finding:** Successful build is not a substitute for security audits; invalid bytecode must be rejected prior to execution without panicking the VM. Crucially, the `--jit` path was previously bypassing the verifier, and jump target instruction boundary alignment needed verification.
 * **Resolution Implemented:** 
-  1. Added `AayuVM::validate(&self) -> Result<(), String>` inside [`runtime_rs/src/vm.rs`](runtime_rs/src/vm.rs) and bounds-checked parsing in [`runtime_rs/src/main.rs`](runtime_rs/src/main.rs).
+  1. Added two-pass `AayuVM::validate(&self) -> Result<(), String>` inside [`runtime_rs/src/vm.rs`](runtime_rs/src/vm.rs) that records all valid instruction starting offsets and ensures jump targets (`JMP`, `JMP_IF_FALSE`) land strictly on valid instruction boundaries or end-of-code.
   2. Enforced bytecode validation across **BOTH** execution paths (`AayuVM::validate` runs prior to JIT code generation or interpretation; errors trigger clean `exit(1)` rejections).
   3. Added `jit::can_compile(&bytecode)` opcode safety analysis: unsupported opcodes or compilation failures safely fall back to the VM interpreter rather than dropping instructions as comments.
-* **Automated Evidence:** Created [`tests/test_malformed_bytecode.ps1`](tests/test_malformed_bytecode.ps1) asserting exact error messages and non-zero exit codes across 6 corruption vectors in both Interpreter and JIT modes:
+* **Automated Evidence:** Created [`tests/test_malformed_bytecode.ps1`](tests/test_malformed_bytecode.ps1) asserting exact error messages and non-zero exit codes across 7 corruption vectors in both Interpreter and JIT modes:
   1. Empty bytecode file
   2. Corrupted magic header
   3. Truncated string table
   4. Illegal instruction opcode (`0xEE`)
   5. Out-of-bounds jump offset (`0xFF00`)
   6. Truncated instruction operand
-  * **Result:** **6 Passed | 0 Failed** on both Interpreter and JIT modes.
-* **CI Integration:** Security verification suite is wired directly into [`.github/workflows/ci.yml`](.github/workflows/ci.yml) to block pull requests on security regressions.
+  7. Misaligned jump target into instruction payload (instruction boundary enforcement)
+  * **Result:** **7 Passed | 0 Failed** on both Interpreter and JIT modes.
+* **CI Integration:** Security verification suite and automated compiler regression harness are wired directly into [`.github/workflows/ci.yml`](.github/workflows/ci.yml) across Windows and Linux to prevent regressions.
 
 ### 2. Precise "Zero Dependencies" Definition & Build Toolchain
 * **Auditor Finding:** The runtime `Cargo.toml` declares `byteorder` and `ureq`, and `compiler_bootstrap/Cargo.toml` declares `serde` and `serde_json`.

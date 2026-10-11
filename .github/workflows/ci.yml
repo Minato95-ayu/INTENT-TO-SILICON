@@ -27,15 +27,18 @@ jobs:
       - name: Run VM unit tests
         run: cargo test --manifest-path runtime_rs/Cargo.toml
 
-      - name: Build release engine
-        run: cargo build --release --manifest-path runtime_rs/Cargo.toml
+      - name: Build release engine & compiler
+        run: |
+          cargo build --release --manifest-path runtime_rs/Cargo.toml
+          cargo build --release --manifest-path compiler_bootstrap/Cargo.toml
 
-      - name: Verify CLI & Run Security Test Suite on Windows
+      - name: Verify CLI & Run Test Suites on Windows
         if: matrix.os == 'windows-latest'
         run: |
           New-Item -ItemType Directory -Path bin -Force | Out-Null
           Copy-Item .\runtime_rs\target\release\aayu-vm.exe bin\aayu-vm.exe -Force
           Copy-Item .\runtime_rs\target\release\aayu-vm.exe bin\aayu.exe -Force
+          Copy-Item .\compiler_bootstrap\target\release\aayuc.exe bin\aayuc.exe -Force
           .\bin\aayu.exe --version
           .\bin\aayu.exe --help
           .\bin\aayu.exe --sum 1000000
@@ -43,20 +46,27 @@ jobs:
           powershell -ExecutionPolicy Bypass -File tests/run_tests.ps1
         shell: powershell
 
-      - name: Verify CLI on Linux
+      - name: Verify CLI & Run Test Suites on Linux
         if: matrix.os == 'ubuntu-latest'
         run: |
-          ./runtime_rs/target/release/aayu-vm --version
-          ./runtime_rs/target/release/aayu-vm --help
-          ./runtime_rs/target/release/aayu-vm --sum 1000000
+          mkdir -p bin
+          cp runtime_rs/target/release/aayu-vm bin/aayu-vm
+          cp runtime_rs/target/release/aayu-vm bin/aayu
+          cp compiler_bootstrap/target/release/aayuc bin/aayuc
+          chmod +x bin/*
+          ./bin/aayu --version
+          ./bin/aayu --help
+          ./bin/aayu --sum 1000000
           # Run malformed rejection test on Linux
           echo "BAD_MAGIC" > bad.ayc
-          if ./runtime_rs/target/release/aayu-vm run bad.ayc; then
+          if ./bin/aayu run bad.ayc; then
             echo "Security vulnerability: bad magic was not rejected!"
             exit 1
           else
             echo "PASS: bad magic safely rejected on Linux"
           fi
+          # Run full Linux test runner
+          bash tests/run_tests.sh
 
   website-build:
     name: Build website

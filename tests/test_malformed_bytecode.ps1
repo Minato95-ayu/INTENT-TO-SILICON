@@ -51,6 +51,23 @@ $testCases = @(
         # Valid header, 0 strings, 0 constants, bytecode: PUSH_CONST (0x01) with only 1 byte operand
         Bytes = [byte[]]@(0x41, 0x41, 0x59, 0x55, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00)
         Expected = "Truncated operand for PUSH_CONST"
+    },
+    @{
+        Name = "Misaligned jump target into instruction operand"
+        # Valid header, 0 strings, 1 constant (42 = 8 bytes)
+        # Bytecode:
+        # offset 0: PUSH_CONST (0x01), operand: 0x00, 0x00 (length 3, covers offsets 0, 1, 2)
+        # offset 3: JMP (0x20), operand: 0x00, 0x01 (target offset 1 -> misaligned!)
+        Bytes = [byte[]]@(
+            0x41, 0x41, 0x59, 0x55, # Header
+            0x00, 0x00, 0x00, 0x00, # 0 strings
+            0x01, 0x00, 0x00, 0x00, # 1 constant
+            0x01,                   # type tag = 1 (Int)
+            0x2A, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # value 42
+            0x01, 0x00, 0x00,       # PUSH_CONST idx 0 (offsets 0, 1, 2)
+            0x20, 0x00, 0x01        # JMP to offset 1 (offsets 3, 4, 5) -> misaligned!
+        )
+        Expected = "instruction boundary"
     }
 )
 

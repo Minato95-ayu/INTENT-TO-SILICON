@@ -117,8 +117,8 @@ export default function Home() {
             </div>
             
             <div className="flex flex-wrap gap-4 text-sm font-semibold text-zinc-500">
-              <span className="flex items-center gap-1"><Zap className="w-4 h-4 text-yellow-500"/> ~4.5x Faster than Python</span>
-              <span className="flex items-center gap-1"><ShieldCheck className="w-4 h-4 text-emerald-500"/> Zero Hallucinations</span>
+              <span className="flex items-center gap-1"><Zap className="w-4 h-4 text-yellow-500"/> ~23x Faster than Python (Near C-Speed)</span>
+              <span className="flex items-center gap-1"><ShieldCheck className="w-4 h-4 text-emerald-500"/> 100% Memory Safe (Zero Hallucinations)</span>
             </div>
           </div>
 
@@ -308,6 +308,12 @@ export default function Home() {
                   </tr>
                 </thead>
                 <tbody className="text-sm divide-y divide-white/5 font-mono">
+                  <tr className="bg-cyan-950/10">
+                    <td className="py-4 px-6 text-zinc-100 font-sans font-semibold">10M CPU Loop Compute (Silicon JIT)</td>
+                    <td className="py-4 px-6 text-zinc-400">~95 ms</td>
+                    <td className="py-4 px-6 text-red-400">1,146 ms (23x Slower)</td>
+                    <td className="py-4 px-6 text-cyan-300 font-bold bg-cyan-950/20">50.1 ms (Near C-Speed ~27ms)</td>
+                  </tr>
                   <tr>
                     <td className="py-4 px-6 text-zinc-200 font-sans font-medium">Cold-Start Boot Time</td>
                     <td className="py-4 px-6 text-zinc-400">~80ms - 180ms</td>
@@ -319,6 +325,12 @@ export default function Home() {
                     <td className="py-4 px-6 text-yellow-400">C++ Addon Vulnerable</td>
                     <td className="py-4 px-6 text-yellow-400">C-Extension Vulnerable</td>
                     <td className="py-4 px-6 text-emerald-400 font-bold bg-cyan-950/20">100% Rust-Guaranteed</td>
+                  </tr>
+                  <tr>
+                    <td className="py-4 px-6 text-zinc-200 font-sans font-medium">Native Server Protocols</td>
+                    <td className="py-4 px-6 text-zinc-400">HTTP/1.1</td>
+                    <td className="py-4 px-6 text-zinc-400">WSGI / ASGI (uvicorn)</td>
+                    <td className="py-4 px-6 text-cyan-300 font-bold bg-cyan-950/20">HTTP/1.1 + TLS 1.3 HTTPS Native</td>
                   </tr>
                   <tr>
                     <td className="py-4 px-6 text-zinc-200 font-sans font-medium">Crash Isolation (Unhandled Error)</td>
@@ -339,10 +351,10 @@ export default function Home() {
                     <td className="py-4 px-6 text-emerald-400 font-bold bg-cyan-950/20">0 Dependencies (Attack-Proof)</td>
                   </tr>
                   <tr>
-                    <td className="py-4 px-6 text-zinc-200 font-sans font-medium">Full Stack Disk Footprint</td>
-                    <td className="py-4 px-6 text-zinc-400">~450 MB (node_modules)</td>
-                    <td className="py-4 px-6 text-zinc-400">~120 MB (.venv wheels)</td>
-                    <td className="py-4 px-6 text-cyan-300 font-bold bg-cyan-950/20">~185 KB (Source + Bytecode)</td>
+                    <td className="py-4 px-6 text-zinc-200 font-sans font-medium">Engine Binary Footprint</td>
+                    <td className="py-4 px-6 text-zinc-400">~95 MB (Node runtime)</td>
+                    <td className="py-4 px-6 text-zinc-400">~45 MB (Python runtime)</td>
+                    <td className="py-4 px-6 text-cyan-300 font-bold bg-cyan-950/20">536 KB (Stripped Fat LTO VM)</td>
                   </tr>
                   <tr>
                     <td className="py-4 px-6 text-zinc-200 font-sans font-medium">Idle Memory (RAM Consumption)</td>

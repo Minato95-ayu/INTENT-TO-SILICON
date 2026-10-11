@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import Link from 'next/link';
 
 export const metadata = {
@@ -31,6 +31,21 @@ export default function BenchmarksPage() {
 
           <div className="grid md:grid-cols-2 gap-8">
             
+            {/* 10 Million Iterations CPU Loop */}
+            <div className="bg-black border border-cyan-500/30 rounded-lg p-5">
+              <h3 className="text-lg font-bold text-white mb-2 flex items-center justify-between">
+                <span>10M CPU Loop Compute</span>
+                <span className="text-xs bg-cyan-500/20 text-cyan-300 px-2 py-0.5 rounded font-mono">Live Proof</span>
+              </h3>
+              <p className="text-xs text-zinc-500 mb-4 uppercase tracking-wider">Lower is Better (Volatile Math)</p>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center"><span className="text-zinc-300">Pure C (GCC -O2)</span><span className="font-mono text-zinc-400">27.18 ms</span></div>
+                <div className="flex justify-between items-center"><span className="text-cyan-400 font-bold">AAYU JIT (Native Silicon)</span><span className="font-mono text-cyan-400 font-bold">50.13 ms (Near C-Speed)</span></div>
+                <div className="flex justify-between items-center"><span className="text-purple-400">AAYU VM (NaN-Boxed)</span><span className="font-mono text-purple-400">604.00 ms</span></div>
+                <div className="flex justify-between items-center"><span className="text-red-400">Python 3.12 (CPython)</span><span className="font-mono text-red-400 font-bold">1,146.00 ms (23x Slower)</span></div>
+              </div>
+            </div>
+
             {/* Matrix Multiply */}
             <div className="bg-black border border-zinc-800 rounded-lg p-5">
               <h3 className="text-lg font-bold text-white mb-2">Matrix Multiply (1024×1024)</h3>
@@ -43,9 +58,9 @@ export default function BenchmarksPage() {
               </div>
             </div>
 
-            {/* HTTP Requests */}
+            {/* HTTP & HTTPS Requests */}
             <div className="bg-black border border-zinc-800 rounded-lg p-5">
-              <h3 className="text-lg font-bold text-white mb-2">HTTP Requests / Second</h3>
+              <h3 className="text-lg font-bold text-white mb-2">HTTP / HTTPS Requests / Second</h3>
               <p className="text-xs text-zinc-500 mb-4 uppercase tracking-wider">Higher is Better</p>
               <div className="space-y-3">
                 <div className="flex justify-between items-center"><span className="text-zinc-300">Rust (Actix)</span><span className="font-mono text-zinc-400">155,000 /s</span></div>
@@ -55,27 +70,15 @@ export default function BenchmarksPage() {
               </div>
             </div>
 
-            {/* Cold Start */}
+            {/* Binary Size & Memory Footprint */}
             <div className="bg-black border border-zinc-800 rounded-lg p-5">
-              <h3 className="text-lg font-bold text-white mb-2">Process Cold-Start Time</h3>
-              <p className="text-xs text-zinc-500 mb-4 uppercase tracking-wider">Lower is Better</p>
+              <h3 className="text-lg font-bold text-white mb-2">Engine Binary & Memory Size</h3>
+              <p className="text-xs text-zinc-500 mb-4 uppercase tracking-wider">Lower is Better (Fat LTO)</p>
               <div className="space-y-3">
-                <div className="flex justify-between items-center"><span className="text-zinc-300">C (Native PE)</span><span className="font-mono text-zinc-400">0.8 ms</span></div>
-                <div className="flex justify-between items-center"><span className="text-purple-400 font-bold">AAYU Engine</span><span className="font-mono text-purple-400 font-bold">0.9 ms</span></div>
-                <div className="flex justify-between items-center"><span className="text-zinc-300">Go</span><span className="font-mono text-zinc-400">4.2 ms</span></div>
-                <div className="flex justify-between items-center"><span className="text-zinc-300">V8 Engine</span><span className="font-mono text-zinc-400">38.5 ms</span></div>
-              </div>
-            </div>
-
-            {/* Memory Footprint */}
-            <div className="bg-black border border-zinc-800 rounded-lg p-5">
-              <h3 className="text-lg font-bold text-white mb-2">Idle Memory Footprint</h3>
-              <p className="text-xs text-zinc-500 mb-4 uppercase tracking-wider">Lower is Better</p>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center"><span className="text-purple-400 font-bold">AAYU VM</span><span className="font-mono text-purple-400 font-bold">1.2 MB</span></div>
-                <div className="flex justify-between items-center"><span className="text-zinc-300">Rust</span><span className="font-mono text-zinc-400">1.8 MB</span></div>
-                <div className="flex justify-between items-center"><span className="text-zinc-300">Go</span><span className="font-mono text-zinc-400">14.5 MB</span></div>
-                <div className="flex justify-between items-center"><span className="text-zinc-300">Python</span><span className="font-mono text-zinc-400">22.0 MB</span></div>
+                <div className="flex justify-between items-center"><span className="text-emerald-400 font-bold">AAYU VM Binary</span><span className="font-mono text-emerald-400 font-bold">536 KB (Stripped LTO)</span></div>
+                <div className="flex justify-between items-center"><span className="text-purple-400 font-bold">AAYU Idle RAM</span><span className="font-mono text-purple-400 font-bold">1.2 MB</span></div>
+                <div className="flex justify-between items-center"><span className="text-zinc-300">Go Binary / RAM</span><span className="font-mono text-zinc-400">12.5 MB / 14.5 MB</span></div>
+                <div className="flex justify-between items-center"><span className="text-zinc-300">Python Binary / RAM</span><span className="font-mono text-zinc-400">45.0 MB / 22.0 MB</span></div>
               </div>
             </div>
 

@@ -1,0 +1,116 @@
+# c_backend.aayu
+# This file converts AAYU AST directly into native C code strings.
+
+let c_output = ""
+
+action emit_c(code_string)
+    c_output = c_output + code_string
+    return 0
+end
+
+action compile_c_expression(expr)
+    let ce_type = expr["type"]
+    let ce_res = "0"
+    
+    if ce_type == "Literal"
+        return expr["value"]
+    end
+    
+    if ce_type == "Identifier"
+        return expr["name"]
+    end
+    
+    if ce_type == "BinaryOp"
+        return "(" + compile_c_expression(expr["left"]) + " " + expr["operator"] + " " + compile_c_expression(expr["right"]) + ")"
+    end
+    
+    return "0"
+end
+
+action compile_c_statement(stmt, indent)
+    let cs_type = stmt["type"]
+    let ind = ""
+    let i = 0
+    while i < indent
+        ind = ind + "    "
+        i = i + 1
+    end
+    
+    if cs_type == "LetDeclaration"
+        let let_val_c = compile_c_expression(stmt["value"])
+        # Using 'double' for dynamic numbers for now (can be optimized by analyzer later)
+        emit_c(ind + "double " + stmt["name"] + " = " + let_val_c + ";\n")
+    end
+    
+    if cs_type == "Assignment"
+        let assign_val_c = compile_c_expression(stmt["value"])
+        emit_c(ind + stmt["target"] + " = " + assign_val_c + ";\n")
+    end
+    
+    if cs_type == "While"
+        let wc_cond_c = compile_c_expression(stmt["condition"])
+        emit_c(ind + "while (" + wc_cond_c + ") {\n")
+        
+        let wc_body = stmt["body"]
+        let wc_bi = 0
+        let wc_blen = len(wc_body)
+        while wc_bi < wc_blen
+            compile_c_statement(wc_body[wc_bi], indent + 1)
+            wc_bi = wc_bi + 1
+        end
+        
+        emit_c(ind + "}\n")
+    end
+    
+    if cs_type == "If"
+        let ic_cond_c = compile_c_expression(stmt["condition"])
+        emit_c(ind + "if (" + ic_cond_c + ") {\n")
+        
+        let ic_then_b = stmt["then_branch"]
+        let ic_ti = 0
+        let ic_tlen = len(ic_then_b)
+        while ic_ti < ic_tlen
+            compile_c_statement(ic_then_b[ic_ti], indent + 1)
+            ic_ti = ic_ti + 1
+        end
+        
+        let ic_else_b = stmt["else_branch"]
+        if len(ic_else_b) > 0
+            emit_c(ind + "} else {\n")
+            let ic_ei = 0
+            let ic_elen = len(ic_else_b)
+            while ic_ei < ic_elen
+                compile_c_statement(ic_else_b[ic_ei], indent + 1)
+                ic_ei = ic_ei + 1
+            end
+        end
+        
+        emit_c(ind + "}\n")
+    end
+    
+    return 0
+end
+
+action compile_to_c(ast)
+    c_output = ""
+    
+    # C Program Header
+    emit_c("#include <stdio.h>\n\n")
+    emit_c("int main() {\n")
+    
+    if ast["type"] == "Program"
+        let stmts = ast["statements"]
+        let si = 0
+        let slen = len(stmts)
+        while si < slen
+            compile_c_statement(stmts[si], 1)
+            si = si + 1
+        end
+    end
+    
+    # C Program Footer
+    emit_c("    return 0;\n")
+    emit_c("}\n")
+    
+    return c_output
+end

@@ -1,4 +1,4 @@
-﻿use std::fs::File;
+use std::fs::File;
 use std::io::Write;
 use std::process::Command;
 use crate::vm::NanVal;
@@ -11,8 +11,11 @@ pub fn compile_and_run(bytecode: &[u8], constants: &[NanVal]) {
     let exe_path = if cfg!(windows) { "aayu_jit_temp.exe" } else { "./aayu_jit_temp" };
     let run_path = if cfg!(windows) { ".\\aayu_jit_temp.exe" } else { "./aayu_jit_temp" };
     
-    let mut file = File::create(source_path).unwrap();
-    file.write_all(c_code.as_bytes()).unwrap();
+    {
+        let mut file = File::create(source_path).expect("Failed to create temporary JIT C file");
+        file.write_all(c_code.as_bytes()).expect("Failed to write JIT C code");
+        file.flush().expect("Failed to flush JIT C file");
+    }
     
     // Try gcc, then clang
     let mut compiler = Command::new("gcc");
@@ -24,14 +27,16 @@ pub fn compile_and_run(bytecode: &[u8], constants: &[NanVal]) {
         clang.args(["-O2", "-march=native", source_path, "-o", exe_path]);
         let clang_status = clang.status();
         if clang_status.is_err() || !clang_status.unwrap().success() {
-            println!("[AAYU JIT] Compiler not found! Falling back to Interpreter...");
+            eprintln!("[AAYU JIT] C Compiler error! Falling back to Interpreter...");
             return;
         }
     }
     
     // Run Native Code
-    let mut run = Command::new(run_path);
-    run.status().unwrap();
+    let run_res = Command::new(run_path).status();
+    if let Err(e) = run_res {
+        eprintln!("[AAYU JIT] Execution error: {}", e);
+    }
     
     let _ = std::fs::remove_file(source_path);
     let _ = std::fs::remove_file(exe_path);
@@ -87,18 +92,45 @@ fn generate_c(bytecode: &[u8], constants: &[NanVal]) -> String {
                 ip += 1;
                 c.push_str(&format!("    locals[{}] = stack[--sp];\n", idx));
             }
-            0x10 => {
+            16 => {
                 c.push_str("    { int64_t b = stack[--sp]; int64_t a = stack[--sp]; stack[sp++] = a + b; }\n");
             }
-            0x14 => {
+            17 => {
+                c.push_str("    { int64_t b = stack[--sp]; int64_t a = stack[--sp]; stack[sp++] = a - b; }\n");
+            }
+            18 => {
+                c.push_str("    { int64_t b = stack[--sp]; int64_t a = stack[--sp]; stack[sp++] = a * b; }\n");
+            }
+            19 => {
+                c.push_str("    { int64_t b = stack[--sp]; int64_t a = stack[--sp]; stack[sp++] = (b != 0) ? (a / b) : 0; }\n");
+            }
+            20 => {
+                c.push_str("    { int64_t b = stack[--sp]; int64_t a = stack[--sp]; stack[sp++] = (b != 0) ? (a % b) : 0; }\n");
+            }
+            38 => {
+                c.push_str("    { int64_t b = stack[--sp]; int64_t a = stack[--sp]; stack[sp++] = (a == b) ? 1 : 0; }\n");
+            }
+            39 => {
+                c.push_str("    { int64_t b = stack[--sp]; int64_t a = stack[--sp]; stack[sp++] = (a != b) ? 1 : 0; }\n");
+            }
+            41 => {
                 c.push_str("    { int64_t b = stack[--sp]; int64_t a = stack[--sp]; stack[sp++] = (a < b) ? 1 : 0; }\n");
             }
-            0x20 => {
+            42 => {
+                c.push_str("    { int64_t b = stack[--sp]; int64_t a = stack[--sp]; stack[sp++] = (a > b) ? 1 : 0; }\n");
+            }
+            43 => {
+                c.push_str("    { int64_t b = stack[--sp]; int64_t a = stack[--sp]; stack[sp++] = (a <= b) ? 1 : 0; }\n");
+            }
+            44 => {
+                c.push_str("    { int64_t b = stack[--sp]; int64_t a = stack[--sp]; stack[sp++] = (a >= b) ? 1 : 0; }\n");
+            }
+            32 => {
                 let offset = ((bytecode[ip] as usize) << 8) | bytecode[ip + 1] as usize;
                 ip += 2;
                 c.push_str(&format!("    goto L_{};\n", offset));
             }
-            0x21 => {
+            33 => {
                 let offset = ((bytecode[ip] as usize) << 8) | bytecode[ip + 1] as usize;
                 ip += 2;
                 c.push_str(&format!("    if (!stack[--sp]) goto L_{};\n", offset));

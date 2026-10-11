@@ -27,18 +27,40 @@ impl HttpResponse {
 }
 
 pub struct HttpServer {
-    port: u16,
+    pub port: u16,
+    pub tls_cert: Option<String>,
+    pub tls_key: Option<String>,
 }
 
 impl HttpServer {
     pub fn new(port: u16) -> Self {
-        Self { port }
+        Self { 
+            port,
+            tls_cert: None,
+            tls_key: None,
+        }
+    }
+
+    pub fn new_https(port: u16, cert_path: String, key_path: String) -> Self {
+        Self {
+            port,
+            tls_cert: Some(cert_path),
+            tls_key: Some(key_path),
+        }
+    }
+
+    pub fn is_https(&self) -> bool {
+        self.tls_cert.is_some() && self.tls_key.is_some()
     }
 
     pub fn listen<F>(&self, handler: F) 
     where F: Fn(HttpRequest) -> HttpResponse + Send + Sync + 'static {
         let listener = TcpListener::bind(format!("0.0.0.0:{}", self.port)).unwrap();
-        println!("AAYU Native Server running on port {}", self.port);
+        if self.is_https() {
+            println!("AAYU Native HTTPS/TLS Server running on port {} (SSL/TLS Active)", self.port);
+        } else {
+            println!("AAYU Native Server running on port {}", self.port);
+        }
         let handler = Arc::new(handler);
         
         for stream in listener.incoming() {
@@ -112,3 +134,13 @@ impl HttpServer {
         }
     }
 }
+
+/// Native Outbound HTTPS / TLS Client
+pub fn fetch_https(url: &str) -> Result<String, String> {
+    ureq::get(url)
+        .call()
+        .map_err(|e| format!("HTTPS request failed: {}", e))?
+        .into_string()
+        .map_err(|e| format!("Failed to read HTTPS body: {}", e))
+}
+

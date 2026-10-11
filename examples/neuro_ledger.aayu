@@ -188,6 +188,99 @@ Page Dashboard
                 end
             end
 
+            # ---------------- LIVE WALLET & LEDGER BALANCES ----------------
+            Container width="100%" backgroundColor="#0b1120" padding="24px 28px" borderRadius="16px" border="1px solid #1e293b" flexDirection="column" gap="14px"
+                Row justifyContent="space-between" alignItems="center"
+                    Text "On-Chain Account Balances (State Tree)" fontSize="18px" fontWeight="bold" color="#ffffff"
+                    Text "Real-time State Synchronization" fontSize="12px" color="#10b981"
+                end
+                Grid gridTemplateColumns="repeat(auto-fit, minmax(190px, 1fr))" gap="14px" width="100%"
+                    Card backgroundColor="#0f172a" padding="16px" borderRadius="10px" border="1px solid #1e293b" flexDirection="column" gap="4px"
+                        Text "Genesis Treasury" fontSize="12px" color="#94a3b8"
+                        Text "10,000.00 AYU" id="balTreasury" fontSize="16px" fontWeight="bold" color="#38bdf8"
+                    end
+                    Card backgroundColor="#0f172a" padding="16px" borderRadius="10px" border="1px solid #1e293b" flexDirection="column" gap="4px"
+                        Text "Alice (Validator)" fontSize="12px" color="#94a3b8"
+                        Text "450.00 AYU" id="balAlice" fontSize="16px" fontWeight="bold" color="#10b981"
+                    end
+                    Card backgroundColor="#0f172a" padding="16px" borderRadius="10px" border="1px solid #1e293b" flexDirection="column" gap="4px"
+                        Text "Bob (Full Node)" fontSize="12px" color="#94a3b8"
+                        Text "120.00 AYU" id="balBob" fontSize="16px" fontWeight="bold" color="#a855f7"
+                    end
+                    Card backgroundColor="#0f172a" padding="16px" borderRadius="10px" border="1px solid #1e293b" flexDirection="column" gap="4px"
+                        Text "Miner (Coinbase)" fontSize="12px" color="#94a3b8"
+                        Text "50.00 AYU" id="balMiner" fontSize="16px" fontWeight="bold" color="#f59e0b"
+                    end
+                    Card backgroundColor="#0f172a" padding="16px" borderRadius="10px" border="1px solid #1e293b" flexDirection="column" gap="4px"
+                        Text "Contract Pool" fontSize="12px" color="#94a3b8"
+                        Text "500.00 AYU" id="balPool" fontSize="16px" fontWeight="bold" color="#ec4899"
+                    end
+                end
+            end
+
+            # ---------------- AUTONOMOUS AI AGENT COMMAND DECK (CHATGPT / ANTIGRAVITY STYLE) ----------------
+            Container width="100%" backgroundColor="#0b1120" padding="24px 28px" borderRadius="16px" border="1px solid #1e293b" flexDirection="column" gap="14px"
+                Row justifyContent="space-between" alignItems="center"
+                    Row alignItems="center" gap="10px"
+                        Text "Autonomous AI Agent Command Console" fontSize="18px" fontWeight="bold" color="#ffffff"
+                        Text "AGENTIC INTERFACE" fontSize="11px" fontWeight="bold" color="#38bdf8" backgroundColor="#075985" padding="2px 8px" borderRadius="4px"
+                    end
+                    Text "Type natural intent or execute commands directly (Press Enter)" fontSize="12px" color="#94a3b8"
+                end
+                Row width="100%" gap="12px"
+                    Input id="cmdInput" placeholder="Type prompt or command: 'mine block', 'send 25 AYU to Bob', 'audit chain', 'simulate attack', 'balances'..." flex="1" backgroundColor="#070a13" color="#ffffff" border="1px solid #334155" borderRadius="8px" padding="12px 18px" fontSize="14px"
+                    Button "Execute Intent ->" id="btnSendCmd" onClick=neuro_exec_cmd backgroundColor="#2563eb" color="#ffffff" fontSize="14px" fontWeight="bold" padding="12px 24px" borderRadius="8px"
+                end
+                Row gap="8px" flexWrap="wrap" alignItems="center"
+                    Text "Quick Prompts:" fontSize="12px" color="#64748b"
+                    Button "Mine Block" onClick=quick_mine backgroundColor="#1e293b" color="#38bdf8" fontSize="12px" padding="6px 12px" borderRadius="6px"
+                    Button "Alice -> Bob (15 AYU)" onClick=quick_send backgroundColor="#1e293b" color="#10b981" fontSize="12px" padding="6px 12px" borderRadius="6px"
+                    Button "Run Neural PoUW Scan" onClick=quick_scan backgroundColor="#1e293b" color="#a855f7" fontSize="12px" padding="6px 12px" borderRadius="6px"
+                    Button "Trigger Smart Intent" onClick=quick_intent backgroundColor="#1e293b" color="#f59e0b" fontSize="12px" padding="6px 12px" borderRadius="6px"
+                    Button "Corrupt Block #103" onClick=quick_attack backgroundColor="#1e293b" color="#ef4444" fontSize="12px" padding="6px 12px" borderRadius="6px"
+                    Button "Audit Invariants" onClick=quick_audit backgroundColor="#1e293b" color="#059669" fontSize="12px" padding="6px 12px" borderRadius="6px"
+                end
+            end
+
+            # ---------------- CUSTOM TRANSACTION DISPATCHER & MEMPOOL ----------------
+            Container width="100%" backgroundColor="#0b1120" padding="24px 28px" borderRadius="16px" border="1px solid #1e293b" flexDirection="column" gap="16px"
+                Row justifyContent="space-between" alignItems="center"
+                    Row gap="10px" alignItems="center"
+                        Text "Live Mempool & Transaction Dispatcher" fontSize="18px" fontWeight="bold" color="#ffffff"
+                        Text "2 Tx Pending" id="mempoolCount" fontSize="12px" fontWeight="bold" color="#38bdf8" backgroundColor="#075985" padding="2px 10px" borderRadius="6px"
+                    end
+                    Row gap="10px"
+                        Button "+ Quick Alice -> Bob" onClick=neuro_create_tx backgroundColor="#2563eb" color="#ffffff" fontSize="13px" fontWeight="bold" padding="8px 16px" borderRadius="8px"
+                    end
+                end
+                Container width="100%" backgroundColor="#0f172a" padding="18px 22px" borderRadius="12px" border="1px solid #1e293b" flexDirection="column" gap="10px"
+                    Text "Dispatch Custom On-Chain Transfer (Signs with Private Key & Checks UTXO)" fontSize="14px" fontWeight="bold" color="#ffffff"
+                    Grid gridTemplateColumns="repeat(auto-fit, minmax(160px, 1fr))" gap="10px" width="100%"
+                        Column gap="4px"
+                            Text "Sender Wallet" fontSize="11px" color="#94a3b8"
+                            Input id="txSender" value="Alice" backgroundColor="#070a13" color="#ffffff" border="1px solid #334155" borderRadius="6px" padding="8px 12px" fontSize="13px"
+                        end
+                        Column gap="4px"
+                            Text "Recipient Wallet" fontSize="11px" color="#94a3b8"
+                            Input id="txRecipient" value="Bob" backgroundColor="#070a13" color="#ffffff" border="1px solid #334155" borderRadius="6px" padding="8px 12px" fontSize="13px"
+                        end
+                        Column gap="4px"
+                            Text "Amount (AYU)" fontSize="11px" color="#94a3b8"
+                            Input id="txAmount" value="25.0" backgroundColor="#070a13" color="#ffffff" border="1px solid #334155" borderRadius="6px" padding="8px 12px" fontSize="13px"
+                        end
+                        Column gap="4px"
+                            Text "Gas Fee (AYU)" fontSize="11px" color="#94a3b8"
+                            Input id="txFee" value="0.05" backgroundColor="#070a13" color="#ffffff" border="1px solid #334155" borderRadius="6px" padding="8px 12px" fontSize="13px"
+                        end
+                        Column justifyContent="flex-end"
+                            Button "Sign & Queue Tx" onClick=neuro_submit_custom_tx backgroundColor="#10b981" color="#ffffff" fontSize="13px" fontWeight="bold" padding="9px 16px" borderRadius="6px"
+                        end
+                    end
+                end
+                Container id="mempoolList" width="100%" flexDirection="column" gap="8px"
+                end
+            end
+
             # ---------------- LIVE CONTROL DECK ----------------
             Container width="100%" flexDirection="column" gap="16px"
                 Text "Interactive Node Operations Deck" fontSize="22px" fontWeight="800" color="#ffffff"

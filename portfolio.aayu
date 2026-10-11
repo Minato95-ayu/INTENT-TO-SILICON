@@ -9,6 +9,7 @@ Page Home
                 Button "About" onClick=scroll_about backgroundColor="transparent" color="#9ca3af" fontSize="15px" padding="8px 14px"
                 Button "Skills" onClick=scroll_skills backgroundColor="transparent" color="#9ca3af" fontSize="15px" padding="8px 14px"
                 Button "Projects (23)" onClick=scroll_work backgroundColor="transparent" color="#9ca3af" fontSize="15px" padding="8px 14px"
+                Button "Playground" onClick=scroll_playground backgroundColor="transparent" color="#a5b4fc" fontSize="15px" padding="8px 14px"
                 Button "Contact" onClick=scroll_contact backgroundColor="#6366f1" color="#ffffff" fontSize="15px" padding="9px 20px" borderRadius="8px"
             end
         end
@@ -346,6 +347,41 @@ Page Home
                             Button "View Architecture & Details →" onClick=open_proj_23 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
                         end
 
+                    end
+                end
+            end
+
+            # ---------------- INTERACTIVE AAYU PLAYGROUND ----------------
+            Container id="playground" flexShrink="0" width="100%" minHeight="580px" padding="70px 48px" alignItems="center" justifyContent="center" backgroundColor="#080c16"
+                Column gap="24px" maxWidth="1080px" width="100%"
+                    Row justifyContent="space-between" alignItems="center" flexWrap="wrap" gap="14px"
+                        Column gap="6px"
+                            Text "LIVE DEVELOPER RUNTIME" fontSize="13px" fontWeight="bold" color="#818cf8" letterSpacing="3px"
+                            Text "AAYU Interactive Compiler Playground" fontSize="36px" fontWeight="800" color="#ffffff"
+                            Text "Execute pure AAYU source code in real-time on the stack-based VM and NanBox JIT." fontSize="15px" color="#9ca3af"
+                        end
+                        Row gap="8px" flexWrap="wrap"
+                            Button "Hello World" onClick="loadPlaygroundPreset('hello')" backgroundColor="#1f2937" color="#38bdf8" fontSize="12px" fontWeight="bold" padding="8px 14px" borderRadius="6px"
+                            Button "Neural PoUW" onClick="loadPlaygroundPreset('neural')" backgroundColor="#1f2937" color="#a855f7" fontSize="12px" fontWeight="bold" padding="8px 14px" borderRadius="6px"
+                            Button "Blockchain Nonce" onClick="loadPlaygroundPreset('blockchain')" backgroundColor="#1f2937" color="#10b981" fontSize="12px" fontWeight="bold" padding="8px 14px" borderRadius="6px"
+                            Button "REST API Model" onClick="loadPlaygroundPreset('api')" backgroundColor="#1f2937" color="#f59e0b" fontSize="12px" fontWeight="bold" padding="8px 14px" borderRadius="6px"
+                        end
+                    end
+                    Grid gridTemplateColumns="repeat(auto-fit, minmax(380px, 1fr))" gap="20px" width="100%"
+                        Column gap="10px"
+                            Text "Source Code Editor (.aayu)" fontSize="14px" fontWeight="bold" color="#cbd5e1"
+                            Input id="playgroundCode" value="app HelloWorld\n\naction main\n    print(\"Hello, from AAYU Intent-to-Silicon!\")\n    let x = 40 + 2\n    print(\"Computed answer: \" + string(x))\nend\n\nrun main" height="220px" backgroundColor="#030712" color="#a5f3fc" border="1px solid #1f2937" borderRadius="10px" padding="16px" fontSize="14px" fontFamily="monospace"
+                            Row justifyContent="space-between" alignItems="center"
+                                Text "Pure AAYU Syntax (Zero Dependencies)" fontSize="12px" color="#64748b"
+                                Button "⚡ Run AAYU Bytecode" onClick=runPlaygroundCode backgroundColor="#6366f1" color="#ffffff" fontSize="14px" fontWeight="bold" padding="12px 24px" borderRadius="8px"
+                            end
+                        end
+                        Column gap="10px"
+                            Text "AAYU VM / JIT Execution Output" fontSize="14px" fontWeight="bold" color="#cbd5e1"
+                            Card id="playgroundOutput" backgroundColor="#02040a" border="1px solid #1f2937" borderRadius="10px" padding="18px" minHeight="220px" color="#10b981" fontSize="13px" fontFamily="monospace"
+                                Text "Click 'Run AAYU Bytecode' to compile and execute on the AAYU VM." fontSize="13px" color="#64748b" fontFamily="monospace"
+                            end
+                        end
                     end
                 end
             end

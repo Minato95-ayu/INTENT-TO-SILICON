@@ -41,26 +41,20 @@ impl HttpServer {
         }
     }
 
-    pub fn new_https(port: u16, cert_path: String, key_path: String) -> Self {
+    /// Configures HTTP server for production edge-termination reverse-proxy architecture (e.g. Caddy/Nginx)
+    pub fn new_with_proxy(port: u16, cert_path: Option<String>, key_path: Option<String>) -> Self {
         Self {
             port,
-            tls_cert: Some(cert_path),
-            tls_key: Some(key_path),
+            tls_cert: cert_path,
+            tls_key: key_path,
         }
-    }
-
-    pub fn is_https(&self) -> bool {
-        self.tls_cert.is_some() && self.tls_key.is_some()
     }
 
     pub fn listen<F>(&self, handler: F) 
     where F: Fn(HttpRequest) -> HttpResponse + Send + Sync + 'static {
-        let listener = TcpListener::bind(format!("0.0.0.0:{}", self.port)).unwrap();
-        if self.is_https() {
-            println!("AAYU Native HTTPS/TLS Server running on port {} (SSL/TLS Active)", self.port);
-        } else {
-            println!("AAYU Native Server running on port {}", self.port);
-        }
+        let listener = TcpListener::bind(format!("0.0.0.0:{}", self.port))
+            .unwrap_or_else(|e| panic!("Failed to bind to port {}: {}", self.port, e));
+        println!("AAYU Native HTTP Server running on port {}", self.port);
         let handler = Arc::new(handler);
         
         for stream in listener.incoming() {

@@ -74,25 +74,29 @@ $vmSumOut = & $binVm --sum 1000000 2>&1 | Out-String
 $vmNsMatch = [regex]::Match($vmSumOut, 'AAYU_VM_NS\s+(\d+)')
 $vmNs = if ($vmNsMatch.Success) { [int64]$vmNsMatch.Groups[1].Value } else { 0 }
 $vmMs = [math]::Round($vmNs / 1000000.0, 2)
-Write-Host "  VM Interpreter (1M loop): ${vmMs} ms ($([math]::Round($vmNs / 1000000.0 * 1000, 1)) ns/op)"
+$vmPerOp = [math]::Round($vmNs / 1000000.0, 2)
+Write-Host "  VM Interpreter (1M loop): ${vmMs} ms (${vmPerOp} ns/op)"
 
 $jitSumOut = & $binVm --sum 1000000 --jit 2>&1 | Out-String
 $jitNsMatch = [regex]::Match($jitSumOut, 'AAYU_VM_NS\s+(\d+)')
 $jitNs = if ($jitNsMatch.Success) { [int64]$jitNsMatch.Groups[1].Value } else { 0 }
 $jitMs = [math]::Round($jitNs / 1000000.0, 2)
-Write-Host "  Native JIT Engine (1M loop): ${jitMs} ms ($([math]::Round($jitNs / 1000000.0 * 1000, 1)) ns/op)"
+$jitPerOp = [math]::Round($jitNs / 1000000.0, 2)
+Write-Host "  Native JIT Engine (1M loop): ${jitMs} ms (${jitPerOp} ns/op)"
 
 # Run Pure C baseline if present
 $cBench = Join-Path $PSScriptRoot "bench_pure_c.exe"
 $cMs = 0
+$cPerOp = 0
 if (Test-Path $cBench) {
     $cOut = & $cBench | Out-String
     $cNsMatch = [regex]::Match($cOut, 'PURE_C_NS:\s+(\d+)')
     if ($cNsMatch.Success) {
         $cNs = [int64]$cNsMatch.Groups[1].Value
         $cMs = [math]::Round($cNs / 1000000.0, 2)
+        $cPerOp = [math]::Round($cNs / 10000000.0, 2)
     }
-    Write-Host "  Pure C Baseline (10M loop): ${cMs} ms" -ForegroundColor Magenta
+    Write-Host "  Pure C Baseline (10M loop): ${cMs} ms (${cPerOp} ns/op)" -ForegroundColor Magenta
 }
 
 # Write results markdown
@@ -122,10 +126,10 @@ $lines += "> **Scope:** Measures pure instruction dispatch latency inside the VM
 $lines += ""
 $lines += "| Engine Mode | Iterations | Time (ms) | Per-Op Latency |"
 $lines += "|---|---|---|---|"
-$lines += "| **Silicon VM (Interpreter)** | 1,000,000 | ${vmMs} ms | ~$([math]::Round($vmNs / 1000000.0 * 1000, 1)) ns/op |"
-$lines += "| **Silicon VM (Native JIT)** | 1,000,000 | ${jitMs} ms | ~$([math]::Round($jitNs / 1000000.0 * 1000, 1)) ns/op |"
+$lines += "| **Silicon VM (Interpreter)** | 1,000,000 | ${vmMs} ms | ~${vmPerOp} ns/op |"
+$lines += "| **Silicon VM (Native JIT)** | 1,000,000 | ${jitMs} ms | ~${jitPerOp} ns/op |"
 if ($cMs -gt 0) {
-    $lines += "| **Pure C Baseline (-O2)** | 10,000,000 | ${cMs} ms | ~3.2 ns/op |"
+    $lines += "| **Pure C Baseline (-O2)** | 10,000,000 | ${cMs} ms | ~${cPerOp} ns/op |"
 }
 $lines += ""
 $lines += "## Reproducibility"

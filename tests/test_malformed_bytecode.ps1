@@ -68,6 +68,11 @@ $testCases = @(
             0x20, 0x00, 0x01        # JMP to offset 1 (offsets 3, 4, 5) -> misaligned!
         )
         Expected = "instruction boundary"
+    },
+    @{
+        Name = "Stack underflow (POP on empty stack)"
+        Bytes = [byte[]]@(0x41, 0x41, 0x59, 0x55, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02)
+        Expected = "Stack underflow"
     }
 )
 

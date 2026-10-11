@@ -57,14 +57,8 @@ jobs:
           ./bin/aayu --version
           ./bin/aayu --help
           ./bin/aayu --sum 1000000
-          # Run malformed rejection test on Linux
-          echo "BAD_MAGIC" > bad.ayc
-          if ./bin/aayu run bad.ayc; then
-            echo "Security vulnerability: bad magic was not rejected!"
-            exit 1
-          else
-            echo "PASS: bad magic safely rejected on Linux"
-          fi
+          # Run comprehensive malformed security test suite on Linux
+          bash tests/test_malformed_bytecode.sh
           # Run full Linux test runner
           bash tests/run_tests.sh
 

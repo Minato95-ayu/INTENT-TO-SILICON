@@ -62,6 +62,7 @@ pub struct AayuVM {
     constants: Vec<NanVal>,
     pub string_heap: Vec<String>,
     pub memory: crate::memory::MemoryManager,
+    pub call_depth: usize,
     
     pub tensor_heap: Vec<Tensor>,
     pub db_engine: DbEngine,
@@ -69,6 +70,9 @@ pub struct AayuVM {
 }
 
 impl AayuVM {
+    pub const MAX_STACK_SIZE: usize = 4096;
+    pub const MAX_CALL_DEPTH: usize = 1024;
+
     pub fn new(bytecode: Vec<u8>, constants: Vec<NanVal>, strings: Vec<String>) -> Self {
         Self {
             stack: [NanVal::null(); 4096],
@@ -79,6 +83,7 @@ impl AayuVM {
             constants,
             string_heap: strings,
             memory: crate::memory::MemoryManager::new(),
+            call_depth: 0,
             tensor_heap: Vec::new(),
             db_engine: DbEngine::new("aayu_db.rsdb"),
             state: std::collections::HashMap::new(),
@@ -269,6 +274,151 @@ impl AayuVM {
             }
         }
 
+        // Pass 3: Abstract Control-Flow Stack Bounds & Height Consistency Verifier
+        let mut stack_depths: std::collections::HashMap<usize, i32> = std::collections::HashMap::new();
+        let mut queue: std::collections::VecDeque<(usize, i32)> = std::collections::VecDeque::new();
+        if len > 0 {
+            queue.push_back((0, 0i32));
+            stack_depths.insert(0, 0i32);
+        }
+
+        while let Some((mut pc, mut depth)) = queue.pop_front() {
+            while pc < len {
+                let op = self.bytecode[pc];
+                let op_pc = pc;
+                pc += 1;
+
+                match op {
+                    0x00 | 0xFF => {
+                        // HALT terminates the control flow path
+                        break;
+                    }
+                    0x01 => { // PUSH_CONST (2 bytes operand)
+                        pc += 2;
+                        depth += 1;
+                    }
+                    0x02 => { // POP
+                        depth -= 1;
+                    }
+                    0x05 => { // LOAD_VAR (1 byte operand)
+                        pc += 1;
+                        depth += 1;
+                    }
+                    0x06 => { // STORE_VAR (1 byte operand)
+                        pc += 1;
+                        depth -= 1;
+                    }
+                    0x10..=0x16 => { // Binary arithmetic (ADD, SUB, MUL, DIV, MOD, etc.)
+                        depth -= 1; // pops 2, pushes 1 -> net -1
+                    }
+                    0x20 => { // JUMP (2 bytes operand)
+                        let target = ((self.bytecode[pc] as usize) << 8) | self.bytecode[pc + 1] as usize;
+                        if target < len {
+                            if let Some(&existing) = stack_depths.get(&target) {
+                                if existing != depth {
+                                    return Err(format!("Stack height mismatch at jump target offset {}: expected {}, found {}", target, existing, depth));
+                                }
+                            } else {
+                                stack_depths.insert(target, depth);
+                                queue.push_back((target, depth));
+                            }
+                        }
+                        break; // Unconditional jump terminates linear path
+                    }
+                    0x21 => { // JUMP_IF_FALSE (2 bytes operand)
+                        let target = ((self.bytecode[pc] as usize) << 8) | self.bytecode[pc + 1] as usize;
+                        pc += 2;
+                        depth -= 1; // pops condition
+                        if depth < 0 {
+                            return Err(format!("Stack underflow detected at JUMP_IF_FALSE at offset {}", op_pc));
+                        }
+                        // Branch path
+                        if target < len {
+                            if let Some(&existing) = stack_depths.get(&target) {
+                                if existing != depth {
+                                    return Err(format!("Stack height mismatch at jump target offset {}: expected {}, found {}", target, existing, depth));
+                                }
+                            } else {
+                                stack_depths.insert(target, depth);
+                                queue.push_back((target, depth));
+                            }
+                        }
+                        // Fall-through path
+                        if pc < len {
+                            if let Some(&existing) = stack_depths.get(&pc) {
+                                if existing != depth {
+                                    return Err(format!("Stack height mismatch at fallthrough offset {}: expected {}, found {}", pc, existing, depth));
+                                }
+                                break;
+                            } else {
+                                stack_depths.insert(pc, depth);
+                            }
+                        }
+                        continue;
+                    }
+                    34 => { // CALL (2 bytes operand: argc)
+                        let argc = ((self.bytecode[pc] as usize) << 8) | self.bytecode[pc + 1] as usize;
+                        pc += 2;
+                        depth = depth - (argc as i32) - 1 + 1;
+                    }
+                    35 | 98 => { // RET
+                        break; // Return terminates the path
+                    }
+                    38 | 39 | 41 | 42 | 43 | 44 => { // CMP operators (pop 2, push 1)
+                        depth -= 1;
+                    }
+                    48 => { // STORE_STATE (2 bytes)
+                        pc += 2;
+                        depth -= 1;
+                    }
+                    49 => { // LOAD_STATE (2 bytes)
+                        pc += 2;
+                        depth += 1;
+                    }
+                    50 => { pc += 2; }
+                    51 | 52 => {}
+                    53 => { pc += 2; }
+                    54 => { pc += 2; }
+                    55 => { pc += 2; }
+                    81 => { // PRINT: pops 1
+                        depth -= 1;
+                    }
+                    128 => { // BUILD_DICT (2 bytes: num_pairs)
+                        let num_pairs = ((self.bytecode[pc] as usize) << 8) | self.bytecode[pc + 1] as usize;
+                        pc += 2;
+                        depth = depth - (num_pairs as i32 * 2) + 1;
+                    }
+                    134 | 136 | 137 => {}
+                    140 => { // StringConcat: pops 2, pushes 1
+                        depth -= 1;
+                    }
+                    141 => { // StringSlice: pops 3, pushes 1
+                        depth -= 2;
+                    }
+                    142 => {}
+                    145 => { // PUSH_STRING_SAFE (2 bytes)
+                        pc += 2;
+                        depth += 1;
+                    }
+                    150 | 160 | 161 | 162 | 170 | 171 | 172 | 180 | 181 | 190 | 191 => {}
+                    254 => { // Legacy ADD
+                        depth -= 1;
+                    }
+                    253 => { // Legacy LT
+                        depth -= 1;
+                    }
+                    _ => break,
+                }
+
+                if depth < 0 {
+                    return Err(format!("Stack underflow detected at instruction 0x{:02X} at offset {}", op, op_pc));
+                }
+                if depth > Self::MAX_STACK_SIZE as i32 {
+                    return Err(format!("Stack overflow detected: stack depth {} exceeds limit ({}) at offset {}", depth, Self::MAX_STACK_SIZE, op_pc));
+                }
+            }
+        }
+
         Ok(())
     }
 
@@ -388,6 +538,10 @@ impl AayuVM {
                 34 => { // CALL
                     let argc = ((self.bytecode[self.ip] as usize) << 8) | self.bytecode[self.ip + 1] as usize;
                     self.ip += 2;
+                    if self.call_depth >= Self::MAX_CALL_DEPTH {
+                        return Err(format!("StackOverflow: maximum call depth of {} exceeded", Self::MAX_CALL_DEPTH));
+                    }
+                    self.call_depth += 1;
                     if self.sp >= argc + 1 {
                         let func_val = self.stack[self.sp - 1 - argc];
                         let func_name = if func_val.is_string() && func_val.as_string_idx() < self.string_heap.len() {
@@ -430,6 +584,9 @@ impl AayuVM {
                     }
                 }
                 35 | 98 => { // Ret / ReturnValue
+                    if self.call_depth > 0 {
+                        self.call_depth -= 1;
+                    }
                     // Value is at self.stack[self.sp - 1]
                 }
                 128 => { // BUILD_DICT

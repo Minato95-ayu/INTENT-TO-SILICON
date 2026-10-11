@@ -1,0 +1,64 @@
+﻿name: Cross-Platform Native Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build-native:
+    name: Build Native Rust Binaries on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build aayu-vm
+        run: cargo build --release --manifest-path runtime_rs/Cargo.toml
+
+      - name: Build aayu compiler
+        run: cargo build --release --manifest-path compiler/rust/Cargo.toml
+
+      - name: Package Windows (zip)
+        if: matrix.os == 'windows-latest'
+        run: |
+          mkdir dist
+          copy runtime_rs\target\release\aayu-vm.exe dist\aayu-vm.exe
+          copy compiler\rust\target\release\aayuc.exe dist\aayuc.exe
+          Compress-Archive -Path dist\* -DestinationPath aayu-windows.zip
+        shell: powershell
+
+      - name: Package Linux (tar.gz)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          mkdir dist
+          cp runtime_rs/target/release/aayu-vm dist/
+          cp compiler/rust/target/release/aayuc dist/
+          cd dist && tar -czvf ../aayu-linux.tar.gz *
+
+      - name: Package macOS (zip)
+        if: matrix.os == 'macos-latest'
+        run: |
+          mkdir dist
+          cp runtime_rs/target/release/aayu-vm dist/
+          cp compiler/rust/target/release/aayuc dist/
+          cd dist && zip -r ../aayu-macos.zip *
+
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            aayu-windows.zip
+            aayu-linux.tar.gz
+            aayu-macos.zip

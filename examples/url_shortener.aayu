@@ -1,0 +1,45 @@
+﻿app URLShortener
+
+model Link
+    id String
+    original_url String
+    clicks Int = 0
+end
+
+route "/api/shorten"
+    post
+        let data = request.json()
+        let short_id = crypto::random_string(6)
+        Link.insert(id: short_id, original_url: data.url)
+        respond({"short_url": "http://localhost:8002/" + short_id})
+    end
+end
+
+route "/:id"
+    get
+        let link_id = request.param("id")
+        let link = Link.find(id: link_id)
+        if link != None
+            link.clicks = link.clicks + 1
+            link.update()
+            respond("", status: 302, headers: {"Location": link.original_url})
+        else
+            respond("Link not found", status: 404)
+        end
+    end
+end
+
+route "/api/stats/:id"
+    get
+        let link_id = request.param("id")
+        let link = Link.find(id: link_id)
+        respond(link)
+    end
+end
+
+action main
+    print("URL Shortener running on port 8002...")
+    server.start(8002)
+end
+
+run main

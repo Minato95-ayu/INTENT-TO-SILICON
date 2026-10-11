@@ -1,0 +1,36 @@
+[
+  {
+    "id": "T1",
+    "description": "Implement TypeNode hierarchy in type_nodes.py",
+    "status": "COMPLETED",
+    "dependencies": [],
+    "metadata": {
+      "execute_result": "PASS",
+      "regression_risk": "LOW"
+    }
+  },
+  {
+    "id": "T2",
+    "description": "Update ast_nodes.py to support type_annotation and return_type",
+    "status": "COMPLETED",
+    "dependencies": [
+      "T1"
+    ],
+    "metadata": {
+      "execute_result": "PASS",
+      "regression_risk": "LOW"
+    }
+  },
+  {
+    "id": "T3",
+    "description": "Update parser.py to parse type annotations",
+    "status": "COMPLETED",
+    "dependencies": [
+      "T2"
+    ],
+    "metadata": {
+      "execute_result": "PASS",
+      "regression_risk": "HIGH"
+    }
+  }
+]

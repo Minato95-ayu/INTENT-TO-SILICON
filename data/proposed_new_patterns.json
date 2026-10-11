@@ -1,0 +1,42 @@
+{
+  "performance_frustration": [
+    {
+      "phrase": "dimaag ki dahi",
+      "source": "twitter",
+      "raw_context": "Bhai kya raddi app banaya hai, payment page par aate hi dimaag ki dahi ho gayi. Itna slow loading!"
+    },
+    {
+      "phrase": "faaltu speed",
+      "source": "reddit_india",
+      "raw_context": "Kal raat tatkal ticket book karte waqt net ki waat lag gayi. App hang ho gaya aur session expire."
+    }
+  ],
+  "urgency": [
+    {
+      "phrase": "waat lag gayi",
+      "source": "reddit_india",
+      "raw_context": "Kal raat tatkal ticket book karte waqt net ki waat lag gayi. App hang ho gaya aur session expire."
+    }
+  ],
+  "trust_deficit": [
+    {
+      "phrase": "arre yaar",
+      "source": "twitter",
+      "raw_context": "Arre yaar! OTP 15 minute baad aa raha hai. Inka data privacy policy clear nahi hai, data leak hone ka pura chance hai."
+    }
+  ],
+  "support_frustration": [
+    {
+      "phrase": "insaan se baat",
+      "source": "reddit_india",
+      "raw_context": "Yaar inka bot system ekdam kachra hai. Ek hi jawaab baar baar deta hai, insaan se baat karne ka koi option hi nahi hai. Dimaag kharab kar diya."
+    }
+  ],
+  "navigation_confusion": [
+    {
+      "phrase": "sir ke upar",
+      "source": "play_store",
+      "raw_context": "Itne saare options de diye hain app mein, samajh nahi aata kahan click karu. Pura sir ke upar se nikal gaya."
+    }
+  ]
+}

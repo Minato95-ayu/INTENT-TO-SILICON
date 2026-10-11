@@ -1,0 +1,9 @@
+app AayuFS
+
+action readFile(path)
+    return file::read(path)
+end
+
+action writeFile(path, content)
+    return file::write(path, content)
+end

@@ -1,0 +1,7 @@
+app Simple
+
+action main
+    print("HELLO AAYU")
+end
+
+run main

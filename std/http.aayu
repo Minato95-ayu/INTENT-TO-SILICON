@@ -1,0 +1,14 @@
+﻿// AAYU Standard Library: HTTP Client
+// Provides native HTTP request functions mapped to VM opcodes
+
+module Http
+
+action get(url: String) -> String
+    // Natively mapped to Opcode 200
+end
+
+action post(url: String, body: String) -> String
+    // Natively mapped to Opcode 201
+end
+
+end

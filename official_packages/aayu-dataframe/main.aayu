@@ -1,0 +1,5 @@
+app AayuDataframe
+
+action loadCSV(path)
+    return df_read_csv(path)
+end

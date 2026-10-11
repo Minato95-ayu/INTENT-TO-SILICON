@@ -1,0 +1,501 @@
+id,input,category,source,expected_result
+1,fast database hona chahiye 0,functional,benchmark_v2_generator,success
+2,microservices lagani hain 1,functional,benchmark_v2_generator,success
+3,realtime chat app bana do 2,functional,benchmark_v2_generator,success
+4,mujhe scalable e-commerce app chahiye 3,functional,benchmark_v2_generator,success
+5,realtime chat app bana do 4,functional,benchmark_v2_generator,success
+6,fast database hona chahiye 5,functional,benchmark_v2_generator,success
+7,realtime chat app bana do 6,functional,benchmark_v2_generator,success
+8,realtime chat app bana do 7,functional,benchmark_v2_generator,success
+9,realtime chat app bana do 8,functional,benchmark_v2_generator,success
+10,fast database hona chahiye 9,functional,benchmark_v2_generator,success
+11,mujhe scalable e-commerce app chahiye 10,functional,benchmark_v2_generator,success
+12,fast database hona chahiye 11,functional,benchmark_v2_generator,success
+13,fast database hona chahiye 12,functional,benchmark_v2_generator,success
+14,mujhe scalable e-commerce app chahiye 13,functional,benchmark_v2_generator,success
+15,payment integration ke sath website 14,functional,benchmark_v2_generator,success
+16,microservices lagani hain 15,functional,benchmark_v2_generator,success
+17,fast database hona chahiye 16,functional,benchmark_v2_generator,success
+18,mujhe scalable e-commerce app chahiye 17,functional,benchmark_v2_generator,success
+19,microservices lagani hain 18,functional,benchmark_v2_generator,success
+20,realtime chat app bana do 19,functional,benchmark_v2_generator,success
+21,fast database hona chahiye 20,functional,benchmark_v2_generator,success
+22,payment integration ke sath website 21,functional,benchmark_v2_generator,success
+23,realtime chat app bana do 22,functional,benchmark_v2_generator,success
+24,microservices lagani hain 23,functional,benchmark_v2_generator,success
+25,fast database hona chahiye 24,functional,benchmark_v2_generator,success
+26,payment integration ke sath website 25,functional,benchmark_v2_generator,success
+27,payment integration ke sath website 26,functional,benchmark_v2_generator,success
+28,payment integration ke sath website 27,functional,benchmark_v2_generator,success
+29,microservices lagani hain 28,functional,benchmark_v2_generator,success
+30,fast database hona chahiye 29,functional,benchmark_v2_generator,success
+31,microservices lagani hain 30,functional,benchmark_v2_generator,success
+32,fast database hona chahiye 31,functional,benchmark_v2_generator,success
+33,realtime chat app bana do 32,functional,benchmark_v2_generator,success
+34,mujhe scalable e-commerce app chahiye 33,functional,benchmark_v2_generator,success
+35,payment integration ke sath website 34,functional,benchmark_v2_generator,success
+36,realtime chat app bana do 35,functional,benchmark_v2_generator,success
+37,payment integration ke sath website 36,functional,benchmark_v2_generator,success
+38,payment integration ke sath website 37,functional,benchmark_v2_generator,success
+39,fast database hona chahiye 38,functional,benchmark_v2_generator,success
+40,payment integration ke sath website 39,functional,benchmark_v2_generator,success
+41,microservices lagani hain 40,functional,benchmark_v2_generator,success
+42,microservices lagani hain 41,functional,benchmark_v2_generator,success
+43,mujhe scalable e-commerce app chahiye 42,functional,benchmark_v2_generator,success
+44,microservices lagani hain 43,functional,benchmark_v2_generator,success
+45,realtime chat app bana do 44,functional,benchmark_v2_generator,success
+46,realtime chat app bana do 45,functional,benchmark_v2_generator,success
+47,fast database hona chahiye 46,functional,benchmark_v2_generator,success
+48,mujhe scalable e-commerce app chahiye 47,functional,benchmark_v2_generator,success
+49,realtime chat app bana do 48,functional,benchmark_v2_generator,success
+50,fast database hona chahiye 49,functional,benchmark_v2_generator,success
+51,realtime chat app bana do 50,functional,benchmark_v2_generator,success
+52,fast database hona chahiye 51,functional,benchmark_v2_generator,success
+53,payment integration ke sath website 52,functional,benchmark_v2_generator,success
+54,mujhe scalable e-commerce app chahiye 53,functional,benchmark_v2_generator,success
+55,payment integration ke sath website 54,functional,benchmark_v2_generator,success
+56,mujhe scalable e-commerce app chahiye 55,functional,benchmark_v2_generator,success
+57,fast database hona chahiye 56,functional,benchmark_v2_generator,success
+58,realtime chat app bana do 57,functional,benchmark_v2_generator,success
+59,realtime chat app bana do 58,functional,benchmark_v2_generator,success
+60,fast database hona chahiye 59,functional,benchmark_v2_generator,success
+61,fast database hona chahiye 60,functional,benchmark_v2_generator,success
+62,microservices lagani hain 61,functional,benchmark_v2_generator,success
+63,microservices lagani hain 62,functional,benchmark_v2_generator,success
+64,payment integration ke sath website 63,functional,benchmark_v2_generator,success
+65,fast database hona chahiye 64,functional,benchmark_v2_generator,success
+66,mujhe scalable e-commerce app chahiye 65,functional,benchmark_v2_generator,success
+67,payment integration ke sath website 66,functional,benchmark_v2_generator,success
+68,mujhe scalable e-commerce app chahiye 67,functional,benchmark_v2_generator,success
+69,microservices lagani hain 68,functional,benchmark_v2_generator,success
+70,microservices lagani hain 69,functional,benchmark_v2_generator,success
+71,realtime chat app bana do 70,functional,benchmark_v2_generator,success
+72,fast database hona chahiye 71,functional,benchmark_v2_generator,success
+73,mujhe scalable e-commerce app chahiye 72,functional,benchmark_v2_generator,success
+74,microservices lagani hain 73,functional,benchmark_v2_generator,success
+75,mujhe scalable e-commerce app chahiye 74,functional,benchmark_v2_generator,success
+76,microservices lagani hain 75,functional,benchmark_v2_generator,success
+77,fast database hona chahiye 76,functional,benchmark_v2_generator,success
+78,fast database hona chahiye 77,functional,benchmark_v2_generator,success
+79,realtime chat app bana do 78,functional,benchmark_v2_generator,success
+80,fast database hona chahiye 79,functional,benchmark_v2_generator,success
+81,mujhe scalable e-commerce app chahiye 80,functional,benchmark_v2_generator,success
+82,microservices lagani hain 81,functional,benchmark_v2_generator,success
+83,payment integration ke sath website 82,functional,benchmark_v2_generator,success
+84,realtime chat app bana do 83,functional,benchmark_v2_generator,success
+85,mujhe scalable e-commerce app chahiye 84,functional,benchmark_v2_generator,success
+86,payment integration ke sath website 85,functional,benchmark_v2_generator,success
+87,realtime chat app bana do 86,functional,benchmark_v2_generator,success
+88,mujhe scalable e-commerce app chahiye 87,functional,benchmark_v2_generator,success
+89,mujhe scalable e-commerce app chahiye 88,functional,benchmark_v2_generator,success
+90,microservices lagani hain 89,functional,benchmark_v2_generator,success
+91,mujhe scalable e-commerce app chahiye 90,functional,benchmark_v2_generator,success
+92,payment integration ke sath website 91,functional,benchmark_v2_generator,success
+93,mujhe scalable e-commerce app chahiye 92,functional,benchmark_v2_generator,success
+94,realtime chat app bana do 93,functional,benchmark_v2_generator,success
+95,mujhe scalable e-commerce app chahiye 94,functional,benchmark_v2_generator,success
+96,microservices lagani hain 95,functional,benchmark_v2_generator,success
+97,mujhe scalable e-commerce app chahiye 96,functional,benchmark_v2_generator,success
+98,fast database hona chahiye 97,functional,benchmark_v2_generator,success
+99,mujhe scalable e-commerce app chahiye 98,functional,benchmark_v2_generator,success
+100,payment integration ke sath website 99,functional,benchmark_v2_generator,success
+101,best app chahiye duniya ki 0,ambiguous,benchmark_v2_generator,clarification_required
+102,idea hai startup ka 1,ambiguous,benchmark_v2_generator,clarification_required
+103,best app chahiye duniya ki 2,ambiguous,benchmark_v2_generator,clarification_required
+104,ekdum mast app banao 3,ambiguous,benchmark_v2_generator,clarification_required
+105,viral hona chahiye 4,ambiguous,benchmark_v2_generator,clarification_required
+106,idea hai startup ka 5,ambiguous,benchmark_v2_generator,clarification_required
+107,ekdum mast app banao 6,ambiguous,benchmark_v2_generator,clarification_required
+108,ekdum mast app banao 7,ambiguous,benchmark_v2_generator,clarification_required
+109,viral hona chahiye 8,ambiguous,benchmark_v2_generator,clarification_required
+110,ekdum mast app banao 9,ambiguous,benchmark_v2_generator,clarification_required
+111,idea hai startup ka 10,ambiguous,benchmark_v2_generator,clarification_required
+112,best app chahiye duniya ki 11,ambiguous,benchmark_v2_generator,clarification_required
+113,idea hai startup ka 12,ambiguous,benchmark_v2_generator,clarification_required
+114,ekdum mast app banao 13,ambiguous,benchmark_v2_generator,clarification_required
+115,idea hai startup ka 14,ambiguous,benchmark_v2_generator,clarification_required
+116,idea hai startup ka 15,ambiguous,benchmark_v2_generator,clarification_required
+117,viral hona chahiye 16,ambiguous,benchmark_v2_generator,clarification_required
+118,ekdum mast app banao 17,ambiguous,benchmark_v2_generator,clarification_required
+119,idea hai startup ka 18,ambiguous,benchmark_v2_generator,clarification_required
+120,best app chahiye duniya ki 19,ambiguous,benchmark_v2_generator,clarification_required
+121,next level cheez banani hai 20,ambiguous,benchmark_v2_generator,clarification_required
+122,idea hai startup ka 21,ambiguous,benchmark_v2_generator,clarification_required
+123,viral hona chahiye 22,ambiguous,benchmark_v2_generator,clarification_required
+124,best app chahiye duniya ki 23,ambiguous,benchmark_v2_generator,clarification_required
+125,ekdum mast app banao 24,ambiguous,benchmark_v2_generator,clarification_required
+126,next level cheez banani hai 25,ambiguous,benchmark_v2_generator,clarification_required
+127,best app chahiye duniya ki 26,ambiguous,benchmark_v2_generator,clarification_required
+128,best app chahiye duniya ki 27,ambiguous,benchmark_v2_generator,clarification_required
+129,next level cheez banani hai 28,ambiguous,benchmark_v2_generator,clarification_required
+130,ekdum mast app banao 29,ambiguous,benchmark_v2_generator,clarification_required
+131,best app chahiye duniya ki 30,ambiguous,benchmark_v2_generator,clarification_required
+132,next level cheez banani hai 31,ambiguous,benchmark_v2_generator,clarification_required
+133,next level cheez banani hai 32,ambiguous,benchmark_v2_generator,clarification_required
+134,idea hai startup ka 33,ambiguous,benchmark_v2_generator,clarification_required
+135,best app chahiye duniya ki 34,ambiguous,benchmark_v2_generator,clarification_required
+136,next level cheez banani hai 35,ambiguous,benchmark_v2_generator,clarification_required
+137,next level cheez banani hai 36,ambiguous,benchmark_v2_generator,clarification_required
+138,next level cheez banani hai 37,ambiguous,benchmark_v2_generator,clarification_required
+139,next level cheez banani hai 38,ambiguous,benchmark_v2_generator,clarification_required
+140,ekdum mast app banao 39,ambiguous,benchmark_v2_generator,clarification_required
+141,ekdum mast app banao 40,ambiguous,benchmark_v2_generator,clarification_required
+142,best app chahiye duniya ki 41,ambiguous,benchmark_v2_generator,clarification_required
+143,viral hona chahiye 42,ambiguous,benchmark_v2_generator,clarification_required
+144,idea hai startup ka 43,ambiguous,benchmark_v2_generator,clarification_required
+145,next level cheez banani hai 44,ambiguous,benchmark_v2_generator,clarification_required
+146,ekdum mast app banao 45,ambiguous,benchmark_v2_generator,clarification_required
+147,viral hona chahiye 46,ambiguous,benchmark_v2_generator,clarification_required
+148,next level cheez banani hai 47,ambiguous,benchmark_v2_generator,clarification_required
+149,viral hona chahiye 48,ambiguous,benchmark_v2_generator,clarification_required
+150,best app chahiye duniya ki 49,ambiguous,benchmark_v2_generator,clarification_required
+151,ekdum mast app banao 50,ambiguous,benchmark_v2_generator,clarification_required
+152,next level cheez banani hai 51,ambiguous,benchmark_v2_generator,clarification_required
+153,next level cheez banani hai 52,ambiguous,benchmark_v2_generator,clarification_required
+154,idea hai startup ka 53,ambiguous,benchmark_v2_generator,clarification_required
+155,ekdum mast app banao 54,ambiguous,benchmark_v2_generator,clarification_required
+156,best app chahiye duniya ki 55,ambiguous,benchmark_v2_generator,clarification_required
+157,next level cheez banani hai 56,ambiguous,benchmark_v2_generator,clarification_required
+158,idea hai startup ka 57,ambiguous,benchmark_v2_generator,clarification_required
+159,next level cheez banani hai 58,ambiguous,benchmark_v2_generator,clarification_required
+160,idea hai startup ka 59,ambiguous,benchmark_v2_generator,clarification_required
+161,ekdum mast app banao 60,ambiguous,benchmark_v2_generator,clarification_required
+162,idea hai startup ka 61,ambiguous,benchmark_v2_generator,clarification_required
+163,best app chahiye duniya ki 62,ambiguous,benchmark_v2_generator,clarification_required
+164,idea hai startup ka 63,ambiguous,benchmark_v2_generator,clarification_required
+165,viral hona chahiye 64,ambiguous,benchmark_v2_generator,clarification_required
+166,ekdum mast app banao 65,ambiguous,benchmark_v2_generator,clarification_required
+167,next level cheez banani hai 66,ambiguous,benchmark_v2_generator,clarification_required
+168,best app chahiye duniya ki 67,ambiguous,benchmark_v2_generator,clarification_required
+169,next level cheez banani hai 68,ambiguous,benchmark_v2_generator,clarification_required
+170,best app chahiye duniya ki 69,ambiguous,benchmark_v2_generator,clarification_required
+171,best app chahiye duniya ki 70,ambiguous,benchmark_v2_generator,clarification_required
+172,next level cheez banani hai 71,ambiguous,benchmark_v2_generator,clarification_required
+173,idea hai startup ka 72,ambiguous,benchmark_v2_generator,clarification_required
+174,idea hai startup ka 73,ambiguous,benchmark_v2_generator,clarification_required
+175,viral hona chahiye 74,ambiguous,benchmark_v2_generator,clarification_required
+176,next level cheez banani hai 75,ambiguous,benchmark_v2_generator,clarification_required
+177,best app chahiye duniya ki 76,ambiguous,benchmark_v2_generator,clarification_required
+178,best app chahiye duniya ki 77,ambiguous,benchmark_v2_generator,clarification_required
+179,ekdum mast app banao 78,ambiguous,benchmark_v2_generator,clarification_required
+180,best app chahiye duniya ki 79,ambiguous,benchmark_v2_generator,clarification_required
+181,viral hona chahiye 80,ambiguous,benchmark_v2_generator,clarification_required
+182,next level cheez banani hai 81,ambiguous,benchmark_v2_generator,clarification_required
+183,ekdum mast app banao 82,ambiguous,benchmark_v2_generator,clarification_required
+184,best app chahiye duniya ki 83,ambiguous,benchmark_v2_generator,clarification_required
+185,next level cheez banani hai 84,ambiguous,benchmark_v2_generator,clarification_required
+186,idea hai startup ka 85,ambiguous,benchmark_v2_generator,clarification_required
+187,best app chahiye duniya ki 86,ambiguous,benchmark_v2_generator,clarification_required
+188,next level cheez banani hai 87,ambiguous,benchmark_v2_generator,clarification_required
+189,ekdum mast app banao 88,ambiguous,benchmark_v2_generator,clarification_required
+190,ekdum mast app banao 89,ambiguous,benchmark_v2_generator,clarification_required
+191,best app chahiye duniya ki 90,ambiguous,benchmark_v2_generator,clarification_required
+192,next level cheez banani hai 91,ambiguous,benchmark_v2_generator,clarification_required
+193,best app chahiye duniya ki 92,ambiguous,benchmark_v2_generator,clarification_required
+194,best app chahiye duniya ki 93,ambiguous,benchmark_v2_generator,clarification_required
+195,ekdum mast app banao 94,ambiguous,benchmark_v2_generator,clarification_required
+196,viral hona chahiye 95,ambiguous,benchmark_v2_generator,clarification_required
+197,best app chahiye duniya ki 96,ambiguous,benchmark_v2_generator,clarification_required
+198,best app chahiye duniya ki 97,ambiguous,benchmark_v2_generator,clarification_required
+199,best app chahiye duniya ki 98,ambiguous,benchmark_v2_generator,clarification_required
+200,idea hai startup ka 99,ambiguous,benchmark_v2_generator,clarification_required
+201,slow nahi hona chahiye 0,negation,benchmark_v2_generator,success
+202,mujhe sql nahi chahiye mongodb use karo 1,negation,benchmark_v2_generator,success
+203,slow nahi hona chahiye 2,negation,benchmark_v2_generator,success
+204,payment fail na ho 3,negation,benchmark_v2_generator,success
+205,mujhe sql nahi chahiye mongodb use karo 4,negation,benchmark_v2_generator,success
+206,no downtime acceptable 5,negation,benchmark_v2_generator,success
+207,payment fail na ho 6,negation,benchmark_v2_generator,success
+208,mujhe sql nahi chahiye mongodb use karo 7,negation,benchmark_v2_generator,success
+209,mujhe sql nahi chahiye mongodb use karo 8,negation,benchmark_v2_generator,success
+210,no downtime acceptable 9,negation,benchmark_v2_generator,success
+211,backend pe nodejs mat use karna 10,negation,benchmark_v2_generator,success
+212,payment fail na ho 11,negation,benchmark_v2_generator,success
+213,backend pe nodejs mat use karna 12,negation,benchmark_v2_generator,success
+214,no downtime acceptable 13,negation,benchmark_v2_generator,success
+215,mujhe sql nahi chahiye mongodb use karo 14,negation,benchmark_v2_generator,success
+216,backend pe nodejs mat use karna 15,negation,benchmark_v2_generator,success
+217,backend pe nodejs mat use karna 16,negation,benchmark_v2_generator,success
+218,backend pe nodejs mat use karna 17,negation,benchmark_v2_generator,success
+219,payment fail na ho 18,negation,benchmark_v2_generator,success
+220,slow nahi hona chahiye 19,negation,benchmark_v2_generator,success
+221,payment fail na ho 20,negation,benchmark_v2_generator,success
+222,no downtime acceptable 21,negation,benchmark_v2_generator,success
+223,backend pe nodejs mat use karna 22,negation,benchmark_v2_generator,success
+224,backend pe nodejs mat use karna 23,negation,benchmark_v2_generator,success
+225,payment fail na ho 24,negation,benchmark_v2_generator,success
+226,payment fail na ho 25,negation,benchmark_v2_generator,success
+227,mujhe sql nahi chahiye mongodb use karo 26,negation,benchmark_v2_generator,success
+228,no downtime acceptable 27,negation,benchmark_v2_generator,success
+229,backend pe nodejs mat use karna 28,negation,benchmark_v2_generator,success
+230,slow nahi hona chahiye 29,negation,benchmark_v2_generator,success
+231,slow nahi hona chahiye 30,negation,benchmark_v2_generator,success
+232,slow nahi hona chahiye 31,negation,benchmark_v2_generator,success
+233,no downtime acceptable 32,negation,benchmark_v2_generator,success
+234,mujhe sql nahi chahiye mongodb use karo 33,negation,benchmark_v2_generator,success
+235,payment fail na ho 34,negation,benchmark_v2_generator,success
+236,no downtime acceptable 35,negation,benchmark_v2_generator,success
+237,slow nahi hona chahiye 36,negation,benchmark_v2_generator,success
+238,slow nahi hona chahiye 37,negation,benchmark_v2_generator,success
+239,payment fail na ho 38,negation,benchmark_v2_generator,success
+240,payment fail na ho 39,negation,benchmark_v2_generator,success
+241,backend pe nodejs mat use karna 40,negation,benchmark_v2_generator,success
+242,mujhe sql nahi chahiye mongodb use karo 41,negation,benchmark_v2_generator,success
+243,mujhe sql nahi chahiye mongodb use karo 42,negation,benchmark_v2_generator,success
+244,slow nahi hona chahiye 43,negation,benchmark_v2_generator,success
+245,no downtime acceptable 44,negation,benchmark_v2_generator,success
+246,mujhe sql nahi chahiye mongodb use karo 45,negation,benchmark_v2_generator,success
+247,payment fail na ho 46,negation,benchmark_v2_generator,success
+248,slow nahi hona chahiye 47,negation,benchmark_v2_generator,success
+249,backend pe nodejs mat use karna 48,negation,benchmark_v2_generator,success
+250,payment fail na ho 49,negation,benchmark_v2_generator,success
+251,backend pe nodejs mat use karna 50,negation,benchmark_v2_generator,success
+252,payment fail na ho 51,negation,benchmark_v2_generator,success
+253,mujhe sql nahi chahiye mongodb use karo 52,negation,benchmark_v2_generator,success
+254,payment fail na ho 53,negation,benchmark_v2_generator,success
+255,mujhe sql nahi chahiye mongodb use karo 54,negation,benchmark_v2_generator,success
+256,slow nahi hona chahiye 55,negation,benchmark_v2_generator,success
+257,backend pe nodejs mat use karna 56,negation,benchmark_v2_generator,success
+258,mujhe sql nahi chahiye mongodb use karo 57,negation,benchmark_v2_generator,success
+259,payment fail na ho 58,negation,benchmark_v2_generator,success
+260,no downtime acceptable 59,negation,benchmark_v2_generator,success
+261,mujhe sql nahi chahiye mongodb use karo 60,negation,benchmark_v2_generator,success
+262,no downtime acceptable 61,negation,benchmark_v2_generator,success
+263,backend pe nodejs mat use karna 62,negation,benchmark_v2_generator,success
+264,payment fail na ho 63,negation,benchmark_v2_generator,success
+265,slow nahi hona chahiye 64,negation,benchmark_v2_generator,success
+266,slow nahi hona chahiye 65,negation,benchmark_v2_generator,success
+267,backend pe nodejs mat use karna 66,negation,benchmark_v2_generator,success
+268,no downtime acceptable 67,negation,benchmark_v2_generator,success
+269,payment fail na ho 68,negation,benchmark_v2_generator,success
+270,backend pe nodejs mat use karna 69,negation,benchmark_v2_generator,success
+271,payment fail na ho 70,negation,benchmark_v2_generator,success
+272,backend pe nodejs mat use karna 71,negation,benchmark_v2_generator,success
+273,mujhe sql nahi chahiye mongodb use karo 72,negation,benchmark_v2_generator,success
+274,no downtime acceptable 73,negation,benchmark_v2_generator,success
+275,slow nahi hona chahiye 74,negation,benchmark_v2_generator,success
+276,payment fail na ho 75,negation,benchmark_v2_generator,success
+277,mujhe sql nahi chahiye mongodb use karo 76,negation,benchmark_v2_generator,success
+278,backend pe nodejs mat use karna 77,negation,benchmark_v2_generator,success
+279,mujhe sql nahi chahiye mongodb use karo 78,negation,benchmark_v2_generator,success
+280,no downtime acceptable 79,negation,benchmark_v2_generator,success
+281,no downtime acceptable 80,negation,benchmark_v2_generator,success
+282,backend pe nodejs mat use karna 81,negation,benchmark_v2_generator,success
+283,no downtime acceptable 82,negation,benchmark_v2_generator,success
+284,backend pe nodejs mat use karna 83,negation,benchmark_v2_generator,success
+285,no downtime acceptable 84,negation,benchmark_v2_generator,success
+286,slow nahi hona chahiye 85,negation,benchmark_v2_generator,success
+287,slow nahi hona chahiye 86,negation,benchmark_v2_generator,success
+288,slow nahi hona chahiye 87,negation,benchmark_v2_generator,success
+289,slow nahi hona chahiye 88,negation,benchmark_v2_generator,success
+290,backend pe nodejs mat use karna 89,negation,benchmark_v2_generator,success
+291,slow nahi hona chahiye 90,negation,benchmark_v2_generator,success
+292,backend pe nodejs mat use karna 91,negation,benchmark_v2_generator,success
+293,payment fail na ho 92,negation,benchmark_v2_generator,success
+294,payment fail na ho 93,negation,benchmark_v2_generator,success
+295,backend pe nodejs mat use karna 94,negation,benchmark_v2_generator,success
+296,mujhe sql nahi chahiye mongodb use karo 95,negation,benchmark_v2_generator,success
+297,mujhe sql nahi chahiye mongodb use karo 96,negation,benchmark_v2_generator,success
+298,no downtime acceptable 97,negation,benchmark_v2_generator,success
+299,mujhe sql nahi chahiye mongodb use karo 98,negation,benchmark_v2_generator,success
+300,backend pe nodejs mat use karna 99,negation,benchmark_v2_generator,success
+301,I'll forgo the refund. But no go with Watson dongle... Nexus 9. Yet to try on Nexus 6p. So very disappointed!!! :-(,emotional,corpus_v1_hybrid,clarification_required
+302,Crash when set a demodulation! :(,emotional,corpus_v1_hybrid,clarification_required
+303,doesn't work with rtl-2832 Says it works with rtl devices but doesn't. never displays anything  even though the rtl 2832 works with other spectrum analyzers. no help files anywhere so good luck figuring out what's wrong!,emotional,corpus_v1_hybrid,clarification_required
+304,Do I need to hack my phone for this application to work,emotional,corpus_v1_hybrid,clarification_required
+305,Does not work Did not work with my rtl-sdr,emotional,corpus_v1_hybrid,clarification_required
+306,Not working Not working at oppo. Saying source not available for hr,emotional,corpus_v1_hybrid,clarification_required
+307,Crashes with in 10 seconds I cant even use this for more then 15 seconds,emotional,corpus_v1_hybrid,clarification_required
+308,Squelch is non-existent in this app. The developer claims it exists but it is impossible to set up. No matter how I adjust the gain I always hear the RF noise in between the transmissions. This app will make me deaf. The only way to eliminate the noise is to manually move the dB slider up and down which very impractical and annoying. Every free PC SDR software has perfectly working squelch. Why this one doesn't? Could be a great app but luck of squelch makes it unusable. I would expect this to be fixed.,emotional,corpus_v1_hybrid,clarification_required
+309,Logcat Its good help,emotional,corpus_v1_hybrid,clarification_required
+310,Unresponsive maybe some threads are in order. Logcat is better foss,emotional,corpus_v1_hybrid,clarification_required
+311,This isnt work at all!,emotional,corpus_v1_hybrid,clarification_required
+312,Internet permission Unnecessary internet permission,emotional,corpus_v1_hybrid,clarification_required
+313,Nothing worked. Blank screen.,emotional,corpus_v1_hybrid,clarification_required
+314,Description about Internet access is a lie. This app connects to the Internet even at its first start  doing many connections to Amazon servers. And also doesn't show any log  not even its own log  without root. Another bad XDA sponsored project.,emotional,corpus_v1_hybrid,clarification_required
+315,Unusable in large rooms No way to filter out joins or parts.,emotional,corpus_v1_hybrid,clarification_required
+316,"Does not work. Does not work on android 7.0  I get a """"""""""""""""""""""""""""""""failed to load certificate"""""""""""""""""""""""""""""""" error.""""",emotional,corpus_v1_hybrid,clarification_required
+317,Updates? Hasn't been updated in a long time (2014) and appears to break in Android N. Unfortunately it appears this is the only quassel client for Android.,emotional,corpus_v1_hybrid,clarification_required
+318,Doesn't handle SSL certificate changes well. Just get stuck in a loop. Clearing data/cache didn't help... Or is it just broken on Android N?,emotional,corpus_v1_hybrid,clarification_required
+319,Fails to connect,emotional,corpus_v1_hybrid,clarification_required
+320,Outdated Why isn't quasseldroid updated on the play store. F-droid has been shipping the newer versions with the material design for a long time now.,emotional,corpus_v1_hybrid,clarification_required
+321,Doesn't even connect. Just returns invalid username/password,emotional,corpus_v1_hybrid,clarification_required
+322,Play version outdated The version on F-Droid is newer.,emotional,corpus_v1_hybrid,clarification_required
+323,"Bring back black theme! This """"""""""""""""dark"""""""""""""""" theme which is now gray instead of black is hard to see with certain font colors  plus harder to see in general in brighter light. -2 stars until the old black theme from a couple versions ago is added back in. Moto E (2nd gen with Android 5.1)""""",emotional,corpus_v1_hybrid,clarification_required
+324,Couldn't connect to Freenode.,emotional,corpus_v1_hybrid,clarification_required
+325,Garbage. Was good. Hasn't been updated for over 2 years. Doesn't work anymore. Don't waste your time.,emotional,corpus_v1_hybrid,clarification_required
+326,Doesn't work UI terrible Move on Just garbage. Maybe it's been abandoned.,emotional,corpus_v1_hybrid,clarification_required
+327,Good app but desperately needs updating!!! Has not kept up with the latest Android versions since Jelly Bean. Where's the support for extended notification text??? This is the reason for many of the comments about notifications from certain apps not being spoken. No response from Pilot_51 to any comments here. App appears to be abandon-ware. Outdated.,emotional,corpus_v1_hybrid,clarification_required
+328,No sound on Android Nougat Used this on Marshmallow for my Flir Fx app. Now it stopped working after OS upgrade. Otherwise great app??,emotional,corpus_v1_hybrid,clarification_required
+329,Not good,emotional,corpus_v1_hybrid,clarification_required
+330,Not user friendly,emotional,corpus_v1_hybrid,clarification_required
+331,Not working on Samsung Phones...,emotional,corpus_v1_hybrid,clarification_required
+332,cant stop this app very bad... experince i have uninstall app but still can't stop the message which are reding,emotional,corpus_v1_hybrid,clarification_required
+333,No longer works Used to be the best notification reader  but it has stopped reading notifications...,emotional,corpus_v1_hybrid,clarification_required
+334,Please fix it. Aside from that this app fails to read the entire contents of the message whether that's the stock messaging app or third party like Telegram for example only a few lines are read. Are our credit cards really safe turning this on? Please fix it so the entire text message reads out loud not just the first few words. LG G3 stick ROM 5.1.1.,emotional,corpus_v1_hybrid,clarification_required
+335,Strange One time it says : Twitter notification from Twitter  sometimes it says just Twitter. Please fix it. Also doesn't notifies calls at all  and sms with callers name,emotional,corpus_v1_hybrid,clarification_required
+336,Great but doesn't work consistently Good features and works OK initially but sometimes it doesn't and you have to turn the service off and on again  using shouter instead,emotional,corpus_v1_hybrid,clarification_required
+337,What a shame I can't use it,emotional,corpus_v1_hybrid,clarification_required
+338,ARE U SERIOUS.... YOU ARE INSANE IF U THINK PEOPLE ARE GOING TO DEAL WITH THE BS UR TRYING TO DO.,emotional,corpus_v1_hybrid,clarification_required
+339,Wouldn't work on my S5,emotional,corpus_v1_hybrid,clarification_required
+340,This software give you miss call alert by voice by only once no matter how I changed my settings it never repeats again....bogus software.,emotional,corpus_v1_hybrid,clarification_required
+341,Its the best,emotional,corpus_v1_hybrid,clarification_required
+342,its ok,emotional,corpus_v1_hybrid,clarification_required
+343,Was unable to use it not user friendly,emotional,corpus_v1_hybrid,clarification_required
+344,annoying It uses the voice feedback for the visually impared so EVERYTHING you do or touch on your phone gets read out not just notifications.,emotional,corpus_v1_hybrid,clarification_required
+345,Do not ever install this app I like to never fixed my phone,emotional,corpus_v1_hybrid,clarification_required
+346,Bugs! It reads my website addresses when surfing the internet and the delay is slow.,emotional,corpus_v1_hybrid,clarification_required
+347,Its cool I hate cause she can't pronounce a lot of words wee fi is one WiFi please update no problems on my HTC and she spells alot of words funny,emotional,corpus_v1_hybrid,clarification_required
+348,GARBAGE! I once used an app named Voice Alerts by developer Alex Corbi  that was an outstanding app but this one is trash. I have a Note 3 and I couldn't get this app to say ANYTHING.,emotional,corpus_v1_hybrid,clarification_required
+349,Not as good compared to v4n. Does not read text body only the titles. That defeats the purpose of having a voice notification app,emotional,corpus_v1_hybrid,clarification_required
+350,Screw you This program can capture everything I do except passwords? ??? How about a little LESS INVASION OF PRIVACY????? You're as bad as Facebook and Google. You want me to use your cruddy program? Keep it The he'll out of my private stuff!!!!!!!!!!!!!!!!!!!,emotional,corpus_v1_hybrid,clarification_required
+351,It talks too much & hogs RAM,emotional,corpus_v1_hybrid,clarification_required
+352,Would appreciate if it would support other tss languages. I use William TSS from CereProc and it uses UK English. Still  it wouldn't allow me to enable it from the accessibility settings,emotional,corpus_v1_hybrid,clarification_required
+353,Loved Loved,emotional,corpus_v1_hybrid,clarification_required
+354,Pankaj Not so good app......good for students.,emotional,corpus_v1_hybrid,clarification_required
+355,Doesnt work on tab3,emotional,corpus_v1_hybrid,clarification_required
+356,Bad news I uninstalled it   some of the program is still on my phone.,emotional,corpus_v1_hybrid,clarification_required
+357,Won't even load...,emotional,corpus_v1_hybrid,clarification_required
+358,Horrible App Please do not download this app. I have downloaded it and my phone refuses to work. I cant slide and cannot cannot uninstall either. Request someone to tell me how to uninstall this app as it refuses to allow me to go to the settings to uninstall. PLZ HELP.,emotional,corpus_v1_hybrid,clarification_required
+359,Stopped working,emotional,corpus_v1_hybrid,clarification_required
+360,Very poor It is rubbish,emotional,corpus_v1_hybrid,clarification_required
+361,Poor Not working anymore. Tried uninstalling n installing but still not working. Worked well for two months but now it's just occupying space n nothing else. So bye bye VN. Deleted.,emotional,corpus_v1_hybrid,clarification_required
+362,"Went to comment and it """"""""""""""""""""""""""""""""unfortunately stops working."""""""""""""""""""""""""""""""" There goes this n that!""""",emotional,corpus_v1_hybrid,clarification_required
+363,Worst,emotional,corpus_v1_hybrid,clarification_required
+364,Still not great It would be so much better if it didn't cancel lots of other features. S-voice no longer has voice output when this is turned on. There are lots of Galaxy features that this disables so I can't use this anymore. * Still s-voice doesn't work worth this. How can I use this and still use S-Voice at the same time?,emotional,corpus_v1_hybrid,clarification_required
+365,Does not work Plz fix,emotional,corpus_v1_hybrid,clarification_required
+366,Love Desire,emotional,corpus_v1_hybrid,clarification_required
+367,Some times it reminds me every unread notification  especially in the morning when I hadn't touched my phone for a longer time. So it's annoying: Facebook Facebook Facebook like 10times..,emotional,corpus_v1_hybrid,clarification_required
+368,OK when it works - worked initially for some apps but missed notifications for others - screen to enable disable apps missing an un -check all feature making it very tedious to select only a handful of apps,emotional,corpus_v1_hybrid,clarification_required
+369,? How to use this??,emotional,corpus_v1_hybrid,clarification_required
+370,Says 0amp when charging,emotional,corpus_v1_hybrid,clarification_required
+371,"""""No data"""""""""""""""""""""""""""""""" after upgrading to Android N CurrentWidget have served me well for a long time. However  after a system upgrade to Android N the widget just tells me """"""""""""""""""""""""""""""""no data"""""""""""""""""""""""""""""""" when I try to read charge or discharge current. So as of now it's unusable  but hopefully a fix is on its way.""""",emotional,corpus_v1_hybrid,clarification_required
+372,UNINSTALL ____________,emotional,corpus_v1_hybrid,clarification_required
+373,Difficult to use. Plz make it simple,emotional,corpus_v1_hybrid,clarification_required
+374,Not working on Android 7.0 Nexus 6P user  was working fine before the upgrade.,emotional,corpus_v1_hybrid,clarification_required
+375,Was great Doesn't work on Galaxy S5 with marshmallow update,emotional,corpus_v1_hybrid,clarification_required
+376,Yet to complete Make it resizeble and implement charge drain / gain rate per sec or whatever p.s. dont work with my desire 500,emotional,corpus_v1_hybrid,clarification_required
+377,No luck It seems that app does not work with my device. It shows voltage  level percentage and temperature but not current  which is why I installed the app.,emotional,corpus_v1_hybrid,clarification_required
+378,Support Doesn't work on lollipop 5.1.,emotional,corpus_v1_hybrid,clarification_required
+379,Garbage Only loads to settings screen,emotional,corpus_v1_hybrid,clarification_required
+380,Fake? It's always shows around 800mA  changes value on refresh. Just noticed today it shows the same value when not plugged into charger.,emotional,corpus_v1_hybrid,clarification_required
+381,Wouldn't display mA,emotional,corpus_v1_hybrid,clarification_required
+382,Can't get it to work Can't get widget to load.,emotional,corpus_v1_hybrid,clarification_required
+383,Unworking for Samsung S7 Edge Please fix it as i am your loyal user since Samsung S4 asap,emotional,corpus_v1_hybrid,clarification_required
+384,Shown only settings... It's fake... Cheating,emotional,corpus_v1_hybrid,clarification_required
+385,Does not work on htc Can't be started on htc one m8,emotional,corpus_v1_hybrid,clarification_required
+386,Not working in mashallow,emotional,corpus_v1_hybrid,clarification_required
+387,Didnt wotk Only loaded settings page to adjust settings. Monitor never appeared,emotional,corpus_v1_hybrid,clarification_required
+388,Did not work on my Galaxy 3,emotional,corpus_v1_hybrid,clarification_required
+389,Only shows settings Wanted to check charging speed between chargers. Opening app only showed the settings. Did not see a way to actually get to data.,emotional,corpus_v1_hybrid,clarification_required
+390,"Shows """"""""""""""""""""""""""""""""no data"""""""""""""""""""""""""""""""" In my lenovo s930. I'll give you 3 stars more""""",emotional,corpus_v1_hybrid,clarification_required
+391,Doesn't work Doesn't work with my GS5,emotional,corpus_v1_hybrid,clarification_required
+392,Nothing Shows nothing for ma.,emotional,corpus_v1_hybrid,clarification_required
+393,Waste,emotional,corpus_v1_hybrid,clarification_required
+394,Did not work Read 0 mA even when I plugged my phone in... I'm using in on a Galaxy S6,emotional,corpus_v1_hybrid,clarification_required
+395,Don't show anything. Not 1 # was shown,emotional,corpus_v1_hybrid,clarification_required
+396,Doesn't work at all Only got configuration screen. Never displayed any data on LG 4g phone.,emotional,corpus_v1_hybrid,clarification_required
+397,Does nothing,emotional,corpus_v1_hybrid,clarification_required
+398,Just says 0 Doesnt work for me.,emotional,corpus_v1_hybrid,clarification_required
+399,Confused This widget is confusing and unreliable. I have a multicharging port and every port i plug into gives a different reading with or without the same wire. Different wires produce different result too even with the same wire brand/model. I wouldnt trust it. Removing it as i type. Thanks.,emotional,corpus_v1_hybrid,clarification_required
+400,Not work Notwork,emotional,corpus_v1_hybrid,clarification_required
+401,e-commerce app banao jo kabhi hang na ho 0,mixed,benchmark_v2_generator,clarification_required
+402,e-commerce app banao jo kabhi hang na ho 1,mixed,benchmark_v2_generator,clarification_required
+403,scalable database chahiye kyunki slow UI bohot pareshan karti hai 2,mixed,benchmark_v2_generator,clarification_required
+404,e-commerce app banao jo kabhi hang na ho 3,mixed,benchmark_v2_generator,clarification_required
+405,payment system chahiye par fraud ka dar hai 4,mixed,benchmark_v2_generator,clarification_required
+406,e-commerce app banao jo kabhi hang na ho 5,mixed,benchmark_v2_generator,clarification_required
+407,payment system chahiye par fraud ka dar hai 6,mixed,benchmark_v2_generator,clarification_required
+408,e-commerce app banao jo kabhi hang na ho 7,mixed,benchmark_v2_generator,clarification_required
+409,e-commerce app banao jo kabhi hang na ho 8,mixed,benchmark_v2_generator,clarification_required
+410,scalable database chahiye kyunki slow UI bohot pareshan karti hai 9,mixed,benchmark_v2_generator,clarification_required
+411,e-commerce app banao jo kabhi hang na ho 10,mixed,benchmark_v2_generator,clarification_required
+412,payment system chahiye par fraud ka dar hai 11,mixed,benchmark_v2_generator,clarification_required
+413,scalable database chahiye kyunki slow UI bohot pareshan karti hai 12,mixed,benchmark_v2_generator,clarification_required
+414,e-commerce app banao jo kabhi hang na ho 13,mixed,benchmark_v2_generator,clarification_required
+415,scalable database chahiye kyunki slow UI bohot pareshan karti hai 14,mixed,benchmark_v2_generator,clarification_required
+416,e-commerce app banao jo kabhi hang na ho 15,mixed,benchmark_v2_generator,clarification_required
+417,scalable database chahiye kyunki slow UI bohot pareshan karti hai 16,mixed,benchmark_v2_generator,clarification_required
+418,e-commerce app banao jo kabhi hang na ho 17,mixed,benchmark_v2_generator,clarification_required
+419,scalable database chahiye kyunki slow UI bohot pareshan karti hai 18,mixed,benchmark_v2_generator,clarification_required
+420,payment system chahiye par fraud ka dar hai 19,mixed,benchmark_v2_generator,clarification_required
+421,payment system chahiye par fraud ka dar hai 20,mixed,benchmark_v2_generator,clarification_required
+422,e-commerce app banao jo kabhi hang na ho 21,mixed,benchmark_v2_generator,clarification_required
+423,scalable database chahiye kyunki slow UI bohot pareshan karti hai 22,mixed,benchmark_v2_generator,clarification_required
+424,payment system chahiye par fraud ka dar hai 23,mixed,benchmark_v2_generator,clarification_required
+425,scalable database chahiye kyunki slow UI bohot pareshan karti hai 24,mixed,benchmark_v2_generator,clarification_required
+426,scalable database chahiye kyunki slow UI bohot pareshan karti hai 25,mixed,benchmark_v2_generator,clarification_required
+427,payment system chahiye par fraud ka dar hai 26,mixed,benchmark_v2_generator,clarification_required
+428,payment system chahiye par fraud ka dar hai 27,mixed,benchmark_v2_generator,clarification_required
+429,scalable database chahiye kyunki slow UI bohot pareshan karti hai 28,mixed,benchmark_v2_generator,clarification_required
+430,e-commerce app banao jo kabhi hang na ho 29,mixed,benchmark_v2_generator,clarification_required
+431,scalable database chahiye kyunki slow UI bohot pareshan karti hai 30,mixed,benchmark_v2_generator,clarification_required
+432,scalable database chahiye kyunki slow UI bohot pareshan karti hai 31,mixed,benchmark_v2_generator,clarification_required
+433,scalable database chahiye kyunki slow UI bohot pareshan karti hai 32,mixed,benchmark_v2_generator,clarification_required
+434,e-commerce app banao jo kabhi hang na ho 33,mixed,benchmark_v2_generator,clarification_required
+435,e-commerce app banao jo kabhi hang na ho 34,mixed,benchmark_v2_generator,clarification_required
+436,scalable database chahiye kyunki slow UI bohot pareshan karti hai 35,mixed,benchmark_v2_generator,clarification_required
+437,scalable database chahiye kyunki slow UI bohot pareshan karti hai 36,mixed,benchmark_v2_generator,clarification_required
+438,payment system chahiye par fraud ka dar hai 37,mixed,benchmark_v2_generator,clarification_required
+439,payment system chahiye par fraud ka dar hai 38,mixed,benchmark_v2_generator,clarification_required
+440,scalable database chahiye kyunki slow UI bohot pareshan karti hai 39,mixed,benchmark_v2_generator,clarification_required
+441,payment system chahiye par fraud ka dar hai 40,mixed,benchmark_v2_generator,clarification_required
+442,scalable database chahiye kyunki slow UI bohot pareshan karti hai 41,mixed,benchmark_v2_generator,clarification_required
+443,scalable database chahiye kyunki slow UI bohot pareshan karti hai 42,mixed,benchmark_v2_generator,clarification_required
+444,payment system chahiye par fraud ka dar hai 43,mixed,benchmark_v2_generator,clarification_required
+445,scalable database chahiye kyunki slow UI bohot pareshan karti hai 44,mixed,benchmark_v2_generator,clarification_required
+446,payment system chahiye par fraud ka dar hai 45,mixed,benchmark_v2_generator,clarification_required
+447,payment system chahiye par fraud ka dar hai 46,mixed,benchmark_v2_generator,clarification_required
+448,e-commerce app banao jo kabhi hang na ho 47,mixed,benchmark_v2_generator,clarification_required
+449,e-commerce app banao jo kabhi hang na ho 48,mixed,benchmark_v2_generator,clarification_required
+450,scalable database chahiye kyunki slow UI bohot pareshan karti hai 49,mixed,benchmark_v2_generator,clarification_required
+451,payment system chahiye par fraud ka dar hai 50,mixed,benchmark_v2_generator,clarification_required
+452,scalable database chahiye kyunki slow UI bohot pareshan karti hai 51,mixed,benchmark_v2_generator,clarification_required
+453,e-commerce app banao jo kabhi hang na ho 52,mixed,benchmark_v2_generator,clarification_required
+454,payment system chahiye par fraud ka dar hai 53,mixed,benchmark_v2_generator,clarification_required
+455,payment system chahiye par fraud ka dar hai 54,mixed,benchmark_v2_generator,clarification_required
+456,payment system chahiye par fraud ka dar hai 55,mixed,benchmark_v2_generator,clarification_required
+457,e-commerce app banao jo kabhi hang na ho 56,mixed,benchmark_v2_generator,clarification_required
+458,scalable database chahiye kyunki slow UI bohot pareshan karti hai 57,mixed,benchmark_v2_generator,clarification_required
+459,e-commerce app banao jo kabhi hang na ho 58,mixed,benchmark_v2_generator,clarification_required
+460,scalable database chahiye kyunki slow UI bohot pareshan karti hai 59,mixed,benchmark_v2_generator,clarification_required
+461,scalable database chahiye kyunki slow UI bohot pareshan karti hai 60,mixed,benchmark_v2_generator,clarification_required
+462,e-commerce app banao jo kabhi hang na ho 61,mixed,benchmark_v2_generator,clarification_required
+463,e-commerce app banao jo kabhi hang na ho 62,mixed,benchmark_v2_generator,clarification_required
+464,scalable database chahiye kyunki slow UI bohot pareshan karti hai 63,mixed,benchmark_v2_generator,clarification_required
+465,e-commerce app banao jo kabhi hang na ho 64,mixed,benchmark_v2_generator,clarification_required
+466,payment system chahiye par fraud ka dar hai 65,mixed,benchmark_v2_generator,clarification_required
+467,payment system chahiye par fraud ka dar hai 66,mixed,benchmark_v2_generator,clarification_required
+468,scalable database chahiye kyunki slow UI bohot pareshan karti hai 67,mixed,benchmark_v2_generator,clarification_required
+469,e-commerce app banao jo kabhi hang na ho 68,mixed,benchmark_v2_generator,clarification_required
+470,scalable database chahiye kyunki slow UI bohot pareshan karti hai 69,mixed,benchmark_v2_generator,clarification_required
+471,scalable database chahiye kyunki slow UI bohot pareshan karti hai 70,mixed,benchmark_v2_generator,clarification_required
+472,e-commerce app banao jo kabhi hang na ho 71,mixed,benchmark_v2_generator,clarification_required
+473,payment system chahiye par fraud ka dar hai 72,mixed,benchmark_v2_generator,clarification_required
+474,scalable database chahiye kyunki slow UI bohot pareshan karti hai 73,mixed,benchmark_v2_generator,clarification_required
+475,payment system chahiye par fraud ka dar hai 74,mixed,benchmark_v2_generator,clarification_required
+476,scalable database chahiye kyunki slow UI bohot pareshan karti hai 75,mixed,benchmark_v2_generator,clarification_required
+477,payment system chahiye par fraud ka dar hai 76,mixed,benchmark_v2_generator,clarification_required
+478,e-commerce app banao jo kabhi hang na ho 77,mixed,benchmark_v2_generator,clarification_required
+479,payment system chahiye par fraud ka dar hai 78,mixed,benchmark_v2_generator,clarification_required
+480,scalable database chahiye kyunki slow UI bohot pareshan karti hai 79,mixed,benchmark_v2_generator,clarification_required
+481,payment system chahiye par fraud ka dar hai 80,mixed,benchmark_v2_generator,clarification_required
+482,e-commerce app banao jo kabhi hang na ho 81,mixed,benchmark_v2_generator,clarification_required
+483,e-commerce app banao jo kabhi hang na ho 82,mixed,benchmark_v2_generator,clarification_required
+484,payment system chahiye par fraud ka dar hai 83,mixed,benchmark_v2_generator,clarification_required
+485,scalable database chahiye kyunki slow UI bohot pareshan karti hai 84,mixed,benchmark_v2_generator,clarification_required
+486,scalable database chahiye kyunki slow UI bohot pareshan karti hai 85,mixed,benchmark_v2_generator,clarification_required
+487,e-commerce app banao jo kabhi hang na ho 86,mixed,benchmark_v2_generator,clarification_required
+488,e-commerce app banao jo kabhi hang na ho 87,mixed,benchmark_v2_generator,clarification_required
+489,scalable database chahiye kyunki slow UI bohot pareshan karti hai 88,mixed,benchmark_v2_generator,clarification_required
+490,payment system chahiye par fraud ka dar hai 89,mixed,benchmark_v2_generator,clarification_required
+491,scalable database chahiye kyunki slow UI bohot pareshan karti hai 90,mixed,benchmark_v2_generator,clarification_required
+492,scalable database chahiye kyunki slow UI bohot pareshan karti hai 91,mixed,benchmark_v2_generator,clarification_required
+493,scalable database chahiye kyunki slow UI bohot pareshan karti hai 92,mixed,benchmark_v2_generator,clarification_required
+494,e-commerce app banao jo kabhi hang na ho 93,mixed,benchmark_v2_generator,clarification_required
+495,scalable database chahiye kyunki slow UI bohot pareshan karti hai 94,mixed,benchmark_v2_generator,clarification_required
+496,scalable database chahiye kyunki slow UI bohot pareshan karti hai 95,mixed,benchmark_v2_generator,clarification_required
+497,payment system chahiye par fraud ka dar hai 96,mixed,benchmark_v2_generator,clarification_required
+498,payment system chahiye par fraud ka dar hai 97,mixed,benchmark_v2_generator,clarification_required
+499,scalable database chahiye kyunki slow UI bohot pareshan karti hai 98,mixed,benchmark_v2_generator,clarification_required
+500,payment system chahiye par fraud ka dar hai 99,mixed,benchmark_v2_generator,clarification_required

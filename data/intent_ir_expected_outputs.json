@@ -1,0 +1,352 @@
+[
+  {
+    "input": "paise kat gaye par order nahi bana",
+    "expected_module": "payment",
+    "expected_problem": "orphaned_transaction",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "amount debited but flight not booked",
+    "expected_module": "payment",
+    "expected_problem": "orphaned_transaction",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "refund abhi tak account me nahi aaya",
+    "expected_module": "payment",
+    "expected_problem": "delayed_refund",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "double payment ho gaya galti se",
+    "expected_module": "payment",
+    "expected_problem": "duplicate_transaction",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "payment failed bata raha hai par paise cut gaye",
+    "expected_module": "payment",
+    "expected_problem": "orphaned_transaction",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "emi ka option kyu nahi dikh raha",
+    "expected_module": "payment",
+    "expected_problem": "missing_payment_method",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "bank server down hai kya payment stuck hai",
+    "expected_module": "payment",
+    "expected_problem": "gateway_timeout",
+    "requires_clarification": false,
+    "requires_diagnosis": true
+  },
+  {
+    "input": "bina UPI ke payment kaise karu",
+    "expected_module": "payment",
+    "expected_problem": "friction_in_payment",
+    "requires_clarification": true,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "promo code invalid bata raha hai",
+    "expected_module": "payment",
+    "expected_problem": "promo_code_failure",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "transaction pending me atka hua hai 2 ghante se",
+    "expected_module": "payment",
+    "expected_problem": "delayed_transaction",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "OTP nahi aaya",
+    "expected_module": "auth",
+    "expected_problem": "otp_delivery_failure",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "OTP receive nahi hua",
+    "expected_module": "auth",
+    "expected_problem": "otp_delivery_failure",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "login kaam nahi kar raha",
+    "expected_module": "auth",
+    "expected_problem": null,
+    "requires_clarification": true,
+    "requires_diagnosis": true
+  },
+  {
+    "input": "bar bar password kyu mangta hai",
+    "expected_module": "auth",
+    "expected_problem": "friction_in_auth",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "account locked bata raha hai",
+    "expected_module": "auth",
+    "expected_problem": "account_locked",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "password reset link mail pe nahi aayi",
+    "expected_module": "auth",
+    "expected_problem": "email_delivery_failure",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "fingerprint se login nahi ho raha",
+    "expected_module": "auth",
+    "expected_problem": "biometric_failure",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "session expired bar bar kyu likh raha hai",
+    "expected_module": "auth",
+    "expected_problem": "frequent_session_expiry",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "login bina OTP ke karna hai",
+    "expected_module": "auth",
+    "expected_problem": "friction_in_auth",
+    "requires_clarification": true,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "captcha galat bata raha hai jabki sahi dala hai",
+    "expected_module": "auth",
+    "expected_problem": "captcha_validation_error",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "refund ka status kaha dekhu",
+    "expected_module": "navigation",
+    "expected_problem": "hidden_feature",
+    "requires_clarification": true,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "settings kidhar hai",
+    "expected_module": "navigation",
+    "expected_problem": "feature_discoverability",
+    "requires_clarification": true,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "order history nahi mil rahi",
+    "expected_module": "navigation",
+    "expected_problem": "feature_discoverability",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "profile edit karne ka option kaha hai",
+    "expected_module": "navigation",
+    "expected_problem": "hidden_feature",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "back button dabane pe app band ho gaya",
+    "expected_module": "navigation",
+    "expected_problem": "navigation_flow_break",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "home page pe wapas kaise jau",
+    "expected_module": "navigation",
+    "expected_problem": "navigation_trap",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "search bar kaam nahi kar raha",
+    "expected_module": "navigation",
+    "expected_problem": "feature_failure",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "menu options aadhe cut rahe hain screen pe",
+    "expected_module": "navigation",
+    "expected_problem": "ui_rendering_issue",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "language change kaise karu",
+    "expected_module": "navigation",
+    "expected_problem": "feature_discoverability",
+    "requires_clarification": true,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "dark mode on karne ka button nahi mil raha",
+    "expected_module": "navigation",
+    "expected_problem": "feature_discoverability",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "app slow hai",
+    "expected_module": "performance",
+    "expected_problem": "performance_degradation",
+    "requires_clarification": false,
+    "requires_diagnosis": true
+  },
+  {
+    "input": "loading pe atak gaya",
+    "expected_module": "performance",
+    "expected_problem": "ui_freeze",
+    "requires_clarification": false,
+    "requires_diagnosis": true
+  },
+  {
+    "input": "screen freeze ho gayi",
+    "expected_module": "performance",
+    "expected_problem": "ui_freeze",
+    "requires_clarification": false,
+    "requires_diagnosis": true
+  },
+  {
+    "input": "app crash ho gaya",
+    "expected_module": "performance",
+    "expected_problem": "application_crash",
+    "requires_clarification": false,
+    "requires_diagnosis": true
+  },
+  {
+    "input": "app bahut slow hai aur crash bhi hota hai",
+    "expected_module": "performance",
+    "expected_problem": "performance_degradation",
+    "requires_clarification": false,
+    "requires_diagnosis": true
+  },
+  {
+    "input": "video play hone me bahut time le raha hai",
+    "expected_module": "performance",
+    "expected_problem": "high_latency",
+    "requires_clarification": false,
+    "requires_diagnosis": true
+  },
+  {
+    "input": "phone garam ho jata hai app chalane pe",
+    "expected_module": "performance",
+    "expected_problem": "high_resource_usage",
+    "requires_clarification": false,
+    "requires_diagnosis": true
+  },
+  {
+    "input": "battery bahut jaldi drain ho rahi hai",
+    "expected_module": "performance",
+    "expected_problem": "high_resource_usage",
+    "requires_clarification": false,
+    "requires_diagnosis": true
+  },
+  {
+    "input": "image load hi nahi ho rahi",
+    "expected_module": "performance",
+    "expected_problem": "resource_loading_failure",
+    "requires_clarification": false,
+    "requires_diagnosis": true
+  },
+  {
+    "input": "scroll karte waqt lag ho raha hai",
+    "expected_module": "performance",
+    "expected_problem": "ui_lag",
+    "requires_clarification": false,
+    "requires_diagnosis": true
+  },
+  {
+    "input": "customer care ka number kidhar hai bhai",
+    "expected_module": "trust_support",
+    "expected_problem": "support_unreachable",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "payment secure hai ya nahi dar lag raha hai",
+    "expected_module": "trust_support",
+    "expected_problem": "security_anxiety",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "mera data safe hai ya nahi kaise pata chalega",
+    "expected_module": "trust_support",
+    "expected_problem": "privacy_anxiety",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "app fake lag raha hai fraud toh nahi",
+    "expected_module": "trust_support",
+    "expected_problem": "trust_deficit",
+    "requires_clarification": true,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "support ticket raise kiya tha koi reply nahi aaya",
+    "expected_module": "trust_support",
+    "expected_problem": "support_unresponsive",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "meri card details delete kaise karu",
+    "expected_module": "trust_support",
+    "expected_problem": "privacy_control_anxiety",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "live chat option kyu nahi hai yaha",
+    "expected_module": "trust_support",
+    "expected_problem": "support_channel_missing",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "terms and conditions bahut confusing hain",
+    "expected_module": "trust_support",
+    "expected_problem": "policy_confusion",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "bot se baat nahi karni real human chahiye",
+    "expected_module": "trust_support",
+    "expected_problem": "bot_frustration",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  },
+  {
+    "input": "spam calls aa rahe hain jabse app install kiya",
+    "expected_module": "trust_support",
+    "expected_problem": "data_leak_suspicion",
+    "requires_clarification": false,
+    "requires_diagnosis": false
+  }
+]

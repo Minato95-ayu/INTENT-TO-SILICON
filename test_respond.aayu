@@ -1,0 +1,8 @@
+app TestApp
+
+action main
+    let is_valid = true
+    respond({"ok": is_valid})
+end
+
+run main

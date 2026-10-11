@@ -1,0 +1,7 @@
+[package]
+name = "datetime"
+version = "1.0.0"
+description = "Date and time utilities"
+author = "AAYU Official"
+
+[dependencies]

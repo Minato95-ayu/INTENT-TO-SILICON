@@ -1,0 +1,12 @@
+﻿// AAYU Standard Library: AI
+// Provides PyTorch-style Tensor Math and Neural Networks (Opcode 160+)
+
+module AI
+
+module Tensor
+    action new(shape: List[Int], data: List[Float]) -> Tensor
+        // Natively mapped to Opcode 160
+    end
+end
+
+end

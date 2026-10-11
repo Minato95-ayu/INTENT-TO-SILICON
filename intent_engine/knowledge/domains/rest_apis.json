@@ -1,0 +1,171 @@
+{
+  "name": "Rest apis",
+  "entities": [
+    "User",
+    "Session",
+    "Log",
+    "Settings",
+    "Configuration",
+    "Role",
+    "Permission",
+    "Rest_apisEntity1",
+    "Rest_apisEntity2",
+    "Rest_apisEntity3",
+    "Rest_apisEntity4",
+    "Rest_apisEntity5",
+    "Rest_apisEntity6",
+    "Rest_apisEntity7",
+    "Rest_apisEntity8",
+    "Rest_apisEntity9",
+    "Rest_apisEntity10",
+    "Rest_apisEntity11",
+    "Rest_apisEntity12",
+    "Rest_apisEntity13",
+    "Rest_apisEntity14",
+    "Rest_apisEntity15",
+    "Rest_apisEntity16",
+    "Rest_apisEntity17",
+    "Rest_apisEntity18",
+    "Rest_apisEntity19",
+    "Rest_apisEntity20",
+    "Rest_apisEntity21",
+    "Rest_apisEntity22",
+    "Rest_apisEntity23",
+    "Rest_apisEntity24",
+    "Rest_apisEntity25",
+    "Rest_apisEntity26",
+    "Rest_apisEntity27",
+    "Rest_apisEntity28",
+    "Rest_apisEntity29",
+    "Rest_apisEntity30",
+    "Rest_apisEntity31",
+    "Rest_apisEntity32",
+    "Rest_apisEntity33",
+    "Rest_apisEntity34",
+    "Rest_apisEntity35",
+    "Rest_apisEntity36",
+    "Rest_apisEntity37",
+    "Rest_apisEntity38",
+    "Rest_apisEntity39",
+    "Rest_apisEntity40",
+    "Rest_apisEntity41",
+    "Rest_apisEntity42",
+    "Rest_apisEntity43",
+    "Rest_apisEntity44",
+    "Rest_apisEntity45",
+    "Rest_apisEntity46",
+    "Rest_apisEntity47",
+    "Rest_apisEntity48",
+    "Rest_apisEntity49",
+    "Rest_apisEntity50"
+  ],
+  "relationships": [
+    {
+      "source": "Rest_apisEntity6",
+      "target": "Rest_apisEntity33",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Rest_apisEntity43",
+      "target": "Rest_apisEntity47",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Rest_apisEntity6",
+      "target": "Rest_apisEntity11",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Rest_apisEntity15",
+      "target": "Rest_apisEntity29",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Rest_apisEntity27",
+      "target": "Rest_apisEntity17",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Rest_apisEntity6",
+      "target": "Rest_apisEntity15",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Rest_apisEntity2",
+      "target": "Rest_apisEntity37",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Rest_apisEntity19",
+      "target": "Rest_apisEntity18",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Rest_apisEntity44",
+      "target": "Rest_apisEntity49",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Rest_apisEntity35",
+      "target": "Rest_apisEntity25",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Rest_apisEntity42",
+      "target": "Role",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Rest_apisEntity18",
+      "target": "Rest_apisEntity38",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Rest_apisEntity37",
+      "target": "Rest_apisEntity27",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Rest_apisEntity13",
+      "target": "Rest_apisEntity27",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Log",
+      "target": "Rest_apisEntity20",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Rest_apisEntity17",
+      "target": "Rest_apisEntity32",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Rest_apisEntity30",
+      "target": "Rest_apisEntity32",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Settings",
+      "target": "Permission",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Rest_apisEntity37",
+      "target": "Rest_apisEntity10",
+      "type": "one_to_many"
+    }
+  ],
+  "workflows": [
+    "Rest_apis Workflow 1",
+    "Rest_apis Workflow 2",
+    "Rest_apis Workflow 3",
+    "Rest_apis Workflow 4",
+    "Rest_apis Workflow 5",
+    "Rest_apis Workflow 6",
+    "Rest_apis Workflow 7",
+    "Rest_apis Workflow 8",
+    "Rest_apis Workflow 9",
+    "Rest_apis Workflow 10"
+  ]
+}

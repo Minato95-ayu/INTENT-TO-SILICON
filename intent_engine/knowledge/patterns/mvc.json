@@ -1,0 +1,9 @@
+{
+  "name": "Model-View-Controller",
+  "description": "Separates an application into three interconnected components.",
+  "components": [
+    "Model",
+    "View",
+    "Controller"
+  ]
+}

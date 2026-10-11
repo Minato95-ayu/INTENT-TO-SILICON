@@ -1,0 +1,11 @@
+{
+  "name": "Architecture Template 96",
+  "type": "event_driven",
+  "components": [
+    "Component0",
+    "Component1",
+    "Component2",
+    "Component3",
+    "Component4"
+  ]
+}

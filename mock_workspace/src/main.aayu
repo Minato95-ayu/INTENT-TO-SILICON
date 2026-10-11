@@ -1,0 +1,6 @@
+import math.
+import utils.
+
+let result = math.calculate(5, 10).
+print(result).
+print("Main module loaded").

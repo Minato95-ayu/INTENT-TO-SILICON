@@ -1,0 +1,62 @@
+{
+  "DELIVERY_FAILURE": [
+    "nahi mila",
+    "receive nahi hua",
+    "prapt nahi hua",
+    "nahi prapt hua",
+    "prapt nahi",
+    "aaya nahi",
+    "nahi aaya",
+    "aahi nahi raha"
+  ],
+  "APPLICATION_EXIT": [
+    "band ho gaya",
+    "close ho gaya",
+    "auto close",
+    "crash",
+    "band ho jati hai",
+    "band ho jata",
+    "close ho",
+    "band"
+  ],
+  "MONEY_DEDUCTED": [
+    "paise nikal gaye",
+    "paise ud gaye",
+    "kat gaye",
+    "cut gaye",
+    "debited",
+    "deduct ho gaya",
+    "paise cut"
+  ],
+  "TRANSACTION_FAILED": [
+    "payment failed",
+    "transaction fail"
+  ],
+  "UI_FREEZE": [
+    "freeze",
+    "atakti",
+    "safed pad jati",
+    "screen safed"
+  ],
+  "DISCOVERABILITY": [
+    "kahan chupake",
+    "kidhar milega",
+    "kidhar hai",
+    "kaise karu",
+    "kaise chalau",
+    "kahan hai",
+    "kaha hai"
+  ],
+  "SLOW_PERFORMANCE": [
+    "ruk ruk ke",
+    "bahut time laga",
+    "slow"
+  ],
+  "NEGATIVE_MATCH": [
+    "fail ho jata",
+    "reject ho gaya",
+    "kaam nahi",
+    "chal nahi",
+    "update nahi"
+  ]
+}

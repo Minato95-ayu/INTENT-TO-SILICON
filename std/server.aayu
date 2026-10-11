@@ -1,0 +1,14 @@
+﻿// AAYU Standard Library: Server
+// Provides native HTTP/HTTPS routing via Rust VM (Opcode 180+)
+
+module Server
+
+action start(port: Int)
+    // Natively mapped to Opcode 180
+end
+
+action route(path: String, handler: Action)
+    // Natively mapped to Opcode 181
+end
+
+end

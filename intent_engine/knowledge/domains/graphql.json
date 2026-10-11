@@ -1,0 +1,176 @@
+{
+  "name": "Graphql",
+  "entities": [
+    "User",
+    "Session",
+    "Log",
+    "Settings",
+    "Configuration",
+    "Role",
+    "Permission",
+    "GraphqlEntity1",
+    "GraphqlEntity2",
+    "GraphqlEntity3",
+    "GraphqlEntity4",
+    "GraphqlEntity5",
+    "GraphqlEntity6",
+    "GraphqlEntity7",
+    "GraphqlEntity8",
+    "GraphqlEntity9",
+    "GraphqlEntity10",
+    "GraphqlEntity11",
+    "GraphqlEntity12",
+    "GraphqlEntity13",
+    "GraphqlEntity14",
+    "GraphqlEntity15",
+    "GraphqlEntity16",
+    "GraphqlEntity17",
+    "GraphqlEntity18",
+    "GraphqlEntity19",
+    "GraphqlEntity20",
+    "GraphqlEntity21",
+    "GraphqlEntity22",
+    "GraphqlEntity23",
+    "GraphqlEntity24",
+    "GraphqlEntity25",
+    "GraphqlEntity26",
+    "GraphqlEntity27",
+    "GraphqlEntity28",
+    "GraphqlEntity29",
+    "GraphqlEntity30",
+    "GraphqlEntity31",
+    "GraphqlEntity32",
+    "GraphqlEntity33",
+    "GraphqlEntity34",
+    "GraphqlEntity35",
+    "GraphqlEntity36",
+    "GraphqlEntity37",
+    "GraphqlEntity38",
+    "GraphqlEntity39",
+    "GraphqlEntity40",
+    "GraphqlEntity41",
+    "GraphqlEntity42",
+    "GraphqlEntity43",
+    "GraphqlEntity44",
+    "GraphqlEntity45",
+    "GraphqlEntity46",
+    "GraphqlEntity47",
+    "GraphqlEntity48",
+    "GraphqlEntity49",
+    "GraphqlEntity50"
+  ],
+  "relationships": [
+    {
+      "source": "Settings",
+      "target": "GraphqlEntity44",
+      "type": "one_to_one"
+    },
+    {
+      "source": "GraphqlEntity46",
+      "target": "GraphqlEntity26",
+      "type": "one_to_one"
+    },
+    {
+      "source": "GraphqlEntity37",
+      "target": "GraphqlEntity28",
+      "type": "one_to_many"
+    },
+    {
+      "source": "GraphqlEntity45",
+      "target": "GraphqlEntity17",
+      "type": "many_to_many"
+    },
+    {
+      "source": "GraphqlEntity13",
+      "target": "GraphqlEntity19",
+      "type": "one_to_many"
+    },
+    {
+      "source": "GraphqlEntity34",
+      "target": "GraphqlEntity47",
+      "type": "one_to_many"
+    },
+    {
+      "source": "GraphqlEntity10",
+      "target": "GraphqlEntity48",
+      "type": "one_to_one"
+    },
+    {
+      "source": "GraphqlEntity29",
+      "target": "GraphqlEntity5",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Session",
+      "target": "GraphqlEntity44",
+      "type": "many_to_many"
+    },
+    {
+      "source": "GraphqlEntity39",
+      "target": "GraphqlEntity24",
+      "type": "one_to_many"
+    },
+    {
+      "source": "GraphqlEntity2",
+      "target": "GraphqlEntity11",
+      "type": "many_to_many"
+    },
+    {
+      "source": "GraphqlEntity26",
+      "target": "GraphqlEntity49",
+      "type": "one_to_one"
+    },
+    {
+      "source": "GraphqlEntity32",
+      "target": "GraphqlEntity26",
+      "type": "one_to_one"
+    },
+    {
+      "source": "GraphqlEntity4",
+      "target": "GraphqlEntity32",
+      "type": "many_to_many"
+    },
+    {
+      "source": "GraphqlEntity10",
+      "target": "Role",
+      "type": "one_to_one"
+    },
+    {
+      "source": "GraphqlEntity34",
+      "target": "GraphqlEntity20",
+      "type": "many_to_many"
+    },
+    {
+      "source": "GraphqlEntity8",
+      "target": "GraphqlEntity20",
+      "type": "many_to_many"
+    },
+    {
+      "source": "GraphqlEntity5",
+      "target": "GraphqlEntity32",
+      "type": "many_to_many"
+    },
+    {
+      "source": "GraphqlEntity14",
+      "target": "GraphqlEntity7",
+      "type": "many_to_many"
+    },
+    {
+      "source": "GraphqlEntity1",
+      "target": "GraphqlEntity33",
+      "type": "one_to_many"
+    }
+  ],
+  "workflows": [
+    "Graphql Workflow 1",
+    "Graphql Workflow 2",
+    "Graphql Workflow 3",
+    "Graphql Workflow 4",
+    "Graphql Workflow 5",
+    "Graphql Workflow 6",
+    "Graphql Workflow 7",
+    "Graphql Workflow 8",
+    "Graphql Workflow 9",
+    "Graphql Workflow 10"
+  ]
+}

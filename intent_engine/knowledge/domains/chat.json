@@ -1,0 +1,176 @@
+{
+  "name": "Chat",
+  "entities": [
+    "User",
+    "Session",
+    "Log",
+    "Settings",
+    "Configuration",
+    "Role",
+    "Permission",
+    "ChatEntity1",
+    "ChatEntity2",
+    "ChatEntity3",
+    "ChatEntity4",
+    "ChatEntity5",
+    "ChatEntity6",
+    "ChatEntity7",
+    "ChatEntity8",
+    "ChatEntity9",
+    "ChatEntity10",
+    "ChatEntity11",
+    "ChatEntity12",
+    "ChatEntity13",
+    "ChatEntity14",
+    "ChatEntity15",
+    "ChatEntity16",
+    "ChatEntity17",
+    "ChatEntity18",
+    "ChatEntity19",
+    "ChatEntity20",
+    "ChatEntity21",
+    "ChatEntity22",
+    "ChatEntity23",
+    "ChatEntity24",
+    "ChatEntity25",
+    "ChatEntity26",
+    "ChatEntity27",
+    "ChatEntity28",
+    "ChatEntity29",
+    "ChatEntity30",
+    "ChatEntity31",
+    "ChatEntity32",
+    "ChatEntity33",
+    "ChatEntity34",
+    "ChatEntity35",
+    "ChatEntity36",
+    "ChatEntity37",
+    "ChatEntity38",
+    "ChatEntity39",
+    "ChatEntity40",
+    "ChatEntity41",
+    "ChatEntity42",
+    "ChatEntity43",
+    "ChatEntity44",
+    "ChatEntity45",
+    "ChatEntity46",
+    "ChatEntity47",
+    "ChatEntity48",
+    "ChatEntity49",
+    "ChatEntity50"
+  ],
+  "relationships": [
+    {
+      "source": "ChatEntity19",
+      "target": "ChatEntity39",
+      "type": "one_to_one"
+    },
+    {
+      "source": "ChatEntity7",
+      "target": "ChatEntity3",
+      "type": "one_to_many"
+    },
+    {
+      "source": "ChatEntity40",
+      "target": "ChatEntity29",
+      "type": "many_to_many"
+    },
+    {
+      "source": "ChatEntity2",
+      "target": "ChatEntity8",
+      "type": "one_to_one"
+    },
+    {
+      "source": "ChatEntity35",
+      "target": "ChatEntity1",
+      "type": "one_to_many"
+    },
+    {
+      "source": "ChatEntity9",
+      "target": "ChatEntity43",
+      "type": "many_to_many"
+    },
+    {
+      "source": "ChatEntity39",
+      "target": "ChatEntity15",
+      "type": "many_to_many"
+    },
+    {
+      "source": "ChatEntity13",
+      "target": "User",
+      "type": "one_to_one"
+    },
+    {
+      "source": "ChatEntity4",
+      "target": "ChatEntity33",
+      "type": "one_to_one"
+    },
+    {
+      "source": "ChatEntity22",
+      "target": "ChatEntity14",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Settings",
+      "target": "ChatEntity41",
+      "type": "one_to_one"
+    },
+    {
+      "source": "ChatEntity4",
+      "target": "ChatEntity38",
+      "type": "many_to_many"
+    },
+    {
+      "source": "ChatEntity35",
+      "target": "ChatEntity13",
+      "type": "one_to_many"
+    },
+    {
+      "source": "ChatEntity26",
+      "target": "Configuration",
+      "type": "one_to_one"
+    },
+    {
+      "source": "ChatEntity43",
+      "target": "ChatEntity39",
+      "type": "many_to_many"
+    },
+    {
+      "source": "ChatEntity39",
+      "target": "ChatEntity41",
+      "type": "one_to_many"
+    },
+    {
+      "source": "ChatEntity37",
+      "target": "ChatEntity28",
+      "type": "one_to_many"
+    },
+    {
+      "source": "ChatEntity1",
+      "target": "ChatEntity36",
+      "type": "one_to_one"
+    },
+    {
+      "source": "ChatEntity24",
+      "target": "ChatEntity19",
+      "type": "many_to_many"
+    },
+    {
+      "source": "ChatEntity41",
+      "target": "ChatEntity46",
+      "type": "many_to_many"
+    }
+  ],
+  "workflows": [
+    "Chat Workflow 1",
+    "Chat Workflow 2",
+    "Chat Workflow 3",
+    "Chat Workflow 4",
+    "Chat Workflow 5",
+    "Chat Workflow 6",
+    "Chat Workflow 7",
+    "Chat Workflow 8",
+    "Chat Workflow 9",
+    "Chat Workflow 10"
+  ]
+}

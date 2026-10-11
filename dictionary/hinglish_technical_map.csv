@@ -1,0 +1,6 @@
+hindi_word,english_meaning,technical_spec
+ekdum fast chahiye,ultra-low latency,P99 < 200ms
+secure chahiye,security required,HTTPS + JWT + AES-256
+bahut log aayenge,high traffic,auto-scaling + load balancer
+sirf main dekhun,private access,RBAC + private subnet
+payment chahiye,payment gateway,Razorpay + PCI-DSS

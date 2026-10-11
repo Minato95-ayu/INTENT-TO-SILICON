@@ -1,0 +1,176 @@
+{
+  "name": "Database",
+  "entities": [
+    "User",
+    "Session",
+    "Log",
+    "Settings",
+    "Configuration",
+    "Role",
+    "Permission",
+    "DatabaseEntity1",
+    "DatabaseEntity2",
+    "DatabaseEntity3",
+    "DatabaseEntity4",
+    "DatabaseEntity5",
+    "DatabaseEntity6",
+    "DatabaseEntity7",
+    "DatabaseEntity8",
+    "DatabaseEntity9",
+    "DatabaseEntity10",
+    "DatabaseEntity11",
+    "DatabaseEntity12",
+    "DatabaseEntity13",
+    "DatabaseEntity14",
+    "DatabaseEntity15",
+    "DatabaseEntity16",
+    "DatabaseEntity17",
+    "DatabaseEntity18",
+    "DatabaseEntity19",
+    "DatabaseEntity20",
+    "DatabaseEntity21",
+    "DatabaseEntity22",
+    "DatabaseEntity23",
+    "DatabaseEntity24",
+    "DatabaseEntity25",
+    "DatabaseEntity26",
+    "DatabaseEntity27",
+    "DatabaseEntity28",
+    "DatabaseEntity29",
+    "DatabaseEntity30",
+    "DatabaseEntity31",
+    "DatabaseEntity32",
+    "DatabaseEntity33",
+    "DatabaseEntity34",
+    "DatabaseEntity35",
+    "DatabaseEntity36",
+    "DatabaseEntity37",
+    "DatabaseEntity38",
+    "DatabaseEntity39",
+    "DatabaseEntity40",
+    "DatabaseEntity41",
+    "DatabaseEntity42",
+    "DatabaseEntity43",
+    "DatabaseEntity44",
+    "DatabaseEntity45",
+    "DatabaseEntity46",
+    "DatabaseEntity47",
+    "DatabaseEntity48",
+    "DatabaseEntity49",
+    "DatabaseEntity50"
+  ],
+  "relationships": [
+    {
+      "source": "DatabaseEntity20",
+      "target": "DatabaseEntity11",
+      "type": "one_to_many"
+    },
+    {
+      "source": "DatabaseEntity35",
+      "target": "DatabaseEntity42",
+      "type": "one_to_one"
+    },
+    {
+      "source": "DatabaseEntity6",
+      "target": "DatabaseEntity20",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Role",
+      "target": "DatabaseEntity43",
+      "type": "many_to_many"
+    },
+    {
+      "source": "DatabaseEntity32",
+      "target": "DatabaseEntity1",
+      "type": "one_to_one"
+    },
+    {
+      "source": "DatabaseEntity28",
+      "target": "DatabaseEntity35",
+      "type": "one_to_many"
+    },
+    {
+      "source": "DatabaseEntity27",
+      "target": "DatabaseEntity48",
+      "type": "one_to_many"
+    },
+    {
+      "source": "DatabaseEntity29",
+      "target": "DatabaseEntity33",
+      "type": "one_to_many"
+    },
+    {
+      "source": "DatabaseEntity3",
+      "target": "DatabaseEntity16",
+      "type": "many_to_many"
+    },
+    {
+      "source": "DatabaseEntity49",
+      "target": "DatabaseEntity13",
+      "type": "one_to_one"
+    },
+    {
+      "source": "DatabaseEntity20",
+      "target": "DatabaseEntity6",
+      "type": "many_to_many"
+    },
+    {
+      "source": "DatabaseEntity9",
+      "target": "DatabaseEntity39",
+      "type": "one_to_many"
+    },
+    {
+      "source": "DatabaseEntity31",
+      "target": "DatabaseEntity44",
+      "type": "one_to_one"
+    },
+    {
+      "source": "DatabaseEntity46",
+      "target": "DatabaseEntity37",
+      "type": "one_to_one"
+    },
+    {
+      "source": "DatabaseEntity13",
+      "target": "DatabaseEntity24",
+      "type": "many_to_many"
+    },
+    {
+      "source": "DatabaseEntity17",
+      "target": "DatabaseEntity37",
+      "type": "one_to_one"
+    },
+    {
+      "source": "DatabaseEntity18",
+      "target": "DatabaseEntity46",
+      "type": "one_to_one"
+    },
+    {
+      "source": "DatabaseEntity2",
+      "target": "DatabaseEntity49",
+      "type": "many_to_many"
+    },
+    {
+      "source": "DatabaseEntity40",
+      "target": "DatabaseEntity45",
+      "type": "one_to_many"
+    },
+    {
+      "source": "DatabaseEntity39",
+      "target": "DatabaseEntity3",
+      "type": "many_to_many"
+    }
+  ],
+  "workflows": [
+    "Database Workflow 1",
+    "Database Workflow 2",
+    "Database Workflow 3",
+    "Database Workflow 4",
+    "Database Workflow 5",
+    "Database Workflow 6",
+    "Database Workflow 7",
+    "Database Workflow 8",
+    "Database Workflow 9",
+    "Database Workflow 10"
+  ]
+}

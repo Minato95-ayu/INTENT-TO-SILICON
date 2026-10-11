@@ -1,0 +1,103 @@
+{
+  "student": [
+    "learner",
+    "pupil",
+    "candidate",
+    "scholar",
+    "undergraduate",
+    "graduate",
+    "trainee"
+  ],
+  "customer": [
+    "client",
+    "buyer",
+    "consumer",
+    "purchaser",
+    "shopper",
+    "patron",
+    "subscriber"
+  ],
+  "employee": [
+    "staff",
+    "worker",
+    "personnel",
+    "team_member",
+    "associate",
+    "colleague"
+  ],
+  "manager": [
+    "supervisor",
+    "lead",
+    "director",
+    "head",
+    "administrator",
+    "boss"
+  ],
+  "department": [
+    "division",
+    "unit",
+    "branch",
+    "section",
+    "wing",
+    "office"
+  ],
+  "order": [
+    "purchase",
+    "booking",
+    "reservation",
+    "request"
+  ],
+  "payment": [
+    "transaction",
+    "remittance",
+    "transfer",
+    "checkout"
+  ],
+  "invoice": [
+    "bill",
+    "receipt",
+    "statement",
+    "check"
+  ],
+  "doctor": [
+    "physician",
+    "surgeon",
+    "specialist",
+    "practitioner",
+    "medic",
+    "clinician"
+  ],
+  "patient": [
+    "sufferer",
+    "case",
+    "inpatient",
+    "outpatient",
+    "subject",
+    "victim"
+  ],
+  "teacher": [
+    "instructor",
+    "professor",
+    "educator",
+    "tutor",
+    "lecturer",
+    "coach",
+    "mentor"
+  ],
+  "school": [
+    "college",
+    "university",
+    "academy",
+    "institute"
+  ],
+  "hospital": [
+    "clinic",
+    "healthcare",
+    "medical_center",
+    "dispensary"
+  ],
+  "bank": [
+    "financial_institution",
+    "credit_union"
+  ]
+}

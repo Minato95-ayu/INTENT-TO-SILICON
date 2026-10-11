@@ -1,0 +1,119 @@
+# ==============================================================================
+# COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
+# 
+# This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
+# GitHub: https://github.com/Minato95-ayu
+# 
+# UNAUTHORIZED COPYING, REPRODUCTION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
+# ANY ATTEMPT TO CLONE OR CREATE DERIVATIVE WORKS FROM AAYU WILL BE SUBJECT
+# TO LEGAL ACTION.
+# ==============================================================================
+
+"""
+=============================================================================
+FILE: schemas.py
+PURPOSE: Part of the AAYU Intent-to-Silicon project
+=============================================================================
+This file is part of the AAYU (Aayu) Intent-to-Silicon Programming Language.
+The AAYU language enables developers to write code using natural language
+intentions, which are compiled to optimized backend code.
+
+For beginners: This file handles part of the aayu intent-to-silicon project.
+To understand the project architecture, see the ARCHITECTURE_FREEZE.md file.
+=============================================================================
+"""
+
+from typing import List, Optional
+from pydantic import BaseModel, ConfigDict
+
+class PatientCreate(BaseModel):
+    pass
+
+class PatientUpdate(BaseModel):
+    pass
+
+class PatientResponse(PatientCreate):
+    id: str
+    model_config = ConfigDict(from_attributes=True)
+
+class PaginatedPatientResponse(BaseModel):
+    items: List[PatientResponse]
+    total: int
+    page: int
+    size: int
+
+class AppointmentCreate(BaseModel):
+    patient_id: str
+
+class AppointmentUpdate(BaseModel):
+    patient_id: Optional[str] = None
+
+class AppointmentResponse(AppointmentCreate):
+    id: str
+    model_config = ConfigDict(from_attributes=True)
+
+class PaginatedAppointmentResponse(BaseModel):
+    items: List[AppointmentResponse]
+    total: int
+    page: int
+    size: int
+
+class AuditLogCreate(BaseModel):
+    timestamp: str
+    action: str
+    entity_name: str
+    entity_id: str
+    request_id: str
+    user_id: str
+
+class AuditLogUpdate(BaseModel):
+    timestamp: Optional[str] = None
+    action: Optional[str] = None
+    entity_name: Optional[str] = None
+    entity_id: Optional[str] = None
+    request_id: Optional[str] = None
+    user_id: Optional[str] = None
+
+class AuditLogResponse(AuditLogCreate):
+    id: str
+    model_config = ConfigDict(from_attributes=True)
+
+class PaginatedAuditLogResponse(BaseModel):
+    items: List[AuditLogResponse]
+    total: int
+    page: int
+    size: int
+
+class UserCreate(BaseModel):
+    email: str
+    password_hash: str
+
+class UserUpdate(BaseModel):
+    email: Optional[str] = None
+    password_hash: Optional[str] = None
+
+class UserResponse(UserCreate):
+    id: str
+    model_config = ConfigDict(from_attributes=True)
+
+class PaginatedUserResponse(BaseModel):
+    items: List[UserResponse]
+    total: int
+    page: int
+    size: int
+
+class RoleCreate(BaseModel):
+    pass
+
+class RoleUpdate(BaseModel):
+    pass
+
+class RoleResponse(RoleCreate):
+    id: str
+    model_config = ConfigDict(from_attributes=True)
+
+class PaginatedRoleResponse(BaseModel):
+    items: List[RoleResponse]
+    total: int
+    page: int
+    size: int

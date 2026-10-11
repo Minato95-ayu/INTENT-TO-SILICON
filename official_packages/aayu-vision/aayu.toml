@@ -1,0 +1,7 @@
+[package]
+name = "aayu-vision"
+version = "0.1.0"
+description = "AAYU Official Computer Vision Package"
+author = "AAYU Core Team"
+
+[dependencies]

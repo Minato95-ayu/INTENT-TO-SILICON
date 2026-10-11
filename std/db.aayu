@@ -1,0 +1,14 @@
+﻿// AAYU Standard Library: DB
+// Provides native Dual-Tier (RAM + SSD WAL) Storage (Opcode 170+)
+
+module Db
+
+action set(key: String, value: Any)
+    // Natively mapped to Opcode 170
+end
+
+action get(key: String) -> Any
+    // Natively mapped to Opcode 171
+end
+
+end

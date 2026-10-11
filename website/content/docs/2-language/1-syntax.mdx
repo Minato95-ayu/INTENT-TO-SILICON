@@ -1,0 +1,26 @@
+---
+title: "Syntax"
+description: "AAYU's keyword-driven syntax rules."
+---
+
+# Syntax
+
+## Overview
+AAYU abandons C-style curly braces {} and semicolons ; in favor of keyword blocks (do/end) and periods (.).
+
+## Why it exists
+To make the codebase read like an English sentence or specification document, which natively aligns with the Intent Engine NLP parser.
+
+## Example
+<CodeBlock lang="aayu" code="entity App\nhas\n    port: Number\nend." playgroundUrl="/playground" />
+
+## Common Errors
+<ErrorBlock 
+    wrong="entity App has port: Number end"
+    correct="entity App\nhas\n    port: Number\nend."
+    errorMsg="SyntaxError: Missing terminating period."
+/>
+
+## Best Practices
+Keep your entities flat. Use extensions (extend) to add behavior rather than nesting functions inside the entity declaration.
+\n\n[Edit on GitHub (Available in v1.0)](#)\n

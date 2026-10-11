@@ -1,0 +1,7 @@
+app AayuRag
+
+action queryDocument(query)
+    print("RAG query: ")
+    print(query)
+    return "Result"
+end

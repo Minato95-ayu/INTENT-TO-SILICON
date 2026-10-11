@@ -1,0 +1,176 @@
+{
+  "name": "Ai agents",
+  "entities": [
+    "User",
+    "Session",
+    "Log",
+    "Settings",
+    "Configuration",
+    "Role",
+    "Permission",
+    "Ai_agentsEntity1",
+    "Ai_agentsEntity2",
+    "Ai_agentsEntity3",
+    "Ai_agentsEntity4",
+    "Ai_agentsEntity5",
+    "Ai_agentsEntity6",
+    "Ai_agentsEntity7",
+    "Ai_agentsEntity8",
+    "Ai_agentsEntity9",
+    "Ai_agentsEntity10",
+    "Ai_agentsEntity11",
+    "Ai_agentsEntity12",
+    "Ai_agentsEntity13",
+    "Ai_agentsEntity14",
+    "Ai_agentsEntity15",
+    "Ai_agentsEntity16",
+    "Ai_agentsEntity17",
+    "Ai_agentsEntity18",
+    "Ai_agentsEntity19",
+    "Ai_agentsEntity20",
+    "Ai_agentsEntity21",
+    "Ai_agentsEntity22",
+    "Ai_agentsEntity23",
+    "Ai_agentsEntity24",
+    "Ai_agentsEntity25",
+    "Ai_agentsEntity26",
+    "Ai_agentsEntity27",
+    "Ai_agentsEntity28",
+    "Ai_agentsEntity29",
+    "Ai_agentsEntity30",
+    "Ai_agentsEntity31",
+    "Ai_agentsEntity32",
+    "Ai_agentsEntity33",
+    "Ai_agentsEntity34",
+    "Ai_agentsEntity35",
+    "Ai_agentsEntity36",
+    "Ai_agentsEntity37",
+    "Ai_agentsEntity38",
+    "Ai_agentsEntity39",
+    "Ai_agentsEntity40",
+    "Ai_agentsEntity41",
+    "Ai_agentsEntity42",
+    "Ai_agentsEntity43",
+    "Ai_agentsEntity44",
+    "Ai_agentsEntity45",
+    "Ai_agentsEntity46",
+    "Ai_agentsEntity47",
+    "Ai_agentsEntity48",
+    "Ai_agentsEntity49",
+    "Ai_agentsEntity50"
+  ],
+  "relationships": [
+    {
+      "source": "Ai_agentsEntity34",
+      "target": "Ai_agentsEntity40",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Ai_agentsEntity44",
+      "target": "Ai_agentsEntity19",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Ai_agentsEntity27",
+      "target": "Ai_agentsEntity19",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Ai_agentsEntity13",
+      "target": "Ai_agentsEntity30",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Ai_agentsEntity5",
+      "target": "Ai_agentsEntity27",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Ai_agentsEntity5",
+      "target": "Ai_agentsEntity36",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Ai_agentsEntity6",
+      "target": "Ai_agentsEntity29",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Ai_agentsEntity46",
+      "target": "Ai_agentsEntity29",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Ai_agentsEntity7",
+      "target": "Ai_agentsEntity35",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Ai_agentsEntity45",
+      "target": "Session",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Ai_agentsEntity29",
+      "target": "Ai_agentsEntity11",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Ai_agentsEntity46",
+      "target": "Ai_agentsEntity17",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Ai_agentsEntity47",
+      "target": "Ai_agentsEntity25",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Ai_agentsEntity44",
+      "target": "Ai_agentsEntity11",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Ai_agentsEntity39",
+      "target": "Ai_agentsEntity45",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Ai_agentsEntity43",
+      "target": "Ai_agentsEntity26",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Ai_agentsEntity4",
+      "target": "Ai_agentsEntity24",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Ai_agentsEntity4",
+      "target": "User",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Ai_agentsEntity6",
+      "target": "Ai_agentsEntity31",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Ai_agentsEntity3",
+      "target": "Ai_agentsEntity26",
+      "type": "one_to_many"
+    }
+  ],
+  "workflows": [
+    "Ai_agents Workflow 1",
+    "Ai_agents Workflow 2",
+    "Ai_agents Workflow 3",
+    "Ai_agents Workflow 4",
+    "Ai_agents Workflow 5",
+    "Ai_agents Workflow 6",
+    "Ai_agents Workflow 7",
+    "Ai_agents Workflow 8",
+    "Ai_agents Workflow 9",
+    "Ai_agents Workflow 10"
+  ]
+}

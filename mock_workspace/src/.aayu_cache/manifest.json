@@ -1,0 +1,31 @@
+{
+  "version": "1.0",
+  "modules": {
+    "utils": {
+      "name": "utils",
+      "source_hash": "a660a39bc62f01971bc50596a7dba3c676f5bfacb3709f27545024eef70487ee",
+      "dependencies": [],
+      "exports": [],
+      "bytecode_path": ""
+    },
+    "math": {
+      "name": "math",
+      "source_hash": "2b669aae09a826c5f4b3070f7fb8dbb9fa1aff21b23cfb07d88d79ded3b86d49",
+      "dependencies": [
+        "utils"
+      ],
+      "exports": [],
+      "bytecode_path": ""
+    },
+    "__main__": {
+      "name": "__main__",
+      "source_hash": "69ab0bd11aa1c5c05362b9b7a613ac070b5863f9922bd0c448a37b1eb6d4b6c2",
+      "dependencies": [
+        "math",
+        "utils"
+      ],
+      "exports": [],
+      "bytecode_path": ""
+    }
+  }
+}

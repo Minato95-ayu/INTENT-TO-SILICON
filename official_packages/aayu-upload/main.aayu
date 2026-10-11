@@ -1,0 +1,7 @@
+app AayuUpload
+
+action uploadFile(file)
+    print("Uploading: ")
+    print(file)
+    return 1
+end

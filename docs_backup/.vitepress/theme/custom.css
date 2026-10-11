@@ -1,0 +1,27 @@
+:root {
+  --vp-c-brand-1: #1464f6;
+  --vp-c-brand-2: #0f8a78;
+  --vp-c-brand-3: #0f4ec4;
+}
+
+.VPNavBarTitle .logo {
+  width: 36px;
+  height: 36px;
+}
+
+.VPHero .image-src {
+  max-width: 300px;
+  max-height: 300px;
+}
+
+@media (min-width: 960px) {
+  .VPNavBarTitle .logo {
+    width: 42px;
+    height: 42px;
+  }
+
+  .VPHero .image-src {
+    max-width: 360px;
+    max-height: 360px;
+  }
+}

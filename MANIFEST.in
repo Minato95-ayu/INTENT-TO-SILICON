@@ -1,0 +1,33 @@
+# Include all documentation files
+include README.md
+include LICENSE
+include CHANGELOG.md
+include CONTRIBUTING.md
+include ROADMAP.md
+include CITATION.cff
+
+# Include grammar and documentation
+recursive-include docs *
+recursive-include grammar_examples *
+
+# Include schema files
+recursive-include schemas *
+
+# Include dictionary/resource files
+recursive-include dictionary *
+
+# Include data files
+recursive-include data *.json *.csv *.md
+
+# Exclude unnecessary files
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude __pycache__
+global-exclude .git
+global-exclude .github
+global-exclude .pytest_cache
+global-exclude *.egg-info
+global-exclude build
+global-exclude dist
+global-exclude .venv
+global-exclude venv

@@ -1,0 +1,5 @@
+app AayuGemini
+
+action generateContent(prompt)
+    return ai::generate(prompt)
+end

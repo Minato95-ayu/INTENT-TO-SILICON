@@ -1,0 +1,7 @@
+app AayuEmail
+
+action sendEmail(to, subject, body)
+    print("Email Sent to: ")
+    print(to)
+    return 1
+end

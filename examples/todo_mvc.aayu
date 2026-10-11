@@ -1,0 +1,78 @@
+﻿app TodoMVC
+
+model Todo
+    id Int
+    title String
+    completed Bool = false
+end
+
+route "/api/todos"
+    get
+        respond(Todo.all())
+    end
+    
+    post
+        let data = request.json()
+        let new_todo = Todo.insert(title: data.title)
+        respond(new_todo)
+    end
+end
+
+route "/api/todos/:id"
+    delete
+        let id = int(request.param("id"))
+        Todo.delete(id: id)
+        respond({"status": "deleted"})
+    end
+    
+    put
+        let id = int(request.param("id"))
+        let data = request.json()
+        let todo = Todo.find(id: id)
+        todo.completed = data.completed
+        todo.update()
+        respond(todo)
+    end
+end
+
+Page TodoApp
+    state todos = []
+    state new_task = ""
+    
+    action load
+        todos = http::get("/api/todos")
+    end
+    
+    action add_task
+        let res = http::post("/api/todos", {"title": new_task})
+        todos.push(res)
+        new_task = ""
+    end
+    
+    action toggle_task(id, current_status)
+        http::put("/api/todos/" + string(id), {"completed": !current_status})
+        load()
+    end
+    
+    Lifecycle
+        onMount: load
+    end
+    
+    Column
+        Text("Todo MVC", size: 32, weight: "bold")
+        
+        Row
+            Input(value: new_task, onChange: action(v) new_task = v end, placeholder: "What needs to be done?")
+            Button("Add", onClick: add_task)
+        end
+        
+        for todo in todos
+            Row
+                Checkbox(checked: todo.completed, onChange: action() toggle_task(todo.id, todo.completed) end)
+                Text(todo.title)
+            end
+        end
+    end
+end
+
+run TodoApp

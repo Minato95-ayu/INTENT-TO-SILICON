@@ -1,0 +1,57 @@
+﻿app Gpt4Free
+
+model Message {
+    role: String
+    content: String
+}
+
+model ChatCompletionRequest {
+    reqModel: String
+    messages: String
+}
+
+# ---------------------------------------------------------
+# BACKEND PROVIDERS (GPT4Free Core)
+# ---------------------------------------------------------
+
+action provider_pollinations(prompt)
+    let url = "https://text.pollinations.ai/" + prompt
+    let response = Http.get(url)
+    return response.text
+end
+
+action provider_blackbox(prompt)
+    let payload = "{\"messages\":[{\"role\":\"user\",\"content\":\"" + prompt + "\"}],\"model\":\"blackbox\",\"max_tokens\":1024}"
+    let response = Http.post("https://api.blackbox.ai/api/chat", payload)
+    return response.text
+end
+
+# ---------------------------------------------------------
+# API ROUTES
+# ---------------------------------------------------------
+
+route "/v1/chat/completions"
+    post
+        let req_model = request.body.reqModel
+        let user_prompt = request.body.messages
+        let result = ""
+        
+        if req_model == "blackbox"
+            result = provider_blackbox(user_prompt)
+        elif req_model == "pollinations"
+            result = provider_pollinations(user_prompt)
+        else
+            result = provider_pollinations(user_prompt)
+        end
+
+        let response_payload = "{\"id\":\"chatcmpl-aayu-g4f\",\"object\":\"chat.completion\",\"model\":\"" + req_model + "\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"" + result + "\"},\"finish_reason\":\"stop\"}]}"
+        respond response_payload
+    end
+end
+
+action main
+    print("AAYU GPT4Free Server Started!")
+    Server.start(8080)
+end
+
+run main

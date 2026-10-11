@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/pages/orderform.tsx","./src/pages/orderlist.tsx","./src/pages/productform.tsx","./src/pages/productlist.tsx","./src/pages/productorderform.tsx","./src/pages/productorderlist.tsx","./src/services/api.ts"],"version":"5.9.3"}

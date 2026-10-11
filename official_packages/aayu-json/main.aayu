@@ -1,0 +1,9 @@
+app AayuJson
+
+action parse(data)
+    return json::parse(data)
+end
+
+action stringify(data)
+    return json::stringify(data)
+end

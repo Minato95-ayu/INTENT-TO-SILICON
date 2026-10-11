@@ -1,0 +1,22 @@
+---
+title: "CLI Reference"
+description: "The official AAYU CLI tool."
+---
+
+# CLI Reference
+
+## Overview
+The ayu command line tool handles building, running, and managing packages.
+
+## Core Commands
+- ayu run <file>: Compile and execute immediately.
+- ayu build: Compile to native binary.
+- ayu pkg: Interact with the package manager.
+- ayu brain: Invoke the BrainOS orchestrator.
+
+## Example
+<CodeBlock lang="bash" code="aayu build main.aayu -O3 --target x86_64" />
+
+## Best Practices
+For production, always use the -O3 optimization flag.
+\n\n[Edit on GitHub (Available in v1.0)](#)\n

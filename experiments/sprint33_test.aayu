@@ -1,0 +1,19 @@
+system AuthTest
+
+domains:
+  hospital
+
+shared:
+  hospital
+
+entities:
+  patient
+  doctor
+  appointment
+  
+features:
+  authentication
+  
+relations:
+  patient -> appointment
+  doctor -> appointment

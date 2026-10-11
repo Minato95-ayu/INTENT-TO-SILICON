@@ -1,0 +1,20 @@
+# Project 3: Todo Tracker (in memory)
+let tasks = [
+    {"title": "Finish homework", "done": 1},
+    {"title": "Practice AAYU", "done": 0},
+    {"title": "Read a book", "done": 0}
+]
+let finished = 0
+let n = 0
+print("===== TODO LIST =====")
+for t in tasks
+    n = n + 1
+    if t["done"] == 1
+        print(n + ". [x] " + t["title"])
+        finished = finished + 1
+    else
+        print(n + ". [ ] " + t["title"])
+    end
+end
+let pending = len(tasks) - finished
+print("Done: " + finished + ", Pending: " + pending)

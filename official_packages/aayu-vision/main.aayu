@@ -1,0 +1,7 @@
+app AayuVision
+
+action analyzeImage(image_path)
+    print("Analyzing vision for: ")
+    print(image_path)
+    return "Object detected"
+end

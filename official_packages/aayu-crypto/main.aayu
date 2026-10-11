@@ -1,0 +1,5 @@
+app AayuCrypto
+
+action hash(data)
+    return crypto::sha256(data)
+end

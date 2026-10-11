@@ -1,0 +1,43 @@
+﻿app AuthSystem
+
+model User
+    id Int
+    username String
+    password_hash String
+    role String = "user"
+end
+
+route "/api/register"
+    post
+        let data = request.json()
+        let hashed = crypto::hash(data.password)
+        let user = User.insert(username: data.username, password_hash: hashed)
+        respond({"status": "success", "user_id": user.id})
+    end
+end
+
+route "/api/login"
+    post
+        let data = request.json()
+        let user = User.find(username: data.username)
+        if user == None
+            respond({"error": "User not found"}, status: 404)
+            return
+        end
+        
+        let is_valid = crypto::verify(data.password, user.password_hash)
+        if is_valid
+            let token = auth::create_jwt(user.id, user.role)
+            respond({"token": token})
+        else
+            respond({"error": "Invalid password"}, status: 401)
+        end
+    end
+end
+
+action main
+    print("Starting Auth System API...")
+    server.start(8001)
+end
+
+run main

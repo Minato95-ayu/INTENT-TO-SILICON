@@ -1,0 +1,5 @@
+app AayuML
+
+action trainKMeans(data, k)
+    return ml::kmeans_fit(data, k, 100)
+end

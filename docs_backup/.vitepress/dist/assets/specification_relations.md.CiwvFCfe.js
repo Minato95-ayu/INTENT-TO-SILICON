@@ -1,0 +1,27 @@
+import{_ as a,o as n,c as s,a0 as t}from"./chunks/framework.bcCluOOn.js";const u=JSON.parse('{"title":"Relations","description":"","frontmatter":{},"headers":[],"relativePath":"specification/relations.md","filePath":"specification/relations.md"}'),i={name:"specification/relations.md"};function o(p,e,l,r,c,d){return n(),s("div",null,[...e[0]||(e[0]=[t(`<h1 id="relations" tabindex="-1">Relations <a class="header-anchor" href="#relations" aria-label="Permalink to &quot;Relations&quot;">​</a></h1><p>Data modeling in modern applications is heavily dependent on how entities relate to one another. AAYU provides a declarative syntax for defining relationships between entities, which the compiler uses to automatically generate database foreign keys, join tables, and ORM configurations.</p><h2 id="the-relation-keyword" tabindex="-1">The <code>relation</code> Keyword <a class="header-anchor" href="#the-relation-keyword" aria-label="Permalink to &quot;The \`relation\` Keyword&quot;">​</a></h2><p>Relations are declared outside of <code>entity</code> blocks using the <code>relation</code> keyword. The syntax reads like a natural language sentence:</p><p><code>relation [SourceEntity] [relation_type] [TargetEntity].</code></p><h2 id="supported-relation-types" tabindex="-1">Supported Relation Types <a class="header-anchor" href="#supported-relation-types" aria-label="Permalink to &quot;Supported Relation Types&quot;">​</a></h2><h3 id="one-to-many" tabindex="-1"><code>one_to_many</code> <a class="header-anchor" href="#one-to-many" aria-label="Permalink to &quot;\`one_to_many\`&quot;">​</a></h3><p>A single record in the Source Entity can be associated with multiple records in the Target Entity.</p><div class="language-aayu vp-adaptive-theme"><button title="Copy Code" class="copy"></button><span class="lang">aayu</span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>entity Department.</span></span>
+<span class="line"><span>    text name.</span></span>
+<span class="line"><span>end.</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>entity Employee.</span></span>
+<span class="line"><span>    text full_name.</span></span>
+<span class="line"><span>end.</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># One Department has many Employees</span></span>
+<span class="line"><span>relation Department one_to_many Employee.</span></span></code></pre></div><p><em>Compiler Action:</em> In a relational database target, the compiler will automatically add a <code>department_id</code> foreign key column to the <code>Employee</code> table.</p><h3 id="one-to-one" tabindex="-1"><code>one_to_one</code> <a class="header-anchor" href="#one-to-one" aria-label="Permalink to &quot;\`one_to_one\`&quot;">​</a></h3><p>A strict 1:1 mapping between two entities.</p><div class="language-aayu vp-adaptive-theme"><button title="Copy Code" class="copy"></button><span class="lang">aayu</span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>entity User.</span></span>
+<span class="line"><span>    text username.</span></span>
+<span class="line"><span>end.</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>entity UserProfile.</span></span>
+<span class="line"><span>    text bio.</span></span>
+<span class="line"><span>    text avatar_url.</span></span>
+<span class="line"><span>end.</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>relation User one_to_one UserProfile.</span></span></code></pre></div><p><em>Compiler Action:</em> The compiler creates a foreign key with a unique constraint, ensuring the 1:1 nature of the relationship.</p><h3 id="many-to-many" tabindex="-1"><code>many_to_many</code> <a class="header-anchor" href="#many-to-many" aria-label="Permalink to &quot;\`many_to_many\`&quot;">​</a></h3><p>Records in the Source Entity can belong to multiple records in the Target Entity, and vice-versa.</p><div class="language-aayu vp-adaptive-theme"><button title="Copy Code" class="copy"></button><span class="lang">aayu</span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>entity Student.</span></span>
+<span class="line"><span>    text name.</span></span>
+<span class="line"><span>end.</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>entity Course.</span></span>
+<span class="line"><span>    text title.</span></span>
+<span class="line"><span>end.</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>relation Student many_to_many Course.</span></span></code></pre></div><p><em>Compiler Action:</em> The compiler will automatically generate a hidden join table (e.g., <code>student_course</code>) to manage the associations.</p><h2 id="querying-relations" tabindex="-1">Querying Relations <a class="header-anchor" href="#querying-relations" aria-label="Permalink to &quot;Querying Relations&quot;">​</a></h2><p>While current AAYU prototypes handle querying via standard <code>find</code> operations on the child entities (filtering by the injected foreign keys like <code>department_id</code>), future versions of the specification will include deep-nested retrieval syntax natively (e.g., <code>find Department with Employees</code>).</p>`,20)])])}const m=a(i,[["render",o]]);export{u as __pageData,m as default};

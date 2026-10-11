@@ -1,0 +1,5 @@
+app AayuDatetime
+
+action now()
+    return time::now()
+end

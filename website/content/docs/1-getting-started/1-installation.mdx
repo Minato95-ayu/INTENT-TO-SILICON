@@ -1,0 +1,33 @@
+---
+title: "Installation"
+description: "Install AAYU from source and set up your environment."
+---
+
+# Installation
+
+## Overview
+AAYU is a blazingly fast, statically typed systems language compiled via LLVM. Currently in alpha, AAYU must be built from source.
+
+## Why it exists
+To provide a memory-safe environment without a Garbage Collector (via Deterministic ARC) while maintaining C-like performance, we require a custom LLVM backend toolchain.
+
+## Syntax & Usage
+<CodeBlock lang="bash" code="git clone https://github.com/Minato95-ayu/AAYU.git\ncd AAYU\nmake build" />
+
+## Output
+<CodeBlock lang="bash" code="$ aayu --version\naayu 0.1.0-alpha (2026-07-05)" />
+
+## Common Errors
+<ErrorBlock 
+    wrong="make install"
+    correct="make build"
+    errorMsg="Makefile error: target 'install' not found. Use 'make build'."
+/>
+
+## Best Practices
+Always ensure you have LLVM 16+ and a compatible C++ compiler (clang or gcc) installed before building AAYU.
+
+## Related Topics
+- [Getting Started](/docs/1-getting-started/2-getting-started)
+- [CLI Reference](/docs/5-cli/1-cli-reference)
+\n\n[Edit on GitHub (Available in v1.0)](#)\n

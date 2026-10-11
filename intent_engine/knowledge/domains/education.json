@@ -1,0 +1,176 @@
+{
+  "name": "Education",
+  "entities": [
+    "User",
+    "Session",
+    "Log",
+    "Settings",
+    "Configuration",
+    "Role",
+    "Permission",
+    "EducationEntity1",
+    "EducationEntity2",
+    "EducationEntity3",
+    "EducationEntity4",
+    "EducationEntity5",
+    "EducationEntity6",
+    "EducationEntity7",
+    "EducationEntity8",
+    "EducationEntity9",
+    "EducationEntity10",
+    "EducationEntity11",
+    "EducationEntity12",
+    "EducationEntity13",
+    "EducationEntity14",
+    "EducationEntity15",
+    "EducationEntity16",
+    "EducationEntity17",
+    "EducationEntity18",
+    "EducationEntity19",
+    "EducationEntity20",
+    "EducationEntity21",
+    "EducationEntity22",
+    "EducationEntity23",
+    "EducationEntity24",
+    "EducationEntity25",
+    "EducationEntity26",
+    "EducationEntity27",
+    "EducationEntity28",
+    "EducationEntity29",
+    "EducationEntity30",
+    "EducationEntity31",
+    "EducationEntity32",
+    "EducationEntity33",
+    "EducationEntity34",
+    "EducationEntity35",
+    "EducationEntity36",
+    "EducationEntity37",
+    "EducationEntity38",
+    "EducationEntity39",
+    "EducationEntity40",
+    "EducationEntity41",
+    "EducationEntity42",
+    "EducationEntity43",
+    "EducationEntity44",
+    "EducationEntity45",
+    "EducationEntity46",
+    "EducationEntity47",
+    "EducationEntity48",
+    "EducationEntity49",
+    "EducationEntity50"
+  ],
+  "relationships": [
+    {
+      "source": "EducationEntity16",
+      "target": "EducationEntity39",
+      "type": "one_to_one"
+    },
+    {
+      "source": "EducationEntity11",
+      "target": "EducationEntity40",
+      "type": "one_to_many"
+    },
+    {
+      "source": "EducationEntity13",
+      "target": "Configuration",
+      "type": "many_to_many"
+    },
+    {
+      "source": "EducationEntity11",
+      "target": "EducationEntity16",
+      "type": "many_to_many"
+    },
+    {
+      "source": "EducationEntity2",
+      "target": "EducationEntity3",
+      "type": "many_to_many"
+    },
+    {
+      "source": "EducationEntity6",
+      "target": "EducationEntity23",
+      "type": "many_to_many"
+    },
+    {
+      "source": "EducationEntity35",
+      "target": "EducationEntity44",
+      "type": "one_to_one"
+    },
+    {
+      "source": "EducationEntity37",
+      "target": "EducationEntity20",
+      "type": "one_to_many"
+    },
+    {
+      "source": "EducationEntity7",
+      "target": "EducationEntity44",
+      "type": "one_to_one"
+    },
+    {
+      "source": "EducationEntity50",
+      "target": "EducationEntity31",
+      "type": "one_to_many"
+    },
+    {
+      "source": "EducationEntity20",
+      "target": "EducationEntity18",
+      "type": "many_to_many"
+    },
+    {
+      "source": "EducationEntity13",
+      "target": "EducationEntity43",
+      "type": "one_to_many"
+    },
+    {
+      "source": "EducationEntity15",
+      "target": "EducationEntity6",
+      "type": "many_to_many"
+    },
+    {
+      "source": "EducationEntity2",
+      "target": "EducationEntity32",
+      "type": "one_to_one"
+    },
+    {
+      "source": "EducationEntity21",
+      "target": "EducationEntity17",
+      "type": "one_to_many"
+    },
+    {
+      "source": "EducationEntity24",
+      "target": "EducationEntity12",
+      "type": "one_to_one"
+    },
+    {
+      "source": "EducationEntity2",
+      "target": "EducationEntity50",
+      "type": "many_to_many"
+    },
+    {
+      "source": "EducationEntity17",
+      "target": "EducationEntity28",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Role",
+      "target": "EducationEntity18",
+      "type": "one_to_one"
+    },
+    {
+      "source": "EducationEntity33",
+      "target": "EducationEntity43",
+      "type": "one_to_many"
+    }
+  ],
+  "workflows": [
+    "Education Workflow 1",
+    "Education Workflow 2",
+    "Education Workflow 3",
+    "Education Workflow 4",
+    "Education Workflow 5",
+    "Education Workflow 6",
+    "Education Workflow 7",
+    "Education Workflow 8",
+    "Education Workflow 9",
+    "Education Workflow 10"
+  ]
+}

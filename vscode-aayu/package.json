@@ -1,0 +1,109 @@
+{
+  "name": "aayu",
+  "displayName": "AAYU",
+  "description": "AAYU Programming Language Support for VS Code",
+  "version": "1.2.0",
+  "publisher": "AyushGhritKaushik",
+  "author": "Ayush Ghrit Kaushik <https://github.com/Minato95-ayu>",
+  "engines": {
+    "vscode": "^1.125.0"
+  },
+  "icon": "icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AAYU-Lang/vscode-aayu.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Minato95-ayu/INTENT-TO-SILICON/issues"
+  },
+  "homepage": "https://github.com/Minato95-ayu/INTENT-TO-SILICON#readme",
+  "categories": [
+    "Programming Languages",
+    "Snippets"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "aayu",
+        "aliases": [
+          "AAYU",
+          "aayu"
+        ],
+        "extensions": [
+          ".aayu"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./icons/aayu-light.png",
+          "dark": "./icons/aayu-dark.png"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "aayu",
+        "scopeName": "source.aayu",
+        "path": "./syntaxes/aayu.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "aayu",
+        "path": "./snippets/aayu.code-snippets"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "AAYU Configuration",
+      "properties": {
+        "aayu.languageServerPath": {
+          "type": "string",
+          "default": "",
+          "description": "Absolute path to the aayu_lsp.py script."
+        }
+      }
+    },
+    "debuggers": [
+      {
+        "type": "aayu",
+        "label": "AAYU Debugger",
+        "program": "aayu",
+        "args": [
+          "run",
+          "--debug",
+          ""
+        ],
+        "configurationAttributes": {
+          "launch": {
+            "required": [
+              "program"
+            ],
+            "properties": {
+              "program": {
+                "type": "string",
+                "description": "Absolute path to the AAYU file to debug.",
+                "default": ""
+              }
+            }
+          }
+        },
+        "initialConfigurations": [
+          {
+            "type": "aayu",
+            "request": "launch",
+            "name": "Debug AAYU File",
+            "program": ""
+          }
+        ]
+      }
+    ]
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.80.0",
+    "@vscode/vsce": "^3.9.2"
+  }
+}

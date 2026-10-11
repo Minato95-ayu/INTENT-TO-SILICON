@@ -1,0 +1,101 @@
+# ==============================================================================
+# COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
+# 
+# This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
+# GitHub: https://github.com/Minato95-ayu
+# 
+# UNAUTHORIZED COPYING, REPRODUCTION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
+# ANY ATTEMPT TO CLONE OR CREATE DERIVATIVE WORKS FROM AAYU WILL BE SUBJECT
+# TO LEGAL ACTION.
+# ==============================================================================
+
+"""
+=============================================================================
+FILE: build_root_library.py
+PURPOSE: Part of the AAYU Intent-to-Silicon project
+=============================================================================
+This file is part of the AAYU (Aayu) Intent-to-Silicon Programming Language.
+The AAYU language enables developers to write code using natural language
+intentions, which are compiled to optimized backend code.
+
+For beginners: This file handles part of the aayu intent-to-silicon project.
+To understand the project architecture, see the ARCHITECTURE_FREEZE.md file.
+=============================================================================
+"""
+
+import json
+import os
+
+root_library = {
+  "DELIVERY_FAILURE": [
+    "nahi mila",
+    "receive nahi hua",
+    "prapt nahi hua",
+    "nahi prapt hua",
+    "prapt nahi",
+    "aaya nahi",
+    "nahi aaya",
+    "aahi nahi raha"
+  ],
+  "APPLICATION_EXIT": [
+    "band ho gaya",
+    "close ho gaya",
+    "auto close",
+    "crash",
+    "band ho jati hai",
+    "band ho jata",
+    "close ho",
+    "band"
+  ],
+  "MONEY_DEDUCTED": [
+    "paise nikal gaye",
+    "paise ud gaye",
+    "kat gaye",
+    "cut gaye",
+    "debited",
+    "deduct ho gaya",
+    "paise cut"
+  ],
+  "TRANSACTION_FAILED": [
+    "payment failed",
+    "transaction fail"
+  ],
+  "UI_FREEZE": [
+    "freeze",
+    "atakti",
+    "safed pad jati",
+    "screen safed"
+  ],
+  "DISCOVERABILITY": [
+    "kahan chupake",
+    "kidhar milega",
+    "kidhar hai",
+    "kaise karu",
+    "kaise chalau",
+    "kahan hai",
+    "kaha hai"
+  ],
+  "SLOW_PERFORMANCE": [
+    "ruk ruk ke",
+    "bahut time laga",
+    "slow"
+  ],
+  "NEGATIVE_MATCH": [
+    "fail ho jata",
+    "reject ho gaya",
+    "kaam nahi",
+    "chal nahi",
+    "update nahi"
+  ]
+}
+
+if __name__ == "__main__":
+    try:
+        os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    except:
+        pass
+    
+    out_path = '../dictionary/root_library.json'
+    with open(out_path, 'w') as f:
+        json.dump(root_library, f, indent=2)
+    print(f"Generated {out_path}")

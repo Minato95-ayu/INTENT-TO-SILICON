@@ -1,0 +1,10 @@
+module math.
+import utils.
+
+function sqrt(x)
+    return x * x.
+end.
+
+export function calculate(a, b)
+    return a + b.
+end.

@@ -1,0 +1,36 @@
+model NetworkTrafficLog {
+    ip_address: String
+    request_count: Int
+    is_malicious: Bool
+}
+
+let total_processed = 0
+let threat_score = 0
+
+let system_status = "सिस्टम_सक्रिय_OK_\u200B_🚀"
+
+let outer_i = 0
+while outer_i < 5
+    let inner_j = 0
+    while inner_j < 10
+        let current_score = outer_i * inner_j
+        
+        if current_score > 12
+            insert NetworkTrafficLog { ip_address = "192.168.1.1" request_count = current_score is_malicious = true }
+            threat_score = threat_score + current_score
+        else
+            insert NetworkTrafficLog { ip_address = "10.0.0.2" request_count = current_score is_malicious = false }
+        end
+        
+        inner_j = inner_j + 1
+        total_processed = total_processed + 1
+    end
+    outer_i = outer_i + 1
+end
+
+let malicious_logs = find NetworkTrafficLog
+
+print("Total Processed:")
+print(total_processed)
+print("Threat Score:")
+print(threat_score)

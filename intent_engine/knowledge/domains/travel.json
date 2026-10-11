@@ -1,0 +1,176 @@
+{
+  "name": "Travel",
+  "entities": [
+    "User",
+    "Session",
+    "Log",
+    "Settings",
+    "Configuration",
+    "Role",
+    "Permission",
+    "TravelEntity1",
+    "TravelEntity2",
+    "TravelEntity3",
+    "TravelEntity4",
+    "TravelEntity5",
+    "TravelEntity6",
+    "TravelEntity7",
+    "TravelEntity8",
+    "TravelEntity9",
+    "TravelEntity10",
+    "TravelEntity11",
+    "TravelEntity12",
+    "TravelEntity13",
+    "TravelEntity14",
+    "TravelEntity15",
+    "TravelEntity16",
+    "TravelEntity17",
+    "TravelEntity18",
+    "TravelEntity19",
+    "TravelEntity20",
+    "TravelEntity21",
+    "TravelEntity22",
+    "TravelEntity23",
+    "TravelEntity24",
+    "TravelEntity25",
+    "TravelEntity26",
+    "TravelEntity27",
+    "TravelEntity28",
+    "TravelEntity29",
+    "TravelEntity30",
+    "TravelEntity31",
+    "TravelEntity32",
+    "TravelEntity33",
+    "TravelEntity34",
+    "TravelEntity35",
+    "TravelEntity36",
+    "TravelEntity37",
+    "TravelEntity38",
+    "TravelEntity39",
+    "TravelEntity40",
+    "TravelEntity41",
+    "TravelEntity42",
+    "TravelEntity43",
+    "TravelEntity44",
+    "TravelEntity45",
+    "TravelEntity46",
+    "TravelEntity47",
+    "TravelEntity48",
+    "TravelEntity49",
+    "TravelEntity50"
+  ],
+  "relationships": [
+    {
+      "source": "TravelEntity34",
+      "target": "User",
+      "type": "one_to_one"
+    },
+    {
+      "source": "TravelEntity42",
+      "target": "TravelEntity14",
+      "type": "many_to_many"
+    },
+    {
+      "source": "TravelEntity32",
+      "target": "TravelEntity13",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Settings",
+      "target": "TravelEntity44",
+      "type": "many_to_many"
+    },
+    {
+      "source": "TravelEntity3",
+      "target": "TravelEntity6",
+      "type": "one_to_many"
+    },
+    {
+      "source": "TravelEntity39",
+      "target": "TravelEntity4",
+      "type": "one_to_one"
+    },
+    {
+      "source": "TravelEntity48",
+      "target": "TravelEntity33",
+      "type": "one_to_many"
+    },
+    {
+      "source": "TravelEntity30",
+      "target": "TravelEntity32",
+      "type": "many_to_many"
+    },
+    {
+      "source": "TravelEntity15",
+      "target": "Session",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Settings",
+      "target": "TravelEntity46",
+      "type": "one_to_one"
+    },
+    {
+      "source": "TravelEntity19",
+      "target": "TravelEntity45",
+      "type": "many_to_many"
+    },
+    {
+      "source": "TravelEntity20",
+      "target": "TravelEntity15",
+      "type": "one_to_many"
+    },
+    {
+      "source": "TravelEntity35",
+      "target": "Role",
+      "type": "one_to_one"
+    },
+    {
+      "source": "TravelEntity32",
+      "target": "Role",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Permission",
+      "target": "TravelEntity6",
+      "type": "one_to_one"
+    },
+    {
+      "source": "TravelEntity21",
+      "target": "TravelEntity31",
+      "type": "one_to_one"
+    },
+    {
+      "source": "TravelEntity11",
+      "target": "TravelEntity45",
+      "type": "many_to_many"
+    },
+    {
+      "source": "TravelEntity35",
+      "target": "TravelEntity46",
+      "type": "one_to_many"
+    },
+    {
+      "source": "TravelEntity43",
+      "target": "User",
+      "type": "many_to_many"
+    },
+    {
+      "source": "TravelEntity5",
+      "target": "TravelEntity24",
+      "type": "many_to_many"
+    }
+  ],
+  "workflows": [
+    "Travel Workflow 1",
+    "Travel Workflow 2",
+    "Travel Workflow 3",
+    "Travel Workflow 4",
+    "Travel Workflow 5",
+    "Travel Workflow 6",
+    "Travel Workflow 7",
+    "Travel Workflow 8",
+    "Travel Workflow 9",
+    "Travel Workflow 10"
+  ]
+}

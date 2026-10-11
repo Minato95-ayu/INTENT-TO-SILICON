@@ -1,0 +1,336 @@
+{
+  "payment_anxiety": {
+    "engineering_signal": "Payment Architecture & Audit Logging",
+    "description": "User fears financial loss, transaction failure, or hidden charges.",
+    "root_lemmas": ["paise", "kat", "payment", "refund", "fraud", "scam", "double", "bank", "charge", "amount"],
+    "cross_question": "Kya paisa bank se deduct hua?\n  1. Haan\n  2. Nahi",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: Gateway Auto-Refund Worker",
+        "dependency_questions": [
+          {
+            "question": "Order generate hua?\n  1. Haan\n  2. Nahi",
+            "options": {
+              "1": {"exact_value": "REQUIREMENT: Order Reconciliation Job & Push Notification"},
+              "2": {"exact_value": "REQUIREMENT: Orphaned Payment Matcher & Automated Reversal"}
+            }
+          }
+        ]
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: Client-side Failure State Retry Logic"
+      }
+    }
+  },
+  "trust_deficit": {
+    "engineering_signal": "Privacy Architecture & E2E Encryption",
+    "description": "User fears data theft, spam, or privacy invasion.",
+    "root_lemmas": ["chori", "leak", "privacy", "secure", "safe", "spam", "hack", "data", "track", "dar", "darr", "fear"],
+    "cross_question": "Data privacy kis level ki chahiye?\n  1. Standard Data Protection\n  2. Highly Sensitive (Medical/Financial)",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: Encrypted Database & Standard JWT Auth"
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: E2E Encryption & PII Masking",
+        "dependency_questions": [
+          {
+            "question": "Kya third-party SDKs ko data access hoga?\n  1. Haan, analytics ke liye\n  2. Nahi, strict zero-trust",
+            "options": {
+              "1": {"exact_value": "REQUIREMENT: Anonymous Data Pipelines & GDPR Compliance Module"},
+              "2": {"exact_value": "REQUIREMENT: Air-gapped Architecture & Self-hosted Analytics"}
+            }
+          }
+        ]
+      }
+    }
+  },
+  "performance_frustration": {
+    "engineering_signal": "Optimization & Caching Strategy",
+    "description": "User is experiencing slow load times, crashes, or lag.",
+    "root_lemmas": ["slow", "hang", "crash", "lag", "load", "ruka", "stuck", "freeze", "time", "speed"],
+    "cross_question": "Problem kis layer mein hai?\n  1. App start hote hi slow hai (Frontend)\n  2. Data aane mein time lag raha hai (Backend/Network)",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: Code Splitting, Asset Minification & Offline Skeleton UI"
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: API Caching & CDN",
+        "dependency_questions": [
+          {
+            "question": "Kya real-time data sync zaruri hai?\n  1. Haan, live data chahiye\n  2. Nahi, thodi der ka delay chalega",
+            "options": {
+              "1": {"exact_value": "REQUIREMENT: WebSocket connection & In-memory Redis"},
+              "2": {"exact_value": "REQUIREMENT: Stale-While-Revalidate caching strategy"}
+            }
+          }
+        ]
+      }
+    }
+  },
+  "support_isolation": {
+    "engineering_signal": "Customer Service & Ticketing System",
+    "description": "User feels disconnected or cannot reach a human agent.",
+    "root_lemmas": ["bot", "human", "customer", "care", "number", "contact", "call", "agent", "insan"],
+    "cross_question": "Kya user direct agent se baat karna chahta hai?\n  1. Haan, bot nahi chahiye\n  2. Nahi, hybrid approach chalegi",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: Call Center Routing & Live Agent Chat System"
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: AI Bot with human handover API"
+      }
+    }
+  },
+  "account_recovery_pain": {
+    "engineering_signal": "Authentication Resiliency",
+    "description": "User is locked out or struggling to reset password.",
+    "root_lemmas": ["password", "bhul", "forget", "lock", "access", "recover"],
+    "cross_question": "Recovery authentication method kya hoga?\n  1. Standard Email link\n  2. SMS OTP & Biometrics",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: Standard Magic Link Recovery"
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: Multi-Factor Recovery Pipeline"
+      }
+    }
+  },
+  "otp_failure": {
+    "engineering_signal": "OTP Service Redundancy & Rate Limiting",
+    "description": "User is unable to receive or verify OTP.",
+    "root_lemmas": ["otp", "sms", "verification", "code", "invalid"],
+    "cross_question": "Problem kis step par hai?\n  1. OTP aa hi nahi raha\n  2. OTP aa raha hai par invalid bata raha hai",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: Twilio/MessageBird Auto-Failover Gateway"
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: Local DLT Registered Gateway with WhatsApp Fallback",
+        "dependency_questions": [
+          {
+            "question": "Agar SMS fail ho jaye toh next step?\n  1. Call OTP (IVR)\n  2. WhatsApp OTP",
+            "options": {
+              "1": {"exact_value": "REQUIREMENT: Twilio Programmable Voice OTP"},
+              "2": {"exact_value": "REQUIREMENT: WhatsApp Business API OTP Service"}
+            }
+          }
+        ]
+      }
+    }
+  },
+  "notification_spam": {
+    "engineering_signal": "Notification Preference Engine",
+    "description": "User is annoyed by too many alerts.",
+    "root_lemmas": ["spam", "ads", "notification", "irritate", "band", "mute", "silent"],
+    "cross_question": "Notifications ka primary purpose kya hai?\n  1. Marketing/Promotional\n  2. Transactional/Critical",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: Granular Opt-in Notification Preferences UI"
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: High-Priority Transactional Queue (No-Mute Critical)"
+      }
+    }
+  },
+  "search_failure": {
+    "engineering_signal": "Search Engine Optimization (App Level)",
+    "description": "User cannot find what they are looking for.",
+    "root_lemmas": ["search", "mil", "khoj", "find", "result", "empty", "dikha"],
+    "cross_question": "Data search pattern kaisa hai?\n  1. Exact matching (SKU, IDs)\n  2. Fuzzy/Semantic matching (Natural queries)",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: Standard SQL Indexing"
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: ElasticSearch with Typo Tolerance",
+        "dependency_questions": [
+          {
+            "question": "Kya autocomplete/suggestions chahiye?\n  1. Haan\n  2. Nahi",
+            "options": {
+              "1": {"exact_value": "REQUIREMENT: Redis Search Autocomplete Index"},
+              "2": {"exact_value": "REQUIREMENT: Basic Full-Text Search"}
+            }
+          }
+        ]
+      }
+    }
+  },
+  "checkout_abandonment": {
+    "engineering_signal": "Frictionless Checkout Architecture",
+    "description": "User drops off during payment flow.",
+    "root_lemmas": ["cart", "checkout", "address", "form", "lamba", "chhod"],
+    "cross_question": "Checkout friction kahan hai?\n  1. Account creation mandatory hai\n  2. Payment options kam hain",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: Guest Checkout Flow & Lazy Registration"
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: Integrated Payment Aggregator (Razorpay/Stripe)"
+      }
+    }
+  },
+  "support_delay": {
+    "engineering_signal": "Support SLA Tooling",
+    "description": "User gets a late response from customer care.",
+    "root_lemmas": ["late", "reply", "wait", "ticket", "response", "suna"],
+    "cross_question": "Traffic volume kaisa hai support pe?\n  1. High volume (1000+ tickets/day)\n  2. Low volume",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: Zendesk/Intercom integration with SLA tracking"
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: Simple Email-to-Ticket pipeline"
+      }
+    }
+  },
+  "onboarding_dropoff": {
+    "engineering_signal": "Progressive Profiling UX",
+    "description": "Registration is too long.",
+    "root_lemmas": ["register", "signup", "form", "boring", "bada", "lamba"],
+    "cross_question": "Data collect karna kitna zaruri hai day-1 pe?\n  1. Basic info (Name/Email) kaafi hai\n  2. Detailed profile chahiye (e.g., KYC)",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: Social Login (OAuth) & 1-Click Signup"
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: Chunked Multi-Step Form with Progress Resumption"
+      }
+    }
+  },
+  "data_sync_delay": {
+    "engineering_signal": "Offline-First Sync Engine",
+    "description": "Data doesn't sync across devices or works poorly offline.",
+    "root_lemmas": ["sync", "update", "offline", "internet", "dikh", "refresh"],
+    "cross_question": "Kya app offline kaam karni chahiye?\n  1. Haan, full offline support\n  2. Sirf network hone par",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: WatermelonDB / SQLite with Background Sync Worker",
+        "dependency_questions": [
+          {
+            "question": "Sync conflict resolve kaise honge?\n  1. Last write wins\n  2. Manual resolution prompt",
+            "options": {
+              "1": {"exact_value": "REQUIREMENT: CRDTs (Conflict-free Replicated Data Types)"},
+              "2": {"exact_value": "REQUIREMENT: Conflict Queue UI Layer"}
+            }
+          }
+        ]
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: Standard REST API"
+      }
+    }
+  },
+  "media_upload_failure": {
+    "engineering_signal": "Robust Asset Pipeline",
+    "description": "Images or videos failing to upload.",
+    "root_lemmas": ["upload", "photo", "image", "video", "fail", "size", "bada"],
+    "cross_question": "Upload format kya hai?\n  1. Heavy Videos (GBs)\n  2. Basic Images (MBs)",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: Chunked Multipart Upload & Transcoding Queue (AWS MediaConvert)"
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: Client-side Image Compression & S3 Pre-signed URLs"
+      }
+    }
+  },
+  "navigation_confusion": {
+    "engineering_signal": "Breadcrumb Navigation & Information Architecture Simplification",
+    "description": "User is confused where to click or go next.",
+    "root_lemmas": ["samajh", "click", "find", "kaha", "kidhar", "hard", "complex", "setting", "hidden", "gayab", "menu", "button"],
+    "cross_question": "App complexity kaisi hai?\n  1. Super App (Many features)\n  2. Single-purpose App",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: Bottom Tab Navigation with Global Unified Search"
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: Linear Flow UX & Contextual Tooltips"
+      }
+    }
+  },
+  "battery_drain": {
+    "engineering_signal": "Background Process Optimization",
+    "description": "App drains battery quickly.",
+    "root_lemmas": ["battery", "garam", "heat", "drain", "khatam"],
+    "cross_question": "Background me kya chal raha hai?\n  1. Constant Location tracking (GPS)\n  2. Heavy Background Syncing",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: Significant-Change Location Service & Geofencing (Low Power)"
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: OS-level Background Fetch Scheduler (iOS/Android WorkManager)"
+      }
+    }
+  },
+  "storage_bloat": {
+    "engineering_signal": "Local Cache Management",
+    "description": "App takes too much space.",
+    "root_lemmas": ["space", "memory", "storage", "full", "clear", "cache", "size"],
+    "cross_question": "Storage kon kha raha hai?\n  1. Cached Media (Images/Videos)\n  2. Local Database",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: Auto-Expiring LRU Media Cache & Settings to Clear Data"
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: Database Compaction & Remote Archival"
+      }
+    }
+  },
+  "accidental_purchase": {
+    "engineering_signal": "Checkout Confirmation Guards",
+    "description": "Bought by mistake.",
+    "root_lemmas": ["galti", "mistake", "buy", "khareed", "cancel", "wapas"],
+    "cross_question": "Payment ka nature kaisa hai?\n  1. In-App Purchase (Digital)\n  2. Physical Goods",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: Secondary Confirmation Modal & 15-Min Cancellation Window"
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: OTP at Checkout & Address Re-verification"
+      }
+    }
+  },
+  "localization_pain": {
+    "engineering_signal": "i18n & RTL Support",
+    "description": "App not in user's native language.",
+    "root_lemmas": ["bhasha", "language", "english", "hindi", "translate", "samajh"],
+    "cross_question": "Kitni languages support karni hain?\n  1. Only Left-to-Right (Hindi, English)\n  2. Right-to-Left bhi (Arabic, Urdu)",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: i18next Library & JSON Locale Files"
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: Full RTL Layout Engine Support & Mirrored UX Assets"
+      }
+    }
+  },
+  "feature_bloat": {
+    "engineering_signal": "Feature Flagging & Modular UX",
+    "description": "Too many features, confusing.",
+    "root_lemmas": ["complex", "bhar", "heavy", "options", "simple", "clean"],
+    "cross_question": "Users ka skill level kya hai?\n  1. Mix of Novice & Pro\n  2. Pure Novice",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: 'Pro Mode' Toggle & Feature Flagging Architecture"
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: Aggressive Feature Pruning & Minimalist UI Strategy"
+      }
+    }
+  },
+  "dark_pattern_anxiety": {
+    "engineering_signal": "Transparent Subscription Management",
+    "description": "Tricked into subscribing or hidden fees.",
+    "root_lemmas": ["dhokha", "trick", "hide", "fee", "subscribe", "auto", "renew"],
+    "cross_question": "Revenue model kya hai?\n  1. Subscription\n  2. One-time purchases",
+    "options": {
+      "1": {
+        "exact_value": "REQUIREMENT: 1-Click Unsubscribe & Pre-Renewal Email Alerts"
+      },
+      "2": {
+        "exact_value": "REQUIREMENT: Clear Price Breakdown & No Hidden Fees Modal"
+      }
+    }
+  }
+}

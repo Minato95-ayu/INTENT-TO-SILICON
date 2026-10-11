@@ -1,0 +1,22 @@
+﻿app PlaygroundAPI
+
+route "/api/v1/compile"
+    post
+        try
+            let req = request.body
+            if req == null
+                respond({"error": "No JSON body provided"})
+            else
+                let code = req["code"]
+                if code == null
+                    respond({"error": "Missing 'code' field in JSON body"})
+                else
+                    let result = compiler::compile(code)
+                    respond(result)
+                end
+            end
+        catch e
+            respond({"error": "Internal Server Error"})
+        end
+    end
+end

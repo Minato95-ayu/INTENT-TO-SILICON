@@ -1,0 +1,171 @@
+{
+  "name": "Microservices",
+  "entities": [
+    "User",
+    "Session",
+    "Log",
+    "Settings",
+    "Configuration",
+    "Role",
+    "Permission",
+    "MicroservicesEntity1",
+    "MicroservicesEntity2",
+    "MicroservicesEntity3",
+    "MicroservicesEntity4",
+    "MicroservicesEntity5",
+    "MicroservicesEntity6",
+    "MicroservicesEntity7",
+    "MicroservicesEntity8",
+    "MicroservicesEntity9",
+    "MicroservicesEntity10",
+    "MicroservicesEntity11",
+    "MicroservicesEntity12",
+    "MicroservicesEntity13",
+    "MicroservicesEntity14",
+    "MicroservicesEntity15",
+    "MicroservicesEntity16",
+    "MicroservicesEntity17",
+    "MicroservicesEntity18",
+    "MicroservicesEntity19",
+    "MicroservicesEntity20",
+    "MicroservicesEntity21",
+    "MicroservicesEntity22",
+    "MicroservicesEntity23",
+    "MicroservicesEntity24",
+    "MicroservicesEntity25",
+    "MicroservicesEntity26",
+    "MicroservicesEntity27",
+    "MicroservicesEntity28",
+    "MicroservicesEntity29",
+    "MicroservicesEntity30",
+    "MicroservicesEntity31",
+    "MicroservicesEntity32",
+    "MicroservicesEntity33",
+    "MicroservicesEntity34",
+    "MicroservicesEntity35",
+    "MicroservicesEntity36",
+    "MicroservicesEntity37",
+    "MicroservicesEntity38",
+    "MicroservicesEntity39",
+    "MicroservicesEntity40",
+    "MicroservicesEntity41",
+    "MicroservicesEntity42",
+    "MicroservicesEntity43",
+    "MicroservicesEntity44",
+    "MicroservicesEntity45",
+    "MicroservicesEntity46",
+    "MicroservicesEntity47",
+    "MicroservicesEntity48",
+    "MicroservicesEntity49",
+    "MicroservicesEntity50"
+  ],
+  "relationships": [
+    {
+      "source": "Role",
+      "target": "MicroservicesEntity34",
+      "type": "many_to_many"
+    },
+    {
+      "source": "MicroservicesEntity48",
+      "target": "MicroservicesEntity29",
+      "type": "one_to_many"
+    },
+    {
+      "source": "MicroservicesEntity14",
+      "target": "MicroservicesEntity20",
+      "type": "one_to_one"
+    },
+    {
+      "source": "MicroservicesEntity31",
+      "target": "MicroservicesEntity48",
+      "type": "many_to_many"
+    },
+    {
+      "source": "MicroservicesEntity24",
+      "target": "MicroservicesEntity26",
+      "type": "one_to_many"
+    },
+    {
+      "source": "MicroservicesEntity35",
+      "target": "Settings",
+      "type": "many_to_many"
+    },
+    {
+      "source": "MicroservicesEntity45",
+      "target": "MicroservicesEntity23",
+      "type": "one_to_one"
+    },
+    {
+      "source": "MicroservicesEntity43",
+      "target": "MicroservicesEntity13",
+      "type": "one_to_many"
+    },
+    {
+      "source": "MicroservicesEntity7",
+      "target": "MicroservicesEntity28",
+      "type": "one_to_many"
+    },
+    {
+      "source": "MicroservicesEntity10",
+      "target": "MicroservicesEntity26",
+      "type": "one_to_many"
+    },
+    {
+      "source": "MicroservicesEntity48",
+      "target": "Session",
+      "type": "one_to_many"
+    },
+    {
+      "source": "MicroservicesEntity30",
+      "target": "MicroservicesEntity41",
+      "type": "one_to_many"
+    },
+    {
+      "source": "MicroservicesEntity37",
+      "target": "MicroservicesEntity7",
+      "type": "one_to_one"
+    },
+    {
+      "source": "MicroservicesEntity7",
+      "target": "MicroservicesEntity38",
+      "type": "one_to_one"
+    },
+    {
+      "source": "MicroservicesEntity43",
+      "target": "MicroservicesEntity4",
+      "type": "one_to_one"
+    },
+    {
+      "source": "MicroservicesEntity11",
+      "target": "MicroservicesEntity46",
+      "type": "one_to_many"
+    },
+    {
+      "source": "MicroservicesEntity18",
+      "target": "MicroservicesEntity11",
+      "type": "one_to_one"
+    },
+    {
+      "source": "MicroservicesEntity2",
+      "target": "MicroservicesEntity17",
+      "type": "one_to_one"
+    },
+    {
+      "source": "MicroservicesEntity5",
+      "target": "Settings",
+      "type": "one_to_many"
+    }
+  ],
+  "workflows": [
+    "Microservices Workflow 1",
+    "Microservices Workflow 2",
+    "Microservices Workflow 3",
+    "Microservices Workflow 4",
+    "Microservices Workflow 5",
+    "Microservices Workflow 6",
+    "Microservices Workflow 7",
+    "Microservices Workflow 8",
+    "Microservices Workflow 9",
+    "Microservices Workflow 10"
+  ]
+}

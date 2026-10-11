@@ -1,0 +1,51 @@
+phrase,actual_category,human_label
+wallet se ud gaye scam,payment_anxiety,payment_anxiety
+video open nahi ho raha optimize karo,performance_frustration,performance_frustration
+sms invalid bata raha hai kya karu please fix,otp_failure,performance_frustration
+amount cancel ho gaya par kat gaya wapas do,payment_anxiety,payment_anxiety
+menu kidhar hai please fix,navigation_confusion,navigation_confusion
+verification code nahi aa raha login nahi ho raha,otp_failure,navigation_confusion
+payment fail ho gaya anyone else facing this?,payment_anxiety,payment_anxiety
+verification code nahi aa raha please fix,otp_failure,otp_failure
+video slow hai delete kar raha hu,performance_frustration,performance_frustration
+payment stuck ho gaya scam,payment_anxiety,payment_anxiety
+profile bahut hidden hai time waste,navigation_confusion,navigation_confusion
+sms nahi aa raha kya karu,otp_failure,otp_failure
+message expired dikha raha hai 1 ghanta ho gaya this is worst,otp_failure,otp_failure
+page stuck ho gaya phone hang kar diya,performance_frustration,performance_frustration
+account se paise cancel ho gaya par kat gaya,payment_anxiety,payment_anxiety
+video hang ho raha hai slowest app ever,performance_frustration,performance_frustration
+"login invalid hai, order cancel ho gaya",mixed,otp_failure
+setting bahut hidden hai,navigation_confusion,support_frustration
+kaha click karu gayab ho gaya itna hard kyu banaya,navigation_confusion,navigation_confusion
+refund page samajh nahi aa raha itna hard kyu banaya,navigation_confusion,navigation_confusion
+loading hang ho raha hai worst experience this is worst,performance_frustration,performance_frustration
+log out button gayab ho gaya pareshan ho gaya,navigation_confusion,navigation_confusion
+screen load nahi ho raha phone hang kar diya,performance_frustration,navigation_confusion
+button crash ho rahi hai,performance_frustration,performance_frustration
+app bahut slow hai aur refund nahi aaya,mixed,performance_frustration
+code aane me time lag raha hai fix karo isko,otp_failure,otp_failure
+customer support kaha hai very confusing,navigation_confusion,navigation_confusion
+verification code block ho gaya 1 ghanta ho gaya,otp_failure,otp_failure
+button load nahi ho raha anyone else facing this?,performance_frustration,performance_frustration
+message expired dikha raha hai account open nahi ho raha,otp_failure,trust_deficit
+"payment stuck hai, setting hidden hai",mixed,payment_anxiety
+amount nahi aaya help me please fix,payment_anxiety,payment_anxiety
+500 rupees cancel ho gaya par kat gaya,payment_anxiety,payment_anxiety
+double charge ho gaya aur phone hang kar raha hai,mixed,otp_failure
+page lag kar raha hai update ke baad kharab ho gaya,performance_frustration,performance_frustration
+wallet se pending hai 1 star,payment_anxiety,payment_anxiety
+"menu nahi mil raha, payment fail dikha raha hai",mixed,payment_anxiety
+verification code receive nahi hua kya karu,otp_failure,otp_failure
+log out button bahut hidden hai pareshan ho gaya,navigation_confusion,navigation_confusion
+profile kidhar hai time waste,navigation_confusion,navigation_confusion
+profile nahi mil raha itna hard kyu banaya anyone else facing this?,navigation_confusion,navigation_confusion
+page lag kar raha hai,performance_frustration,support_frustration
+loading loading... otp hi nahi aata,mixed,otp_failure
+samajh nahi aa raha paise wapas kaise lu,mixed,payment_anxiety
+code invalid bata raha hai frustrating,otp_failure,otp_failure
+OTP fail ho raha hai kaha click karu,mixed,navigation_confusion
+500 rupees stuck ho gaya koi reply nahi,payment_anxiety,payment_anxiety
+video upload crash ho gaya mera 500 ud gaya,mixed,payment_anxiety
+customer care ka number kidhar hai fraud app,mixed,support_frustration
+account se paise kat gaye app delete kar dunga,payment_anxiety,payment_anxiety

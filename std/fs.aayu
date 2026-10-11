@@ -1,0 +1,18 @@
+﻿// AAYU Standard Library: File System
+// Provides native file operations mapped to VM opcodes
+
+module Fs
+
+action read_text(path: String) -> String
+    // Natively mapped to Opcode 150
+end
+
+action write_text(path: String, content: String)
+    // Natively mapped to Opcode 151
+end
+
+action exists(path: String) -> Bool
+    // Natively mapped to Opcode 152
+end
+
+end

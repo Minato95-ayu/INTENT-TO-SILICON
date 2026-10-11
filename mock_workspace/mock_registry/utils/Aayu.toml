@@ -1,0 +1,9 @@
+[package]
+name = "utils"
+version = "1.0.0"
+edition = "2026"
+
+[build]
+entry = "src/utils.aayu"
+
+[dependencies]

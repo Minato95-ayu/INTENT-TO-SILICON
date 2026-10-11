@@ -1,0 +1,176 @@
+{
+  "name": "Finance",
+  "entities": [
+    "User",
+    "Session",
+    "Log",
+    "Settings",
+    "Configuration",
+    "Role",
+    "Permission",
+    "FinanceEntity1",
+    "FinanceEntity2",
+    "FinanceEntity3",
+    "FinanceEntity4",
+    "FinanceEntity5",
+    "FinanceEntity6",
+    "FinanceEntity7",
+    "FinanceEntity8",
+    "FinanceEntity9",
+    "FinanceEntity10",
+    "FinanceEntity11",
+    "FinanceEntity12",
+    "FinanceEntity13",
+    "FinanceEntity14",
+    "FinanceEntity15",
+    "FinanceEntity16",
+    "FinanceEntity17",
+    "FinanceEntity18",
+    "FinanceEntity19",
+    "FinanceEntity20",
+    "FinanceEntity21",
+    "FinanceEntity22",
+    "FinanceEntity23",
+    "FinanceEntity24",
+    "FinanceEntity25",
+    "FinanceEntity26",
+    "FinanceEntity27",
+    "FinanceEntity28",
+    "FinanceEntity29",
+    "FinanceEntity30",
+    "FinanceEntity31",
+    "FinanceEntity32",
+    "FinanceEntity33",
+    "FinanceEntity34",
+    "FinanceEntity35",
+    "FinanceEntity36",
+    "FinanceEntity37",
+    "FinanceEntity38",
+    "FinanceEntity39",
+    "FinanceEntity40",
+    "FinanceEntity41",
+    "FinanceEntity42",
+    "FinanceEntity43",
+    "FinanceEntity44",
+    "FinanceEntity45",
+    "FinanceEntity46",
+    "FinanceEntity47",
+    "FinanceEntity48",
+    "FinanceEntity49",
+    "FinanceEntity50"
+  ],
+  "relationships": [
+    {
+      "source": "FinanceEntity19",
+      "target": "FinanceEntity48",
+      "type": "one_to_one"
+    },
+    {
+      "source": "FinanceEntity31",
+      "target": "FinanceEntity24",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Log",
+      "target": "FinanceEntity29",
+      "type": "one_to_many"
+    },
+    {
+      "source": "FinanceEntity11",
+      "target": "FinanceEntity2",
+      "type": "one_to_many"
+    },
+    {
+      "source": "FinanceEntity34",
+      "target": "FinanceEntity17",
+      "type": "one_to_one"
+    },
+    {
+      "source": "FinanceEntity9",
+      "target": "FinanceEntity13",
+      "type": "one_to_one"
+    },
+    {
+      "source": "FinanceEntity4",
+      "target": "Role",
+      "type": "one_to_many"
+    },
+    {
+      "source": "FinanceEntity2",
+      "target": "FinanceEntity39",
+      "type": "many_to_many"
+    },
+    {
+      "source": "FinanceEntity43",
+      "target": "FinanceEntity12",
+      "type": "one_to_many"
+    },
+    {
+      "source": "FinanceEntity23",
+      "target": "FinanceEntity46",
+      "type": "many_to_many"
+    },
+    {
+      "source": "FinanceEntity19",
+      "target": "FinanceEntity46",
+      "type": "one_to_one"
+    },
+    {
+      "source": "FinanceEntity30",
+      "target": "FinanceEntity34",
+      "type": "one_to_one"
+    },
+    {
+      "source": "FinanceEntity25",
+      "target": "FinanceEntity47",
+      "type": "one_to_many"
+    },
+    {
+      "source": "FinanceEntity4",
+      "target": "FinanceEntity36",
+      "type": "many_to_many"
+    },
+    {
+      "source": "FinanceEntity18",
+      "target": "FinanceEntity47",
+      "type": "one_to_one"
+    },
+    {
+      "source": "FinanceEntity44",
+      "target": "FinanceEntity17",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Session",
+      "target": "FinanceEntity10",
+      "type": "one_to_one"
+    },
+    {
+      "source": "FinanceEntity34",
+      "target": "FinanceEntity47",
+      "type": "many_to_many"
+    },
+    {
+      "source": "FinanceEntity46",
+      "target": "FinanceEntity23",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Role",
+      "target": "FinanceEntity3",
+      "type": "many_to_many"
+    }
+  ],
+  "workflows": [
+    "Finance Workflow 1",
+    "Finance Workflow 2",
+    "Finance Workflow 3",
+    "Finance Workflow 4",
+    "Finance Workflow 5",
+    "Finance Workflow 6",
+    "Finance Workflow 7",
+    "Finance Workflow 8",
+    "Finance Workflow 9",
+    "Finance Workflow 10"
+  ]
+}

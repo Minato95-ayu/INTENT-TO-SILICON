@@ -1,0 +1,81 @@
+# ==============================================================================
+# COPYRIGHT (C) 2026 AYUSH GHRIT KAUSHIK. ALL RIGHTS RESERVED.
+# 
+# This source code is the proprietary intellectual property of Ayush Ghrit Kaushik.
+# GitHub: https://github.com/Minato95-ayu
+# 
+# UNAUTHORIZED COPYING, REPRODUCTION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
+# ANY ATTEMPT TO CLONE OR CREATE DERIVATIVE WORKS FROM AAYU WILL BE SUBJECT
+# TO LEGAL ACTION.
+# ==============================================================================
+
+"""
+=============================================================================
+FILE: auth.py
+PURPOSE: Part of the AAYU Intent-to-Silicon project
+=============================================================================
+This file is part of the AAYU (Aayu) Intent-to-Silicon Programming Language.
+The AAYU language enables developers to write code using natural language
+intentions, which are compiled to optimized backend code.
+
+For beginners: This file handles part of the aayu intent-to-silicon project.
+To understand the project architecture, see the ARCHITECTURE_FREEZE.md file.
+=============================================================================
+"""
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+from pydantic import BaseModel
+import uuid
+from typing import List, Optional
+
+from database import get_db
+from models import User
+from auth import verify_password, get_password_hash, create_access_token
+
+router = APIRouter(prefix="/auth", tags=["auth"])
+
+class AuthRequest(BaseModel):
+    email: str
+    password: str
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str
+    roles: List[str] = []
+    permissions: List[str] = []
+
+@router.post("/register", response_model=TokenResponse)
+def register(request: AuthRequest, db: Session = Depends(get_db)):
+    db_user = db.query(User).filter(User.email == request.email).first()
+    if db_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+        
+    hashed_password = get_password_hash(request.password)
+    new_user = User(id=str(uuid.uuid4()), email=request.email, password_hash=hashed_password)
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    
+    access_token = create_access_token(data={"sub": new_user.email})
+    return {"access_token": access_token, "token_type": "bearer", "roles": [], "permissions": []}
+
+@router.post("/login", response_model=TokenResponse)
+def login(request: AuthRequest, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == request.email).first()
+    if not user or not verify_password(request.password, user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+        
+    access_token = create_access_token(data={"sub": user.email})
+    from models import Role, Permission, UserRole, RolePermission
+    user_roles = db.query(Role).join(UserRole, UserRole.role_id == Role.id).filter(UserRole.user_id == user.id).all()
+    roles = [r.name for r in user_roles]
+    permissions = []
+    for r in user_roles:
+        perms = db.query(Permission).join(RolePermission, RolePermission.permission_id == Permission.id).filter(RolePermission.role_id == r.id).all()
+        permissions.extend([p.name for p in perms])
+    return {"access_token": access_token, "token_type": "bearer", "roles": roles, "permissions": list(set(permissions))}

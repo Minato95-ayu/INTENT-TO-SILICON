@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/pages/courseform.tsx","./src/pages/courselist.tsx","./src/pages/roomallocationform.tsx","./src/pages/roomallocationlist.tsx","./src/pages/studentcourseform.tsx","./src/pages/studentcourselist.tsx","./src/pages/studentform.tsx","./src/pages/studentlist.tsx","./src/services/api.ts"],"version":"5.9.3"}

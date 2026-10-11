@@ -1,0 +1,9 @@
+app AayuHttp
+
+action getReq(url)
+    return http::get(url)
+end
+
+action postReq(url, data)
+    return http::post(url, data)
+end

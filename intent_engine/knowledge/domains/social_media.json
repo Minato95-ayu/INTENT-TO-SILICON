@@ -1,0 +1,176 @@
+{
+  "name": "Social media",
+  "entities": [
+    "User",
+    "Session",
+    "Log",
+    "Settings",
+    "Configuration",
+    "Role",
+    "Permission",
+    "Social_mediaEntity1",
+    "Social_mediaEntity2",
+    "Social_mediaEntity3",
+    "Social_mediaEntity4",
+    "Social_mediaEntity5",
+    "Social_mediaEntity6",
+    "Social_mediaEntity7",
+    "Social_mediaEntity8",
+    "Social_mediaEntity9",
+    "Social_mediaEntity10",
+    "Social_mediaEntity11",
+    "Social_mediaEntity12",
+    "Social_mediaEntity13",
+    "Social_mediaEntity14",
+    "Social_mediaEntity15",
+    "Social_mediaEntity16",
+    "Social_mediaEntity17",
+    "Social_mediaEntity18",
+    "Social_mediaEntity19",
+    "Social_mediaEntity20",
+    "Social_mediaEntity21",
+    "Social_mediaEntity22",
+    "Social_mediaEntity23",
+    "Social_mediaEntity24",
+    "Social_mediaEntity25",
+    "Social_mediaEntity26",
+    "Social_mediaEntity27",
+    "Social_mediaEntity28",
+    "Social_mediaEntity29",
+    "Social_mediaEntity30",
+    "Social_mediaEntity31",
+    "Social_mediaEntity32",
+    "Social_mediaEntity33",
+    "Social_mediaEntity34",
+    "Social_mediaEntity35",
+    "Social_mediaEntity36",
+    "Social_mediaEntity37",
+    "Social_mediaEntity38",
+    "Social_mediaEntity39",
+    "Social_mediaEntity40",
+    "Social_mediaEntity41",
+    "Social_mediaEntity42",
+    "Social_mediaEntity43",
+    "Social_mediaEntity44",
+    "Social_mediaEntity45",
+    "Social_mediaEntity46",
+    "Social_mediaEntity47",
+    "Social_mediaEntity48",
+    "Social_mediaEntity49",
+    "Social_mediaEntity50"
+  ],
+  "relationships": [
+    {
+      "source": "Social_mediaEntity40",
+      "target": "Social_mediaEntity1",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Social_mediaEntity15",
+      "target": "Social_mediaEntity35",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Permission",
+      "target": "Social_mediaEntity24",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Social_mediaEntity7",
+      "target": "Social_mediaEntity26",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Social_mediaEntity6",
+      "target": "User",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Social_mediaEntity42",
+      "target": "Settings",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Settings",
+      "target": "Social_mediaEntity13",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Social_mediaEntity27",
+      "target": "Configuration",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Social_mediaEntity33",
+      "target": "Social_mediaEntity40",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Social_mediaEntity24",
+      "target": "Social_mediaEntity34",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Social_mediaEntity13",
+      "target": "Social_mediaEntity46",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Social_mediaEntity27",
+      "target": "Social_mediaEntity14",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Permission",
+      "target": "Social_mediaEntity30",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Social_mediaEntity1",
+      "target": "Social_mediaEntity28",
+      "type": "many_to_many"
+    },
+    {
+      "source": "User",
+      "target": "Social_mediaEntity5",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Social_mediaEntity24",
+      "target": "Social_mediaEntity10",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Permission",
+      "target": "Social_mediaEntity10",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Social_mediaEntity33",
+      "target": "Social_mediaEntity35",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Social_mediaEntity48",
+      "target": "Session",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Role",
+      "target": "Settings",
+      "type": "many_to_many"
+    }
+  ],
+  "workflows": [
+    "Social_media Workflow 1",
+    "Social_media Workflow 2",
+    "Social_media Workflow 3",
+    "Social_media Workflow 4",
+    "Social_media Workflow 5",
+    "Social_media Workflow 6",
+    "Social_media Workflow 7",
+    "Social_media Workflow 8",
+    "Social_media Workflow 9",
+    "Social_media Workflow 10"
+  ]
+}

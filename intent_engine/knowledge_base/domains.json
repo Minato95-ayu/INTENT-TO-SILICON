@@ -1,0 +1,118 @@
+{
+  "LMS": {
+    "aliases": ["lms", "learning management system", "elearning", "school", "college", "university"],
+    "entities": [
+      "Student",
+      "Teacher",
+      "Course",
+      "Assignment",
+      "Enrollment"
+    ],
+    "relations": [
+      {"from": "Student", "to": "Course", "type": "M:N", "junction": "Enrollment"}
+    ],
+    "routes": [
+      "/login",
+      "/dashboard",
+      "/courses"
+    ],
+    "suggested_features": [
+      "online_exams",
+      "certificates",
+      "attendance",
+      "payments"
+    ]
+  },
+  "CRM": {
+    "aliases": ["crm", "customer relationship management", "sales tracking", "client portal"],
+    "entities": [
+      "Customer",
+      "Lead",
+      "Deal",
+      "Employee"
+    ],
+    "relations": [
+      {"from": "Employee", "to": "Deal", "type": "1:N"}
+    ],
+    "routes": [
+      "/login",
+      "/dashboard",
+      "/customers",
+      "/leads"
+    ],
+    "suggested_features": [
+      "invoicing",
+      "email_integration",
+      "task_management"
+    ]
+  },
+  "E-Commerce": {
+    "aliases": ["e-commerce", "ecommerce", "store", "shop", "marketplace", "retail"],
+    "entities": [
+      "Product",
+      "Order",
+      "Customer",
+      "CartItem"
+    ],
+    "relations": [
+      {"from": "Order", "to": "Product", "type": "M:N", "junction": "OrderItem"},
+      {"from": "Customer", "to": "Order", "type": "1:N"}
+    ],
+    "routes": [
+      "/",
+      "/cart",
+      "/checkout",
+      "/orders",
+      "/admin"
+    ],
+    "suggested_features": [
+      "payments",
+      "inventory",
+      "shipping",
+      "reviews"
+    ]
+  },
+  "Job Portal": {
+    "aliases": ["job portal", "hiring", "recruitment"],
+    "entities": [
+      "Candidate",
+      "Job",
+      "Company"
+    ],
+    "relations": [
+      {"from": "Candidate", "to": "Job", "type": "M:N", "junction": "JobApplication"},
+      {"from": "Company", "to": "Job", "type": "1:N"}
+    ],
+    "routes": [
+      "/",
+      "/jobs",
+      "/apply",
+      "/dashboard"
+    ],
+    "suggested_features": [
+      "email_integration",
+      "payments"
+    ]
+  },
+  "Hospital": {
+    "aliases": ["hospital", "clinic", "healthcare", "patient management"],
+    "entities": [
+      "Patient",
+      "Doctor",
+      "Appointment"
+    ],
+    "relations": [
+      {"from": "Patient", "to": "Doctor", "type": "M:N", "junction": "Appointment"}
+    ],
+    "routes": [
+      "/login",
+      "/dashboard",
+      "/patients",
+      "/appointments"
+    ],
+    "suggested_features": [
+      "invoicing",
+      "email_integration"
+    ]
+  }
+}

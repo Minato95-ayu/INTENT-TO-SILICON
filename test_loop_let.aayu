@@ -1,0 +1,6 @@
+﻿let count = 0
+while count < 3
+    let msg = "hello"
+    print(msg)
+    count = count + 1
+end

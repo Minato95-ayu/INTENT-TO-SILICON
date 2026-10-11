@@ -1,0 +1,22 @@
+﻿# Auto-detect text files and perform LF normalization
+* text=auto
+
+# Mark standard language files
+*.aayu linguist-language=AAYU
+*.aybc linguist-language=AAYU-Bytecode
+
+# Exclude legacy python compiler and scripts from statistics
+compiler_aayu/** linguist-vendored
+tests/** linguist-vendored
+examples/** linguist-vendored
+scripts/** linguist-vendored
+.archive/** linguist-vendored
+# *.py linguist-vendored
+*.c linguist-vendored
+*.cpp linguist-vendored
+*.js linguist-vendored
+*.ts linguist-vendored
+website/** linguist-vendored
+
+# Ensure Rust is prominent
+runtime_rs/** linguist-language=Rust

@@ -1,0 +1,5 @@
+app AayuOpenAI
+
+action generateText(prompt)
+    return ai::generate(prompt)
+end

@@ -1,0 +1,25 @@
+---
+title: "Runtime (DARC)"
+description: "Deterministic ARC memory management."
+---
+
+# Runtime & Memory
+
+## Overview
+AAYU does not use a Garbage Collector. It uses **Deterministic Automatic Reference Counting (DARC)**.
+
+## Why it exists
+GC pauses (stop-the-world) are unacceptable in high-performance systems. DARC statically analyzes lifetimes during the Semantic pass and inserts 
+etain/
+elease instructions directly into the LLVM IR.
+
+## Common Errors
+<ErrorBlock 
+    wrong="let ptr = get_dangling_reference()."
+    correct="let ptr = acquire_safe_reference()."
+    errorMsg="MemoryError: Lifetime validation failed. Reference outlives owner."
+/>
+
+## Best Practices
+Avoid deep cyclic data structures. If you must use cycles, use the weak keyword to break reference loops.
+\n\n[Edit on GitHub (Available in v1.0)](#)\n

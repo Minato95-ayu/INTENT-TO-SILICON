@@ -1,0 +1,176 @@
+{
+  "name": "Cms",
+  "entities": [
+    "User",
+    "Session",
+    "Log",
+    "Settings",
+    "Configuration",
+    "Role",
+    "Permission",
+    "CmsEntity1",
+    "CmsEntity2",
+    "CmsEntity3",
+    "CmsEntity4",
+    "CmsEntity5",
+    "CmsEntity6",
+    "CmsEntity7",
+    "CmsEntity8",
+    "CmsEntity9",
+    "CmsEntity10",
+    "CmsEntity11",
+    "CmsEntity12",
+    "CmsEntity13",
+    "CmsEntity14",
+    "CmsEntity15",
+    "CmsEntity16",
+    "CmsEntity17",
+    "CmsEntity18",
+    "CmsEntity19",
+    "CmsEntity20",
+    "CmsEntity21",
+    "CmsEntity22",
+    "CmsEntity23",
+    "CmsEntity24",
+    "CmsEntity25",
+    "CmsEntity26",
+    "CmsEntity27",
+    "CmsEntity28",
+    "CmsEntity29",
+    "CmsEntity30",
+    "CmsEntity31",
+    "CmsEntity32",
+    "CmsEntity33",
+    "CmsEntity34",
+    "CmsEntity35",
+    "CmsEntity36",
+    "CmsEntity37",
+    "CmsEntity38",
+    "CmsEntity39",
+    "CmsEntity40",
+    "CmsEntity41",
+    "CmsEntity42",
+    "CmsEntity43",
+    "CmsEntity44",
+    "CmsEntity45",
+    "CmsEntity46",
+    "CmsEntity47",
+    "CmsEntity48",
+    "CmsEntity49",
+    "CmsEntity50"
+  ],
+  "relationships": [
+    {
+      "source": "CmsEntity27",
+      "target": "CmsEntity21",
+      "type": "one_to_one"
+    },
+    {
+      "source": "CmsEntity41",
+      "target": "CmsEntity19",
+      "type": "one_to_many"
+    },
+    {
+      "source": "CmsEntity45",
+      "target": "CmsEntity12",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Permission",
+      "target": "CmsEntity13",
+      "type": "one_to_many"
+    },
+    {
+      "source": "CmsEntity31",
+      "target": "CmsEntity40",
+      "type": "one_to_one"
+    },
+    {
+      "source": "CmsEntity41",
+      "target": "CmsEntity11",
+      "type": "many_to_many"
+    },
+    {
+      "source": "CmsEntity20",
+      "target": "CmsEntity18",
+      "type": "one_to_one"
+    },
+    {
+      "source": "Role",
+      "target": "CmsEntity27",
+      "type": "one_to_many"
+    },
+    {
+      "source": "CmsEntity24",
+      "target": "CmsEntity43",
+      "type": "one_to_one"
+    },
+    {
+      "source": "CmsEntity7",
+      "target": "CmsEntity26",
+      "type": "many_to_many"
+    },
+    {
+      "source": "CmsEntity32",
+      "target": "CmsEntity46",
+      "type": "one_to_one"
+    },
+    {
+      "source": "CmsEntity15",
+      "target": "CmsEntity44",
+      "type": "one_to_one"
+    },
+    {
+      "source": "CmsEntity37",
+      "target": "Session",
+      "type": "one_to_many"
+    },
+    {
+      "source": "CmsEntity10",
+      "target": "CmsEntity50",
+      "type": "one_to_one"
+    },
+    {
+      "source": "CmsEntity29",
+      "target": "CmsEntity48",
+      "type": "one_to_many"
+    },
+    {
+      "source": "CmsEntity22",
+      "target": "CmsEntity46",
+      "type": "many_to_many"
+    },
+    {
+      "source": "CmsEntity36",
+      "target": "CmsEntity37",
+      "type": "many_to_many"
+    },
+    {
+      "source": "Session",
+      "target": "CmsEntity43",
+      "type": "many_to_many"
+    },
+    {
+      "source": "CmsEntity42",
+      "target": "CmsEntity14",
+      "type": "one_to_one"
+    },
+    {
+      "source": "CmsEntity19",
+      "target": "CmsEntity5",
+      "type": "many_to_many"
+    }
+  ],
+  "workflows": [
+    "Cms Workflow 1",
+    "Cms Workflow 2",
+    "Cms Workflow 3",
+    "Cms Workflow 4",
+    "Cms Workflow 5",
+    "Cms Workflow 6",
+    "Cms Workflow 7",
+    "Cms Workflow 8",
+    "Cms Workflow 9",
+    "Cms Workflow 10"
+  ]
+}

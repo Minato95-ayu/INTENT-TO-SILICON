@@ -1,0 +1,103 @@
+{
+  "name": "Hospital",
+  "entities": [
+    "Patient",
+    "Doctor",
+    "Nurse",
+    "Department",
+    "Appointment",
+    "Prescription",
+    "MedicalRecord",
+    "LabTest",
+    "Bill"
+  ],
+  "fields": {
+    "Patient": [
+      "id: UUID",
+      "name: Text",
+      "age: Number",
+      "blood_type: Text",
+      "address: Text"
+    ],
+    "Doctor": [
+      "id: UUID",
+      "name: Text",
+      "specialty: Text",
+      "department_id: UUID"
+    ],
+    "Appointment": [
+      "id: UUID",
+      "patient_id: UUID",
+      "doctor_id: UUID",
+      "scheduled_time: DateTime",
+      "status: Enum"
+    ]
+  },
+  "relationships": [
+    {
+      "source": "Patient",
+      "target": "Appointment",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Doctor",
+      "target": "Appointment",
+      "type": "one_to_many"
+    },
+    {
+      "source": "Department",
+      "target": "Doctor",
+      "type": "one_to_many"
+    }
+  ],
+  "actions": [
+    "Register Patient",
+    "Book Appointment",
+    "Admit Patient",
+    "Discharge Patient",
+    "Generate Bill"
+  ],
+  "constraints": [
+    {
+      "entity": "Patient",
+      "field": "age",
+      "rule": ">= 0"
+    },
+    {
+      "entity": "Appointment",
+      "field": "scheduled_time",
+      "rule": "required"
+    },
+    {
+      "entity": "Appointment",
+      "field": "doctor_id",
+      "rule": "must_exist_in(Doctor)"
+    }
+  ],
+  "workflows": [
+    "Patient Registration -> Book Appointment -> Consultation -> Billing"
+  ],
+  "api_templates": {
+    "Appointment": [
+      "POST /appointments",
+      "GET /appointments/:id",
+      "PUT /appointments/:id/cancel"
+    ]
+  },
+  "database_schema": "Relational (PostgreSQL preferred for strict ACID transactions in healthcare)",
+  "architecture_pattern": "Microservices (Patient Service, Appointment Service, Billing Service)",
+  "validation_rules": [
+    "Cannot book an appointment in the past.",
+    "Doctor cannot have overlapping appointments."
+  ],
+  "clarification_rules": [
+    {
+      "trigger": "appointment exists but doctor missing",
+      "question": "Do you want me to create a Doctor entity first to handle this appointment?"
+    },
+    {
+      "trigger": "billing without services",
+      "question": "Do you want to track individual medical services and map them to the Bill?"
+    }
+  ]
+}

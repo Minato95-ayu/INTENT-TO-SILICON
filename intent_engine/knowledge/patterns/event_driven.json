@@ -1,0 +1,9 @@
+{
+  "name": "Event-Driven Architecture",
+  "description": "Promotes the production, detection, consumption of, and reaction to events.",
+  "components": [
+    "Event Producer",
+    "Event Broker",
+    "Event Consumer"
+  ]
+}

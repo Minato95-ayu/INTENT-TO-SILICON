@@ -1,0 +1,14 @@
+{
+    "Student": [
+        "Learner",
+        "Pupil"
+    ],
+    "Teacher": [
+        "Instructor",
+        "Professor"
+    ],
+    "Course": [
+        "Class",
+        "Subject"
+    ]
+}

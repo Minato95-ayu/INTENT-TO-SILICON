@@ -23,6 +23,12 @@ action render_props(props)
                         elif str::starts_with(v, "scroll_")
                             let target_id = str::replace(v, "scroll_", "")
                             html = html + ' onclick="document.getElementById(\'' + target_id + '\').scrollIntoView({behavior:\'smooth\'})"'
+                        elif str::starts_with(v, "open_proj_")
+                            html = html + ' onclick="openProjectModal(\'' + v + '\')"'
+                        elif str::starts_with(v, "proj_")
+                            html = html + ' onclick="openProjectModal(\'' + v + '\')"'
+                        elif v == "close_modal"
+                            html = html + ' onclick="closeProjectModal()"'
                         else
                             html = html + ' onclick="' + v + '"'
                         end

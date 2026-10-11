@@ -91,228 +91,248 @@ Page Home
                 Column gap="28px" width="100%" maxWidth="1100px"
                     Column gap="8px"
                         Text "Selected Projects & Systems (22)" fontSize="38px" fontWeight="800" color="#ffffff"
-                        Text "Every project is built from first principles: compilers, VMs, multi-agent frameworks, microservices, and libraries." fontSize="16px" color="#9ca3af"
+                        Text "Click on any project to inspect its technical architecture, design breakdown, and verified pure AAYU source code." fontSize="16px" color="#9ca3af"
                     end
                     Grid gridTemplateColumns="repeat(auto-fit, minmax(320px, 1fr))" gap="20px" width="100%"
 
                         # Project 1
-                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                        Card onClick=open_proj_1 backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
                             Row justifyContent="space-between" alignItems="center"
                                 Text "AAYU Compiler Core" fontSize="20px" fontWeight="bold" color="#ffffff"
                                 Text "SELF-HOSTED" fontSize="11px" fontWeight="bold" color="#10b981" backgroundColor="#064e3b" padding="3px 8px" borderRadius="6px"
                             end
                             Text "A 5,661-line self-hosted compiler pipeline with Lexer, Parser, AST, Semantic Analyzer, and Bytecode Emitter written entirely in pure AAYU." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                             Text "Stack: Pure AAYU (.aayu) | Zero Python" fontSize="12px" color="#818cf8"
+                            Button "View Architecture & Code →" onClick=open_proj_1 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
                         end
 
                         # Project 2
-                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                        Card onClick=open_proj_2 backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
                             Row justifyContent="space-between" alignItems="center"
                                 Text "AAYU Silicon VM & JIT" fontSize="20px" fontWeight="bold" color="#ffffff"
                                 Text "RUST VM" fontSize="11px" fontWeight="bold" color="#3b82f6" backgroundColor="#1e3a8a" padding="3px 8px" borderRadius="6px"
                             end
                             Text "High-performance stack execution engine written in Rust. Features NanBoxed 64-bit value representations and x86_64 JIT running at 50ns/op." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                             Text "Stack: Rust | NanBox | JIT Engine" fontSize="12px" color="#818cf8"
+                            Button "View Architecture & Code →" onClick=open_proj_2 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
                         end
 
                         # Project 3
-                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                        Card onClick=open_proj_3 backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
                             Row justifyContent="space-between" alignItems="center"
                                 Text "Intent-to-Silicon (I2S)" fontSize="20px" fontWeight="bold" color="#ffffff"
                                 Text "RESEARCH" fontSize="11px" fontWeight="bold" color="#ec4899" backgroundColor="#831843" padding="3px 8px" borderRadius="6px"
                             end
                             Text "An academic research paradigm exploring intent-level specifications compiled directly to hardware-efficient bytecode with strict verification." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                             Text "Status: IEEE Format Research Papers" fontSize="12px" color="#818cf8"
+                            Button "View Architecture & Code →" onClick=open_proj_3 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
                         end
 
                         # Project 4
-                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                        Card onClick=open_proj_4 backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
                             Row justifyContent="space-between" alignItems="center"
                                 Text "Adumate Engine" fontSize="20px" fontWeight="bold" color="#ffffff"
                                 Text "LIVE" fontSize="11px" fontWeight="bold" color="#10b981" backgroundColor="#064e3b" padding="3px 8px" borderRadius="6px"
                             end
                             Text "Production multi-provider AI proxy rotating free inference keys across Gemini, Groq, and local models, plus geolocation discovery. adumate.in" fontSize="14px" color="#9ca3af" lineHeight="1.6"
-                            Button "Visit adumate.in" href="https://adumate.in" color="#22d3ee" fontSize="13px" fontWeight="bold"
+                            Button "View Architecture & Code →" onClick=open_proj_4 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
                         end
 
                         # Project 5
-                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                        Card onClick=open_proj_5 backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
                             Row justifyContent="space-between" alignItems="center"
                                 Text "MIT Nexus AI Engine" fontSize="20px" fontWeight="bold" color="#ffffff"
                                 Text "MULTI-AGENT" fontSize="11px" fontWeight="bold" color="#a855f7" backgroundColor="#581c87" padding="3px 8px" borderRadius="6px"
                             end
                             Text "Autonomous multi-agent system orchestrating specialized model personas with self-healing feedback loops and consensus validation." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                             Text "Stack: AAYU Multi-Agent Framework" fontSize="12px" color="#818cf8"
+                            Button "View Architecture & Code →" onClick=open_proj_5 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
                         end
 
                         # Project 6
-                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                        Card onClick=open_proj_6 backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
                             Row justifyContent="space-between" alignItems="center"
                                 Text "RAG Nexus AI" fontSize="20px" fontWeight="bold" color="#ffffff"
                                 Text "VECTOR AI" fontSize="11px" fontWeight="bold" color="#3b82f6" backgroundColor="#1e3a8a" padding="3px 8px" borderRadius="6px"
                             end
                             Text "Native in-memory vector search and Retrieval-Augmented Generation toolkit calculating cosine similarity over semantic embeddings." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                             Text "Stack: Pure AAYU Vector Math" fontSize="12px" color="#818cf8"
+                            Button "View Architecture & Code →" onClick=open_proj_6 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
                         end
 
                         # Project 7
-                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                        Card onClick=open_proj_7 backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
                             Row justifyContent="space-between" alignItems="center"
                                 Text "AAYUGram Social App" fontSize="20px" fontWeight="bold" color="#ffffff"
                                 Text "FULL-STACK" fontSize="11px" fontWeight="bold" color="#f59e0b" backgroundColor="#78350f" padding="3px 8px" borderRadius="6px"
                             end
                             Text "Single-file Instagram-style social platform combining database models, photo feeds, user comments, and reactive UI in one file." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                             Text "Stack: Single-file .aayu application" fontSize="12px" color="#818cf8"
+                            Button "View Architecture & Code →" onClick=open_proj_7 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
                         end
 
                         # Project 8
-                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                        Card onClick=open_proj_8 backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
                             Row justifyContent="space-between" alignItems="center"
                                 Text "RealWorld Conduit API" fontSize="20px" fontWeight="bold" color="#ffffff"
                                 Text "REST API" fontSize="11px" fontWeight="bold" color="#10b981" backgroundColor="#064e3b" padding="3px 8px" borderRadius="6px"
                             end
                             Text "Conduit Medium/Substack clone specification written in pure AAYU demonstrating REST endpoints, JWT authorization, and articles." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                             Text "Stack: AAYU Routes & SQLite" fontSize="12px" color="#818cf8"
+                            Button "View Architecture & Code →" onClick=open_proj_8 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
                         end
 
                         # Project 9
-                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                        Card onClick=open_proj_9 backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
                             Row justifyContent="space-between" alignItems="center"
                                 Text "Native TensorCore Engine" fontSize="20px" fontWeight="bold" color="#ffffff"
                                 Text "AI MATH" fontSize="11px" fontWeight="bold" color="#ec4899" backgroundColor="#831843" padding="3px 8px" borderRadius="6px"
                             end
                             Text "Multi-dimensional tensor mathematics engine supporting broadcasting, zero-copy strides, matrix multiplication, and dense layers." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                             Text "Stack: Native C & Rust Tensor Kernel" fontSize="12px" color="#818cf8"
+                            Button "View Architecture & Code →" onClick=open_proj_9 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
                         end
 
                         # Project 10
-                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                        Card onClick=open_proj_10 backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
                             Row justifyContent="space-between" alignItems="center"
                                 Text "AAYU Embedded SQLite" fontSize="20px" fontWeight="bold" color="#ffffff"
                                 Text "DATABASE" fontSize="11px" fontWeight="bold" color="#3b82f6" backgroundColor="#1e3a8a" padding="3px 8px" borderRadius="6px"
                             end
                             Text "Zero-config relational database with automated schema migration, transactional integrity, and Write-Ahead Log (WAL) mode." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                             Text "Features: Zero setup, auto-create tables" fontSize="12px" color="#818cf8"
+                            Button "View Architecture & Code →" onClick=open_proj_10 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
                         end
 
                         # Project 11
-                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                        Card onClick=open_proj_11 backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
                             Row justifyContent="space-between" alignItems="center"
                                 Text "WebSocket Chat Server" fontSize="20px" fontWeight="bold" color="#ffffff"
                                 Text "NETWORKING" fontSize="11px" fontWeight="bold" color="#10b981" backgroundColor="#064e3b" padding="3px 8px" borderRadius="6px"
                             end
                             Text "Low-latency bi-directional real-time messaging server supporting multiple channels, broadcast pub/sub, and SQLite history." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                             Text "Stack: Native Async Sockets" fontSize="12px" color="#818cf8"
+                            Button "View Architecture & Code →" onClick=open_proj_11 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
                         end
 
                         # Project 12
-                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                        Card onClick=open_proj_12 backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
                             Row justifyContent="space-between" alignItems="center"
                                 Text "JWT & Session Auth Engine" fontSize="20px" fontWeight="bold" color="#ffffff"
                                 Text "SECURITY" fontSize="11px" fontWeight="bold" color="#f59e0b" backgroundColor="#78350f" padding="3px 8px" borderRadius="6px"
                             end
                             Text "Cryptographic token issuance, PBKDF2 password hashing, bearer auth middleware, and session lifecycle management." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                             Text "Stack: Native Cryptographic Core" fontSize="12px" color="#818cf8"
+                            Button "View Architecture & Code →" onClick=open_proj_12 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
                         end
 
                         # Project 13
-                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                        Card onClick=open_proj_13 backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
                             Row justifyContent="space-between" alignItems="center"
                                 Text "ML Classifier API" fontSize="20px" fontWeight="bold" color="#ffffff"
                                 Text "MACHINE LEARNING" fontSize="11px" fontWeight="bold" color="#a855f7" backgroundColor="#581c87" padding="3px 8px" borderRadius="6px"
                             end
                             Text "K-Means clustering and linear classifier running directly on the AAYU runtime without external Python libraries or scikit-learn." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                             Text "Stack: Native AAYU ML Module" fontSize="12px" color="#818cf8"
+                            Button "View Architecture & Code →" onClick=open_proj_13 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
                         end
 
                         # Project 14
-                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                        Card onClick=open_proj_14 backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
                             Row justifyContent="space-between" alignItems="center"
                                 Text "TodoMVC REST API" fontSize="20px" fontWeight="bold" color="#ffffff"
                                 Text "CRUD APP" fontSize="11px" fontWeight="bold" color="#3b82f6" backgroundColor="#1e3a8a" padding="3px 8px" borderRadius="6px"
                             end
                             Text "Classic TodoMVC implemented in under 40 lines of AAYU combining database models, REST routes, and declarative UI." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                             Text "Stack: Pure AAYU Full-Stack" fontSize="12px" color="#818cf8"
+                            Button "View Architecture & Code →" onClick=open_proj_14 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
                         end
 
                         # Project 15
-                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                        Card onClick=open_proj_15 backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
                             Row justifyContent="space-between" alignItems="center"
                                 Text "URL Shortener Service" fontSize="20px" fontWeight="bold" color="#ffffff"
                                 Text "MICROSERVICE" fontSize="11px" fontWeight="bold" color="#10b981" backgroundColor="#064e3b" padding="3px 8px" borderRadius="6px"
                             end
                             Text "High-performance Bitly-style link redirection service with automated click counting and sub-millisecond route dispatch." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                             Text "Stack: AAYU HTTP & Models" fontSize="12px" color="#818cf8"
+                            Button "View Architecture & Code →" onClick=open_proj_15 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
                         end
 
                         # Project 16
-                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                        Card onClick=open_proj_16 backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
                             Row justifyContent="space-between" alignItems="center"
                                 Text "GPT4Free Multi-Router" fontSize="20px" fontWeight="bold" color="#ffffff"
                                 Text "AI PROXY" fontSize="11px" fontWeight="bold" color="#ec4899" backgroundColor="#831843" padding="3px 8px" borderRadius="6px"
                             end
                             Text "Smart AI model router providing seamless failover between OpenAI, Anthropic, Gemini, and local LLM endpoints." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                             Text "Stack: aayu-http socket streaming" fontSize="12px" color="#818cf8"
+                            Button "View Architecture & Code →" onClick=open_proj_16 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
                         end
 
                         # Project 17
-                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                        Card onClick=open_proj_17 backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
                             Row justifyContent="space-between" alignItems="center"
                                 Text "AAYU DataFrames" fontSize="20px" fontWeight="bold" color="#ffffff"
                                 Text "DATA SCIENCE" fontSize="11px" fontWeight="bold" color="#f59e0b" backgroundColor="#78350f" padding="3px 8px" borderRadius="6px"
                             end
                             Text "Pandas-like tabular data manipulation package in pure AAYU supporting CSV ingestion, column projection, group-by, and joins." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                             Text "Stack: official_packages/aayu-dataframe" fontSize="12px" color="#818cf8"
+                            Button "View Architecture & Code →" onClick=open_proj_17 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
                         end
 
                         # Project 18
-                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                        Card onClick=open_proj_18 backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
                             Row justifyContent="space-between" alignItems="center"
                                 Text "AAYU Crypto Suite" fontSize="20px" fontWeight="bold" color="#ffffff"
                                 Text "CRYPTOGRAPHY" fontSize="11px" fontWeight="bold" color="#3b82f6" backgroundColor="#1e3a8a" padding="3px 8px" borderRadius="6px"
                             end
                             Text "High-speed cryptographic library providing SHA-256 digests, HMAC message authentication, and Base64 stream encoding." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                             Text "Stack: official_packages/aayu-crypto" fontSize="12px" color="#818cf8"
+                            Button "View Architecture & Code →" onClick=open_proj_18 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
                         end
 
                         # Project 19
-                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                        Card onClick=open_proj_19 backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
                             Row justifyContent="space-between" alignItems="center"
                                 Text "AAYU Computer Vision" fontSize="20px" fontWeight="bold" color="#ffffff"
                                 Text "VISION" fontSize="11px" fontWeight="bold" color="#a855f7" backgroundColor="#581c87" padding="3px 8px" borderRadius="6px"
                             end
                             Text "Native computer vision package for image tensor decoding, color space transformation, resize matrices, and edge filters." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                             Text "Stack: official_packages/aayu-vision" fontSize="12px" color="#818cf8"
+                            Button "View Architecture & Code →" onClick=open_proj_19 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
                         end
 
                         # Project 20
-                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                        Card onClick=open_proj_20 backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
                             Row justifyContent="space-between" alignItems="center"
                                 Text "VS Code Extension" fontSize="20px" fontWeight="bold" color="#ffffff"
                                 Text "DEV TOOLS" fontSize="11px" fontWeight="bold" color="#10b981" backgroundColor="#064e3b" padding="3px 8px" borderRadius="6px"
                             end
                             Text "Official VS Code IDE extension (vscode-aayu) with custom syntax highlighting grammars, snippet engines, and LSP autocomplete." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                             Text "Status: Packaged .vsix extension" fontSize="12px" color="#818cf8"
+                            Button "View Architecture & Code →" onClick=open_proj_20 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
                         end
 
                         # Project 21
-                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                        Card onClick=open_proj_21 backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
                             Row justifyContent="space-between" alignItems="center"
                                 Text "Zero to Research AI" fontSize="20px" fontWeight="bold" color="#ffffff"
-                                Text="EDUCATION" fontSize="11px" fontWeight="bold" color="#ec4899" backgroundColor="#831843" padding="3px 8px" borderRadius="6px"
+                                Text "EDUCATION" fontSize="11px" fontWeight="bold" color="#ec4899" backgroundColor="#831843" padding="3px 8px" borderRadius="6px"
                             end
                             Text "Educational YouTube Shorts channel (@ayushkaushik08) breaking down computer architecture, compiler pipelines, and systems design." fontSize="14px" color="#9ca3af" lineHeight="1.6"
-                            Button "Visit YouTube Channel" href="https://youtube.com/@ayushkaushik08" color="#22d3ee" fontSize="13px" fontWeight="bold"
+                            Button "View Architecture & Details →" onClick=open_proj_21 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
                         end
 
                         # Project 22
-                        Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
+                        Card onClick=open_proj_22 backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
                             Row justifyContent="space-between" alignItems="center"
                                 Text "Core Systems Foundations" fontSize="20px" fontWeight="bold" color="#ffffff"
                                 Text "SYSTEMS" fontSize="11px" fontWeight="bold" color="#3b82f6" backgroundColor="#1e3a8a" padding="3px 8px" borderRadius="6px"
                             end
                             Text "Mini-Database-Engine, Authentication-System, and Mini-API-Server: low-level scratch implementations serving as the foundation of AAYU." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                             Text "Status: Verified & Deployed" fontSize="12px" color="#818cf8"
+                            Button "View Architecture & Code →" onClick=open_proj_22 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
                         end
 
                     end

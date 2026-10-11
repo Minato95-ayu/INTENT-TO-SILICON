@@ -1,0 +1,136 @@
+app AyushPortfolio
+
+Page Home
+    Column width="100vw" height="100vh" overflow="hidden" backgroundColor="#0b0f19"
+
+        Row width="100%" padding="14px 48px" justifyContent="space-between" alignItems="center" borderBottom="1px solid #1f2937" backgroundColor="#0b0f19"
+            Text "AYUSH" fontSize="20px" fontWeight="800" color="#ffffff" letterSpacing="3px"
+            Row alignItems="center" gap="8px"
+                Button "About" onClick=scroll_about backgroundColor="transparent" color="#9ca3af" fontSize="15px" padding="8px 14px"
+                Button "Skills" onClick=scroll_skills backgroundColor="transparent" color="#9ca3af" fontSize="15px" padding="8px 14px"
+                Button "Work" onClick=scroll_work backgroundColor="transparent" color="#9ca3af" fontSize="15px" padding="8px 14px"
+                Button "Contact" onClick=scroll_contact backgroundColor="#6366f1" color="#ffffff" fontSize="15px" padding="9px 20px" borderRadius="8px"
+            end
+        end
+
+        Column flex="1" minHeight="0" overflowY="auto"
+
+            Container flexShrink="0" width="100%" height="500px" padding="0 48px" alignItems="center" justifyContent="center" backgroundColor="#0b0f19"
+                Column alignItems="center" gap="20px"
+                    Text "SYSTEMS BUILDER" fontSize="14px" fontWeight="bold" color="#818cf8" letterSpacing="4px"
+                    Heading "Hi, I am Ayush." fontSize="64px" fontWeight="900" color="#ffffff" textAlign="center"
+                    Text "I build the infrastructure first, then the products on top of it." fontSize="22px" color="#d1d5db" textAlign="center"
+                    Text "Self-taught full-stack and AI/ML developer from Delhi. Creator of the AAYU programming language and the Intent-to-Silicon research project." fontSize="16px" color="#9ca3af" textAlign="center" maxWidth="620px"
+                    Row gap="14px" marginTop="10px"
+                        Button "See my work" onClick=scroll_work backgroundColor="#6366f1" color="#ffffff" fontSize="16px" padding="14px 30px" borderRadius="10px" fontWeight="bold"
+                        Button "Get in touch" onClick=scroll_contact backgroundColor="#111827" color="#e5e7eb" fontSize="16px" padding="14px 30px" borderRadius="10px"
+                    end
+                end
+            end
+
+            Container flexShrink="0" width="100%" height="600px" padding="0 48px" alignItems="center" justifyContent="center" backgroundColor="#0d1220"
+                Column gap="22px" maxWidth="820px"
+                    Text "About" fontSize="34px" fontWeight="800" color="#ffffff"
+                    Text "I am a B.Sc. Mathematics (Hons) student at BRABU, expected 2027, and a self-taught developer. I like building the foundations myself: a database engine, an authentication system, an API server. Then I build products on top of them." fontSize="17px" color="#d1d5db" lineHeight="1.7"
+                    Text "I write research papers where every claim is tagged IMPLEMENTED, PROTOTYPE or FUTURE WORK, so nothing is oversold. I also teach students part-time and make short videos about how computers think." fontSize="17px" color="#d1d5db" lineHeight="1.7"
+                    Row gap="16px" marginTop="8px"
+                        Card backgroundColor="#111827" borderRadius="12px" padding="18px 22px" border="1px solid #1f2937" flexDirection="column" gap="4px"
+                            Text "Based in" fontSize="12px" color="#9ca3af"
+                            Text "Delhi, India" fontSize="17px" fontWeight="bold" color="#ffffff"
+                        end
+                        Card backgroundColor="#111827" borderRadius="12px" padding="18px 22px" border="1px solid #1f2937" flexDirection="column" gap="4px"
+                            Text "Studying" fontSize="12px" color="#9ca3af"
+                            Text "B.Sc. Mathematics (Hons)" fontSize="17px" fontWeight="bold" color="#ffffff"
+                        end
+                        Card backgroundColor="#111827" borderRadius="12px" padding="18px 22px" border="1px solid #1f2937" flexDirection="column" gap="4px"
+                            Text "Building" fontSize="12px" color="#9ca3af"
+                            Text "AAYU, I2S, Adumate" fontSize="17px" fontWeight="bold" color="#ffffff"
+                        end
+                    end
+                end
+            end
+
+            Container flexShrink="0" width="100%" height="700px" padding="0 48px" alignItems="center" justifyContent="center" backgroundColor="#0b0f19"
+                Column gap="26px" width="100%" maxWidth="1000px"
+                    Text "Skills" fontSize="34px" fontWeight="800" color="#ffffff"
+                    Grid gridTemplateColumns="repeat(auto-fit, minmax(280px, 1fr))" gap="18px" width="100%"
+                        Card backgroundColor="#111827" borderRadius="14px" padding="22px" border="1px solid #1f2937" flexDirection="column" gap="8px"
+                            Text "Language and compiler design" fontSize="17px" fontWeight="bold" color="#22d3ee"
+                            Text "Lexer, parser, bytecode compiler and VM for AAYU. Self-hosting is in progress." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                        end
+                        Card backgroundColor="#111827" borderRadius="14px" padding="22px" border="1px solid #1f2937" flexDirection="column" gap="8px"
+                            Text "Full-stack development" fontSize="17px" fontWeight="bold" color="#22d3ee"
+                            Text "TypeScript web apps deployed on Vercel with a Firebase backend." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                        end
+                        Card backgroundColor="#111827" borderRadius="14px" padding="22px" border="1px solid #1f2937" flexDirection="column" gap="8px"
+                            Text "AI and ML" fontSize="17px" fontWeight="bold" color="#22d3ee"
+                            Text "Multi-agent systems and multi-provider AI API rotation." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                        end
+                        Card backgroundColor="#111827" borderRadius="14px" padding="22px" border="1px solid #1f2937" flexDirection="column" gap="8px"
+                            Text "Databases and backend" fontSize="17px" fontWeight="bold" color="#22d3ee"
+                            Text "Database engine, auth system and API server built from scratch. SQLite and Firebase." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                        end
+                        Card backgroundColor="#111827" borderRadius="14px" padding="22px" border="1px solid #1f2937" flexDirection="column" gap="8px"
+                            Text "Systems programming" fontSize="17px" fontWeight="bold" color="#22d3ee"
+                            Text "A native Rust VM and a C backend for AAYU." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                        end
+                        Card backgroundColor="#111827" borderRadius="14px" padding="22px" border="1px solid #1f2937" flexDirection="column" gap="8px"
+                            Text "Research and teaching" fontSize="17px" fontWeight="bold" color="#22d3ee"
+                            Text "IEEE-format papers, part-time teaching and educational videos." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                        end
+                    end
+                end
+            end
+
+            Container flexShrink="0" width="100%" height="700px" padding="0 48px" alignItems="center" justifyContent="center" backgroundColor="#0d1220"
+                Column gap="26px" width="100%" maxWidth="1000px"
+                    Text "Work" fontSize="34px" fontWeight="800" color="#ffffff"
+                    Grid gridTemplateColumns="repeat(auto-fit, minmax(280px, 1fr))" gap="18px" width="100%"
+                        Card backgroundColor="#111827" borderRadius="14px" padding="22px" border="1px solid #1f2937" flexDirection="column" gap="8px"
+                            Text "AAYU" fontSize="20px" fontWeight="800" color="#ffffff"
+                            Text "A programming language for UI, routes, data and logic, with a compiler, runtime, CLI, package manager and VS Code support." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Status: public repo, self-hosting in progress" fontSize="12px" color="#818cf8"
+                        end
+                        Card backgroundColor="#111827" borderRadius="14px" padding="22px" border="1px solid #1f2937" flexDirection="column" gap="8px"
+                            Text "Intent-to-Silicon (I2S)" fontSize="20px" fontWeight="800" color="#ffffff"
+                            Text "A research project written up as IEEE-format papers, with every claim tagged by how far it is actually built." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Status: ongoing research" fontSize="12px" color="#818cf8"
+                        end
+                        Card backgroundColor="#111827" borderRadius="14px" padding="22px" border="1px solid #1f2937" flexDirection="column" gap="8px"
+                            Text "Adumate" fontSize="20px" fontWeight="800" color="#ffffff"
+                            Text "Free AI API rotation across several providers, plus map-based service discovery. adumate.in" fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Status: live" fontSize="12px" color="#818cf8"
+                        end
+                        Card backgroundColor="#111827" borderRadius="14px" padding="22px" border="1px solid #1f2937" flexDirection="column" gap="8px"
+                            Text "How Computers Think" fontSize="20px" fontWeight="800" color="#ffffff"
+                            Text "A YouTube Shorts channel, Zero to Research, that explains how computers work for engineers and ML practitioners." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Status: publishing" fontSize="12px" color="#818cf8"
+                        end
+                        Card backgroundColor="#111827" borderRadius="14px" padding="22px" border="1px solid #1f2937" flexDirection="column" gap="8px"
+                            Text "Foundations" fontSize="20px" fontWeight="800" color="#ffffff"
+                            Text "Mini-Database-Engine, Authentication-System and Mini-API-Server: the primitives under Adumate, AAYU and I2S." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Status: built, in use" fontSize="12px" color="#818cf8"
+                        end
+                    end
+                end
+            end
+
+            Container flexShrink="0" width="100%" height="700px" padding="0 48px" alignItems="center" justifyContent="center" backgroundColor="#0b0f19"
+                Column gap="16px" maxWidth="820px"
+                    Text "Contact" fontSize="34px" fontWeight="800" color="#ffffff"
+                    Text "Want to build something, collaborate, or just talk about compilers? Find me here." fontSize="17px" color="#d1d5db"
+                    Text "GitHub: Minato95-ayu" fontSize="17px" color="#22d3ee"
+                    Text "YouTube: @ayushkaushik08" fontSize="17px" color="#22d3ee"
+                    Text "Instagram: @zeroto.researchAI" fontSize="17px" color="#22d3ee"
+                    Text "Web: adumate.in and intent-to-silicon.vercel.app" fontSize="17px" color="#22d3ee"
+                end
+            end
+
+            Container flexShrink="0" width="100%" padding="24px 48px" backgroundColor="#060912" borderTop="1px solid #1f2937"
+                Text "Built with AAYU. Compiled by aayuc and served by aayu-vm." fontSize="13px" color="#6b7280"
+            end
+        end
+    end
+end
+
+run Home

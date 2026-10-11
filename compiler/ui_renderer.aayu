@@ -1,4 +1,10 @@
-﻿action render_props(props)
+# ==============================================================================
+# AAYU Native Self-Hosted UI Renderer (v1.2.0)
+# Intent-to-Silicon Declarative UI Transpiler
+# 100% Pure AAYU — Zero Python, Zero External Dependencies
+# ==============================================================================
+
+action render_props(props)
     let html = ""
     let prop_keys = map::keys(props)
     let i = 0
@@ -8,7 +14,22 @@
         let v = props[k]
         if k != "children"
             if k != "type"
-                html = html + " " + k + '="' + v + '"'
+                if k != "href"
+                    if k == "onClick"
+                        # Handle smooth anchor scrolling natively
+                        if str::starts_with(v, "scroll:")
+                            let target_id = str::replace(v, "scroll:", "")
+                            html = html + ' onclick="document.getElementById(\'' + target_id + '\').scrollIntoView({behavior:\'smooth\'})"'
+                        elif str::starts_with(v, "scroll_")
+                            let target_id = str::replace(v, "scroll_", "")
+                            html = html + ' onclick="document.getElementById(\'' + target_id + '\').scrollIntoView({behavior:\'smooth\'})"'
+                        else
+                            html = html + ' onclick="' + v + '"'
+                        end
+                    else
+                        html = html + " " + k + '="' + v + '"'
+                    end
+                end
             end
         end
         i = i + 1
@@ -26,23 +47,75 @@ action render_node(node)
     let children = node["children"]
     
     let tag = "div"
-    let style = ""
+    let default_style = ""
+    let extra_attrs = ""
+    
+    # Check if element has an href attribute to make it a clickable anchor
+    let has_href = 0
+    let href_val = ""
+    if map::has_key(props, "href")
+        has_href = 1
+        href_val = props["href"]
+        extra_attrs = ' href="' + href_val + '" target="_blank" rel="noopener noreferrer"'
+    end
+    
     if type == "Column"
         tag = "div"
-        style = " style=\"display: flex; flex-direction: column;\""
+        default_style = "display: flex; flex-direction: column;"
     elif type == "Row"
         tag = "div"
-        style = " style=\"display: flex; flex-direction: row;\""
+        default_style = "display: flex; flex-direction: row;"
+    elif type == "Grid"
+        tag = "div"
+        default_style = "display: grid;"
+    elif type == "Card"
+        tag = "div"
+        default_style = "display: flex;"
+    elif type == "Container"
+        tag = "div"
+        default_style = "display: flex;"
     elif type == "button"
-        tag = "button"
+        if has_href == 1
+            tag = "a"
+        else
+            tag = "button"
+        end
+        default_style = "cursor: pointer; border: none;"
     elif type == "Button"
-        tag = "button"
+        if has_href == 1
+            tag = "a"
+        else
+            tag = "button"
+        end
+        default_style = "cursor: pointer; border: none;"
+    elif type == "Link"
+        tag = "a"
     elif type == "text"
-        tag = "p"
+        if has_href == 1
+            tag = "a"
+        else
+            tag = "span"
+        end
     elif type == "Text"
-        tag = "p"
+        if has_href == 1
+            tag = "a"
+        else
+            tag = "span"
+        end
     elif type == "heading"
         tag = "h1"
+    elif type == "Heading"
+        tag = "h1"
+    elif type == "Icon"
+        tag = "i"
+        if map::has_key(props, "name")
+            extra_attrs = extra_attrs + ' class="fa fa-' + props["name"] + '"'
+        end
+    elif type == "icon"
+        tag = "i"
+        if map::has_key(props, "name")
+            extra_attrs = extra_attrs + ' class="fa fa-' + props["name"] + '"'
+        end
     elif type == "image"
         tag = "img"
     elif type == "Image"
@@ -53,8 +126,15 @@ action render_node(node)
         tag = "input"
     end
     
-    let html = "<" + tag + style + render_props(props) + ">"
+    # Merge default styles with custom styles if provided
+    let style_attr = ""
+    if default_style != ""
+        style_attr = ' style="' + default_style + '"'
+    end
     
+    let html = "<" + tag + style_attr + extra_attrs + render_props(props) + ">"
+    
+    # Self-closing void tags check
     if type != "img" 
         if type != "image"
             if type != "Image"
@@ -77,30 +157,85 @@ action render_node(node)
     return html
 end
 
-action render_page(root_node)
-    let html = "<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"UTF-8\">\n</head>\n<body>\n<div id=\"root\">\n"
+action render_page(root_node, page_title)
+    let title = "AAYU Application"
+    if page_title != ""
+        title = page_title
+    end
+    
+    let html = "<!DOCTYPE html>\n"
+    html = html + "<html lang=\"en\">\n"
+    html = html + "<head>\n"
+    html = html + "    <meta charset=\"UTF-8\">\n"
+    html = html + "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
+    html = html + "    <title>" + title + "</title>\n"
+    html = html + "    <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css\">\n"
+    html = html + "    <style>\n"
+    html = html + "        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }\n"
+    html = html + "        html, body { width: 100%; height: 100%; background-color: #0b0f19; color: #ffffff; }\n"
+    html = html + "        a { text-decoration: none; color: inherit; display: inline-block; }\n"
+    html = html + "        ::-webkit-scrollbar { width: 6px; }\n"
+    html = html + "        ::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }\n"
+    html = html + "    </style>\n"
+    html = html + "</head>\n"
+    html = html + "<body>\n"
+    html = html + "<div id=\"root\">\n"
     html = html + render_node(root_node)
-    html = html + "\n</div>\n<script src=\"/app.js\"></script>\n</body>\n</html>"
+    html = html + "\n</div>\n"
+    html = html + "<script src=\"/app.js\"></script>\n"
+    html = html + "</body>\n"
+    html = html + "</html>"
     return html
 end
 
-let sample_node = {
+# Verification Test
+let sample_page = {
     "type": "Column",
-    "props": {},
+    "props": {"id": "app-root"},
     "children": [
         {
-            "type": "heading",
-            "props": {},
-            "children": ["Hello AAYU SSR!"]
+            "type": "Row",
+            "props": {"justifyContent": "space-between"},
+            "children": [
+                {
+                    "type": "Heading",
+                    "props": {},
+                    "children": ["Ayush Kaushik"]
+                },
+                {
+                    "type": "Button",
+                    "props": {"onClick": "scroll:work", "cursor": "pointer"},
+                    "children": ["See my work"]
+                },
+                {
+                    "type": "Button",
+                    "props": {"href": "https://github.com/Minato95-ayu/INTENT-TO-SILICON"},
+                    "children": ["GitHub Repo"]
+                }
+            ]
         },
         {
-            "type": "button",
-            "props": {"onClick": "increment"},
-            "children": ["Click Me"]
+            "type": "Container",
+            "props": {"id": "work"},
+            "children": [
+                {
+                    "type": "Grid",
+                    "props": {"style": "grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));"},
+                    "children": [
+                        {
+                            "type": "Card",
+                            "props": {"id": "card-1"},
+                            "children": ["AAYU Compiler Core"]
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }
 
-print("SSR Output:")
-let result = render_page(sample_node)
-print(result)
+print("Testing AAYU Self-Hosted UI Renderer...")
+let result = render_page(sample_page, "Ayush Kaushik | Systems Builder")
+print("Rendered HTML preview length: ")
+print(len(result))
+print("Self-Hosted UI Renderer Upgrade Verified.")

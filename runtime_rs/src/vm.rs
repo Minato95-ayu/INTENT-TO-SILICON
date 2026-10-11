@@ -119,7 +119,147 @@ impl AayuVM {
         }
     }
 
-    pub fn run(&mut self) {
+    pub fn validate(&self) -> Result<(), String> {
+        let len = self.bytecode.len();
+        let mut pc = 0;
+        
+        while pc < len {
+            let op = self.bytecode[pc];
+            pc += 1;
+            
+            match op {
+                0x00 | 0xFF => {
+                    // HALT
+                }
+                0x01 => { // PUSH_CONST (2 bytes operand)
+                    if pc + 2 > len {
+                        return Err(format!("Truncated operand for PUSH_CONST at offset {}", pc - 1));
+                    }
+                    let idx = ((self.bytecode[pc] as usize) << 8) | self.bytecode[pc + 1] as usize;
+                    pc += 2;
+                    if idx >= self.constants.len() {
+                        return Err(format!("PUSH_CONST index {} exceeds constant pool bounds ({}) at offset {}", idx, self.constants.len(), pc - 3));
+                    }
+                }
+                0x02 => {} // POP
+                0x05 => { // LOAD_VAR (1 byte operand)
+                    if pc + 1 > len {
+                        return Err(format!("Truncated operand for LOAD_VAR at offset {}", pc - 1));
+                    }
+                    let idx = self.bytecode[pc] as usize;
+                    pc += 1;
+                    if idx >= 256 {
+                        return Err(format!("LOAD_VAR index {} exceeds local variable frame limit (256) at offset {}", idx, pc - 2));
+                    }
+                }
+                0x06 => { // STORE_VAR (1 byte operand)
+                    if pc + 1 > len {
+                        return Err(format!("Truncated operand for STORE_VAR at offset {}", pc - 1));
+                    }
+                    let idx = self.bytecode[pc] as usize;
+                    pc += 1;
+                    if idx >= 256 {
+                        return Err(format!("STORE_VAR index {} exceeds local variable frame limit (256) at offset {}", idx, pc - 2));
+                    }
+                }
+                0x10 | 17 | 18 | 19 | 20 | 21 | 22 => {
+                    // Arithmetic & casting opcodes
+                }
+                0x20 => { // JUMP (2 bytes operand)
+                    if pc + 2 > len {
+                        return Err(format!("Truncated operand for JUMP at offset {}", pc - 1));
+                    }
+                    let target = ((self.bytecode[pc] as usize) << 8) | self.bytecode[pc + 1] as usize;
+                    pc += 2;
+                    if target > len {
+                        return Err(format!("JUMP target offset {} exceeds bytecode bounds (length: {})", target, len));
+                    }
+                }
+                0x21 => { // JUMP_IF_FALSE (2 bytes operand)
+                    if pc + 2 > len {
+                        return Err(format!("Truncated operand for JUMP_IF_FALSE at offset {}", pc - 1));
+                    }
+                    let target = ((self.bytecode[pc] as usize) << 8) | self.bytecode[pc + 1] as usize;
+                    pc += 2;
+                    if target > len {
+                        return Err(format!("JUMP_IF_FALSE target offset {} exceeds bytecode bounds (length: {})", target, len));
+                    }
+                }
+                34 => { // CALL (2 bytes operand)
+                    if pc + 2 > len {
+                        return Err(format!("Truncated operand for CALL at offset {}", pc - 1));
+                    }
+                    pc += 2;
+                }
+                35 | 98 => {} // RET / ReturnValue
+                38 | 39 | 41 | 42 | 43 | 44 => {} // CMP operators
+                48 => { // STORE_STATE (2 bytes)
+                    if pc + 2 > len {
+                        return Err(format!("Truncated operand for STORE_STATE at offset {}", pc - 1));
+                    }
+                    pc += 2;
+                }
+                49 => { // LOAD_STATE (2 bytes)
+                    if pc + 2 > len {
+                        return Err(format!("Truncated operand for LOAD_STATE at offset {}", pc - 1));
+                    }
+                    pc += 2;
+                }
+                50 => { // INIT_STATE (2 bytes)
+                    if pc + 2 > len {
+                        return Err(format!("Truncated operand for INIT_STATE at offset {}", pc - 1));
+                    }
+                    pc += 2;
+                }
+                51 | 52 => {} // EnterScope / ExitScope
+                53 => { // InitVar (2 bytes)
+                    if pc + 2 > len {
+                        return Err(format!("Truncated operand for InitVar at offset {}", pc - 1));
+                    }
+                    pc += 2;
+                }
+                54 => { // PrepareCall (2 bytes)
+                    if pc + 2 > len {
+                        return Err(format!("Truncated operand for PrepareCall at offset {}", pc - 1));
+                    }
+                    pc += 2;
+                }
+                55 => { // AsyncCall (2 bytes)
+                    if pc + 2 > len {
+                        return Err(format!("Truncated operand for AsyncCall at offset {}", pc - 1));
+                    }
+                    pc += 2;
+                }
+                81 => {} // PRINT
+                128 => { // BUILD_DICT (2 bytes)
+                    if pc + 2 > len {
+                        return Err(format!("Truncated operand for BUILD_DICT at offset {}", pc - 1));
+                    }
+                    pc += 2;
+                }
+                134 | 136 | 137 | 140 | 141 | 142 => {}
+                145 => { // PUSH_STRING_SAFE (2 bytes)
+                    if pc + 2 > len {
+                        return Err(format!("Truncated operand for PUSH_STRING_SAFE at offset {}", pc - 1));
+                    }
+                    let idx = (self.bytecode[pc] as usize) | ((self.bytecode[pc+1] as usize) << 8);
+                    pc += 2;
+                    if idx >= self.string_heap.len() {
+                        return Err(format!("PUSH_STRING_SAFE string index {} out of bounds (string heap size: {})", idx, self.string_heap.len()));
+                    }
+                }
+                150 | 160 | 161 | 162 | 170 | 171 | 172 | 180 | 181 | 190 | 191 => {}
+                245 | 252 | 253 | 254 => {} // Legacy opcodes
+                _ => {
+                    return Err(format!("Unknown or illegal opcode 0x{:02X} at offset {}", op, pc - 1));
+                }
+            }
+        }
+        Ok(())
+    }
+
+    pub fn run(&mut self) -> Result<(), String> {
+        self.validate()?;
         let len = self.bytecode.len();
         
         loop {
@@ -514,11 +654,15 @@ impl AayuVM {
                     if a.is_float() || b.is_float() {
                         let fa = if a.is_float() { a.as_float() } else { a.as_int() as f64 };
                         let fb = if b.is_float() { b.as_float() } else { b.as_int() as f64 };
-                        if fb == 0.0 { panic!("Division by zero"); }
+                        if fb == 0.0 {
+                            return Err("Float division by zero".to_string());
+                        }
                         self.stack[self.sp - 2] = NanVal::float(fa / fb);
                     } else {
                         let ib = b.as_int();
-                        if ib == 0 { panic!("Division by zero"); }
+                        if ib == 0 {
+                            return Err("Integer division by zero".to_string());
+                        }
                         self.stack[self.sp - 2] = NanVal::int(a.as_int() / ib);
                     }
                     self.sp -= 1;
@@ -526,7 +670,9 @@ impl AayuVM {
                 20 => { // MOD
                     let b = self.stack[self.sp - 1].as_int();
                     let a = self.stack[self.sp - 2].as_int();
-                    if b == 0 { panic!("Modulo by zero"); }
+                    if b == 0 {
+                        return Err("Modulo by zero".to_string());
+                    }
                     self.stack[self.sp - 2] = NanVal::int(a % b);
                     self.sp -= 1;
                 }
@@ -1262,8 +1408,9 @@ impl AayuVM {
                         }
                     }
                 }
-                _ => panic!("[Runtime Error] Unknown instruction opcode: 0x{:02X} at IP: {}", op, self.ip - 1),
+                _ => return Err(format!("Unknown instruction opcode: 0x{:02X} at IP: {}", op, self.ip - 1)),
             }
         }
+        Ok(())
     }
 }

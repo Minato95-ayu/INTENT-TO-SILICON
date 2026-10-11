@@ -76,6 +76,122 @@ fn compile_aayu_file(input_path: &str, output_path: &str) -> bool {
     }
 }
 
+fn parse_bytecode_data(data: &[u8]) -> Result<(Vec<String>, Vec<NanVal>, Vec<u8>), String> {
+    if data.len() < 4 {
+        return Err("File too small: missing magic header".into());
+    }
+    if &data[0..4] != b"AAYU" {
+        return Err("Invalid magic header: expected 'AAYU'".into());
+    }
+    let mut pos = 4;
+    
+    // Read Strings
+    if pos + 4 > data.len() {
+        return Err("Truncated bytecode: missing string table count".into());
+    }
+    let mut num_strings_bytes = [0u8; 4];
+    num_strings_bytes.copy_from_slice(&data[pos..pos+4]);
+    let num_strings = u32::from_le_bytes(num_strings_bytes) as usize;
+    pos += 4;
+    
+    let mut strings = Vec::new();
+    for i in 0..num_strings {
+        if pos + 4 > data.len() {
+            return Err(format!("Truncated bytecode: missing length for string {}", i));
+        }
+        let mut len_bytes = [0u8; 4];
+        len_bytes.copy_from_slice(&data[pos..pos+4]);
+        let str_len = u32::from_le_bytes(len_bytes) as usize;
+        pos += 4;
+        
+        if pos + str_len > data.len() {
+            return Err(format!("Truncated bytecode: string {} content extends past EOF", i));
+        }
+        let s = match String::from_utf8(data[pos..pos+str_len].to_vec()) {
+            Ok(s) => s,
+            Err(_) => return Err(format!("Invalid UTF-8 sequence in string table at index {}", i)),
+        };
+        strings.push(s);
+        pos += str_len;
+    }
+
+    // Read Constants
+    if pos + 4 > data.len() {
+        return Err("Truncated bytecode: missing constant table count".into());
+    }
+    let mut num_const_bytes = [0u8; 4];
+    num_const_bytes.copy_from_slice(&data[pos..pos+4]);
+    let num_constants = u32::from_le_bytes(num_const_bytes) as usize;
+    pos += 4;
+
+    let mut constants = Vec::new();
+    for i in 0..num_constants {
+        if pos >= data.len() {
+            return Err(format!("Truncated bytecode: missing type tag for constant {}", i));
+        }
+        let type_tag = data[pos];
+        pos += 1;
+        match type_tag {
+            1 => { // Int
+                if pos + 8 > data.len() {
+                    return Err(format!("Truncated int constant at index {}", i));
+                }
+                let mut val_bytes = [0u8; 8];
+                val_bytes.copy_from_slice(&data[pos..pos+8]);
+                let val = i64::from_le_bytes(val_bytes);
+                constants.push(NanVal::int(val));
+                pos += 8;
+            }
+            2 => { // String
+                if pos + 4 > data.len() {
+                    return Err(format!("Truncated string constant length at index {}", i));
+                }
+                let mut len_bytes = [0u8; 4];
+                len_bytes.copy_from_slice(&data[pos..pos+4]);
+                let str_len = u32::from_le_bytes(len_bytes) as usize;
+                pos += 4;
+                if pos + str_len > data.len() {
+                    return Err(format!("Truncated string constant content at index {}", i));
+                }
+                let s = match String::from_utf8(data[pos..pos+str_len].to_vec()) {
+                    Ok(s) => s,
+                    Err(_) => return Err(format!("Invalid UTF-8 in string constant at index {}", i)),
+                };
+                strings.push(s);
+                constants.push(NanVal::string(strings.len() - 1));
+                pos += str_len;
+            }
+            0 => { // Null
+                constants.push(NanVal::null());
+            }
+            3 => { // Float
+                if pos + 8 > data.len() {
+                    return Err(format!("Truncated float constant at index {}", i));
+                }
+                let mut val_bytes = [0u8; 8];
+                val_bytes.copy_from_slice(&data[pos..pos+8]);
+                let val = f64::from_le_bytes(val_bytes);
+                constants.push(NanVal::float(val));
+                pos += 8;
+            }
+            4 => { // Bool
+                if pos >= data.len() {
+                    return Err(format!("Truncated bool constant at index {}", i));
+                }
+                let val = data[pos] != 0;
+                constants.push(NanVal::bool(val));
+                pos += 1;
+            }
+            _ => {
+                constants.push(NanVal::null());
+            }
+        }
+    }
+
+    let bytecode = data[pos..].to_vec();
+    Ok((strings, constants, bytecode))
+}
+
 fn execute_bytecode(filename: &str, use_jit: bool) {
     let mut file = match File::open(filename) {
         Ok(f) => f,
@@ -90,87 +206,21 @@ fn execute_bytecode(filename: &str, use_jit: bool) {
         return;
     }
 
-    if data.len() < 4 || &data[0..4] != b"AAYU" {
-        eprintln!("[AAYU Error] Invalid Bytecode File: missing AAYU magic header.");
-        return;
-    }
-    
-    let mut pos = 4;
-    
-    // Read Strings
-    let mut num_strings_bytes = [0u8; 4];
-    num_strings_bytes.copy_from_slice(&data[pos..pos+4]);
-    let num_strings = u32::from_le_bytes(num_strings_bytes) as usize;
-    pos += 4;
-    
-    let mut strings = Vec::new();
-    for _ in 0..num_strings {
-        let mut len_bytes = [0u8; 4];
-        len_bytes.copy_from_slice(&data[pos..pos+4]);
-        let str_len = u32::from_le_bytes(len_bytes) as usize;
-        pos += 4;
-        
-        let s = String::from_utf8(data[pos..pos+str_len].to_vec()).unwrap();
-        strings.push(s);
-        pos += str_len;
-    }
-
-    // Read Constants
-    let mut num_const_bytes = [0u8; 4];
-    num_const_bytes.copy_from_slice(&data[pos..pos+4]);
-    let num_constants = u32::from_le_bytes(num_const_bytes) as usize;
-    pos += 4;
-
-    let mut constants = Vec::new();
-    for _ in 0..num_constants {
-        let type_tag = data[pos];
-        pos += 1;
-        match type_tag {
-            1 => { // Int
-                let mut val_bytes = [0u8; 8];
-                val_bytes.copy_from_slice(&data[pos..pos+8]);
-                let val = i64::from_le_bytes(val_bytes);
-                constants.push(NanVal::int(val));
-                pos += 8;
-            }
-            2 => { // String
-                let mut len_bytes = [0u8; 4];
-                len_bytes.copy_from_slice(&data[pos..pos+4]);
-                let str_len = u32::from_le_bytes(len_bytes) as usize;
-                pos += 4;
-                
-                let s = String::from_utf8(data[pos..pos+str_len].to_vec()).unwrap();
-                strings.push(s);
-                constants.push(NanVal::string(strings.len() - 1));
-                pos += str_len;
-            }
-            0 => { // Null
-                constants.push(NanVal::null());
-            }
-            3 => { // Float
-                let mut val_bytes = [0u8; 8];
-                val_bytes.copy_from_slice(&data[pos..pos+8]);
-                let val = f64::from_le_bytes(val_bytes);
-                constants.push(NanVal::float(val));
-                pos += 8;
-            }
-            4 => { // Bool
-                let val = data[pos] != 0;
-                constants.push(NanVal::bool(val));
-                pos += 1;
-            }
-            _ => {
-                constants.push(NanVal::null());
-            }
+    let (strings, constants, bytecode) = match parse_bytecode_data(&data) {
+        Ok(parsed) => parsed,
+        Err(e) => {
+            eprintln!("[AAYU Security Error] Malformed Bytecode Rejected: {}", e);
+            return;
         }
-    }
+    };
 
-    let bytecode = data[pos..].to_vec();
     if use_jit {
         jit::compile_and_run(&bytecode, &constants);
     } else {
         let mut vm = AayuVM::new(bytecode, constants, strings);
-        vm.run();
+        if let Err(e) = vm.run() {
+            eprintln!("[AAYU Runtime Error] Execution halted: {}", e);
+        }
     }
 }
 
@@ -265,7 +315,7 @@ fn run_sum(n: i64, use_jit: bool) {
     } else {
         let mut vm = AayuVM::new(bc, constants, vec![]);
         let t = std::time::Instant::now();
-        vm.run();
+        let _ = vm.run();
         println!("AAYU_VM_NS {}", t.elapsed().as_nanos());
     }
 }

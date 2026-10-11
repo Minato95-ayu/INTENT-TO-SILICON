@@ -4,7 +4,8 @@
   <p>
     <a href="https://intent-to-silicon.vercel.app">Website & Docs</a> | 
     <a href="https://intent-to-silicon.vercel.app/tutorial">Masterclass Tutorial</a> |
-    <a href="https://intent-to-silicon.vercel.app/playground">Interactive Playground</a>
+    <a href="COMPILER_CONFIDENCE_REPORT.md"><strong>Compiler Confidence Report</strong></a> |
+    <a href="benchmarks/BENCHMARK_RESULTS.md">Reproducible Benchmarks</a>
   </p>
 </div>
 
@@ -124,7 +125,8 @@ We make **zero fake claims**. Every metric below is backed by the architectural 
 
 ### 1. Security Proof: Why Vulnerabilities Cannot Exist
 * **Memory Safety by Construction:** Traditional C/C++ runtimes suffer from buffer overflows, use-after-free, and dangling pointers (accounting for >70% of all CVEs). The AAYU Silicon VM (`runtime_rs`) is built with Rust ownership invariants and bounds-checked virtual slices—zero unmanaged raw pointers.
-* **0% Supply-Chain Attack Surface:** Modern web stacks import thousands of transitive packages (e.g. `node_modules` holding 1,200+ dependencies). A single hijacked npm/pip package can compromise production credentials. AAYU has **zero external dependencies**—the Database, Web Server, Neural Math, and UI are baked into the compiler and VM.
+* **0% Application Supply-Chain Attack Surface:** Modern web stacks import thousands of transitive packages (e.g. `node_modules` holding 1,200+ dependencies). A single hijacked npm/pip package can compromise production credentials. AAYU applications have **zero external application dependencies**—the Database, Web Server, Neural Math, and UI are baked into the compiler and VM. The VM itself compiles to a standalone native binary with a minimal, audited Rust footprint.
+* **Bytecode Verifier & Fuzzing Safety:** The VM includes a pre-execution `BytecodeVerifier` that systematically rejects malformed bytecode, illegal opcodes, truncated operands, and out-of-bounds jumps prior to execution (verified across 6 corruption vectors in [`tests/test_malformed_bytecode.ps1`](tests/test_malformed_bytecode.ps1)).
 * **Injection-Proof AST Binding:** SQL queries and system commands are bound through direct compiler AST nodes, never via raw runtime string concatenation.
 * **Isolated Virtual Sandboxing:** Bytecode instructions run in a sandboxed stack environment with NanBox value isolation, preventing hostile execution from touching host kernel space.
 
@@ -134,7 +136,9 @@ We make **zero fake claims**. Every metric below is backed by the architectural 
 * **Bounded Stack Allocation:** The VM enforces strict instruction call stack bounds to prevent runaway recursion from causing OS stack overflows.
 
 ### 3. Hard Performance & Benchmark Metrics
-Real benchmarks measured on the AAYU Silicon VM:
+Empirical measurements on hardware (see reproducible methodology and raw numbers in **[`benchmarks/BENCHMARK_RESULTS.md`](benchmarks/BENCHMARK_RESULTS.md)**):
+
+> **Run on your own machine:** `powershell -ExecutionPolicy Bypass -File benchmarks/run_benchmarks.ps1`
 
 | Engineering Metric | Node.js (V8) | Python 3.12 (CPython) | AAYU Native VM | The Engineering Proof |
 |---|---|---|---|---|

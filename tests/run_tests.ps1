@@ -46,6 +46,15 @@ foreach ($file in $testFiles) {
     Remove-Item $aycFile -Force -ErrorAction SilentlyContinue
 }
 
+# Run Security Suite
+$secScript = "$PSScriptRoot\test_malformed_bytecode.ps1"
+if (Test-Path $secScript) {
+    & powershell -ExecutionPolicy Bypass -File $secScript
+    if ($LASTEXITCODE -ne 0) {
+        $failed++
+    }
+}
+
 Write-Host "--------------------------------------------------" -ForegroundColor Cyan
 Write-Host "Results: $passed Passed | $failed Failed" -ForegroundColor $(if ($failed -eq 0) { "Green" } else { "Red" })
 Write-Host "==================================================" -ForegroundColor Cyan

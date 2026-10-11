@@ -1,0 +1,34 @@
+{
+  "iconDefinitions": {
+    "_file": {
+      "iconPath": "./file.svg"
+    },
+    "_folder": {
+      "iconPath": "./folder.svg"
+    },
+    "_folder_open": {
+      "iconPath": "./folder-open.svg"
+    },
+    "_aayu": {
+      "iconPath": "./aayu-dark.png"
+    },
+    "_aayu_light": {
+      "iconPath": "./aayu-light.png"
+    }
+  },
+  "file": "_file",
+  "folder": "_folder",
+  "folderExpanded": "_folder_open",
+  "fileExtensions": {
+    "aayu": "_aayu",
+    "ayc": "_aayu",
+    "aybc": "_aayu"
+  },
+  "light": {
+    "fileExtensions": {
+      "aayu": "_aayu_light",
+      "ayc": "_aayu_light",
+      "aybc": "_aayu_light"
+    }
+  }
+}

@@ -31,13 +31,22 @@
           "aayu"
         ],
         "extensions": [
-          ".aayu"
+          ".aayu",
+          ".ayc",
+          ".aybc"
         ],
         "configuration": "./language-configuration.json",
         "icon": {
           "light": "./icons/aayu-light.png",
           "dark": "./icons/aayu-dark.png"
         }
+      }
+    ],
+    "iconThemes": [
+      {
+        "id": "aayu-file-icons",
+        "label": "AAYU File Icons",
+        "path": "./icons/aayu-icon-theme.json"
       }
     ],
     "grammars": [

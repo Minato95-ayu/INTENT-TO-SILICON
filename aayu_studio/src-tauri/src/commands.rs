@@ -232,8 +232,10 @@ pub fn create_directory(path: String) -> Result<(), String> {
     fs_ops::create_directory(&path)
 }
 
-#[tauri::command]
-pub fn start_vertex_training(app: tauri::AppHandle) -> Result<String, String> {
+// Retired fake implementation: this wrote synthetic scores, did not train a
+// model, and is intentionally not exposed through the Tauri command handler.
+#[allow(dead_code)]
+fn obsolete_simulated_vertex_training(app: tauri::AppHandle) -> Result<String, String> {
     use std::thread;
     use std::time::Duration;
     use std::fs::OpenOptions;

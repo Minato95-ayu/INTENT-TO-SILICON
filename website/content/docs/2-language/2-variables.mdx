@@ -1,23 +1,18 @@
 ---
 title: "Variables"
-description: "Declaring and mutating state."
+description: "Declaring and updating values."
 ---
 
 # Variables
 
-## Overview
-Variables in AAYU are declared using the let keyword. They are strictly typed and immutable by default.
+Declare a value with `let`, then assign to a declared variable to update it:
 
-## Syntax
-<CodeBlock lang="aayu" code='let name: Text = "Developer".\nmut age: Number = 25.' playgroundUrl="/playground" />
+```aayu
+let name = "AAYU"
+let count = 1
+count = count + 1
+print(name)
+print(count)
+```
 
-## Common Errors
-<ErrorBlock 
-    wrong='let age = 25.\nage = 26.'
-    correct='mut age: Number = 25.\nage = 26.'
-    errorMsg="TypeError: Cannot reassign immutable variable 'age'."
-/>
-
-## Best Practices
-Prefer let over mut. AAYU's LLVM optimizer can aggressively fold constants and inline immutable state.
-\n\n[Edit on GitHub (Available in v1.0)](#)\n
+The current language examples infer value types from literals. Type annotations and `mut` declarations shown in older documentation are not part of the core syntax examples. See [the regression examples](https://github.com/Minato95-ayu/INTENT-TO-SILICON/tree/main/tests).

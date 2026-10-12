@@ -5,7 +5,7 @@ export default function ExamplesPage() {
   const examples = [
     {
       title: "AAYUGram (Social Network)",
-      desc: "A full-stack Instagram clone built entirely in a single .aayu file. Features JWT Auth, SQLite Relational Models, Image Uploads, and a declarative feed UI.",
+      desc: "Concept sketch for a social feed. It is not a verified runnable application and does not demonstrate SQLite, JWT security, or production image uploads.",
       tags: ["Full-Stack", "Auth", "UI Engine"],
       code: `app AAYUGram
 
@@ -36,7 +36,7 @@ run Feed`
     },
     {
       title: "AI Trading Bot",
-      desc: "An algorithmic trading bot using AAYU's native Zero-Copy Tensors to compute moving averages and execute trades via WebSockets.",
+      desc: "Concept sketch for tensor calculations and a market-data workflow. It is not a verified trading system or WebSocket implementation.",
       tags: ["AI/Tensors", "Math Engine", "WebSockets"],
       code: `app TradingBot
 
@@ -65,9 +65,9 @@ end`
       <div className="container mx-auto px-4 max-w-7xl">
         
         <div className="text-center mb-20">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">Enterprise <span className="text-cyan-400">Examples</span></h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">AAYU <span className="text-cyan-400">Example Sketches</span></h1>
           <p className="text-zinc-400 text-lg max-w-2xl mx-auto">
-            See how AAYU scales to build massive, real-world microservices with built-in memory safety, Tensors, and zero dependencies.
+            These snippets show product directions, not production-ready applications. For runnable core-language examples, see the regression programs in the repository.
           </p>
         </div>
 

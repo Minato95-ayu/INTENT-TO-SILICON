@@ -45,10 +45,14 @@ action summarize_ledger(total_blocks, mempool_txs, circulating_supply, total_min
     print("--------------------------------------------------")
     print("AAYU LEDGER STATE SUMMARY (100% Pure AAYU)")
     print("--------------------------------------------------")
-    print("Total Verified Blocks   : " + string(total_blocks))
-    print("Pending Mempool Txs     : " + string(mempool_txs))
-    print("Circulating AYU Supply  : " + string(circulating_supply))
-    print("Total Mined Rewards     : " + string(total_mined_reward))
+    print("Total Verified Blocks   : ")
+    print(total_blocks)
+    print("Pending Mempool Txs     : ")
+    print(mempool_txs)
+    print("Circulating AYU Supply  : ")
+    print(circulating_supply)
+    print("Total Mined Rewards     : ")
+    print(total_mined_reward)
     print("--------------------------------------------------")
     return 1
 end

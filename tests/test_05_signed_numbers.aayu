@@ -1,0 +1,8 @@
+let negative_integer = -5
+let negative_float = -2.5
+let minimum_integer = -140737488355328
+let negated_expression = -(2 + 3)
+print(negative_integer)
+print(negative_float)
+print(minimum_integer)
+print(negated_expression)

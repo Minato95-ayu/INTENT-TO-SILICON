@@ -5,10 +5,8 @@ Write-Host "==================================================" -ForegroundColor
 Write-Host "     AAYU BYTECODE VERIFIER & SECURITY TEST SUITE " -ForegroundColor Cyan
 Write-Host "==================================================" -ForegroundColor Cyan
 
-$vm = "$PSScriptRoot\..\bin\aayu.exe"
-if (-not (Test-Path $vm)) {
-    $vm = "$PSScriptRoot\..\runtime_rs\target\release\aayu-vm.exe"
-}
+$vm = if ($env:AAYU_VM_PATH) { $env:AAYU_VM_PATH } else { "$PSScriptRoot\..\bin\aayu.exe" }
+if (-not (Test-Path $vm)) { $vm = "$PSScriptRoot\..\runtime_rs\target\release\aayu-vm.exe" }
 
 if (-not (Test-Path $vm)) {
     Write-Host "[ERROR] VM executable not found!" -ForegroundColor Red

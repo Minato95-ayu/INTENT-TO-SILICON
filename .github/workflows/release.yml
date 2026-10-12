@@ -27,14 +27,16 @@ jobs:
       - name: Build aayu-vm
         run: cargo build --release --manifest-path runtime_rs/Cargo.toml
 
+      - name: Build aayuc bootstrap compiler
+        run: cargo build --release --manifest-path compiler_bootstrap/Cargo.toml
+
       - name: Package Windows (zip)
         if: matrix.os == 'windows-latest'
         run: |
           mkdir dist
           copy runtime_rs\target\release\aayu-vm.exe dist\aayu-vm.exe
           copy runtime_rs\target\release\aayu-vm.exe dist\aayu.exe
-          if (Test-Path bin\aayuc.exe) { copy bin\aayuc.exe dist\aayuc.exe }
-          if (Test-Path bin\aayuc.ayc) { copy bin\aayuc.ayc dist\aayuc.ayc }
+          copy compiler_bootstrap\target\release\aayuc.exe dist\aayuc.exe
           if (Test-Path aayu-publisher.cer) { copy aayu-publisher.cer dist\aayu-publisher.cer }
           Copy-Item std dist\std -Recurse
           Copy-Item examples dist\examples -Recurse
@@ -47,7 +49,7 @@ jobs:
           mkdir dist
           cp runtime_rs/target/release/aayu-vm dist/aayu-vm
           cp runtime_rs/target/release/aayu-vm dist/aayu
-          if [ -f bin/aayuc.ayc ]; then cp bin/aayuc.ayc dist/aayuc.ayc; fi
+          cp compiler_bootstrap/target/release/aayuc dist/aayuc
           cp -r std dist/std
           cp -r examples dist/examples
           cd dist && tar -czvf ../aayu-linux.tar.gz *
@@ -58,7 +60,7 @@ jobs:
           mkdir dist
           cp runtime_rs/target/release/aayu-vm dist/aayu-vm
           cp runtime_rs/target/release/aayu-vm dist/aayu
-          if [ -f bin/aayuc.ayc ]; then cp bin/aayuc.ayc dist/aayuc.ayc; fi
+          cp compiler_bootstrap/target/release/aayuc dist/aayuc
           cp -r std dist/std
           cp -r examples dist/examples
           cd dist && zip -r ../aayu-macos.zip *

@@ -1,4 +1,6 @@
-# AAYU Architecture v1.0 Frozen
+# Archived Architecture Proposal (v1.0)
+
+> **Historical document; not the current implementation specification.** The tracks and guarantees below describe an earlier proposed architecture and have not all been verified against this repository's current compiler/runtime. For the implementation now present, use [ARCHITECTURE.md](ARCHITECTURE.md), [the language reference](specs/language/v1/grammar.md), and [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md).
 
 This document officially declares that the **AAYU Architecture v1.0** is frozen as of Sprint 32.
 

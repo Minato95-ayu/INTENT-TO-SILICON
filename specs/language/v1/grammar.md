@@ -1,102 +1,59 @@
-# AAYU Language Grammar (v1)
+# AAYU Implemented Core Syntax
 
-Date: 2026-06-28
-Status: Accepted
+**Status:** implementation-aligned working reference, not a frozen complete language specification.
 
-This document defines the official grammar for AAYU v1.0. All compiler and parser implementations must adhere strictly to this specification.
+This page describes the syntax exercised by the checked-in core examples and supported by the current compiler pipeline. Older drafts describing `system`, `entity`, period-terminated statements, or a mandatory LLVM backend do not describe this implementation.
 
-## Core Principles
-1. **Human-Readable**: Keywords resemble plain English (e.g., `is`, `with`, `and`).
-2. **Deterministic Termination**: Every statement and declaration ends with a period `.`. Blocks terminate with `end.`.
-3. **Intent-Driven**: Built around high-level constructs (`system`, `entity`, `task`, `page`, `workflow`) rather than low-level memory operations.
+## Program structure
 
-## Lexical Structure
-- **Identifiers**: `[a-zA-Z_][a-zA-Z0-9_]*`
-- **Keywords**: `system`, `entity`, `task`, `page`, `workflow`, `record`, `is`, `with`, `and`, `end`, `if`, `else`, `while`, `repeat`, `for`, `each`, `in`, `use`, `run`, `return`, `create`, `find`, `update`, `delete`, `serve`, `route`, `render`, `form`, `guard`, `session`, `allow`, `step`.
-- **Operators**: `+`, `-`, `*`, `/`, `==`, `<`, `>`, `<=`, `>=`.
-- **Strings**: Text enclosed in `"` (double quotes).
+A source file contains statements. Whitespace separates tokens; blocks end with `end`. Statements do not require a trailing period.
 
-## Structural Nodes
-
-### System Definition
 ```aayu
-system Identifier.
-    [declarations]
-end.
+let name = "AAYU"
+print(name)
 ```
 
-### Entity / Record Definition
+## Variables and expressions
+
 ```aayu
-entity Identifier.
-    [fields]
-end.
+let count = 0
+let total = 0
+total = total + count
 ```
 
-### Task Definition
+The tested expression grammar supports integer, float, and string literals, identifier references, parentheses, calls, unary minus, array/dictionary literals, indexed reads, and these binary operators: `+`, `-`, `*`, `/`, `==`, `!=`, `<`, `>`, `<=`, `>=`.
+
+## Control flow
+
 ```aayu
-task Identifier [with Identifier {and Identifier}].
-    [statements]
-end.
+if count < 10
+    count = count + 1
+else
+    print("done")
+end
+
+while count < 20
+    count = count + 1
+end
 ```
 
-### UI Page Definition
+## Actions and returns
+
+The Rust bootstrap compiler and VM support action declarations, positional calls, local frames, returns, and recursion. A representative form is:
+
 ```aayu
-page Identifier.
-    [ui_elements]
-end.
+action add(a, b)
+    return a + b
+end
+
+let result = add(2, 3)
+print(result)
 ```
 
-### Workflow Definition
-```aayu
-workflow Identifier for EntityName.
-    step Identifier [requires Role].
-    [statements]
-    end.
-end.
-```
+See `tests/test_06_functions.aayu` for a recursive factorial regression. Closures, named/default arguments, and nested actions are not supported.
 
-## Statements
+## Syntax covered by the core regression examples
 
-### Variables
-```aayu
-type Identifier is Expression.
-```
+The checked-in AAYU examples cover variable declarations, strings, signed integer and floating-point arithmetic, assignments, `while`, `if`/`else`, user actions, arrays, dictionaries, global state, and output with `print`. See `tests/test_01_vars.aayu` through `tests/test_09_globals.aayu`.
 
-### Control Flow
-```aayu
-if Expression is Comparator Expression.
-    [statements]
-end.
-```
-```aayu
-while Expression.
-    [statements]
-end.
-```
-```aayu
-repeat Expression times.
-    [statements]
-end.
-```
-
-### Execution
-```aayu
-run Identifier [with Expression {and Expression}].
-```
-```aayu
-return Expression.
-```
-
-### Server & Routing
-```aayu
-serve on Port.
-```
-```aayu
-route "Path" to TaskName.
-```
-
-## Expressions
-- Mathematical: `a + b`, `a * 5`
-- Functional: `run taskName`
-- Database: `find EntityName`, `create EntityName`
-- Primitive: Numbers, Strings
+The parser also recognizes higher-level constructs such as `app`, `model`, `route`, and `page`; their end-to-end runtime support is feature-specific and should be checked against the confidence report and tests. Do not assume this page specifies every recognized keyword or guarantees all parsed constructs execute.

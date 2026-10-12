@@ -33,7 +33,6 @@ pub fn run() {
             commands::export_project,
             commands::execute_terminal_command,
             commands::search_workspace_rag,
-            commands::start_vertex_training,
             commands::open_workspace_folder,
             commands::run_git_command,
             commands::rollback_patch,

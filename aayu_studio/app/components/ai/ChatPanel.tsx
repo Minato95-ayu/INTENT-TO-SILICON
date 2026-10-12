@@ -627,13 +627,13 @@ Respond in concise Hinglish if asked in Hinglish.`;
                 {
                   id: generateUUID(),
                   role: 'user',
-                  content: 'Start automated Vertex AI reinforcement training loop.',
+                  content: 'Start local model training.',
                   timestamp: new Date().toISOString()
                 },
                 {
                   id: generateUUID(),
                   role: 'assistant',
-                  content: '🤖 [Vertex AI Engine] Local training loop initialized. Redirecting system logs directly to the live terminal panel below...',
+                  content: 'Model training is unavailable in this prototype. No model training has run.',
                   timestamp: new Date().toISOString()
                 }
               ]);
@@ -646,17 +646,17 @@ Respond in concise Hinglish if asked in Hinglish.`;
                   {
                     id: generateUUID(),
                     role: 'assistant',
-                    content: `❌ Vertex AI pipeline error: ${String(err)}`,
+                    content: `Model training is unavailable: ${String(err)}`,
                     timestamp: new Date().toISOString()
                   }
                 ]);
                 setIsLoading(false);
               }
             }}
-            disabled={isLoading}
+            disabled
             className="text-[8.5px] font-bold uppercase tracking-widest whitespace-nowrap bg-purple-500/15 hover:bg-purple-500/25 text-purple-300 border border-purple-500/30 hover:border-purple-500/50 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 disabled:opacity-30 disabled:cursor-not-allowed select-none active:scale-[0.97]"
           >
-            <Icons.RefreshCw className="w-3 h-3 animate-spin" style={{ animationDuration: '3s' }} /> Vertex Training
+            <Icons.RefreshCw className="w-3 h-3" /> Model Training (unavailable)
           </button>
         </div>
 

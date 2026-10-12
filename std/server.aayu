@@ -1,34 +1,21 @@
-// AAYU Standard Library: Server
-// High-Level Native HTTP & HTTPS Web Server Abstraction
-// Written in pure AAYU for zero-dependency intent computing.
+# ==============================================================================
+# AAYU Standard Library: Server (std/server.aayu)
+# 100% Pure AAYU - Native Web Server & Response Formatting Helpers
+# ==============================================================================
 
-module Server
-
-// Starts a high-performance HTTP web server on the specified port
-action start(port: Int)
-    // Natively binds port via VM Opcode 180
-    print("AAYU Server listening on http://localhost:" + port)
+action format_response(status, content_type, body)
+    let res = "HTTP/1.1 " + status + " OK\r\n"
+    res = res + "Content-Type: " + content_type + "\r\n"
+    res = res + "Content-Length: " + len(body) + "\r\n"
+    res = res + "Connection: close\r\n\r\n"
+    res = res + body
+    return res
 end
 
-// Starts a secure HTTPS/TLS server with SSL certificate and key
-action start_https(port: Int, cert_file: String, key_file: String)
-    // Natively binds secure TLS socket via VM Opcode 180 with SSL context
-    print("AAYU Secure HTTPS Server listening on https://localhost:" + port)
+action json_response(status, data_str)
+    return format_response(status, "application/json", data_str)
 end
 
-// Registers a URL path route with an action handler
-action route(path: String, handler: Action)
-    // Natively mapped to VM Opcode 181
-end
-
-// Sends a response payload back to the client
-action respond(payload: Any)
-    // Lowered directly to VM response stream
-end
-
-// Helper to format JSON response with HTTP status code
-action json(status: Int, data: String) -> String
-    return "HTTP/1.1 " + status + " OK\r\nContent-Type: application/json\r\n\r\n" + data
-end
-
+action html_response(status, html_str)
+    return format_response(status, "text/html; charset=utf-8", html_str)
 end

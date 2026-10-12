@@ -1,0 +1,13 @@
+let count = 0
+let shared = 10
+
+action increment()
+    count = count + 1
+    let shared = 5
+    return shared
+end
+
+print(increment())
+print(increment())
+print(count)
+print(shared)

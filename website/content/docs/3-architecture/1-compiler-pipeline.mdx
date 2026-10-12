@@ -1,21 +1,27 @@
 ---
 title: "Compiler Pipeline"
-description: "How AAYU source becomes native machine code."
+description: "How the current AAYU compiler and VM fit together."
 ---
 
 # Compiler Pipeline
 
-## Overview
-The AAYU compiler is a multi-pass system written in Python (prototype) that ultimately targets LLVM IR.
+The current command-line path uses the Rust bootstrap compiler and Rust VM:
 
-<PipelineDiagram stages={["Lexer", "Parser", "AST", "Semantic", "Optimizer", "LLVM", "Binary"]} />
+```text
+.aayu source -> aayuc -> .ayc bytecode -> bytecode verifier -> AAYU VM
+```
 
-## Why it exists
-A direct-to-LLVM pipeline ensures that AAYU runs as fast as C or Rust without the overhead of an interpreter or JIT.
+The repository also contains a compiler pipeline written in AAYU under `compiler/`. That source pipeline and the bootstrap executable are distinct. A reproducible, byte-for-byte self-hosting bootstrap check is still unfinished in the [confidence report](https://github.com/Minato95-ayu/INTENT-TO-SILICON/blob/main/COMPILER_CONFIDENCE_REPORT.md).
 
-## Best Practices
-Use the CLI flag ayu build --emit-llvm to inspect the generated IR if you are optimizing a hot-path in your application.
+The CLI currently routes `--jit` to the Rust VM because the experimental C emitter loses value types and has incorrect results. The benchmark-only `--sum` C-kernel measurement is not a VM JIT claim. AAYU does not currently compile through LLVM.
 
-## Related Topics
-- [Playground](/playground) (Interactive Pipeline View)
-\n\n[Edit on GitHub (Available in v1.0)](#)\n
+## Build and run
+
+From the repository root, build both Rust components and keep their executables together in `bin/`:
+
+```bash
+cargo build --release --manifest-path runtime_rs/Cargo.toml
+cargo build --release --manifest-path compiler_bootstrap/Cargo.toml
+```
+
+Then run `bin/aayu-vm run tests/test_01_vars.aayu`. See the [CLI reference](/docs/5-cli/1-cli-reference).

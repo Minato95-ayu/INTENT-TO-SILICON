@@ -35,21 +35,21 @@ const OPCODES = [
   { op: '0x23', name: 'OP_RET', width: '1 byte', stack: '[res] -> [res]', desc: 'Returns from action frame' },
   { op: '0x26', name: 'OP_CMP_EQ', width: '1 byte', stack: '[a, b] -> [bool]', desc: 'Equality comparison (a == b)' },
   { op: '0x29', name: 'OP_CMP_LT', width: '1 byte', stack: '[a, b] -> [bool]', desc: 'Less-than comparison (a < b)' },
-  { op: '0x30', name: 'OP_STORE_STATE', width: '3 bytes', stack: '[val] -> []', desc: 'Persists key-value state to RAM & WAL' },
+  { op: '0x30', name: 'OP_STORE_STATE', width: '3 bytes', stack: '[val] -> []', desc: 'Stores runtime state; no WAL guarantee' },
   { op: '0x31', name: 'OP_LOAD_STATE', width: '3 bytes', stack: '[] -> [val]', desc: 'Reads key-value state from RAM' },
   { op: '0x51', name: 'OP_PRINT', width: '1 byte', stack: '[val] -> []', desc: 'Native stdout print with newline' },
 ];
 
 const DIRECTORY_TREE = [
-  { dir: 'compiler/', tech: 'Pure .aayu (5,661 lines)', desc: 'Self-hosted Lexer, Parser, AST, Analyzer, and Bytecode Emitter.' },
-  { dir: 'runtime_rs/', tech: 'Rust (Bare-Metal)', desc: 'Silicon VM, NaN-boxed stack, JIT, Memory Manager, multi-threaded TCP.' },
-  { dir: 'compiler_bootstrap/', tech: 'Rust (Zero-dep)', desc: 'Minimal seed compiler for 100% reproducible cold builds.' },
-  { dir: 'bin/', tech: 'Native Binaries', desc: 'Official signed binaries (aayu, aayu-vm, aayuc) & seed bytecode aayuc.ayc.' },
-  { dir: 'tests/', tech: 'AAYU & PowerShell', desc: 'Formal verification suite and automated test harness (run_tests.ps1).' },
-  { dir: 'examples/', tech: 'Pure .aayu', desc: 'Production examples: Todo API, Chat Server, NeuroLedger, Auth System.' },
-  { dir: 'std/', tech: 'Native Standard Lib', desc: 'Built-in modules: HTTP, JSON, Database, Math, Crypto, Vision.' },
-  { dir: 'website/', tech: 'Next.js 15, React', desc: 'Interactive documentation, playground, and learning syllabus.' },
-  { dir: 'vscode-aayu/', tech: 'TypeScript / LSP', desc: 'Official VS Code extension for syntax highlighting and language server.' },
+  { dir: 'compiler/', tech: 'AAYU source', desc: 'Compiler pipeline sources; reproducible self-hosting is still pending.' },
+  { dir: 'runtime_rs/', tech: 'Rust', desc: 'Bytecode VM, experimental disabled C emitter, memory manager, and runtime services.' },
+  { dir: 'compiler_bootstrap/', tech: 'Rust + Cargo crates', desc: 'Bootstrap compiler used by the current CLI build.' },
+  { dir: 'bin/', tech: 'Seed artifact', desc: 'Contains the checked-in aayuc.ayc seed bytecode; executable files may be built locally.' },
+  { dir: 'tests/', tech: 'AAYU, Rust, PowerShell, shell', desc: 'Regression examples and configured test scripts; coverage is not complete.' },
+  { dir: 'examples/', tech: 'AAYU source', desc: 'Example programs and experiments; review their feature support before relying on them.' },
+  { dir: 'std/', tech: 'AAYU source', desc: 'Standard-library source modules; integration varies by module.' },
+  { dir: 'website/', tech: 'Next.js, React, TypeScript', desc: 'Documentation site, examples, and interactive pages.' },
+  { dir: 'vscode-aayu/', tech: 'JavaScript / TypeScript', desc: 'VS Code syntax support and extension tooling.' },
 ];
 
 export default function ArchitecturePage() {
@@ -69,7 +69,7 @@ export default function ArchitecturePage() {
             System Design & Architecture
           </h1>
           <p className="text-lg text-zinc-400 leading-relaxed">
-            How AAYU eliminates 1,200+ dependencies, achieves sub-millisecond cold boot, and executes full-stack apps from a single source file without Python or Node.js.
+            An overview of the compiler sources, Rust bootstrap compiler, bytecode VM, and related tools in this repository.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 mt-8">
             <a 
@@ -112,7 +112,7 @@ export default function ArchitecturePage() {
               }`}
             >
               <Code2 className="w-4 h-4" />
-              1. Self-Hosted Compiler Layer (.aayu)
+              1. Compiler Sources (.aayu)
             </button>
             <button
               onClick={() => setActiveTab('vm')}
@@ -142,15 +142,15 @@ export default function ArchitecturePage() {
             <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6 sm:p-8">
               <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
                 <div>
-                  <span className="text-xs uppercase font-bold tracking-widest text-indigo-400">Layer 1: Self-Hosted Compiler</span>
-                  <h3 className="text-2xl font-bold text-white mt-1">compiler/*.aayu (5,661 Lines of Pure AAYU)</h3>
+                  <span className="text-xs uppercase font-bold tracking-widest text-indigo-400">Layer 1: AAYU Compiler Sources</span>
+                  <h3 className="text-2xl font-bold text-white mt-1">compiler/*.aayu</h3>
                 </div>
                 <span className="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-950 text-indigo-300 border border-indigo-800/60">
-                  Zero Python • 100% Native AAYU
+                  Source implementation
                 </span>
               </div>
               <p className="text-zinc-300 text-sm leading-relaxed mb-6">
-                The AAYU compiler is completely self-hosted and written in its own syntax. It processes full-stack source code through 5 tightly integrated stages to generate silicon-ready bytecode (.ayc):
+                The repository includes lexer, parser, analyzer, compiler, and UI-renderer sources in AAYU. The current CLI uses a separate Rust bootstrap compiler; a reproducible self-hosting comparison remains unfinished:
               </p>
               <div className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-6">
                 <div className="p-4 bg-zinc-900/60 border border-zinc-800 rounded-xl">
@@ -180,8 +180,8 @@ export default function ArchitecturePage() {
                 </div>
               </div>
               <div className="p-4 bg-black/60 border border-zinc-800 rounded-xl font-mono text-xs text-zinc-300">
-                <span className="text-zinc-500"># Verify compiler self-hosting:</span><br/>
-                <span className="text-indigo-400">.\bin\aayuc.exe</span> compiler\aayuc.aayu -o bin\aayuc.ayc <span className="text-emerald-400"># Emits 32,043 bytes clean seed bytecode</span>
+                <span className="text-zinc-500"># Build the Rust bootstrap compiler:</span><br/>
+                <span className="text-indigo-400">cargo build --release --manifest-path compiler_bootstrap/Cargo.toml</span>
               </div>
             </div>
           )}
@@ -198,16 +198,16 @@ export default function ArchitecturePage() {
                 </span>
               </div>
               <p className="text-zinc-300 text-sm leading-relaxed mb-6">
-                Written in Rust exclusively for bare-metal speed and memory safety. The VM uses NaN-boxing to encode all dynamically typed values into 64-bit hardware registers with zero pointer chasing:
+                The Rust VM represents values in 64-bit NaN-boxed words. Heap objects are managed separately by the runtime memory manager:
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div className="p-4 bg-zinc-900/60 border border-zinc-800 rounded-xl">
                   <div className="flex items-center gap-2 text-cyan-400 text-sm font-semibold mb-2">
                     <Zap className="w-4 h-4" />
-                    Sub-Millisecond Cold Boot
+                    Bytecode Validation
                   </div>
                   <p className="text-xs text-zinc-400 leading-relaxed">
-                    Cold boots in &lt;1.5ms with ~14MB idle memory footprint. Ideal for serverless micro-functions, CLI tools, and edge controllers.
+                    The VM validates bytecode before execution. See the confidence report for configured checks and remaining limits.
                   </p>
                 </div>
                 <div className="p-4 bg-zinc-900/60 border border-zinc-800 rounded-xl">
@@ -222,16 +222,16 @@ export default function ArchitecturePage() {
                 <div className="p-4 bg-zinc-900/60 border border-zinc-800 rounded-xl">
                   <div className="flex items-center gap-2 text-cyan-400 text-sm font-semibold mb-2">
                     <Database className="w-4 h-4" />
-                    RAM Cache + WAL Storage
+                    JSON Key-Value Persistence
                   </div>
                   <p className="text-xs text-zinc-400 leading-relaxed">
-                    In-memory hash table persistence backed by Write-Ahead Log (WAL) SSD flush. Zero SQL injection surface.
+                    An in-memory key-value map is loaded from and written to a JSON file. This is not SQLite, SQL, or a WAL.
                   </p>
                 </div>
               </div>
               <div className="p-4 bg-black/60 border border-zinc-800 rounded-xl font-mono text-xs text-zinc-300">
                 <span className="text-zinc-500"># Direct bytecode execution:</span><br/>
-                <span className="text-cyan-400">.\bin\aayu-vm.exe</span> app.ayc <span className="text-emerald-400"># Dispatches opcodes in ~79ns per instruction</span>
+                <span className="text-cyan-400">.\bin\aayu-vm.exe</span> run tests\test_01_vars.aayu <span className="text-emerald-400"># Compile with nearby aayuc and run in the VM</span>
               </div>
             </div>
           )}
@@ -241,31 +241,31 @@ export default function ArchitecturePage() {
               <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
                 <div>
                   <span className="text-xs uppercase font-bold tracking-widest text-emerald-400">Layer 3: Reproducibility</span>
-                  <h3 className="text-2xl font-bold text-white mt-1">compiler_bootstrap/ (Self-Hosting Nirvana)</h3>
+                  <h3 className="text-2xl font-bold text-white mt-1">compiler_bootstrap/ (Rust Bootstrap)</h3>
                 </div>
                 <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-300 border border-emerald-800/60">
-                  Zero Hidden Dependencies • 100% Cold Reproducible
+                  Used by the current source compilation path
                 </span>
               </div>
               <p className="text-zinc-300 text-sm leading-relaxed mb-6">
-                To guarantee that anyone cloning the repository can build from complete scratch without relying on pre-existing binaries, AAYU maintains a minimal, zero-dependency bootstrap compiler:
+                Build the VM and compiler from source with Cargo. AAYU source compiler convergence is not yet verified:
               </p>
               <div className="space-y-3 mb-6 font-mono text-xs">
                 <div className="p-3 bg-zinc-900 border border-zinc-800 rounded-lg flex items-center gap-3">
-                  <span className="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 font-bold">STAGE 1</span>
+                  <span className="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 font-bold">BUILD VM</span>
+                  <span className="text-zinc-300">cargo build --release --manifest-path runtime_rs/Cargo.toml</span>
+                </div>
+                <div className="p-3 bg-zinc-900 border border-zinc-800 rounded-lg flex items-center gap-3">
+                  <span className="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 font-bold">BUILD COMPILER</span>
                   <span className="text-zinc-300">cargo build --release --manifest-path compiler_bootstrap/Cargo.toml</span>
                 </div>
                 <div className="p-3 bg-zinc-900 border border-zinc-800 rounded-lg flex items-center gap-3">
-                  <span className="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 font-bold">STAGE 2</span>
-                  <span className="text-zinc-300">.\bin\aayuc.exe compiler\aayuc.aayu -o bin\aayuc.ayc (Re-generates Seed Bytecode)</span>
-                </div>
-                <div className="p-3 bg-zinc-900 border border-zinc-800 rounded-lg flex items-center gap-3">
-                  <span className="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 font-bold">STAGE 3</span>
-                  <span className="text-zinc-300">.\bin\aayu-vm.exe bin\aayuc.ayc (Pure Self-Hosted Execution)</span>
+                  <span className="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 font-bold">RUN</span>
+                  <span className="text-zinc-300">aayu-vm run tests/test_01_vars.aayu</span>
                 </div>
               </div>
               <p className="text-xs text-zinc-400 leading-relaxed">
-                This closes the self-hosting circle completely: no hidden binaries, no external Python scripts, and no unverified dependencies.
+                Keep the resulting `aayu-vm` and `aayuc` executables together; the VM uses the bootstrap compiler to compile source files.
               </p>
             </div>
           )}
@@ -305,14 +305,14 @@ export default function ArchitecturePage() {
         <div className="mb-20">
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-white">The 64-Bit NaN-Box Memory Model</h2>
-            <p className="text-zinc-400 text-sm mt-1">High-performance value tagging without heap allocation or pointer dereferencing.</p>
+            <p className="text-zinc-400 text-sm mt-1">A tagged value representation for primitives and references to heap objects.</p>
           </div>
           <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6 sm:p-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <h4 className="font-semibold text-white text-base mb-3">IEEE-754 Quiet NaN Bit Allocation</h4>
                 <p className="text-zinc-400 text-xs leading-relaxed mb-4">
-                  In IEEE-754, numbers where bits 62..51 are all 1 and bit 50 is 1 are Quiet NaNs. AAYU uses the remaining 48 bits to pack 48-bit pointers, integers, booleans, and references directly inside the double-precision float space:
+                  The VM stores tagged values in a 64-bit word. Primitive values and heap references use distinct tags; see `runtime_rs/src/vm.rs` for the implementation:
                 </p>
                 <div className="space-y-2 font-mono text-xs">
                   <div className="p-2.5 rounded bg-zinc-900 border border-zinc-800 flex justify-between">
@@ -343,15 +343,15 @@ export default function ArchitecturePage() {
                 <ul className="space-y-3 text-xs text-zinc-300">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
-                    <span><strong>Zero Memory Indirection:</strong> Primitive numbers and booleans reside directly on the CPU register stack—no malloc or GC scan needed.</span>
+                    <span><strong>Tagged values:</strong> Primitive values and references are represented within the VM&apos;s 64-bit value format.</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
-                    <span><strong>100% Cache Line Efficiency:</strong> 8 values fit inside a standard 64-byte L1 CPU cache line, enabling ultra-fast arithmetic loops.</span>
+                    <span><strong>Heap objects:</strong> Strings, arrays, and dictionaries are tracked by the runtime memory manager.</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
-                    <span><strong>Type-Safe Polymorphism:</strong> Branch prediction checks type tags in &lt;1ns before arithmetic dispatch.</span>
+                    <span><strong>Performance:</strong> Use the checked-in benchmarks for workload-specific measurements; results vary by machine and program.</span>
                   </li>
                 </ul>
               </div>
@@ -397,7 +397,7 @@ export default function ArchitecturePage() {
         <div className="text-center p-12 bg-gradient-to-b from-zinc-900/60 to-black border border-zinc-800 rounded-3xl">
           <h3 className="text-2xl font-bold text-white mb-3">Ready to build on AAYU?</h3>
           <p className="text-zinc-400 text-sm max-w-xl mx-auto mb-6">
-            Explore our interactive tutorials, test in the browser playground, or clone the self-hosted repo.
+            Explore the tutorials, try the browser playground, or inspect the compiler and VM sources in the repository.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link

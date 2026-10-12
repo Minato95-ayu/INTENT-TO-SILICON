@@ -1,18 +1,9 @@
  
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import { GlobalSearch } from "@/components/global-search";const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { GlobalSearch } from "@/components/global-search";
 
 export const metadata: Metadata = {
   title: "AAYU Programming Language | By Ayush Ghrit Kaushik",
@@ -45,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white min-h-screen`}
+        className="antialiased bg-black text-white min-h-screen"
       >
         <div className="relative flex min-h-screen flex-col">
           <Navbar />

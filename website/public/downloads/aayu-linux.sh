@@ -1,49 +1,41 @@
-﻿#!/bin/bash
-set -e
-echo "========================================="
-echo "      AAYU Compiler Setup (Linux)        "
-echo "========================================="
-echo "This script will install AAYU on your system."
-sleep 1
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Check dependencies
-for req in git python3 cargo; do
-    if ! command -v $req &> /dev/null; then
-        echo "Error: $req is required but not installed."
-        echo "Please install it first (e.g., sudo apt install $req)"
-        exit 1
-    fi
-done
+repo="https://github.com/Minato95-ayu/INTENT-TO-SILICON/releases/latest/download"
+temp_root="$(mktemp -d)"
+temp_dir="$temp_root"
+trap 'rm -rf "$temp_root"' EXIT
 
-INSTALL_DIR="$HOME/.aayu"
-echo "[*] Cloning repository to $INSTALL_DIR..."
-rm -rf "$INSTALL_DIR"
-git clone https://github.com/Minato95-ayu/INTENT-TO-SILICON.git "$INSTALL_DIR"
+case "$(uname -s)" in
+  Linux)
+    archive="$temp_root/aayu-linux.tar.gz"
+    curl -fsSL "$repo/aayu-linux.tar.gz" -o "$archive"
+    tar -xzf "$archive" -C "$temp_dir"
+    ;;
+  Darwin)
+    archive="$temp_root/aayu-macos.zip"
+    curl -fsSL "$repo/aayu-macos.zip" -o "$archive"
+    unzip -q "$archive" -d "$temp_root/unpacked"
+    temp_dir="$temp_root/unpacked"
+    ;;
+  *)
+    echo "Unsupported operating system: $(uname -s)" >&2
+    exit 1
+    ;;
+esac
 
-echo "[*] Setting up Python CLI..."
-cd "$INSTALL_DIR"
-python3 -m pip install -e . --break-system-packages 2>/dev/null || python3 -m pip install -e .
-
-echo "[*] Compiling Native Silicon Engine (Rust VM)..."
-cd runtime_rs
-cargo build --release
-
-echo "[*] Configuring PATH..."
-BIN_DIR="$HOME/.local/bin"
-mkdir -p "$BIN_DIR"
-ln -sf "$INSTALL_DIR/runtime_rs/target/release/aayu-vm" "$BIN_DIR/aayu-vm"
-
-SHELL_RC="$HOME/.bashrc"
-if [[ "$SHELL" == *"zsh"* ]]; then SHELL_RC="$HOME/.zshrc"; fi
-
-if ! grep -q "$BIN_DIR" "$SHELL_RC"; then
-    echo "export PATH=\"$BIN_DIR:$PATH\"" >> "$SHELL_RC"
-    export PATH="$BIN_DIR:$PATH"
+if [[ ! -f "$temp_dir/aayu" || ! -f "$temp_dir/aayuc" ]]; then
+  echo "Release archive is missing the AAYU VM or bootstrap compiler." >&2
+  exit 1
 fi
 
-echo "========================================="
-echo " AAYU installed successfully! 🚀"
-echo " Please restart your terminal or run:"
-echo " source $SHELL_RC"
-echo " Then type 'aayu run <file.aayu>'"
-echo "========================================="
+install_dir="/usr/local/bin"
+sudo install -d "$install_dir"
+sudo install -m 0755 "$temp_dir/aayu" "$install_dir/aayu"
+sudo install -m 0755 "$temp_dir/aayuc" "$install_dir/aayuc"
+if [[ -f "$temp_dir/aayu-vm" ]]; then
+  sudo install -m 0755 "$temp_dir/aayu-vm" "$install_dir/aayu-vm"
+fi
+
+"$install_dir/aayu" --version
+echo "AAYU installed. The VM and compiler are in $install_dir."

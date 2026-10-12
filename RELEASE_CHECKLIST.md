@@ -1,32 +1,20 @@
-# Stable 1.0 Release Checklist
+# Release Checklist
 
-Before certifying AAYU as **Stable 1.0**, the following criteria must be independently verified across Windows, macOS, and Linux:
+Complete these checks before tagging a public release. The checklist describes required evidence; an unchecked item is not a release claim.
 
-## 1. Installation & Environment
-- [ ] Fresh Machine Virtual Environment installation succeeds (`pip install aayu-lang`).
-- [ ] Global `aayu` command works out of the box without manual PATH edits.
-- [ ] `aayu doctor` reports healthy environment dependencies.
+## Build and package
 
-## 2. CLI & Workflows
-- [ ] `aayu new <App>` creates a valid scaffold.
-- [ ] `aayu run` successfully launches the VM.
-- [ ] `aayu test` executes successfully.
-- [ ] `aayu format` works on dirty source files.
+- [ ] Build `runtime_rs` and `compiler_bootstrap` from a clean checkout on Windows, Linux, and macOS.
+- [ ] Confirm each release archive contains the VM executable, matching `aayuc` compiler executable, standard library, and examples.
+- [ ] Confirm `aayu-vm run <source.aayu>` works from the packaged directory without relying on repository-local files.
+- [ ] Confirm `build` emits `.ayc` bytecode and document that output accurately.
+- [ ] Verify release version labels agree across runtime source, VS Code extension, docs, archive names, and release notes.
 
-## 3. Builder
-- [ ] `aayu build` natively invokes PyInstaller and generates `app.exe` (Windows), `app` (Linux/macOS).
-- [ ] The generated native executable launches and executes AAYU bytecode correctly.
-- [ ] `aayu build --target web` transpiles AST to `index.html` and `app.js`.
-- [ ] The Web bundle opens in a browser and reactivity works.
+## Verification
 
-## 4. Editor Experience (LSP)
-- [ ] Diagnostics display syntax errors live.
-- [ ] Hover reveals type/component metadata.
-- [ ] Go To Definition routes to file starts.
-- [ ] Rename successfully alters references.
-- [ ] Autocomplete suggestions popup.
-
-## 5. Documentation
-- [ ] Quick Start works flawlessly.
-- [ ] Hello World is understandable for beginners.
-- [ ] API Reference is complete.
+- [ ] Run Rust unit tests and both AAYU regression/security scripts on supported platforms.
+- [ ] Build the website and check published install, language, CLI, runtime, and limitation pages against the release.
+- [ ] Record benchmark hardware, commands, raw output, and scope; remove stale numbers from other docs.
+- [ ] Review generated artifacts and confirm datasets/model weights are intended for redistribution.
+- [ ] Resolve the repository LICENSE and conflicting file-level licensing notices before publishing affected components.
+- [ ] Review network, persistence, and host integration changes for security and failure behavior.

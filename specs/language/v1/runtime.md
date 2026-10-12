@@ -1,22 +1,17 @@
-# AAYU Runtime (v1)
+# AAYU Runtime (implementation notes)
 
-Date: 2026-06-28
-Status: In Progress
+**Status:** working description of the current Rust VM, not a frozen contract.
 
-The AAYU Runtime executes the generated AAYU Bytecode (`.ayc`). It is designed to be highly portable and secure, isolating project code from system resources.
+The runtime in `runtime_rs/` loads AAYU bytecode, validates instruction and control-flow structure, then executes the program in a Rust virtual machine. The command-line executable is `aayu-vm`; source execution also requires the Rust bootstrap compiler executable `aayuc` beside it.
 
-## Core Concepts
-- **Environment Context**: A mapping of variable scopes. 
-- **Call Stack**: For managing function invocations.
-- **Built-ins**: A native interface bridging `.aayu` logic to the underlying OS (e.g. `show`, HTTP routing, SQLite calls).
+## Runtime values and memory
 
-## Runtime Types
-1. **Numbers**: 64-bit floating point.
-2. **Text**: UTF-8 Strings.
-3. **Booleans**: True/False representations.
-4. **Lists**: Dynamically sized arrays.
-5. **Maps**: Key-value pairs (dictionaries).
-6. **Records**: Strongly typed struct instances.
+The VM uses a 64-bit NaN-boxed value representation. Heap objects include strings, arrays, and dictionaries. The memory manager uses mark-and-sweep collection; it is not deterministic ARC.
 
-## Execution Model
-The Runtime must implement an infinite loop that reads the bytecode array and executes instructions linearly, manipulating the Operand Stack, until `RETURN` is encountered on the main block or EOF is reached.
+## Built-in subsystems
+
+The opcode definitions include operations for console output, tensors, JSON-backed key-value persistence, HTTP/server work, and UI nodes. Opcode presence is not a guarantee that each feature has complete language-level integration or production readiness. The database module is not SQLite or relational SQL.
+
+## Execution and limitations
+
+The VM verifies bytecode before execution. The experimental C emitter has incorrect typed-value behavior, so normal CLI execution routes `--jit` through the VM. See `runtime_rs/src/vm.rs`, `jit.rs`, `memory.rs`, and `db.rs` for implementation details, and [KNOWN_LIMITATIONS.md](../../../KNOWN_LIMITATIONS.md) for current gaps.

@@ -1,5 +1,16 @@
-use std::collections::HashMap;
-use crate::parser::{Expr, Statement, BinaryOp};
+use std::collections::{HashMap, HashSet};
+use crate::parser::{Expr, Statement, BinaryOp, UnaryOp};
+
+fn escape_html(value: &str) -> String {
+    value.chars().map(|ch| match ch {
+        '&' => "&amp;".to_string(),
+        '<' => "&lt;".to_string(),
+        '>' => "&gt;".to_string(),
+        '"' => "&quot;".to_string(),
+        '\'' => "&#39;".to_string(),
+        _ => ch.to_string(),
+    }).collect()
+}
 
 pub struct Emitter {
     bytecode: Vec<u8>,
@@ -7,7 +18,12 @@ pub struct Emitter {
     strings: Vec<String>,
     pub num_constants: u32,
     var_map: HashMap<String, usize>,
+    global_map: HashMap<String, usize>,
+    local_names: HashSet<String>,
+    in_function: bool,
     next_slot: usize,
+    function_entries: HashMap<String, usize>,
+    function_calls: Vec<(usize, String)>,
 }
 
 impl Emitter {
@@ -18,15 +34,48 @@ impl Emitter {
             strings: Vec::new(),
             num_constants: 0,
             var_map: HashMap::new(),
+            global_map: HashMap::new(),
+            local_names: HashSet::new(),
+            in_function: false,
             next_slot: 0,
+            function_entries: HashMap::new(),
+            function_calls: Vec::new(),
         }
     }
 
     pub fn emit(&mut self, ast: &[Statement]) -> (Vec<u8>, Vec<u8>, Vec<String>, u32) {
         for stmt in ast {
-            self.emit_statement(stmt);
+            if !matches!(stmt, Statement::Action { .. }) {
+                self.emit_statement(stmt);
+            }
         }
         self.bytecode.push(0); // HALT opcode
+        for stmt in ast {
+            if let Statement::Action { name, args, body } = stmt {
+                self.function_entries.insert(name.clone(), self.bytecode.len());
+                self.var_map.clear();
+                self.local_names = args.iter().cloned().collect();
+                Self::collect_declared_locals(body, &mut self.local_names);
+                self.next_slot = 0;
+                self.in_function = true;
+                for arg in args {
+                    self.get_var_slot(arg);
+                }
+                for statement in body {
+                    self.emit_statement(statement);
+                }
+                let null_idx = self.add_constant_null();
+                self.bytecode.push(1);
+                self.bytecode.extend_from_slice(&(null_idx as u16).to_be_bytes());
+                self.bytecode.push(35); // RET
+                self.in_function = false;
+                self.local_names.clear();
+            }
+        }
+        for (operand, name) in &self.function_calls {
+            let target = *self.function_entries.get(name).unwrap_or(&0);
+            self.bytecode[*operand..*operand + 2].copy_from_slice(&(target as u16).to_be_bytes());
+        }
         (self.bytecode.clone(), self.constants.clone(), self.strings.clone(), self.num_constants)
     }
 
@@ -77,12 +126,43 @@ impl Emitter {
         }
     }
 
+    fn get_global_slot(&mut self, name: &str) -> usize {
+        if let Some(&slot) = self.global_map.get(name) { slot }
+        else {
+            let slot = self.global_map.len();
+            self.global_map.insert(name.to_string(), slot);
+            slot
+        }
+    }
+
+    fn collect_declared_locals(body: &[Statement], names: &mut HashSet<String>) {
+        for statement in body {
+            match statement {
+                Statement::Let { name, .. } => { names.insert(name.clone()); }
+                Statement::While { body, .. } => Self::collect_declared_locals(body, names),
+                Statement::If { then_branch, else_branch, .. } => {
+                    Self::collect_declared_locals(then_branch, names);
+                    Self::collect_declared_locals(else_branch, names);
+                }
+                _ => {}
+            }
+        }
+    }
+
+    fn variable_slot(&mut self, name: &str) -> (usize, bool) {
+        if !self.in_function { return (self.get_global_slot(name), true); }
+        if self.local_names.contains(name) { return (self.get_var_slot(name), false); }
+        if let Some(&slot) = self.global_map.get(name) { return (slot, true); }
+        (self.get_var_slot(name), false)
+    }
+
     fn emit_statement(&mut self, stmt: &Statement) {
         match stmt {
+            Statement::Import(_) => {}
             Statement::Let { name, value } | Statement::Assignment { name, value } => {
                 self.emit_expression(value);
-                let slot = self.get_var_slot(name);
-                self.bytecode.push(6); // STORE_VAR
+                let (slot, is_global) = self.variable_slot(name);
+                self.bytecode.push(if is_global { 8 } else { 6 }); // STORE_GLOBAL / STORE_VAR
                 self.bytecode.push((slot % 256) as u8);
             }
             Statement::State { name, value } => {
@@ -150,11 +230,7 @@ impl Emitter {
                     self.bytecode[jmp_false_idx + 1] = (exit_target & 0xFF) as u8;
                 }
             }
-            Statement::Action { body, .. } => {
-                for s in body {
-                    self.emit_statement(s);
-                }
-            }
+            Statement::Action { .. } => {}
             Statement::Return(opt_expr) => {
                 if let Some(expr) = opt_expr {
                     self.emit_expression(expr);
@@ -216,7 +292,7 @@ impl Emitter {
                 if !onclick_attr.is_empty() { css.push_str("cursor:pointer;"); }
                 if kind == "Button" && href_attr.is_empty() { css.push_str("cursor:pointer;border:none;"); }
 
-                let class_attr = if kind == "Icon" { format!(" class=\"fa fa-{}\"", text) } else { "".to_string() };
+                let class_attr = if kind == "Icon" { format!(" class=\"fa fa-{}\"", escape_html(text)) } else { "".to_string() };
 
                 if tag == "textarea" || (kind == "Input" && id_attr.contains("playgroundCode")) {
                     let inner_val = if !value_attr.is_empty() {
@@ -225,16 +301,16 @@ impl Emitter {
                     } else {
                         text.clone()
                     };
-                    html.push_str(&format!("<textarea style=\"{}\"{}{}{}>{}</textarea>", css.replace('"', ""), id_attr, placeholder_attr, onclick_attr, inner_val));
+                    html.push_str(&format!("<textarea style=\"{}\"{}{}{}>{}</textarea>", escape_html(&css), id_attr, placeholder_attr, onclick_attr, escape_html(&inner_val)));
                 } else if kind == "Input" {
                     if value_attr.is_empty() && !text.is_empty() {
-                        value_attr = format!(" value=\"{}\"", text);
+                        value_attr = format!(" value=\"{}\"", escape_html(text));
                     }
-                    html.push_str(&format!("<input style=\"{}\"{}{}{}{}{}>", css.replace('"', ""), id_attr, placeholder_attr, value_attr, class_attr, onclick_attr));
+                    html.push_str(&format!("<input style=\"{}\"{}{}{}{}{}>", escape_html(&css), id_attr, placeholder_attr, value_attr, class_attr, onclick_attr));
                 } else {
-                    html.push_str(&format!("<{} style=\"{}\"{}{}{}{}>", tag, css.replace('"', ""), id_attr, href_attr, class_attr, onclick_attr));
+                    html.push_str(&format!("<{} style=\"{}\"{}{}{}{}>", tag, escape_html(&css), id_attr, href_attr, class_attr, onclick_attr));
                     if !text.is_empty() && kind != "Icon" {
-                        html.push_str(text);
+                        html.push_str(&escape_html(text));
                     }
                     html.push_str(&Self::generate_html(children));
                     html.push_str(&format!("</{}>", tag));
@@ -265,8 +341,8 @@ impl Emitter {
                 self.bytecode.push((const_idx & 0xFF) as u8);
             }
             Expr::Variable(name) => {
-                let slot = self.get_var_slot(name);
-                self.bytecode.push(5); // LOAD_VAR
+                let (slot, is_global) = self.variable_slot(name);
+                self.bytecode.push(if is_global { 7 } else { 5 }); // LOAD_GLOBAL / LOAD_VAR
                 self.bytecode.push((slot % 256) as u8);
             }
             Expr::Binary { left, op, right } => {
@@ -277,6 +353,7 @@ impl Emitter {
                     BinaryOp::Sub => self.bytecode.push(17),
                     BinaryOp::Mul => self.bytecode.push(18),
                     BinaryOp::Div => self.bytecode.push(19),
+                    BinaryOp::Mod => self.bytecode.push(20),
                     BinaryOp::EqEq => self.bytecode.push(38),
                     BinaryOp::NotEq => self.bytecode.push(39),
                     BinaryOp::Lt => self.bytecode.push(41),
@@ -284,6 +361,31 @@ impl Emitter {
                     BinaryOp::Lte => self.bytecode.push(43),
                     BinaryOp::Gte => self.bytecode.push(44),
                 }
+            }
+            Expr::Unary { op: UnaryOp::Negate, expr } => {
+                let zero = self.add_constant_int(0);
+                self.bytecode.push(1);
+                self.bytecode.extend_from_slice(&(zero as u16).to_be_bytes());
+                self.emit_expression(expr);
+                self.bytecode.push(17); // SUB
+            }
+            Expr::Array(items) => {
+                for item in items { self.emit_expression(item); }
+                self.bytecode.push(134); // CREATE_ARRAY
+                self.bytecode.extend_from_slice(&(items.len() as u16).to_be_bytes());
+            }
+            Expr::Dict(entries) => {
+                for (key, value) in entries {
+                    self.emit_expression(value);
+                    self.emit_expression(key);
+                }
+                self.bytecode.push(128); // BUILD_DICT
+                self.bytecode.extend_from_slice(&(entries.len() as u16).to_be_bytes());
+            }
+            Expr::Index { object, key } => {
+                self.emit_expression(object);
+                self.emit_expression(key);
+                self.bytecode.push(136); // LOAD_SUBSCR
             }
             Expr::Call { callee, args } => {
                 if callee == "print" {
@@ -295,7 +397,7 @@ impl Emitter {
                     self.bytecode.push(1);
                     self.bytecode.push((null_idx >> 8) as u8);
                     self.bytecode.push((null_idx & 0xFF) as u8);
-                } else {
+                } else if callee == "len" {
                     let (name_idx, _) = self.add_constant_str(callee.clone());
                     self.bytecode.push(1); // PUSH_CONST (func name)
                     self.bytecode.push((name_idx >> 8) as u8);
@@ -306,6 +408,15 @@ impl Emitter {
                     self.bytecode.push(34); // OP_CALL
                     self.bytecode.push((args.len() >> 8) as u8);
                     self.bytecode.push((args.len() & 0xFF) as u8);
+                } else {
+                    for arg in args {
+                        self.emit_expression(arg);
+                    }
+                    self.bytecode.push(36); // CALL_LOCAL
+                    self.bytecode.extend_from_slice(&(args.len() as u16).to_be_bytes());
+                    let target_operand = self.bytecode.len();
+                    self.bytecode.extend_from_slice(&[0, 0]);
+                    self.function_calls.push((target_operand, callee.clone()));
                 }
             }
         }
@@ -342,3 +453,13 @@ pub const MODAL_HTML_AND_SCRIPT: &str = r##"
   </div>
 </div>
 "##;
+
+#[cfg(test)]
+mod html_escape_tests {
+    use super::escape_html;
+
+    #[test]
+    fn escapes_text_and_attribute_delimiters() {
+        assert_eq!(escape_html("<script a=\"x\">'&"), "&lt;script a=&quot;x&quot;&gt;&#39;&amp;");
+    }
+}

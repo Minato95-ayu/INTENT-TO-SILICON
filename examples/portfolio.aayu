@@ -61,23 +61,23 @@ Page Home
                     Grid gridTemplateColumns="repeat(auto-fit, minmax(300px, 1fr))" gap="18px" width="100%"
                         Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="8px"
                             Text "Language & Compiler Design" fontSize="18px" fontWeight="bold" color="#22d3ee"
-                            Text "5,661-line self-hosted compiler pipeline (Lexer, Parser, AST, Analyzer, Bytecode Emitter) in pure AAYU." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "AAYU compiler pipeline with a separate Rust bootstrap compiler. The CLI uses the bootstrap; reproducible self-hosting is not verified." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                         end
                         Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="8px"
                             Text "Systems Programming & VM" fontSize="18px" fontWeight="bold" color="#22d3ee"
-                            Text "Native Silicon VM and x86_64 JIT in Rust. NanBoxed stack architecture achieving 50ns per opcode." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Rust stack VM with NaN-boxed values and mark-and-sweep memory management. Optional JIT emits C for supported bytecode; unsupported code falls back to the VM." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                         end
                         Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="8px"
                             Text "AI & Multi-Agent Architecture" fontSize="18px" fontWeight="bold" color="#22d3ee"
-                            Text "Autonomous agent orchestration, token-efficient RAG embeddings, and multi-provider model rotation." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "The repository includes separate Python BrainOS and Intent Engine experiments. They are not built into the AAYU VM CLI." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                         end
                         Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="8px"
                             Text "Databases & Storage Engines" fontSize="18px" fontWeight="bold" color="#22d3ee"
-                            Text "Custom SQLite integration, Write-Ahead Log (WAL) mode, query planning, and schema migration engines." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "The Rust runtime includes a JSON-backed key-value store with file persistence. SQLite, SQL queries, and WAL are not implemented there." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                         end
                         Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="8px"
                             Text "Full-Stack Web Development" fontSize="18px" fontWeight="bold" color="#22d3ee"
-                            Text "Declarative SSR widget rendering, low-latency async HTTP sockets, Next.js, and TypeScript architectures." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "The repository contains UI and HTTP prototypes plus this Next.js site. The current AAYU VM CLI does not launch a full-stack web application." fontSize="14px" color="#9ca3af" lineHeight="1.6"
                         end
                         Card backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="8px"
                             Text "Scientific Research & Education" fontSize="18px" fontWeight="bold" color="#22d3ee"
@@ -100,10 +100,10 @@ Page Home
                         Card onClick=open_proj_1 backgroundColor="#111827" borderRadius="14px" padding="24px" border="1px solid #1f2937" flexDirection="column" gap="10px"
                             Row justifyContent="space-between" alignItems="center"
                                 Text "AAYU Compiler Core" fontSize="20px" fontWeight="bold" color="#ffffff"
-                                Text "SELF-HOSTED" fontSize="11px" fontWeight="bold" color="#10b981" backgroundColor="#064e3b" padding="3px 8px" borderRadius="6px"
+                                Text "COMPILER PROTOTYPE" fontSize="11px" fontWeight="bold" color="#10b981" backgroundColor="#064e3b" padding="3px 8px" borderRadius="6px"
                             end
-                            Text "A 5,661-line self-hosted compiler pipeline with Lexer, Parser, AST, Semantic Analyzer, and Bytecode Emitter written entirely in pure AAYU." fontSize="14px" color="#9ca3af" lineHeight="1.6"
-                            Text "Stack: Pure AAYU (.aayu) | Zero Python" fontSize="12px" color="#818cf8"
+                            Text "The repository contains an AAYU compiler pipeline and a Rust bootstrap compiler. The CLI uses the bootstrap compiler; reproducible self-hosting has not been verified." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Stack: AAYU pipeline + Rust bootstrap" fontSize="12px" color="#818cf8"
                             Button "View Architecture & Code →" onClick=open_proj_1 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
                         end
 
@@ -113,8 +113,8 @@ Page Home
                                 Text "AAYU Silicon VM & JIT" fontSize="20px" fontWeight="bold" color="#ffffff"
                                 Text "RUST VM" fontSize="11px" fontWeight="bold" color="#3b82f6" backgroundColor="#1e3a8a" padding="3px 8px" borderRadius="6px"
                             end
-                            Text "High-performance stack execution engine written in Rust. Features NanBoxed 64-bit value representations and x86_64 JIT running at 50ns/op." fontSize="14px" color="#9ca3af" lineHeight="1.6"
-                            Text "Stack: Rust | NanBox | JIT Engine" fontSize="12px" color="#818cf8"
+                            Text "Experimental Rust bytecode VM. The CLI routes --jit through the VM until the generated C backend passes typed-value conformance checks." fontSize="14px" color="#9ca3af" lineHeight="1.6"
+                            Text "Stack: Rust VM | Optional C-emitting JIT" fontSize="12px" color="#818cf8"
                             Button "View Architecture & Code →" onClick=open_proj_2 backgroundColor="#1e1b4b" color="#a5b4fc" fontSize="13px" fontWeight="bold" padding="8px 14px" borderRadius="8px" marginTop="6px" border="1px solid #4338ca"
                         end
 

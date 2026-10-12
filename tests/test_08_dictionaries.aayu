@@ -1,0 +1,5 @@
+let token = {"type": "IDENT", "value": "aayu"}
+print(token["type"])
+print(token["value"])
+let empty = {}
+print(empty["missing"])

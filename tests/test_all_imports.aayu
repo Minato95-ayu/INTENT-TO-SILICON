@@ -1,0 +1,23 @@
+import "std/math"
+import "std/crypto"
+import "std/ai"
+import "std/ledger"
+import "std/ui"
+import "std/fs"
+import "std/http"
+import "std/server"
+import "std/db"
+
+let s = sqrt(16.0)
+print("Math Sqrt 16:")
+print(s)
+let p = pow(2.0, 4)
+print("Math Pow 2^4:")
+print(p)
+let h = hash_string("AAYU")
+print("Crypto Hash:")
+print(h)
+let ext = get_extension("index.aayu")
+print("File Extension:")
+print(ext)
+print("ALL MODULES IMPORTED AND RUNNING CLEANLY!")

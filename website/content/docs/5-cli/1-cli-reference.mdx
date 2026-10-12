@@ -1,22 +1,26 @@
 ---
 title: "CLI Reference"
-description: "The official AAYU CLI tool."
+description: "Commands supported by the current AAYU VM executable."
 ---
 
 # CLI Reference
 
-## Overview
-The ayu command line tool handles building, running, and managing packages.
+The VM CLI currently supports these commands:
 
-## Core Commands
-- ayu run <file>: Compile and execute immediately.
-- ayu build: Compile to native binary.
-- ayu pkg: Interact with the package manager.
-- ayu brain: Invoke the BrainOS orchestrator.
+| Command | Purpose |
+|---|---|
+| `aayu-vm run <file.aayu> [--jit]` | Compile source with the nearby `aayuc` executable, then execute it |
+| `aayu-vm run <file.ayc> [--jit]` | Execute bytecode |
+| `aayu-vm build <file.aayu> [-o <file.ayc>]` | Compile source to bytecode |
+| `aayu-vm --version` | Show engine version and platform |
+| `aayu-vm --help` | Show CLI help |
 
-## Example
-<CodeBlock lang="bash" code="aayu build main.aayu -O3 --target x86_64" />
+Examples from the repository root:
 
-## Best Practices
-For production, always use the -O3 optimization flag.
-\n\n[Edit on GitHub (Available in v1.0)](#)\n
+```bash
+bin/aayu-vm run tests/test_01_vars.aayu
+bin/aayu-vm build tests/test_01_vars.aayu -o vars.ayc
+bin/aayu-vm run vars.ayc
+```
+
+`build` outputs `.ayc` bytecode, not a native executable. The `--jit` flag currently falls back to the Rust VM because generated C has incorrect typed-value behavior. Commands such as `aayu pkg` and `aayu brain` are not implemented by this VM CLI.

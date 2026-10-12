@@ -1,6 +1,7 @@
 #[derive(Debug, PartialEq, Clone)]
 pub enum Token {
     Let,
+    Import,
     Print,
     If,
     Else,
@@ -30,6 +31,7 @@ pub enum Token {
     Minus,
     Star,
     Slash,
+    Percent,
     LessThan,
     GreaterThan,
     DoubleEqual,
@@ -46,6 +48,7 @@ pub enum Token {
     Comma,
     Colon,
     Newline,
+    Invalid(String),
     Eof,
 }
 
@@ -67,7 +70,7 @@ impl<'a> Lexer<'a> {
             // 1. Skip comments: # or //
             if ch == '#' || (ch == '/' && self.peek_char() == '/') {
                 while self.pos < self.input.len() && self.current_char() != '\n' {
-                    self.pos += 1;
+                    self.pos += self.current_char().len_utf8();
                 }
                 continue;
             }
@@ -106,10 +109,13 @@ impl<'a> Lexer<'a> {
                         break;
                     }
                     s.push(c);
-                    self.pos += 1;
+                    self.pos += c.len_utf8();
                 }
-                if self.pos < self.input.len() {
+                if self.pos < self.input.len() && self.current_char() == '"' {
                     self.pos += 1; // skip closing quote
+                } else {
+                    tokens.push(Token::Invalid("unterminated string literal".to_string()));
+                    continue;
                 }
                 tokens.push(Token::StringLiteral(s));
                 continue;
@@ -120,7 +126,7 @@ impl<'a> Lexer<'a> {
                 if ch == '\n' {
                     tokens.push(Token::Newline);
                 }
-                self.pos += 1;
+                self.pos += ch.len_utf8();
             } else if ch.is_ascii_alphabetic() || ch == '_' {
                 let start = self.pos;
                 while self.pos < self.input.len() && (self.current_char().is_ascii_alphanumeric() || self.current_char() == '_') {
@@ -129,6 +135,7 @@ impl<'a> Lexer<'a> {
                 let word = &self.input[start..self.pos];
                 match word {
                     "let" => tokens.push(Token::Let),
+                    "import" => tokens.push(Token::Import),
                     "print" => tokens.push(Token::Print),
                     "if" => tokens.push(Token::If),
                     "else" => tokens.push(Token::Else),
@@ -168,9 +175,15 @@ impl<'a> Lexer<'a> {
                 }
                 let num_str = &self.input[start..self.pos];
                 if is_float {
-                    tokens.push(Token::Float(num_str.parse().unwrap_or(0.0)));
+                    match num_str.parse::<f64>() {
+                        Ok(value) if value.is_finite() => tokens.push(Token::Float(value)),
+                        _ => tokens.push(Token::Invalid(format!("invalid or out-of-range float literal {}", num_str))),
+                    }
                 } else {
-                    tokens.push(Token::Integer(num_str.parse().unwrap_or(0)));
+                    match num_str.parse::<i64>() {
+                        Ok(value) => tokens.push(Token::Integer(value)),
+                        _ => tokens.push(Token::Invalid(format!("integer literal {} exceeds the parser's 64-bit range", num_str))),
+                    }
                 }
             } else {
                 match ch {
@@ -178,6 +191,7 @@ impl<'a> Lexer<'a> {
                     '-' => tokens.push(Token::Minus),
                     '*' => tokens.push(Token::Star),
                     '/' => tokens.push(Token::Slash),
+                    '%' => tokens.push(Token::Percent),
                     '(' => tokens.push(Token::LeftParen),
                     ')' => tokens.push(Token::RightParen),
                     '[' => tokens.push(Token::LeftBracket),
@@ -198,6 +212,8 @@ impl<'a> Lexer<'a> {
                         if self.peek_char() == '=' {
                             self.pos += 1;
                             tokens.push(Token::NotEqual);
+                        } else {
+                            tokens.push(Token::Invalid("unexpected character '!'".to_string()));
                         }
                     }
                     '<' => {
@@ -216,9 +232,9 @@ impl<'a> Lexer<'a> {
                             tokens.push(Token::GreaterThan);
                         }
                     }
-                    _ => {} // Ignore unknown
+                    _ => tokens.push(Token::Invalid(format!("unexpected character {:?}", ch))),
                 }
-                self.pos += 1;
+                self.pos += ch.len_utf8();
             }
         }
         tokens.push(Token::Eof);

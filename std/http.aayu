@@ -1,32 +1,43 @@
-// AAYU Standard Library: Http
-// High-Level Native HTTP & HTTPS Client Abstraction
-// Written in pure AAYU for zero-dependency intent computing.
+# ==============================================================================
+# AAYU Standard Library: Http (std/http.aayu)
+# 100% Pure AAYU - HTTP Request & Status Code Helpers
+# ==============================================================================
 
-module Http
-
-// Performs an HTTP GET request
-action get(url: String) -> String
-    // Natively mapped to VM Opcode 200
+action parse_url_protocol(url)
+    if len(url) >= 8
+        if url[0] == "h"
+            if url[1] == "t"
+                if url[2] == "t"
+                    if url[3] == "p"
+                        if url[4] == "s"
+                            return "https"
+                        end
+                        return "http"
+                    end
+                end
+            end
+        end
+    end
+    return "unknown"
 end
 
-// Performs a secure HTTPS GET request with TLS 1.3 encryption
-action get_https(url: String) -> String
-    // Natively mapped to VM Opcode 200 via TLS socket
+action format_request(method, path, host, body)
+    let req = method + " " + path + " HTTP/1.1\r\n"
+    req = req + "Host: " + host + "\r\n"
+    req = req + "Content-Type: application/json\r\n"
+    if len(body) > 0
+        req = req + "Content-Length: " + len(body) + "\r\n\r\n" + body
+    else
+        req = req + "\r\n"
+    end
+    return req
 end
 
-// Performs an HTTP/HTTPS POST request with a payload
-action post(url: String, body: String) -> String
-    // Natively mapped to VM Opcode 201
-end
-
-// Performs an HTTP/HTTPS PUT request
-action put(url: String, body: String) -> String
-    // Natively mapped to VM Opcode 202
-end
-
-// Performs an HTTP/HTTPS DELETE request
-action delete(url: String) -> String
-    // Natively mapped to VM Opcode 203
-end
-
+action status_is_ok(status_code)
+    if status_code >= 200
+        if status_code < 300
+            return 1
+        end
+    end
+    return 0
 end

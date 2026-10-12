@@ -1,11 +1,8 @@
 {
-  "name": "INTENT-TO-SILICON",
-  "version": "1.0.0",
-  "description": "An AAYU project",
-  "author": "Unknown",
-  "license": "MIT",
-  "entry": "main.aayu",
-  "dependencies": {
-    "dummy": "^1.0.0"
-  }
+  "name": "AAYU",
+  "version": "1.2.0",
+  "description": "AAYU language, compiler, VM, and supporting tools",
+  "author": "Ayush Ghrit Kaushik",
+  "license": "Proprietary; see LICENSE",
+  "dependencies": {}
 }

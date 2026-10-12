@@ -1,35 +1,23 @@
 # Build and Run
 
-AAYU makes it incredibly simple to test and compile your application for multiple targets.
+Build both Rust components from the repository root:
 
-## Running Locally
-
-To run your application in development mode with the VM:
-
-```bash
-aayu run
-```
-*This will execute `main.aayu` in the current directory.*
-
-## Building for Desktop
-
-AAYU uses PyInstaller to bundle your AAYU bytecode and VM into a single native executable.
-
-```bash
-aayu build
-```
-*(Defaults to your host OS, e.g., Windows `.exe`)*
-
-The output will be placed in `build/release/app.exe`.
-You can simply double-click `app.exe` to launch your program!
-
-## Building for Web
-
-To transpile your AAYU application into a standard HTML/JS web bundle:
-
-```bash
-aayu build --target web
+```powershell
+cargo build --release --manifest-path runtime_rs/Cargo.toml
+cargo build --release --manifest-path compiler_bootstrap/Cargo.toml
 ```
 
-The output will be placed in `build/web/`.
-You can open `build/web/index.html` directly in your browser.
+Run source using the VM and bootstrap compiler:
+
+```powershell
+runtime_rs/target/release/aayu-vm.exe run tests/test_01_vars.aayu
+```
+
+The `.aayu` run path compiles to a temporary bytecode file and executes it. To keep the bytecode:
+
+```powershell
+runtime_rs/target/release/aayu-vm.exe build tests/test_01_vars.aayu -o app.ayc
+runtime_rs/target/release/aayu-vm.exe run app.ayc
+```
+
+`.ayc` is AAYU bytecode, not a native `.exe` or web bundle. The `--jit` compatibility flag currently falls back to the Rust VM because the experimental C emitter has incorrect typed-value behavior.

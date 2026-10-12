@@ -204,6 +204,10 @@ export default async function ChapterPage({ params }: { params: Promise<{ slug: 
           <p className="text-lg text-zinc-400">{chapter.description}</p>
         </div>
 
+        <div className="mb-10 rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-5 text-sm text-emerald-100">
+          This lesson uses the verified core subset and links to a checked-in regression program. Its output is covered by the repository test harness. This does not imply support for features outside the lesson; see <Link href="https://github.com/Minato95-ayu/INTENT-TO-SILICON/blob/main/KNOWN_LIMITATIONS.md" className="underline">known limitations</Link>.
+        </div>
+
         {/* What you'll learn */}
         <div className="mb-12 p-6 rounded-xl border border-zinc-800 bg-zinc-900/50">
           <div className="flex items-center gap-2 mb-4">
@@ -262,18 +266,18 @@ export default async function ChapterPage({ params }: { params: Promise<{ slug: 
 
 // Helper to format inline code (`code`) in text
 function formatInlineCode(text: string): React.ReactNode {
-  const parts = text.split(/(`[^`]+`)/g);
+  const parts = text.split(/(\[[^\]]+\]\(https?:\/\/[^)]+\)|`[^`]+`|\*\*[^*]+\*\*)/g);
   return parts.map((part, i) => {
+    const link = part.match(/^\[([^\]]+)\]\((https?:\/\/[^)]+)\)$/);
+    if (link) {
+      return <a key={i} href={link[2]} target="_blank" rel="noreferrer" className="text-cyan-300 underline">{link[1]}</a>;
+    }
     if (part.startsWith("`") && part.endsWith("`")) {
       return <code key={i} className="px-1.5 py-0.5 rounded bg-zinc-800 text-purple-300 text-sm font-mono">{part.slice(1, -1)}</code>;
     }
-    // Handle bold
-    const boldParts = part.split(/(\*\*[^*]+\*\*)/g);
-    return boldParts.map((bp, j) => {
-      if (bp.startsWith("**") && bp.endsWith("**")) {
-        return <strong key={`${i}-${j}`} className="text-white font-semibold">{bp.slice(2, -2)}</strong>;
-      }
-      return <span key={`${i}-${j}`}>{bp}</span>;
-    });
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return <strong key={i} className="text-white font-semibold">{part.slice(2, -2)}</strong>;
+    }
+    return <span key={i}>{part}</span>;
   });
 }

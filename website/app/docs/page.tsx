@@ -10,7 +10,7 @@ export default function DocsPage() {
         <div className="flex flex-col md:flex-row justify-between items-center mb-16 gap-8">
           <div>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">AAYU Documentation</h1>
-            <p className="text-zinc-400 text-lg">The definitive guide to the Intent-to-Silicon programming language.</p>
+            <p className="text-zinc-400 text-lg">Guides to the current AAYU language, Rust VM, and related project tools.</p>
           </div>
           
           <div className="relative w-full md:w-96">
@@ -23,11 +23,15 @@ export default function DocsPage() {
           </div>
         </div>
 
+        <div className="mb-12 rounded-xl border border-amber-500/30 bg-amber-500/5 p-5 text-sm text-amber-100">
+          Some examples on this page are conceptual sketches and have not been verified as runnable programs. For executable core-language examples, use the repository regression files. The runtime database is currently a JSON-backed key-value store, not SQLite or relational SQL.
+        </div>
+
         {/* Core Architecture */}
         <div className="mb-20">
           <h2 className="text-2xl font-bold mb-6 border-b border-white/10 pb-4">1. The Silicon-Direct Architecture</h2>
           <p className="text-zinc-400 mb-6 leading-relaxed">
-            AAYU is not a framework. It is a compiled language with a custom Rust bytecode VM. There is no Node.js, no V8, no Python involved in the runtime.
+            The current command-line tool uses a Rust bootstrap compiler to produce AAYU bytecode, then runs it in the Rust VM. Other repository tools use Python, Node.js, and their own dependencies.
           </p>
           <div className="bg-[#0a0a0a] border border-white/5 rounded-2xl p-6 font-mono text-sm text-zinc-300">
             <div className="flex flex-col gap-4">
@@ -44,7 +48,7 @@ export default function DocsPage() {
         <div className="mb-20">
           <h2 className="text-2xl font-bold mb-6 border-b border-white/10 pb-4">2. Basics & Syntax</h2>
           <p className="text-zinc-400 mb-6 leading-relaxed">
-            AAYU is strongly typed, memory-safe (Mark-and-Sweep GC), and uses clean, intent-driven syntax.
+              The VM uses a mark-and-sweep heap collector. The current core examples use inferred values and keyword-delimited blocks.
           </p>
           <div className="bg-[#0a0a0a] border border-white/10 rounded-xl overflow-hidden">
             <div className="bg-[#111] px-4 py-2 border-b border-white/5 text-xs text-zinc-500 font-mono">hello.aayu</div>
@@ -69,7 +73,7 @@ run main`}</code>
         <div className="mb-20">
           <h2 className="text-2xl font-bold mb-6 border-b border-white/10 pb-4">3. Built-in Database Models</h2>
           <p className="text-zinc-400 mb-6 leading-relaxed">
-            No ORMs, no SQL strings, no migrations setup. Just declare your model and the compiler handles the SQLite engine integration natively at bytecode level.
+            The Rust runtime currently provides a JSON-backed key-value store. The model and CRUD example below is a concept sketch; SQLite, relational queries, and migrations are not implemented by this storage module.
           </p>
           <div className="bg-[#0a0a0a] border border-white/10 rounded-xl overflow-hidden">
             <div className="bg-[#111] px-4 py-2 border-b border-white/5 text-xs text-zinc-500 font-mono">db.aayu</div>
@@ -97,7 +101,7 @@ run seed_db`}</code>
         <div className="mb-20">
           <h2 className="text-2xl font-bold mb-6 border-b border-white/10 pb-4">4. Built-in HTTP Server</h2>
           <p className="text-zinc-400 mb-6 leading-relaxed">
-            The Rust VM spins up an async TCP listener internally when it encounters routing opcodes. Extreme performance, zero dependencies.
+            The Rust runtime contains HTTP/TCP server code. The route snippet below is illustrative; review feature coverage and deployment limits before relying on it.
           </p>
           <div className="bg-[#0a0a0a] border border-white/10 rounded-xl overflow-hidden">
             <div className="bg-[#111] px-4 py-2 border-b border-white/5 text-xs text-zinc-500 font-mono">api.aayu</div>

@@ -1,16 +1,19 @@
 ---
 title: "Modules"
-description: "Organizing AAYU code."
+description: "Current module support and its status."
 ---
 
 # Modules
 
-## Overview
-Modules allow you to split your AAYU codebase across multiple files.
+The Rust bootstrap compiler supports relative source-file imports. Write `import "path/to/file.aayu"` on its own line, relative to the importing file. The `.aayu` extension may be omitted. Imports can be nested; importing the same canonical file more than once includes it only once, and cycles are reported as compile errors.
 
-## Syntax
-<CodeBlock lang="aayu" code='import "math".\n\nlet pi = math.PI.' />
+Imported declarations are combined into one program scope. Modules do not have namespaces or aliases, so function and global names must be unique across the whole import graph. Absolute paths, package registries, versioning, and automatic standard-library lookup are not supported. Files under `std/` are not automatically available; import a source file explicitly and verify its APIs are supported by the compiler/runtime.
 
-## Best Practices
-AAYU modules are resolved based on the directory structure. Keep your folder structure flat and semantic.
-\n\n[Edit on GitHub (Available in v1.0)](#)\n
+Example:
+
+```aayu
+import "math/basic.aayu"
+print(double(21))
+```
+
+Compile and run the importing file with the normal CLI: `aayu run app.aayu` or `aayu build app.aayu -o app.ayc`.

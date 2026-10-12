@@ -14,164 +14,45 @@ export interface DocSection {
   items: DocItem[];
 }
 
+// This data is retained for older internal consumers. The current public docs
+// live under content/docs and describe only source-verified behavior.
 export const documentationData: DocSection[] = [
   {
     title: "Getting Started",
     items: [
       {
         slug: "installation",
-        title: "Installation",
-        introduction: "AAYU is designed to be installed as a single binary with zero external dependencies. It ships with the compiler, runtime, package manager, and formatter built-in.",
-        syntax: "pip install aayu-lang",
-        examples: [
-          {
-            code: "aayu --version\naayu doctor",
-            output: "AAYU v1.0.0-stable\nEnvironment checks passed.",
-            explanation: "Verify that the installation was successful."
-          }
-        ],
-        bestPractices: [
-          "Ensure Python 3.9+ is installed.",
-          "Use 'aayu doctor' if commands fail."
-        ],
-        commonErrors: [
-          {
-            error: "Command 'aayu' not found",
-            fix: "Ensure your Python Scripts directory is added to your PATH environment variable."
-          }
-        ],
-        reference: "For Windows installation, you can also download the standalone .exe from the Releases page."
+        title: "Build the Rust tools",
+        introduction: "AAYU source execution uses the Rust bytecode VM and a separate Rust bootstrap compiler. Both are built from this repository.",
+        syntax: "cargo build --release --manifest-path runtime_rs/Cargo.toml\ncargo build --release --manifest-path compiler_bootstrap/Cargo.toml",
+        examples: [{
+          code: "bin/aayu-vm run tests/test_01_vars.aayu",
+          explanation: "Keep aayuc beside the VM or on PATH so the VM can compile source files.",
+        }],
+        bestPractices: ["Use the Rust VM and bootstrap compiler built from the same checkout."],
+        commonErrors: [{
+          error: "Compiler (aayuc) not found",
+          fix: "Place aayuc beside aayu-vm, in bin/, or on PATH; AAYU_COMPILER_PATH can select an explicit path.",
+        }],
+        reference: "The VM build command emits .ayc bytecode, not a standalone native executable.",
       },
       {
         slug: "quick-start",
         title: "Quick Start",
-        introduction: "Create your first AAYU project and understand the basic compilation and execution cycle.",
-        syntax: "aayu new hello_world\ncd hello_world\naayu run",
-        examples: [
-          {
-            code: "app hello_world\n\npage Home\n    text \"Welcome to AAYU\"\nend\n\nrun",
-            output: "Welcome to AAYU",
-            explanation: "The entry point executes and renders the declarative UI tree."
-          }
-        ],
-        bestPractices: [
-          "Use 'aayu new' to scaffold projects so the directory structure is standard.",
-          "Always compile with 'aayu build' before deploying."
-        ],
-        commonErrors: [
-          {
-            error: "Cannot find main.aayu",
-            fix: "Ensure you are in the root of the project directory before running."
-          },
-          {
-            error: "Unexpected token '-'",
-            fix: "Application names cannot contain hyphens. Use underscores (e.g., hello_world instead of hello-world)."
-          }
-        ]
-      }
-    ]
-  },
-  {
-    title: "Language Core",
-    items: [
-      {
-        slug: "syntax",
-        title: "Syntax & Basics",
-        introduction: "AAYU uses a clean, declarative syntax focused on intent. No JSX, no HTML, no CSS spaghetti.",
-        syntax: "app my_app\n\n# declarations\n\nrun",
-        examples: [
-          {
-            code: "state count = 0\nstate name = \"Alice\"",
-            explanation: "Variables that drive UI are declared with the 'state' keyword."
-          }
-        ],
-        bestPractices: [
-          "Use 4-space indentation for readability."
-        ],
-        commonErrors: [
-          {
-            error: "SyntaxError: Expected 'end'",
-            fix: "Ensure you close all blocks (page, action, row, column, container) with the 'end' keyword."
-          }
-        ]
+        introduction: "The verified starter subset includes variables, arithmetic, conditions, loops, and print.",
+        syntax: "let count = 0\nwhile count < 3\n    print(count)\n    count = count + 1\nend",
+        examples: [{
+          code: "let count = 0\nwhile count < 3\n    print(count)\n    count = count + 1\nend",
+          output: "0\n1\n2",
+        }],
+        bestPractices: ["Run examples with the compiler and VM from the same build."],
+        commonErrors: [{
+          error: "A module import is rejected",
+          fix: "User-defined actions work with positional parameters, local frames, returns, and recursion. Module imports are not implemented yet.",
+        }],
       },
-      {
-        slug: "state",
-        title: "State Management",
-        introduction: "State management in AAYU is automatic. When a state variable changes, any widget using that state automatically updates.",
-        syntax: "state variableName = value",
-        examples: [
-          {
-            code: "state counter = 0\n\naction increment()\n    counter = counter + 1\nend",
-            explanation: "Modify state variables inside action blocks."
-          }
-        ],
-        bestPractices: [
-          "Group related state at the top of your file."
-        ],
-        commonErrors: [
-          {
-            error: "Variable not found",
-            fix: "Make sure state variables are declared before they are used."
-          }
-        ]
-      }
-    ]
+    ],
   },
-  {
-    title: "Widget Catalog",
-    items: [
-      {
-        slug: "text",
-        title: "Text",
-        introduction: "Displays a string of text or a state variable on the screen.",
-        syntax: "text \"String Literal\" OR text state_variable",
-        examples: [
-          {
-            code: "text \"Hello World\"",
-            output: "Hello World"
-          }
-        ],
-        bestPractices: ["Use text widgets for rendering static data or variables directly."],
-        commonErrors: []
-      },
-      {
-        slug: "button",
-        title: "Button",
-        introduction: "A clickable button that triggers an action.",
-        syntax: "button \"Label\" onClick=\"actionName\"",
-        examples: [
-          {
-            code: "button \"Submit\" onClick=\"submitAction\"",
-            explanation: "Triggers the 'submitAction' block when clicked."
-          }
-        ],
-        bestPractices: ["Always provide an onClick handler for interactive buttons."],
-        commonErrors: []
-      }
-    ]
-  },
-  {
-    title: "Tooling",
-    items: [
-      {
-        slug: "cli",
-        title: "Command Line Interface",
-        introduction: "The AAYU CLI is your primary interface for interacting with the language. It provides tools for compiling, running, and managing your projects.",
-        syntax: "aayu <command> [options]",
-        examples: [
-          {
-            code: "aayu run\naayu new <project_name>\naayu build\naayu doctor\naayu disassemble",
-            explanation: "Core commands for the development lifecycle."
-          }
-        ],
-        bestPractices: [
-          "Use 'aayu doctor' to troubleshoot environment issues."
-        ],
-        commonErrors: []
-      }
-    ]
-  }
 ];
 
 export function getDocItem(slug: string): DocItem | undefined {

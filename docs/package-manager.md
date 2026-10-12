@@ -1,15 +1,5 @@
-# Package Manager
+# AAYU Packages: Current Status
 
-AAYU uses ayu-pm for dependency management.
+The AAYU VM CLI does not implement project initialization or package management. There is no usable `aayu-pm`, `aayu init`, `aayu add`, lockfile workflow, or package registry in this repository. `official_packages/` currently contains examples/prototypes, not installable packages. Do not use the older commands below as instructions; they are not supported.
 
-## Initializing a project
-`ash
-aayu init my_app
-`
-
-## Installing a Package
-`ash
-aayu add http_server
-`
-
-Dependencies are tracked deterministically in ayu.toml.\n
+For the current runnable language subset, see [Getting Started](getting_started.md). Package resolution is tracked as future work in the [roadmap](../ROADMAP.md).

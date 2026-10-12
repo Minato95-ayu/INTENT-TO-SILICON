@@ -15,11 +15,11 @@ action hash_string(data)
     while i < l
         let c = data[i]
         # Polynomial accumulator mixing
-        h1 = (h1 * 31 + l + i * 17)
+        h1 = (h1 * 31 + l + i * 17) % 2147483647
         if h1 < 0
             h1 = 0 - h1
         end
-        h2 = (h2 * 37 + l * 13 + i * 7)
+        h2 = (h2 * 37 + l * 13 + i * 7) % 2147483647
         if h2 < 0
             h2 = 0 - h2
         end

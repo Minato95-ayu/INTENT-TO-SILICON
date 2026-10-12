@@ -1,34 +1,41 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-echo "===================================="
-echo ">> Installing AAYU Language Compiler <<"
-echo "===================================="
+repo="https://github.com/Minato95-ayu/INTENT-TO-SILICON/releases/latest/download"
+temp_root="$(mktemp -d)"
+temp_dir="$temp_root"
+trap 'rm -rf "$temp_root"' EXIT
 
-OS="$(uname -s)"
-if [ "$OS" = "Linux" ]; then
-    URL="https://github.com/Minato95-ayu/INTENT-TO-SILICON/releases/latest/download/aayu-linux.tar.gz"
-    echo ">> Downloading Native Linux Compiler..."
-    curl -sL "$URL" -o aayu.tar.gz
-    tar -xzf aayu.tar.gz
-    rm aayu.tar.gz
-elif [ "$OS" = "Darwin" ]; then
-    URL="https://github.com/Minato95-ayu/INTENT-TO-SILICON/releases/latest/download/aayu-macos.zip"
-    echo ">> Downloading Native macOS Compiler..."
-    curl -sL "$URL" -o aayu.zip
-    unzip -q aayu.zip
-    rm aayu.zip
-else
-    echo "Unsupported OS: $OS"
+case "$(uname -s)" in
+  Linux)
+    archive="$temp_root/aayu-linux.tar.gz"
+    curl -fsSL "$repo/aayu-linux.tar.gz" -o "$archive"
+    tar -xzf "$archive" -C "$temp_dir"
+    ;;
+  Darwin)
+    archive="$temp_root/aayu-macos.zip"
+    curl -fsSL "$repo/aayu-macos.zip" -o "$archive"
+    unzip -q "$archive" -d "$temp_root/unpacked"
+    temp_dir="$temp_root/unpacked"
+    ;;
+  *)
+    echo "Unsupported operating system: $(uname -s)" >&2
     exit 1
+    ;;
+esac
+
+if [[ ! -f "$temp_dir/aayu" || ! -f "$temp_dir/aayuc" ]]; then
+  echo "Release archive is missing the AAYU VM or bootstrap compiler." >&2
+  exit 1
 fi
 
-chmod +x aayu
-echo ">> Installing to /usr/local/bin..."
-sudo mv aayu /usr/local/bin/aayu
+install_dir="/usr/local/bin"
+sudo install -d "$install_dir"
+sudo install -m 0755 "$temp_dir/aayu" "$install_dir/aayu"
+sudo install -m 0755 "$temp_dir/aayuc" "$install_dir/aayuc"
+if [[ -f "$temp_dir/aayu-vm" ]]; then
+  sudo install -m 0755 "$temp_dir/aayu-vm" "$install_dir/aayu-vm"
+fi
 
-echo "===================================="
-echo ">> AAYU INSTALLATION SUCCESSFUL! <<"
-echo "===================================="
-echo "You can now run AAYU from ANY folder by typing:"
-echo "$ aayu run yourfile.aayu"
+"$install_dir/aayu" --version
+echo "AAYU installed. The VM and compiler are in $install_dir."

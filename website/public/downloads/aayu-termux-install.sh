@@ -1,21 +1,29 @@
-﻿#!/bin/bash
-echo "====================================="
-echo "   AAYU Installer for Android (Termux) "
-echo "====================================="
-echo "Installing prerequisites..."
-pkg update -y
-pkg install python git rust clang -y
+#!/data/data/com.termux/files/usr/bin/bash
+set -euo pipefail
 
-echo "Cloning AAYU Repository..."
-git clone https://github.com/Minato95-ayu/INTENT-TO-SILICON.git
-cd INTENT-TO-SILICON
+if [[ -z "${PREFIX:-}" || ! -d "$PREFIX/bin" ]]; then
+  echo "Run this installer inside Termux." >&2
+  exit 1
+fi
 
-echo "Installing AAYU Python Compiler..."
-pip install -e .
+pkg install -y git rust clang
 
-echo "Building AAYU Rust VM (Silicon Engine)..."
-cd runtime_rs
-cargo build --release
+source_dir="$HOME/.aayu/source"
+if [[ -e "$source_dir" ]]; then
+  echo "Source directory already exists: $source_dir" >&2
+  echo "Move it aside yourself, then rerun this installer." >&2
+  exit 1
+fi
 
-echo "Installation Complete!"
-echo "Run 'aayu run hello.aayu' to get started."
+mkdir -p "$(dirname "$source_dir")"
+git clone https://github.com/Minato95-ayu/INTENT-TO-SILICON.git "$source_dir"
+cd "$source_dir"
+
+cargo build --release --manifest-path runtime_rs/Cargo.toml
+cargo build --release --manifest-path compiler_bootstrap/Cargo.toml
+
+install -m 0755 runtime_rs/target/release/aayu-vm "$PREFIX/bin/aayu"
+install -m 0755 compiler_bootstrap/target/release/aayuc "$PREFIX/bin/aayuc"
+
+echo "AAYU VM and bootstrap compiler installed in $PREFIX/bin."
+echo "Try: aayu run $source_dir/tests/test_01_vars.aayu"

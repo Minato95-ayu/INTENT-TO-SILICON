@@ -10,17 +10,16 @@ use aayu_vm::jit;
 fn print_banner() {
     println!("AAYU Intent-to-Silicon Engine v1.2.0");
     println!("Architecture: {} ({})", env::consts::ARCH, env::consts::OS);
-    println!("Memory Model: 64-bit NaN-Box Stack | Single-File Full-Stack");
-    println!("Zero Dependencies | Sub-Millisecond Cold Start");
+    println!("Runtime: Rust bytecode VM | Source compilation uses the separate aayuc executable");
 }
 
 fn print_help() {
     print_banner();
     println!("\nUsage: aayu [command] [options] <file>\n");
     println!("Commands:");
-    println!("  run <file.aayu> [--jit]    Compile & run AAYU source file in sub-milliseconds");
+    println!("  run <file.aayu> [--jit]    Compile with aayuc and run in the Rust VM");
     println!("  run <file.ayc> [--jit]     Execute precompiled bytecode directly");
-    println!("  build <file.aayu> [-o out] Compile source to standalone .ayc bytecode");
+    println!("  build <file.aayu> [-o out] Compile source to .ayc bytecode");
     println!("  version, -v, --version     Display engine version information");
     println!("  help, -h, --help           Display this help manual\n");
     println!("Examples:");
@@ -30,6 +29,10 @@ fn print_help() {
 }
 
 fn find_compiler() -> Option<PathBuf> {
+    if let Some(configured) = env::var_os("AAYU_COMPILER_PATH") {
+        let path = PathBuf::from(configured);
+        return path.is_file().then_some(path);
+    }
     let names = if cfg!(windows) {
         vec!["aayuc.exe", "aayuc"]
     } else {
@@ -197,13 +200,13 @@ fn execute_bytecode(filename: &str, use_jit: bool) {
         Ok(f) => f,
         Err(e) => {
             eprintln!("[AAYU Error] Cannot open file '{}': {}", filename, e);
-            return;
+            std::process::exit(1);
         }
     };
     let mut data = Vec::new();
     if let Err(e) = file.read_to_end(&mut data) {
         eprintln!("[AAYU Error] Failed to read bytecode file: {}", e);
-        return;
+        std::process::exit(1);
     }
 
     let (strings, constants, bytecode) = match parse_bytecode_data(&data) {
@@ -230,7 +233,7 @@ fn execute_bytecode(filename: &str, use_jit: bool) {
                 }
             }
         } else {
-            eprintln!("[AAYU JIT] Bytecode contains full-stack opcodes. Executing via Silicon VM...");
+            eprintln!("[AAYU JIT] This bytecode is not verified for native execution. Running it in the Rust VM...");
             if let Err(e) = vm.run() {
                 eprintln!("[AAYU Runtime Error] Execution halted: {}", e);
                 std::process::exit(1);
@@ -274,7 +277,7 @@ fn main() {
     if cmd == "build" {
         if args.len() < 3 {
             eprintln!("[AAYU Error] Usage: aayu build <file.aayu> [-o <out.ayc>]");
-            return;
+            std::process::exit(2);
         }
         let input_file = &args[2];
         let mut output_file = "output.ayc".to_string();
@@ -287,7 +290,9 @@ fn main() {
             output_file = format!("{}.ayc", stem);
         }
         if compile_aayu_file(input_file, &output_file) {
-            println!("Built standalone bytecode: {}", output_file);
+            println!("Built AAYU bytecode: {}", output_file);
+        } else {
+            std::process::exit(1);
         }
         return;
     }
@@ -295,7 +300,7 @@ fn main() {
     let target_file = if cmd == "run" {
         if args.len() < 3 {
             eprintln!("[AAYU Error] Usage: aayu run <file.aayu | file.ayc> [--jit]");
-            return;
+            std::process::exit(2);
         }
         &args[2]
     } else {
@@ -305,7 +310,7 @@ fn main() {
     if target_file.ends_with(".aayu") {
         let temp_ayc = format!("{}.tmp.ayc", target_file);
         if !compile_aayu_file(target_file, &temp_ayc) {
-            return;
+            std::process::exit(1);
         }
         execute_bytecode(&temp_ayc, use_jit);
         let _ = std::fs::remove_file(&temp_ayc);

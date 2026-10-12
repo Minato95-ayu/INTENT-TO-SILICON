@@ -3,32 +3,11 @@ use std::io::Write;
 use std::process::Command;
 use crate::vm::NanVal;
 
-pub fn can_compile(bytecode: &[u8]) -> bool {
-    let mut ip = 0;
-    while ip < bytecode.len() {
-        let op = bytecode[ip];
-        ip += 1;
-        match op {
-            0x00 | 0xFF => {}
-            0x01 => {
-                if ip + 2 > bytecode.len() { return false; }
-                ip += 2;
-            }
-            0x05 | 0x06 => {
-                if ip + 1 > bytecode.len() { return false; }
-                ip += 1;
-            }
-            16 | 17 | 18 | 19 | 20 => {}
-            38 | 39 | 41 | 42 | 43 | 44 => {}
-            32 | 33 => {
-                if ip + 2 > bytecode.len() { return false; }
-                ip += 2;
-            }
-            81 => {}
-            _ => return false,
-        }
-    }
-    true
+pub fn can_compile(_bytecode: &[u8]) -> bool {
+    // The current C emitter erases AAYU value types and has observably wrong
+    // results for floats, booleans, and runtime overflow. Keep the CLI on the
+    // verified VM until generated-code conformance checks exist.
+    false
 }
 
 pub fn compile_and_run(bytecode: &[u8], constants: &[NanVal]) -> bool {

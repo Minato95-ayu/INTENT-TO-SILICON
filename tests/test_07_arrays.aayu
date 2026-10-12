@@ -1,0 +1,6 @@
+let values = [10, 20, 30]
+print(values[1])
+print(values[8])
+print(len(values))
+let word = "AAYU"
+print(word[1])

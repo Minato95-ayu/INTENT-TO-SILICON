@@ -1,131 +1,62 @@
-# ==============================================================================
-# AAYU Programming Language - Official Windows One-Click Installer
-# Intent-to-Silicon Architecture (Zero Dependencies, 100% Native)
-# ==============================================================================
-
 $ErrorActionPreference = 'Stop'
 
-Write-Host ""
-Write-Host "================================================================" -ForegroundColor Cyan
-Write-Host "            A A Y U   P R O G R A M M I N G                     " -ForegroundColor Cyan
-Write-Host "               Intent-to-Silicon Engine                         " -ForegroundColor Cyan
-Write-Host "    Single-File Full-Stack | Zero Dependencies | C-Speed        " -ForegroundColor DarkGray
-Write-Host "================================================================" -ForegroundColor Cyan
+$aayuRoot = Join-Path $env:USERPROFILE '.aayu'
+$installBin = Join-Path $aayuRoot 'bin'
+$installStd = Join-Path $aayuRoot 'std'
+$installExamples = Join-Path $aayuRoot 'examples'
+$tempRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("aayu-install-" + [guid]::NewGuid().ToString('N'))
+$packageDir = $null
 
-$aayuRoot = Join-Path $env:USERPROFILE ".aayu"
-$installBin = Join-Path $aayuRoot "bin"
-$installStd = Join-Path $aayuRoot "std"
-$installExamples = Join-Path $aayuRoot "examples"
+try {
+    New-Item -ItemType Directory -Force -Path $installBin, $installStd, $installExamples, $tempRoot | Out-Null
 
-if (-not (Test-Path $installBin)) { New-Item -ItemType Directory -Force -Path $installBin | Out-Null }
-if (-not (Test-Path $installStd)) { New-Item -ItemType Directory -Force -Path $installStd | Out-Null }
-if (-not (Test-Path $installExamples)) { New-Item -ItemType Directory -Force -Path $installExamples | Out-Null }
-
-$scriptDir = $PSScriptRoot
-$isLocalRepo = $false
-
-if ($scriptDir -and (Test-Path (Join-Path $scriptDir "bin\aayu.exe"))) {
-    $isLocalRepo = $true
-} elseif (Test-Path ".\bin\aayu.exe") {
-    $scriptDir = (Get-Item ".").FullName
-    $isLocalRepo = $true
-}
-
-if ($isLocalRepo) {
-    Write-Host "`n[1/4] Installing from local repository..." -ForegroundColor Yellow
-    Copy-Item -Path (Join-Path $scriptDir "bin\aayu.exe") -Destination (Join-Path $installBin "aayu.exe") -Force
-    if (Test-Path (Join-Path $scriptDir "bin\aayuc.exe")) {
-        Copy-Item -Path (Join-Path $scriptDir "bin\aayuc.exe") -Destination (Join-Path $installBin "aayuc.exe") -Force
+    $repoRoot = $PSScriptRoot
+    if ($repoRoot -and (Test-Path (Join-Path $repoRoot 'bin\aayuc.exe'))) {
+        $packageDir = Join-Path $repoRoot 'bin'
+    } else {
+        $archive = Join-Path $tempRoot 'aayu-windows.zip'
+        $url = 'https://github.com/Minato95-ayu/INTENT-TO-SILICON/releases/latest/download/aayu-windows.zip'
+        Invoke-WebRequest -Uri $url -OutFile $archive
+        Expand-Archive -LiteralPath $archive -DestinationPath $tempRoot -Force
+        $packageDir = $tempRoot
     }
-    if (Test-Path (Join-Path $scriptDir "bin\aayu-vm.exe")) {
-        Copy-Item -Path (Join-Path $scriptDir "bin\aayu-vm.exe") -Destination (Join-Path $installBin "aayu-vm.exe") -Force
+
+    $vmSource = Join-Path $packageDir 'aayu.exe'
+    if (-not (Test-Path $vmSource)) { $vmSource = Join-Path $packageDir 'aayu-vm.exe' }
+    $compilerSource = Join-Path $packageDir 'aayuc.exe'
+    if (-not (Test-Path $vmSource) -or -not (Test-Path $compilerSource)) {
+        throw 'Package must include both the AAYU VM (aayu.exe/aayu-vm.exe) and bootstrap compiler (aayuc.exe).'
     }
-    if (Test-Path (Join-Path $scriptDir "aayu-publisher.cer")) {
-        Copy-Item -Path (Join-Path $scriptDir "aayu-publisher.cer") -Destination (Join-Path $aayuRoot "aayu-publisher.cer") -Force
+
+    Copy-Item -LiteralPath $vmSource -Destination (Join-Path $installBin 'aayu.exe') -Force
+    Copy-Item -LiteralPath $compilerSource -Destination (Join-Path $installBin 'aayuc.exe') -Force
+    $vmAlias = Join-Path $packageDir 'aayu-vm.exe'
+    if (Test-Path $vmAlias) {
+        Copy-Item -LiteralPath $vmAlias -Destination (Join-Path $installBin 'aayu-vm.exe') -Force
     }
-    
-    if (Test-Path (Join-Path $scriptDir "std")) {
-        Copy-Item -Path (Join-Path $scriptDir "std\*") -Destination $installStd -Recurse -Force
+
+    $stdSource = Join-Path $packageDir 'std'
+    if (Test-Path $stdSource) {
+        Copy-Item -Path (Join-Path $stdSource '*') -Destination $installStd -Recurse -Force
     }
-    if (Test-Path (Join-Path $scriptDir "examples")) {
-        Copy-Item -Path (Join-Path $scriptDir "examples\*") -Destination $installExamples -Recurse -Force
+    $examplesSource = Join-Path $packageDir 'examples'
+    if (Test-Path $examplesSource) {
+        Copy-Item -Path (Join-Path $examplesSource '*') -Destination $installExamples -Recurse -Force
     }
-    Write-Host "      Installed native binaries and standard library." -ForegroundColor Green
-} else {
-    Write-Host "`n[1/4] Downloading latest AAYU native binaries from GitHub..." -ForegroundColor Yellow
-    $zipUrl = "https://github.com/Minato95-ayu/INTENT-TO-SILICON/releases/download/v1.3.0/aayu-windows.zip"
-    $zipPath = Join-Path $env:TEMP "aayu-windows.zip"
-    
-    try {
-        Invoke-WebRequest -Uri $zipUrl -OutFile $zipPath -UseBasicParsing
-        Write-Host "[2/4] Extracting binaries..." -ForegroundColor Yellow
-        Expand-Archive -Path $zipPath -DestinationPath $aayuRoot -Force
-        Remove-Item $zipPath -Force
-    } catch {
-        Write-Host "      Remote release package not reachable yet. Using fallback installation." -ForegroundColor DarkYellow
+
+    $userPath = [Environment]::GetEnvironmentVariable('Path', 'User')
+    $pathEntries = @($userPath -split ';' | Where-Object { $_ })
+    if (-not ($pathEntries | Where-Object { $_.TrimEnd([char]92) -ieq $installBin.TrimEnd([char]92) })) {
+        $newUserPath = (@($pathEntries) + $installBin) -join ';'
+        [Environment]::SetEnvironmentVariable('Path', $newUserPath, 'User')
     }
+    if (($env:Path -split ';' | Where-Object { $_.TrimEnd([char]92) -ieq $installBin.TrimEnd([char]92) }).Count -eq 0) {
+        $env:Path = $env:Path + ';' + $installBin
+    }
+
+    & (Join-Path $installBin 'aayu.exe') --version
+    Write-Host "AAYU installed in $installBin. The bootstrap compiler is installed beside the VM."
+    Write-Host 'Try: aayu run path\to\program.aayu'
+} finally {
+    if (Test-Path $tempRoot) { Remove-Item -LiteralPath $tempRoot -Recurse -Force }
 }
-
-Write-Host "[2/4] Verifying and Unblocking native binary integrity..." -ForegroundColor Yellow
-Get-ChildItem -Path $installBin -Filter "*.exe" | ForEach-Object {
-    try { Unblock-File $_.FullName } catch {}
-}
-
-# Trust publisher certificate if present
-$certPath = Join-Path $aayuRoot "aayu-publisher.cer"
-if (Test-Path $certPath) {
-    try {
-        & certutil.exe -addstore -user TrustedPublisher $certPath | Out-Null
-        Write-Host "      Verified and trusted publisher: Ayush Ghrit Kaushik (AAYU Foundation)" -ForegroundColor Green
-    } catch {}
-}
-
-$targetExe = Join-Path $installBin "aayu.exe"
-if (Test-Path $targetExe) {
-    $bytes = (Get-Item $targetExe).Length
-    $sizeKb = [math]::Round($bytes / 1024, 1)
-    Write-Host "      aayu.exe verified ($sizeKb KB signed native binary with icon)" -ForegroundColor Green
-} else {
-    Write-Host "      Error: aayu.exe not found in $installBin" -ForegroundColor Red
-    exit 1
-}
-
-Write-Host "[3/4] Configuring User Environment PATH..." -ForegroundColor Yellow
-$userPath = [System.Environment]::GetEnvironmentVariable('Path', 'User')
-if (-not $userPath) { $userPath = "" }
-$pathList = $userPath.Split(';') | Where-Object { $_ -ne "" }
-
-if ($pathList -notcontains $installBin) {
-    $newPath = $userPath + ";" + $installBin
-    [System.Environment]::SetEnvironmentVariable('Path', $newPath, 'User')
-    Write-Host "      Added $installBin to permanent User PATH." -ForegroundColor Green
-} else {
-    Write-Host "      $installBin is already in User PATH." -ForegroundColor Green
-}
-
-# Update current session PATH so commands work immediately
-$currentPathList = $env:PATH.Split(';')
-if ($currentPathList -notcontains $installBin) {
-    $env:PATH = $env:PATH + ";" + $installBin
-}
-
-Write-Host "[4/4] Running installation smoke test..." -ForegroundColor Yellow
-& $targetExe --version
-Write-Host ""
-Write-Host "================================================================" -ForegroundColor Cyan
-Write-Host "  CONGRATULATIONS! AAYU is successfully installed on your PC!   " -ForegroundColor Green
-Write-Host "================================================================" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "Publisher:    Ayush Ghrit Kaushik (AAYU Foundation)" -ForegroundColor Green
-Write-Host "Permissions:  Standard User (No Admin UAC Required)" -ForegroundColor Green
-Write-Host "Icon:         AAYU Official Silicon-Brain Embedded" -ForegroundColor Green
-Write-Host ""
-Write-Host "Quick Start Commands:" -ForegroundColor White
-Write-Host "  aayu --help                    # View complete documentation" -ForegroundColor Yellow
-Write-Host "  aayu run hello.aayu            # Compile and run in sub-milliseconds" -ForegroundColor Yellow
-Write-Host "  aayu run app.ayc --jit         # Run with hardware-level C speed" -ForegroundColor Yellow
-Write-Host "  aayu build app.aayu -o app.ayc # Compile standalone bytecode" -ForegroundColor Yellow
-Write-Host ""
-Write-Host "Standard Library installed at: $installStd" -ForegroundColor DarkGray
-Write-Host "Examples installed at:         $installExamples" -ForegroundColor DarkGray
-Write-Host ""

@@ -1,35 +1,53 @@
-# Language Reference
+# AAYU Implemented Core Syntax
 
-AAYU is a declarative language. This reference covers the core concepts available in AAYU v1.0.
+This is an implementation-aligned reference for the subset exercised through the Rust bootstrap compiler and Rust VM. Syntax being recognized in older AAYU source files does not imply that it can run.
 
-## 1. Pages
-The top-level container for a route.
+## Variables, output, and expressions
+
 ```aayu
-page Home {
-    ...
-}
+let count = 2
+count = count + 3
+print(count)
 ```
 
-## 2. State
-Reactive variables that trigger UI updates when mutated.
+The tested subset includes integers, floats, strings, declarations, reassignment, unary minus, `+`, `-`, `*`, `/`, comparisons, and `print`.
+
+Array/dictionary literals and indexed reads work, as do string character reads and `len` for strings and arrays:
+
 ```aayu
-state counter = 0
-state username = "guest"
+let values = [10, 20, 30]
+let token = {"type": "IDENT"}
+print(values[1])
+print(token["type"])
+print(len(values))
 ```
 
-## 3. Actions
-Event handlers containing logic.
+## Conditions and loops
+
 ```aayu
-action login {
-    username = "admin"
-}
+if count == 5
+    print("five")
+else
+    print("not five")
+end
+
+let i = 0
+while i < 3
+    print(i)
+    i = i + 1
+end
 ```
 
-## 4. Built-in Widgets
-- **container**: A grouping element (like `div`).
-- **text**: Renders text on screen. `bind` property binds to state.
-- **button**: Clickable element. Uses `onClick` property to bind to an action.
-- **input**: Text entry. Uses `bind` property to update state.
-- **image**: Displays a picture using the `src` property.
-- **heading**: Uses the `level` property for H1-H6.
-- **card**: A styled container with elevation.
+The checked-in regression suite covers these forms, including float arithmetic, loops, and Fibonacci expressed with assignments and loops. Negative scalar values are also covered by a dedicated test.
+
+VM integers are signed 48-bit values (`-140737488355328` through `140737488355327`). The compiler rejects literals outside that range; arithmetic that overflows it halts with an error.
+
+## Not currently implemented by the compiler/VM
+
+- Closures, named/default arguments, nested action declarations, indexed writes, and collection iteration helpers.
+- Module imports and package dependency resolution. The files under `std/` and `official_packages/` are not a usable installed standard library or registry yet.
+- The much broader `fn`, type, entity, `for`, async, and punctuation grammar shown in older design drafts.
+
+User-defined `action` declarations, positional calls, local frames, return values, and recursion are implemented and exercised by `tests/test_06_functions.aayu`.
+
+The VM contains Rust-side database, HTTP, UI, and math components, but the AAYU source language does not currently expose them as stable, tested standard-library APIs. Read [Known Limitations](../KNOWN_LIMITATIONS.md) before relying on them.

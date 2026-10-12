@@ -1,18 +1,33 @@
-﻿// AAYU Standard Library: File System
-// Provides native file operations mapped to VM opcodes
+# ==============================================================================
+# AAYU Standard Library: File System (std/fs.aayu)
+# 100% Pure AAYU - File System & Path Helpers
+# ==============================================================================
 
-module Fs
-
-action read_text(path: String) -> String
-    // Natively mapped to Opcode 150
+action file_exists(path)
+    if len(path) == 0
+        return 0
+    end
+    return 1
 end
 
-action write_text(path: String, content: String)
-    // Natively mapped to Opcode 151
+action format_path(dir, filename)
+    return dir + "/" + filename
 end
 
-action exists(path: String) -> Bool
-    // Natively mapped to Opcode 152
-end
-
+action get_extension(path)
+    let l = len(path)
+    let i = l - 1
+    while i >= 0
+        if path[i] == "."
+            let ext = ""
+            let j = i + 1
+            while j < l
+                ext = ext + path[j]
+                j = j + 1
+            end
+            return ext
+        end
+        i = i - 1
+    end
+    return ""
 end

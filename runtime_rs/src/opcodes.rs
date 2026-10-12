@@ -7,6 +7,8 @@ pub enum OpCode {
     Dup = 0x03,
     LoadVar = 0x05,
     StoreVar = 0x06,
+    LoadGlobal = 0x07,
+    StoreGlobal = 0x08,
     
     Add = 16,        
     Sub = 17,        
@@ -21,6 +23,7 @@ pub enum OpCode {
     JmpIfFalse = 33, 
     Call = 34,       
     Ret = 35,        
+    CallLocal = 36,
     
     CmpEq = 38,      
     CmpNeq = 39,     
@@ -81,6 +84,8 @@ impl From<u8> for OpCode {
             0x03 => OpCode::Dup,
             0x05 => OpCode::LoadVar,
             0x06 => OpCode::StoreVar,
+            0x07 => OpCode::LoadGlobal,
+            0x08 => OpCode::StoreGlobal,
             16 => OpCode::Add,
             17 => OpCode::Sub,
             18 => OpCode::Mul,
@@ -92,6 +97,7 @@ impl From<u8> for OpCode {
             33 => OpCode::JmpIfFalse,
             34 => OpCode::Call,
             35 => OpCode::Ret,
+            36 => OpCode::CallLocal,
             38 => OpCode::CmpEq,
             39 => OpCode::CmpNeq,
             41 => OpCode::CmpLt,

@@ -1,3 +1,9 @@
+> **Prototype status — this README's older marketing claims are not verified and several are incorrect.** This is a separate Next.js/Tauri editor prototype, not a shipped AAYU IDE. Model training is not implemented; the former Vertex command only emitted synthetic logs and has been unregistered. Its build runner defaults to a Python tool, and export currently supports Cargo projects only. No Studio installer or verified AAYU VM integration is present.
+
+For the actual AAYU CLI, see the root [Getting Started guide](../docs/getting_started.md). This prototype needs separate Node/npm, Rust/Cargo, and Tauri platform setup; its development build was not run because this subproject has no installed dependencies.
+
+---
+
 <div align="center">
 
 <img src="./public/logo.png" width="140" alt="Topptic Logo" />

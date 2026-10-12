@@ -1,36 +1,29 @@
 # Getting Started with AAYU
 
-AAYU is a high-performance, intent-to-silicon programming language designed for seamless multi-platform UI development. 
+AAYU is an experimental language with a Rust bytecode VM and a separate Rust bootstrap compiler. The verified starter syntax is small: `let`, reassignment, arithmetic, `if`/`else`, `while`, and `print`.
 
-## 1. Prerequisites
-- Python 3.8+
-- pip (Python package manager)
+## Build the tools
 
-## 2. Installation
-You can install AAYU directly from the source repository using pip:
+Install Rust, then run these commands from the repository root:
 
-```bash
-pip install aayu-lang
+```powershell
+cargo build --release --manifest-path runtime_rs/Cargo.toml
+cargo build --release --manifest-path compiler_bootstrap/Cargo.toml
 ```
 
-Verify the installation:
-```bash
-aayu --version
-aayu doctor
+The VM executable is `runtime_rs/target/release/aayu-vm.exe` on Windows or `runtime_rs/target/release/aayu-vm` on Linux/macOS. The compiler executable is `compiler_bootstrap/target/release/aayuc.exe` or `aayuc`. Keep both executables together (or put both on `PATH`) to run `.aayu` source through the VM.
+
+## Run a program
+
+```powershell
+.\runtime_rs\target\release\aayu-vm.exe run hello.aayu
 ```
 
-## 3. Quick Start
-Create a new AAYU project in seconds:
+Compile to bytecode and run it separately:
 
-```bash
-aayu new HelloApp
-cd HelloApp
-aayu run
+```powershell
+.\runtime_rs\target\release\aayu-vm.exe build hello.aayu -o hello.ayc
+.\runtime_rs\target\release\aayu-vm.exe run hello.ayc
 ```
 
-This will run your AAYU application locally using the integrated VM.
-
-## 4. Next Steps
-- Read [Installation](installation.md) for advanced setup.
-- Read [Hello World](hello_world.md) to understand the project structure.
-- Read [Build and Run](build_and_run.md) to compile for Windows, Linux, or Web.
+`build` creates `.ayc` bytecode. It does not create a standalone native application. See [README](../README.md), the [verified core tests](../tests/), and [known limitations](../KNOWN_LIMITATIONS.md).

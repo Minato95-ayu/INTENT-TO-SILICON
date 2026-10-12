@@ -87,16 +87,16 @@ export default function BlogPage() {
             </div>
             <div className="p-6 rounded-xl bg-[#0a0a0a] border border-white/5">
               <Sparkles className="w-8 h-8 text-purple-400 mb-4" />
-              <h3 className="font-bold text-lg mb-2">Zero Dependencies</h3>
+              <h3 className="font-bold text-lg mb-2">Compact Runtime Goal</h3>
               <p className="text-sm text-zinc-400">
-                The agent writes code, runs <code>aayu run app.aayu</code>, and boom! It&apos;s live. No database setup, no <code>package.json</code>. This increases an agent&apos;s autonomous success rate by 10x.
+                AAYU aims to keep program workflows compact. The toolchain and website have declared dependencies, and the repository does not measure an agent success-rate improvement.
               </p>
             </div>
             <div className="p-6 rounded-xl bg-[#0a0a0a] border border-white/5">
               <RefreshCw className="w-8 h-8 text-orange-400 mb-4" />
-              <h3 className="font-bold text-lg mb-2">Flawless Self-Healing</h3>
+              <h3 className="font-bold text-lg mb-2">Compiler Feedback</h3>
               <p className="text-sm text-zinc-400">
-                AAYU&apos;s strict AST compiler provides perfectly logical error messages. If the AI makes a mistake, the compiler tells it exactly where and why. The AI auto-fixes it in 1 millisecond.
+                Compiler diagnostics can help locate source errors. Their quality and recovery time vary by error; no automatic one-millisecond repair guarantee is measured.
               </p>
             </div>
           </div>
@@ -107,7 +107,7 @@ export default function BlogPage() {
               Trying to force &quot;Vibe Coding&quot; onto JS/Python stacks is a fool&apos;s errand. Those languages were not built for AI. <strong>AAYU is the world&apos;s first AI-Native compilation target.</strong>
             </p>
             <p className="text-zinc-400 mb-8">
-              AAYU is not a toy. It is 100% production-ready and poised to become the foundational layer of the Billion-Dollar AI Agentic Software Development market.
+              AAYU is an experimental project. Production readiness depends on the feature, deployment context, and verification available; see the known limitations before relying on it.
             </p>
             <Link href="/tutorial">
               <Button className="bg-white text-black hover:bg-zinc-200 font-bold px-8 py-6 rounded-full text-lg shadow-[0_0_20px_rgba(255,255,255,0.3)]">

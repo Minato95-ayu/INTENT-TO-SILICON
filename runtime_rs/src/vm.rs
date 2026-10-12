@@ -14,10 +14,24 @@ const TAG_NULL: u64 = 0x7FFB_0000_0000_0000;
 const TAG_STR: u64  = 0x7FFC_0000_0000_0000;
 const TAG_ARR: u64  = 0x7FFD_0000_0000_0000;
 const TAG_DICT: u64 = 0x7FFE_0000_0000_0000;
+const MIN_BOXED_INT: i64 = -(1i64 << 47);
+const MAX_BOXED_INT: i64 = (1i64 << 47) - 1;
+
+fn checked_boxed_int(value: i64) -> Result<NanVal, String> {
+    if !(MIN_BOXED_INT..=MAX_BOXED_INT).contains(&value) {
+        return Err(format!("Integer overflow: {} is outside the signed 48-bit range", value));
+    }
+    Ok(NanVal::int(value))
+}
 
 impl NanVal {
     #[inline(always)] pub fn int(v: i64) -> Self { NanVal(TAG_INT | (v as u64 & 0x0000_FFFF_FFFF_FFFF)) }
-    #[inline(always)] pub fn float(v: f64) -> Self { NanVal(v.to_bits()) }
+    #[inline(always)] pub fn float(v: f64) -> Self {
+        // Positive quiet-NaN payloads overlap the boxed value tags. Keep NaN
+        // values in the negative quiet-NaN range so they remain floats.
+        let bits = if v.is_nan() { v.to_bits() | (1u64 << 63) } else { v.to_bits() };
+        NanVal(bits)
+    }
     #[inline(always)] pub fn bool(v: bool) -> Self { NanVal(TAG_BOOL | (if v { 1 } else { 0 })) }
     #[inline(always)] pub fn null() -> Self { NanVal(TAG_NULL) }
     #[inline(always)] pub fn string(idx: usize) -> Self { NanVal(TAG_STR | (idx as u64 & 0x0000_FFFF_FFFF_FFFF)) }
@@ -25,19 +39,56 @@ impl NanVal {
     #[inline(always)] pub fn dict(idx: usize) -> Self { NanVal(TAG_DICT | (idx as u64 & 0x0000_FFFF_FFFF_FFFF)) }
 
     #[inline(always)] pub fn is_int(self) -> bool { (self.0 & 0xFFFF_0000_0000_0000) == TAG_INT }
-    #[inline(always)] pub fn is_float(self) -> bool { self.0 < 0x7FF8_0000_0000_0000 }
+    #[inline(always)] pub fn is_float(self) -> bool {
+        let tag = self.0 & 0xFFFF_0000_0000_0000;
+        !matches!(tag, TAG_INT | TAG_BOOL | TAG_NULL | TAG_STR | TAG_ARR | TAG_DICT)
+    }
     #[inline(always)] pub fn is_bool(self) -> bool { (self.0 & 0xFFFF_0000_0000_0000) == TAG_BOOL }
     #[inline(always)] pub fn is_null(self) -> bool { (self.0 & 0xFFFF_0000_0000_0000) == TAG_NULL }
     #[inline(always)] pub fn is_string(self) -> bool { (self.0 & 0xFFFF_0000_0000_0000) == TAG_STR }
     #[inline(always)] pub fn is_array(self) -> bool { (self.0 & 0xFFFF_0000_0000_0000) == TAG_ARR }
     #[inline(always)] pub fn is_dict(self) -> bool { (self.0 & 0xFFFF_0000_0000_0000) == TAG_DICT }
 
-    #[inline(always)] pub fn as_int(self) -> i64 { (self.0 & 0x0000_FFFF_FFFF_FFFF) as i64 }
+    #[inline(always)] pub fn as_int(self) -> i64 {
+        (((self.0 & 0x0000_FFFF_FFFF_FFFF) << 16) as i64) >> 16
+    }
     #[inline(always)] pub fn as_float(self) -> f64 { f64::from_bits(self.0) }
     #[inline(always)] pub fn as_bool(self) -> bool { (self.0 & 1) == 1 }
     #[inline(always)] pub fn as_string_idx(self) -> usize { (self.0 & 0x0000_FFFF_FFFF_FFFF) as usize }
     #[inline(always)] pub fn as_array_idx(self) -> usize { (self.0 & 0x0000_FFFF_FFFF_FFFF) as usize }
     #[inline(always)] pub fn as_dict_idx(self) -> usize { (self.0 & 0x0000_FFFF_FFFF_FFFF) as usize }
+}
+
+#[cfg(test)]
+mod value_tests {
+    use super::{checked_boxed_int, NanVal, MAX_BOXED_INT, MIN_BOXED_INT};
+
+    #[test]
+    fn signed_integers_round_trip_through_48_bit_payload() {
+        for value in [-140_737_488_355_328, -5, -1, 0, 1, 140_737_488_355_327] {
+            let boxed = NanVal::int(value);
+            assert!(boxed.is_int());
+            assert_eq!(boxed.as_int(), value);
+        }
+    }
+
+    #[test]
+    fn negative_floats_are_not_mistaken_for_box_tags() {
+        for value in [-2.5, -0.0, 0.0, 2.5, f64::INFINITY, f64::NEG_INFINITY, f64::NAN] {
+            let boxed = NanVal::float(value);
+            assert!(boxed.is_float());
+            if value.is_nan() { assert!(boxed.as_float().is_nan()); }
+            else { assert_eq!(boxed.as_float(), value); }
+        }
+    }
+
+    #[test]
+    fn boxed_integer_range_reports_overflow() {
+        assert!(checked_boxed_int(MIN_BOXED_INT).is_ok());
+        assert!(checked_boxed_int(MAX_BOXED_INT).is_ok());
+        assert!(checked_boxed_int(MIN_BOXED_INT - 1).is_err());
+        assert!(checked_boxed_int(MAX_BOXED_INT + 1).is_err());
+    }
 }
 
 impl std::fmt::Display for NanVal {
@@ -58,15 +109,22 @@ pub struct AayuVM {
     sp: usize,
     ip: usize,
     locals: [NanVal; 256],
+    globals: [NanVal; 256],
     bytecode: Vec<u8>,
     constants: Vec<NanVal>,
     pub string_heap: Vec<String>,
     pub memory: crate::memory::MemoryManager,
     pub call_depth: usize,
+    call_frames: Vec<CallFrame>,
     
     pub tensor_heap: Vec<Tensor>,
     pub db_engine: DbEngine,
     pub state: std::collections::HashMap<String, NanVal>,
+}
+
+struct CallFrame {
+    return_ip: usize,
+    locals: [NanVal; 256],
 }
 
 impl AayuVM {
@@ -79,11 +137,13 @@ impl AayuVM {
             sp: 0,
             ip: 0,
             locals: [NanVal::null(); 256],
+            globals: [NanVal::null(); 256],
             bytecode,
             constants,
             string_heap: strings,
             memory: crate::memory::MemoryManager::new(),
             call_depth: 0,
+            call_frames: Vec::new(),
             tensor_heap: Vec::new(),
             db_engine: DbEngine::new("aayu_db.rsdb"),
             state: std::collections::HashMap::new(),
@@ -129,6 +189,7 @@ impl AayuVM {
         let mut pc = 0;
         let mut valid_starts = std::collections::HashSet::new();
         let mut jumps = Vec::new();
+        let mut function_entries = Vec::new();
         
         while pc < len {
             valid_starts.insert(pc);
@@ -171,6 +232,10 @@ impl AayuVM {
                         return Err(format!("STORE_VAR index {} exceeds local variable frame limit (256) at offset {}", idx, op_pc));
                     }
                 }
+                0x07 | 0x08 => {
+                    if pc + 1 > len { return Err(format!("Truncated global variable operand at offset {}", op_pc)); }
+                    pc += 1;
+                }
                 0x10..=0x16 => {
                     // Arithmetic & casting opcodes
                 }
@@ -201,6 +266,22 @@ impl AayuVM {
                         return Err(format!("Truncated operand for CALL at offset {}", op_pc));
                     }
                     pc += 2;
+                }
+                36 => { // CALL_LOCAL (argc + absolute target)
+                    if pc + 4 > len {
+                        return Err(format!("Truncated operand for CALL_LOCAL at offset {}", op_pc));
+                    }
+                    let argc = ((self.bytecode[pc] as usize) << 8) | self.bytecode[pc + 1] as usize;
+                    let target = ((self.bytecode[pc + 2] as usize) << 8) | self.bytecode[pc + 3] as usize;
+                    pc += 4;
+                    if target >= len {
+                        return Err(format!("CALL_LOCAL target {} exceeds bytecode bounds ({}) at offset {}", target, len, op_pc));
+                    }
+                    jumps.push((target, op_pc, "CALL_LOCAL"));
+                    function_entries.push(target);
+                    if argc > Self::MAX_STACK_SIZE {
+                        return Err(format!("CALL_LOCAL argument count {} exceeds stack limit", argc));
+                    }
                 }
                 35 | 98 => {} // RET / ReturnValue
                 38 | 39 | 41 | 42 | 43 | 44 => {} // CMP operators
@@ -248,7 +329,11 @@ impl AayuVM {
                     }
                     pc += 2;
                 }
-                134 | 136 | 137 | 140 | 141 | 142 => {}
+                134 => { // CREATE_ARRAY (two-byte item count)
+                    if pc + 2 > len { return Err(format!("Truncated operand for CREATE_ARRAY at offset {}", op_pc)); }
+                    pc += 2;
+                }
+                136 | 137 | 140 | 141 | 142 => {}
                 145 => { // PUSH_STRING_SAFE (2 bytes)
                     if pc + 2 > len {
                         return Err(format!("Truncated operand for PUSH_STRING_SAFE at offset {}", op_pc));
@@ -281,6 +366,12 @@ impl AayuVM {
             queue.push_back((0, 0i32));
             stack_depths.insert(0, 0i32);
         }
+        for target in function_entries {
+            if !stack_depths.contains_key(&target) {
+                stack_depths.insert(target, 0);
+                queue.push_back((target, 0));
+            }
+        }
 
         while let Some((mut pc, mut depth)) = queue.pop_front() {
             while pc < len {
@@ -308,6 +399,8 @@ impl AayuVM {
                         pc += 1;
                         depth -= 1;
                     }
+                    0x07 => { pc += 1; depth += 1; }
+                    0x08 => { pc += 1; depth -= 1; }
                     0x10..=0x16 => { // Binary arithmetic (ADD, SUB, MUL, DIV, MOD, etc.)
                         depth -= 1; // pops 2, pushes 1 -> net -1
                     }
@@ -356,10 +449,15 @@ impl AayuVM {
                         }
                         continue;
                     }
-                    34 => { // CALL (2 bytes operand: argc)
+                    34 => { // Builtin CALL (callee + arguments, two-byte argc)
                         let argc = ((self.bytecode[pc] as usize) << 8) | self.bytecode[pc + 1] as usize;
                         pc += 2;
                         depth = depth - (argc as i32) - 1 + 1;
+                    }
+                    36 => { // CALL_LOCAL (arguments, two-byte target)
+                        let argc = ((self.bytecode[pc] as usize) << 8) | self.bytecode[pc + 1] as usize;
+                        pc += 4;
+                        depth = depth - argc as i32 + 1;
                     }
                     35 | 98 => { // RET
                         break; // Return terminates the path
@@ -388,7 +486,13 @@ impl AayuVM {
                         pc += 2;
                         depth = depth - (num_pairs as i32 * 2) + 1;
                     }
-                    134 | 136 | 137 => {}
+                    134 => {
+                        let count = ((self.bytecode[pc] as usize) << 8) | self.bytecode[pc + 1] as usize;
+                        pc += 2;
+                        depth = depth - count as i32 + 1;
+                    }
+                    136 => { depth -= 1; }
+                    137 => { depth -= 3; }
                     140 => { // StringConcat: pops 2, pushes 1
                         depth -= 1;
                     }
@@ -451,12 +555,25 @@ impl AayuVM {
                     self.locals[idx] = self.stack[self.sp - 1];
                     self.sp -= 1;
                 }
+                0x07 => { // LOAD_GLOBAL
+                    let idx = self.bytecode[self.ip] as usize;
+                    self.ip += 1;
+                    self.stack[self.sp] = self.globals[idx];
+                    self.sp += 1;
+                }
+                0x08 => { // STORE_GLOBAL
+                    let idx = self.bytecode[self.ip] as usize;
+                    self.ip += 1;
+                    self.globals[idx] = self.stack[self.sp - 1];
+                    self.sp -= 1;
+                }
                 0x10 => { // ADD (Polymorphic: Int, Float, String, Array)
                     let b = self.stack[self.sp - 1];
                     let a = self.stack[self.sp - 2];
                     self.sp -= 1;
                     if a.is_int() && b.is_int() {
-                        self.stack[self.sp - 1] = NanVal::int(a.as_int() + b.as_int());
+                        self.stack[self.sp - 1] = checked_boxed_int(a.as_int().checked_add(b.as_int())
+                            .ok_or_else(|| "Integer addition overflow".to_string())?)?;
                     } else if a.is_string() && b.is_string() {
                         let sa = self.string_heap.get(a.as_string_idx()).cloned().unwrap_or_default();
                         let sb = self.string_heap.get(b.as_string_idx()).cloned().unwrap_or_default();
@@ -483,7 +600,8 @@ impl AayuVM {
                         let fb = if b.is_float() { b.as_float() } else { b.as_int() as f64 };
                         self.stack[self.sp - 1] = NanVal::float(fa + fb);
                     } else {
-                        self.stack[self.sp - 1] = NanVal::int(a.as_int() + b.as_int());
+                        self.stack[self.sp - 1] = checked_boxed_int(a.as_int().checked_add(b.as_int())
+                            .ok_or_else(|| "Integer addition overflow".to_string())?)?;
                     }
                     continue;
                 }
@@ -541,7 +659,6 @@ impl AayuVM {
                     if self.call_depth >= Self::MAX_CALL_DEPTH {
                         return Err(format!("StackOverflow: maximum call depth of {} exceeded", Self::MAX_CALL_DEPTH));
                     }
-                    self.call_depth += 1;
                     if self.sp >= argc + 1 {
                         let func_val = self.stack[self.sp - 1 - argc];
                         let func_name = if func_val.is_string() && func_val.as_string_idx() < self.string_heap.len() {
@@ -576,18 +693,39 @@ impl AayuVM {
                             self.stack[self.sp] = NanVal::int(l as i64);
                             self.sp += 1;
                         } else {
-                            let ret_val = if argc > 0 { self.stack[self.sp - 1] } else { NanVal::null() };
-                            self.sp -= argc + 1;
-                            self.stack[self.sp] = ret_val;
-                            self.sp += 1;
+                            return Err(format!("Unknown built-in function '{}'", func_name));
                         }
                     }
                 }
-                35 | 98 => { // Ret / ReturnValue
-                    if self.call_depth > 0 {
-                        self.call_depth -= 1;
+                36 => { // CALL_LOCAL
+                    let argc = ((self.bytecode[self.ip] as usize) << 8) | self.bytecode[self.ip + 1] as usize;
+                    let target = ((self.bytecode[self.ip + 2] as usize) << 8) | self.bytecode[self.ip + 3] as usize;
+                    self.ip += 4;
+                    if self.call_frames.len() >= Self::MAX_CALL_DEPTH {
+                        return Err(format!("StackOverflow: maximum call depth of {} exceeded", Self::MAX_CALL_DEPTH));
                     }
-                    // Value is at self.stack[self.sp - 1]
+                    if self.sp < argc || argc > self.locals.len() {
+                        return Err(format!("CALL_LOCAL expected {} arguments on the stack", argc));
+                    }
+                    let args = self.stack[self.sp - argc..self.sp].to_vec();
+                    self.sp -= argc;
+                    self.call_frames.push(CallFrame { return_ip: self.ip, locals: self.locals });
+                    self.locals = [NanVal::null(); 256];
+                    self.locals[..argc].copy_from_slice(&args);
+                    self.call_depth = self.call_frames.len();
+                    self.ip = target;
+                }
+                35 | 98 => { // Ret / ReturnValue
+                    if let Some(frame) = self.call_frames.pop() {
+                        let result = if self.sp > 0 { self.sp -= 1; self.stack[self.sp] } else { NanVal::null() };
+                        self.locals = frame.locals;
+                        self.ip = frame.return_ip;
+                        self.call_depth = self.call_frames.len();
+                        self.stack[self.sp] = result;
+                        self.sp += 1;
+                    } else {
+                        return Err("RET executed outside a function call".to_string());
+                    }
                 }
                 128 => { // BUILD_DICT
                     let num_pairs = ((self.bytecode[self.ip] as usize) << 8) | self.bytecode[self.ip + 1] as usize;
@@ -649,7 +787,8 @@ impl AayuVM {
                 254 => {
                     let b = self.stack[self.sp - 1].as_int();
                     let a = self.stack[self.sp - 2].as_int();
-                    self.stack[self.sp - 2] = NanVal::int(a + b);
+                    self.stack[self.sp - 2] = checked_boxed_int(a.checked_add(b)
+                        .ok_or_else(|| "Integer addition overflow".to_string())?)?;
                     self.sp -= 1;
                 }
                 253 => { // old LT
@@ -803,7 +942,8 @@ impl AayuVM {
                         let fb = if b.is_float() { b.as_float() } else { b.as_int() as f64 };
                         self.stack[self.sp - 2] = NanVal::float(fa - fb);
                     } else {
-                        self.stack[self.sp - 2] = NanVal::int(a.as_int() - b.as_int());
+                        self.stack[self.sp - 2] = checked_boxed_int(a.as_int().checked_sub(b.as_int())
+                            .ok_or_else(|| "Integer subtraction overflow".to_string())?)?;
                     }
                     self.sp -= 1;
                 }
@@ -815,7 +955,8 @@ impl AayuVM {
                         let fb = if b.is_float() { b.as_float() } else { b.as_int() as f64 };
                         self.stack[self.sp - 2] = NanVal::float(fa * fb);
                     } else {
-                        self.stack[self.sp - 2] = NanVal::int(a.as_int() * b.as_int());
+                        self.stack[self.sp - 2] = checked_boxed_int(a.as_int().checked_mul(b.as_int())
+                            .ok_or_else(|| "Integer multiplication overflow".to_string())?)?;
                     }
                     self.sp -= 1;
                 }
@@ -834,7 +975,8 @@ impl AayuVM {
                         if ib == 0 {
                             return Err("Integer division by zero".to_string());
                         }
-                        self.stack[self.sp - 2] = NanVal::int(a.as_int() / ib);
+                        self.stack[self.sp - 2] = checked_boxed_int(a.as_int().checked_div(ib)
+                            .ok_or_else(|| "Integer division overflow".to_string())?)?;
                     }
                     self.sp -= 1;
                 }
@@ -844,7 +986,8 @@ impl AayuVM {
                     if b == 0 {
                         return Err("Modulo by zero".to_string());
                     }
-                    self.stack[self.sp - 2] = NanVal::int(a % b);
+                    self.stack[self.sp - 2] = checked_boxed_int(a.checked_rem(b)
+                        .ok_or_else(|| "Integer modulo overflow".to_string())?)?;
                     self.sp -= 1;
                 }
                 38 => { // CmpEq

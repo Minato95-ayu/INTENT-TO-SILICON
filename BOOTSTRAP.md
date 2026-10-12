@@ -1,84 +1,33 @@
-# 🚀 THE AAYU BOOTSTRAP GUIDE
+# AAYU Build and Bootstrap Status
 
-Welcome to the self-hosted architecture of AAYU. The AAYU ecosystem operates with **Zero Python Dependencies**:
-- **Self-Hosted Compiler**: Written in pure AAYU (`compiler/*.aayu`).
-- **High-Performance VM**: Written in Rust (`runtime_rs/`) for C-level execution speed, Nan-tagging, and deterministic memory management.
-- **Prebuilt Seed Toolchain**: Available out-of-the-box in `bin/` (`aayuc.exe`, `aayu-vm.exe`, `bin/aayuc.ayc`).
+This guide reflects the current repository. The CLI compiles source with a Rust bootstrap compiler; the presence of `compiler/*.aayu` and a seed bytecode file does not yet prove a reproducible self-hosting cycle.
 
----
+## Build the compiler and VM
 
-## 🛠️ Toolchain Layout
+From the repository root with Rust/Cargo installed:
 
-```
-INTENT-TO-SILICON/
-├── bin/
-│   ├── aayuc.exe        # Native seed compiler
-│   ├── aayu-vm.exe      # Native Rust VM runtime
-│   └── aayuc.ayc        # Compiled self-hosted compiler bytecode
-├── compiler/            # 100% Pure AAYU self-hosted compiler source
-│   ├── aayuc.aayu       # Main compiler driver
-│   ├── lexer.aayu       # Lexer & tokenizer
-│   ├── parser.aayu      # Recursive descent parser
-│   ├── analyzer.aayu    # Semantic analyzer & type checker
-│   ├── compiler.aayu    # Bytecode generator
-│   └── c_backend.aayu   # Native C codegen backend
-└── runtime_rs/          # Pure Rust Virtual Machine & JIT
-    └── src/
-        ├── vm.rs        # Stack-based Nan-tagged VM engine
-        ├── opcodes.rs   # Type-safe opcode contracts
-        ├── memory.rs    # GC & dynamic memory manager
-        ├── net.rs       # Multi-threaded server with panic isolation
-        └── db.rs        # RAM-first SSD-backed WAL engine
-```
-
----
-
-## ⚡ Quick Start: Running AAYU Code Natively
-
-You do not need Python or any external package manager to run AAYU code:
-
-### 1. Compile an AAYU file to bytecode (`.ayc`):
 ```powershell
-.\bin\aayuc.exe hello.aayu -o hello.ayc
+cargo build --release --manifest-path runtime_rs/Cargo.toml
+cargo build --release --manifest-path compiler_bootstrap/Cargo.toml
+New-Item -ItemType Directory -Force bin | Out-Null
+Copy-Item runtime_rs/target/release/aayu-vm.exe bin/aayu-vm.exe
+Copy-Item compiler_bootstrap/target/release/aayuc.exe bin/aayuc.exe
 ```
 
-### 2. Execute bytecode on the AAYU VM:
+On Linux or macOS, build with the same Cargo commands and copy the extensionless executables `runtime_rs/target/release/aayu-vm` and `compiler_bootstrap/target/release/aayuc` into `bin/`.
+
+## Run source and bytecode
+
 ```powershell
-.\bin\aayu-vm.exe hello.ayc
+.\bin\aayu-vm.exe run tests\test_01_vars.aayu
+.\bin\aayu-vm.exe build tests\test_01_vars.aayu -o vars.ayc
+.\bin\aayu-vm.exe run vars.ayc
 ```
 
----
+Keep `aayuc.exe` next to `aayu-vm.exe`; the VM CLI finds the compiler there when it receives a `.aayu` input. The `build` command creates `.ayc` bytecode, not a native executable.
 
-## 🧬 Rebuilding the Self-Hosted Toolchain
+## Self-hosting work still required
 
-### Step 1: Rebuild the Rust VM from source
-If you have modified `runtime_rs/`:
-```powershell
-cd runtime_rs
-cargo build --release
-copy target\release\aayu-vm.exe ..\bin\aayu-vm.exe -Force
-cd ..
-```
+The repository contains the AAYU compiler source in `compiler/` and seed artifacts in `bin/`. To claim reproducible self-hosting, the project still needs a documented stage sequence that builds each compiler stage from the previous one, compares outputs, and runs as a CI gate. Until that is automated, describe the compiler as implemented in AAYU source with a Rust bootstrap compiler—not as a fully verified self-hosting toolchain.
 
-### Step 2: Recompile the Self-Hosted Compiler Bytecode
-Compile the self-hosted compiler (`compiler/aayuc.aayu`) into binary bytecode using the seed compiler:
-```powershell
-.\bin\aayuc.exe compiler\aayuc.aayu -o bin\aayuc.ayc
-```
-
-### Step 3: Verify the Self-Hosted Compiler on the VM
-Execute the compiler bytecode directly on the VM:
-```powershell
-.\bin\aayu-vm.exe bin\aayuc.ayc
-```
-
----
-
-## 🛡️ Security & Concurrency Guarantees
-
-1. **Memory Safety**:
-   - `runtime_rs/src/opcodes.rs` enforces safe pattern matching with safe fallbacks and zero undefined behavior.
-2. **Panic Isolation**:
-   - `runtime_rs/src/net.rs` and the VM server engine execute connection workers with `std::panic::catch_unwind`, isolating panics from taking down the server.
-3. **Deterministic Performance**:
-   - Tested under ApacheBench at **36,784 req/sec** with 1.36 ms latency and 2.4 MB RSS RAM.
+See [the confidence report](COMPILER_CONFIDENCE_REPORT.md), [CI workflow](.github/workflows/ci.yml), and [roadmap](ROADMAP.md).

@@ -1,24 +1,9 @@
-# AAYU Language Support for VS Code
+# AAYU for VS Code
 
-Official Visual Studio Code extension for **AAYU**, the human-readable programming language for AI Agents and Web Applications.
+This extension provides AAYU syntax highlighting, editor configuration, snippets, and a command to run the active `.aayu` file using the Rust VM. It does not provide language-server diagnostics, autocomplete, hover, or a debugger.
 
-## Features
+## Run a file
 
-- **Syntax Highlighting**: Beautiful, highly-readable syntax coloring for AAYU's natural grammar.
-- **Diagnostics (Squiggles)**: Real-time compiler feedback right in your editor. See parsing errors, syntax errors, and missing dot/end warnings immediately.
-- **Snippets**: Productivity-boosting snippets for common tasks like routes, web servers, lists, maps, and if-statements.
+Build the Rust VM and bootstrap compiler from this repository, then either put `aayu-vm` and `aayuc` on `PATH` or set the extension's `aayu.executablePath` and `aayu.compilerPath` settings. Open an `.aayu` file and run **AAYU: Run Current File** from the Command Palette. Output appears in the **AAYU** Output channel.
 
-## Getting Started
-
-1. Create a file with `.aayu` extension.
-2. The language mode will automatically switch to **AAYU**.
-3. Use the `aayu new` CLI command to start your first project!
-
-## Requirements
-
-- VS Code 1.80+
-- To run AAYU code, you will need the AAYU Python or Rust VM installed locally.
-
-## License
-
-MIT
+The current CLI supports a small core syntax. See the root [README](../README.md) and [known limitations](../KNOWN_LIMITATIONS.md).

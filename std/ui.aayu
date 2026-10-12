@@ -2,32 +2,30 @@
 // AAYU Standard Library: UI (std/ui.aayu)
 // Declarative Flutter-like Component Tree in Pure AAYU
 // Zero npm, Zero JavaScript frameworks, Zero External Dependencies
-// ==============================================================================
+# ==============================================================================
 
-module UI
-
-// Creates a Text widget node
-action Text(content)
+# Creates a Text widget node
+action create_text(content)
     return {"type": "Text", "content": content}
 end
 
-// Creates an interactive Button widget node
-action Button(label, on_click_action)
+# Creates an interactive Button widget node
+action create_button(label, on_click_action)
     return {"type": "Button", "label": label, "onClick": on_click_action}
 end
 
-// Creates a vertical Column layout container
-action Column(children)
+# Creates a vertical Column layout container
+action create_column(children)
     return {"type": "Column", "children": children}
 end
 
-// Creates a horizontal Row layout container
-action Row(children)
+# Creates a horizontal Row layout container
+action create_row(children)
     return {"type": "Row", "children": children}
 end
 
-// Creates a styled Card container
-action Card(title, content)
+# Creates a styled Card container
+action create_card(title, content)
     return {"type": "Card", "title": title, "content": content}
 end
 
@@ -78,6 +76,4 @@ end
 action render(tree)
     let html = to_html(tree)
     return html
-end
-
 end

@@ -1,63 +1,39 @@
-const { LanguageClient, TransportKind } = require('vscode-languageclient/node');
-const { workspace, window } = require('vscode');
-const cp = require('child_process');
-
-let client;
-
-function checkAayuInstalled() {
-    try {
-        // Try to run 'aayu --version' to see if it's in PATH
-        cp.execSync('aayu --version', { stdio: 'ignore' });
-        return true;
-    } catch (e) {
-        return false;
-    }
-}
+const { spawn } = require('node:child_process');
+const path = require('node:path');
+const vscode = require('vscode');
 
 function activate(context) {
-    if (!checkAayuInstalled()) {
-        window.showErrorMessage('AAYU CLI not found. Run: pip install aayu-lang');
-        return;
-    }
-
-    const serverOptions = {
-        run: { 
-            command: 'aayu', 
-            args: ['lsp'], 
-            transport: TransportKind.stdio 
-        },
-        debug: { 
-            command: 'aayu', 
-            args: ['lsp'], 
-            transport: TransportKind.stdio 
+    const output = vscode.window.createOutputChannel('AAYU');
+    context.subscriptions.push(output);
+    context.subscriptions.push(vscode.commands.registerCommand('aayu.runFile', () => {
+        const editor = vscode.window.activeTextEditor;
+        if (!editor || editor.document.languageId !== 'aayu' || !editor.document.fileName.endsWith('.aayu')) {
+            vscode.window.showErrorMessage('Open an AAYU .aayu source file before running it.');
+            return;
         }
-    };
 
-    const clientOptions = {
-        documentSelector: [{ scheme: 'file', language: 'aayu' }],
-        synchronize: {
-            fileEvents: workspace.createFileSystemWatcher('**/*.aayu')
-        }
-    };
+        const config = vscode.workspace.getConfiguration('aayu');
+        const executable = config.get('executablePath', 'aayu-vm');
+        const compilerPath = config.get('compilerPath', '');
+        const cwd = vscode.workspace.getWorkspaceFolder(editor.document.uri)?.uri.fsPath
+            ?? path.dirname(editor.document.fileName);
+        const env = { ...process.env };
+        if (compilerPath) env.AAYU_COMPILER_PATH = compilerPath;
 
-    client = new LanguageClient(
-        'aayuLanguageServer',
-        'AAYU Language Server',
-        serverOptions,
-        clientOptions
-    );
-
-    client.start();
+        output.clear();
+        output.show(true);
+        output.appendLine(`> ${executable} run ${editor.document.fileName}`);
+        const child = spawn(executable, ['run', editor.document.fileName], { cwd, env, windowsHide: true });
+        child.stdout.on('data', data => output.append(data.toString()));
+        child.stderr.on('data', data => output.append(data.toString()));
+        child.on('error', error => {
+            output.appendLine(`Failed to start AAYU VM: ${error.message}`);
+            vscode.window.showErrorMessage(`Could not start AAYU VM: ${error.message}`);
+        });
+        child.on('close', code => output.appendLine(`\nProcess exited with code ${code ?? 'unknown'}.`));
+    }));
 }
 
-function deactivate() {
-    if (!client) {
-        return undefined;
-    }
-    return client.stop();
-}
+function deactivate() {}
 
-module.exports = {
-    activate,
-    deactivate
-};
+module.exports = { activate, deactivate };

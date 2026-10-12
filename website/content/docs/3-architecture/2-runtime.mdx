@@ -1,25 +1,20 @@
 ---
-title: "Runtime (DARC)"
-description: "Deterministic ARC memory management."
+title: "Runtime"
+description: "The Rust bytecode VM and current runtime services."
 ---
 
-# Runtime & Memory
+# Runtime
 
-## Overview
-AAYU does not use a Garbage Collector. It uses **Deterministic Automatic Reference Counting (DARC)**.
+The AAYU runtime is implemented in Rust. It loads `.ayc` bytecode, validates the bytecode before execution, then runs it in the virtual machine. Values use a 64-bit NaN-box representation. Heap objects are managed by a mark-and-sweep collector; the runtime does not implement deterministic reference counting.
 
-## Why it exists
-GC pauses (stop-the-world) are unacceptable in high-performance systems. DARC statically analyzes lifetimes during the Semantic pass and inserts 
-etain/
-elease instructions directly into the LLVM IR.
+## Optional JIT
 
-## Common Errors
-<ErrorBlock 
-    wrong="let ptr = get_dangling_reference()."
-    correct="let ptr = acquire_safe_reference()."
-    errorMsg="MemoryError: Lifetime validation failed. Reference outlives owner."
-/>
+The repository contains an experimental C emitter, but the normal CLI currently routes `--jit` through the Rust VM because the emitter loses AAYU value types and produces incorrect results. The benchmark-only `--sum` generated-C measurement is a C-kernel timing, not VM JIT performance.
 
-## Best Practices
-Avoid deep cyclic data structures. If you must use cycles, use the weak keyword to break reference loops.
-\n\n[Edit on GitHub (Available in v1.0)](#)\n
+## Persistence
+
+The current database module stores JSON values in an in-memory key-value map and writes the map to a JSON file. It is not SQLite, does not provide relational SQL queries, and is not a write-ahead log.
+
+## Network and UI
+
+The Rust runtime includes HTTP server and UI modules. Their supported features are limited; check the [known limitations](https://github.com/Minato95-ayu/INTENT-TO-SILICON/blob/main/KNOWN_LIMITATIONS.md) before using them in an application.

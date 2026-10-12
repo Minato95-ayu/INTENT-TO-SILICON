@@ -1,13 +1,19 @@
-action fibonacci(n)
-    if n <= 1
-        return n
-    end
-    return fibonacci(n - 1) + fibonacci(n - 2)
-end
-
+# Iterative Fibonacci(15) workload; verifies the computed result.
+let a = 0
+let b = 1
 let i = 0
+
 while i < 15
-    let val = fibonacci(i)
+    let temp = a + b
+    a = b
+    b = temp
     i = i + 1
 end
-print("Fibonacci computed up to 14")
+
+print(a)
+
+if a == 610
+    print("PASS: fib(15) is 610")
+else
+    print("FAIL: fib(15)")
+end

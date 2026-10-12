@@ -1,7 +1,7 @@
 {
   "name": "aayu",
   "displayName": "AAYU",
-  "description": "AAYU Programming Language Support for VS Code",
+  "description": "AAYU syntax highlighting and run command for the Rust VM",
   "version": "1.2.0",
   "publisher": "AyushGhritKaushik",
   "author": "Ayush Ghrit Kaushik <https://github.com/Minato95-ayu>",
@@ -22,7 +22,11 @@
     "Snippets"
   ],
   "main": "./extension.js",
+  "activationEvents": ["onCommand:aayu.runFile"],
   "contributes": {
+    "commands": [
+      { "command": "aayu.runFile", "title": "AAYU: Run Current File" }
+    ],
     "languages": [
       {
         "id": "aayu",
@@ -66,51 +70,20 @@
       "type": "object",
       "title": "AAYU Configuration",
       "properties": {
-        "aayu.languageServerPath": {
+        "aayu.executablePath": {
+          "type": "string",
+          "default": "aayu-vm",
+          "description": "Path or command name for the AAYU Rust VM executable."
+        },
+        "aayu.compilerPath": {
           "type": "string",
           "default": "",
-          "description": "Absolute path to the aayu_lsp.py script."
+          "description": "Optional path to aayuc when it is not beside the VM or on PATH."
         }
       }
-    },
-    "debuggers": [
-      {
-        "type": "aayu",
-        "label": "AAYU Debugger",
-        "program": "aayu",
-        "args": [
-          "run",
-          "--debug",
-          ""
-        ],
-        "configurationAttributes": {
-          "launch": {
-            "required": [
-              "program"
-            ],
-            "properties": {
-              "program": {
-                "type": "string",
-                "description": "Absolute path to the AAYU file to debug.",
-                "default": ""
-              }
-            }
-          }
-        },
-        "initialConfigurations": [
-          {
-            "type": "aayu",
-            "request": "launch",
-            "name": "Debug AAYU File",
-            "program": ""
-          }
-        ]
-      }
-    ]
+    }
   },
-  "dependencies": {
-    "vscode-languageclient": "^9.0.1"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/vscode": "^1.80.0",
     "@vscode/vsce": "^3.9.2"

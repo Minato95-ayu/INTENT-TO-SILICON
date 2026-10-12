@@ -1,19 +1,10 @@
 ---
 title: "Packages"
-description: "Using the apm package manager."
+description: "Package management status."
 ---
 
 # Packages
 
-## Overview
-pm (AAYU Package Manager) handles dependencies.
+The current AAYU VM CLI does not expose a `pkg` command, and this repository does not document a stable remote package registry workflow. Older examples using `aayu pkg add` or `aayu.lock` are not current instructions.
 
-## Syntax
-<CodeBlock lang="bash" code="aayu pkg add http" />
-
-## Output
-<CodeBlock lang="bash" code="Resolving http@latest...\n[PASS] Downloaded http v1.2.0.\nUpdated aayu.toml." />
-
-## Best Practices
-Always check in your ayu.lock file to version control to ensure deterministic builds.
-\n\n[Edit on GitHub (Available in v1.0)](#)\n
+Rust build dependencies are managed with Cargo for the toolchain itself. That is separate from package management for AAYU programs. See the [repository roadmap](https://github.com/Minato95-ayu/INTENT-TO-SILICON/blob/main/ROADMAP.md) for planned package work.

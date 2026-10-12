@@ -1,156 +1,39 @@
-// ==============================================================================
-// AAYU Standard Library: Database Engine (std/db.aayu)
-// 100% Pure AAYU - Dual-Tier In-Memory KV + Relational Model Store
-// Zero Python, Zero External Dependencies
-// ==============================================================================
+# ==============================================================================
+# AAYU Standard Library: Database Record Store (std/db.aayu)
+# 100% Pure AAYU - Record Manipulation & Query Filter Helpers
+# ==============================================================================
 
-module Db
-
-// Global In-Memory Database Registry
-let db_tables = {}
-let db_indexes = {}
-let db_auto_ids = {}
-
-// Initializes a collection / table in memory
-action init_table(name)
-    if not (name in db_tables)
-        db_tables[name] = []
-        db_indexes[name] = {}
-        db_auto_ids[name] = 1
-    end
-    return 1
+action db_create_record(id, name, value)
+    return { "id": id, "name": name, "value": value }
 end
 
-// Inserts a new record into the specified table with an auto-incrementing ID
-action insert(table_name, record)
-    init_table(table_name)
-    let next_id = db_auto_ids[table_name]
-    db_auto_ids[table_name] = next_id + 1
-    
-    record["id"] = next_id
-    
-    let table = db_tables[table_name]
-    table = table + [record]
-    db_tables[table_name] = table
-    
-    // Update primary key index for O(1) lookups
-    let index = db_indexes[table_name]
-    index[str(next_id)] = record
-    db_indexes[table_name] = index
-    
-    return record
-end
-
-// Finds a record by primary key ID in O(1) time
-action find(table_name, id)
-    init_table(table_name)
-    let index = db_indexes[table_name]
-    let str_id = str(id)
-    if str_id in index
-        return index[str_id]
-    end
-    return null
-end
-
-// Retrieves all records from the table
-action all(table_name)
-    init_table(table_name)
-    return db_tables[table_name]
-end
-
-// Returns the total count of records in a table
-action count(table_name)
-    init_table(table_name)
-    return len(db_tables[table_name])
-end
-
-// Filters records matching a specific field key and value
-action filter(table_name, field, target_val)
-    init_table(table_name)
-    let records = db_tables[table_name]
+action db_filter_records(records, field, target_val)
     let results = []
     let i = 0
     let total = len(records)
-    
     while i < total
         let row = records[i]
-        if field in row
-            if row[field] == target_val
-                results = results + [row]
-            end
+        if row[field] == target_val
+            results = results + [row]
         end
         i = i + 1
     end
-    
     return results
 end
 
-// Updates an existing record by ID
-action update(table_name, id, changes)
-    init_table(table_name)
-    let records = db_tables[table_name]
-    let updated_records = []
-    let updated_row = null
+action db_find_by_id(records, target_id)
     let i = 0
     let total = len(records)
-    
     while i < total
         let row = records[i]
-        if row["id"] == id
-            for k in changes
-                row[k] = changes[k]
-            end
-            updated_row = row
-        end
-        updated_records = updated_records + [row]
-        i = i + 1
-    end
-    
-    db_tables[table_name] = updated_records
-    if updated_row != null
-        let index = db_indexes[table_name]
-        index[str(id)] = updated_row
-        db_indexes[table_name] = index
-    end
-    
-    return updated_row
-end
-
-// Deletes a record by ID
-action delete(table_name, id)
-    init_table(table_name)
-    let records = db_tables[table_name]
-    let remaining = []
-    let i = 0
-    let total = len(records)
-    let deleted = 0
-    
-    while i < total
-        let row = records[i]
-        if row["id"] == id
-            deleted = 1
-        else
-            remaining = remaining + [row]
+        if row["id"] == target_id
+            return row
         end
         i = i + 1
     end
-    
-    db_tables[table_name] = remaining
-    let index = db_indexes[table_name]
-    let str_id = str(id)
-    if str_id in index
-        index[str_id] = null
-    end
-    
-    return deleted
+    return {}
 end
 
-// Clears all records from a table (Truncate)
-action clear(table_name)
-    db_tables[table_name] = []
-    db_indexes[table_name] = {}
-    db_auto_ids[table_name] = 1
-    return 1
-end
-
+action db_count_records(records)
+    return len(records)
 end

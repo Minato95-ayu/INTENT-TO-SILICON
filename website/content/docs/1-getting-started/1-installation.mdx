@@ -1,33 +1,35 @@
 ---
 title: "Installation"
-description: "Install AAYU from source and set up your environment."
+description: "Build the AAYU VM and bootstrap compiler from source."
 ---
 
 # Installation
 
-## Overview
-AAYU is a blazingly fast, statically typed systems language compiled via LLVM. Currently in alpha, AAYU must be built from source.
+## Build from source
 
-## Why it exists
-To provide a memory-safe environment without a Garbage Collector (via Deterministic ARC) while maintaining C-like performance, we require a custom LLVM backend toolchain.
+Install Rust and Cargo, clone this repository, and run these commands from its root:
 
-## Syntax & Usage
-<CodeBlock lang="bash" code="git clone https://github.com/Minato95-ayu/AAYU.git\ncd AAYU\nmake build" />
+```bash
+cargo build --release --manifest-path runtime_rs/Cargo.toml
+cargo build --release --manifest-path compiler_bootstrap/Cargo.toml
+```
 
-## Output
-<CodeBlock lang="bash" code="$ aayu --version\naayu 0.1.0-alpha (2026-07-05)" />
+Place the resulting `aayu-vm` and `aayuc` executables together in `bin/` (add `.exe` on Windows). The VM looks for the compiler beside itself when it compiles a `.aayu` file.
 
-## Common Errors
-<ErrorBlock 
-    wrong="make install"
-    correct="make build"
-    errorMsg="Makefile error: target 'install' not found. Use 'make build'."
-/>
+```text
+bin/aayu-vm run tests/test_01_vars.aayu
+```
 
-## Best Practices
-Always ensure you have LLVM 16+ and a compatible C++ compiler (clang or gcc) installed before building AAYU.
+The repository's compiler and runtime require the Rust toolchain and declared Cargo crates. The website, editor extension, BrainOS, and Intent Engine have separate dependencies and setup instructions.
 
-## Related Topics
+Windows users can also use [`install.ps1`](/install.ps1); Linux and macOS users can use [`install.sh`](/install.sh) to install the latest release archive. These installers place the VM and bootstrap compiler together so source execution can find both tools.
+
+## What the build produces
+
+`aayu-vm build file.aayu -o file.ayc` produces AAYU bytecode. It does not produce a native standalone executable. The `--jit` flag currently falls back to the Rust VM because generated C has incorrect typed-value behavior.
+
+## Related pages
+
 - [Getting Started](/docs/1-getting-started/2-getting-started)
+- [Hello World](/docs/1-getting-started/3-hello-world)
 - [CLI Reference](/docs/5-cli/1-cli-reference)
-\n\n[Edit on GitHub (Available in v1.0)](#)\n

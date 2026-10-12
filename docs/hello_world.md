@@ -1,28 +1,16 @@
-# Hello World
+# Hello AAYU
 
-AAYU makes UI development declarative and state-driven. Let's look at a simple Hello World app.
+This minimal program uses the currently tested core syntax:
 
 ```aayu
-page Home {
-    state counter = 0
-
-    action increment {
-        counter = counter + 1
-    }
-
-    container {
-        text { "Hello AAYU World!" }
-        text { "Counter: " + counter }
-        button {
-            text "Increment"
-            onClick increment
-        }
-    }
-}
+let name = "AAYU"
+print("Hello from " + name)
 ```
 
-## Structure
-- **page**: Represents a full-screen view or route.
-- **state**: Declares a reactive variable. When it changes, the UI updates automatically.
-- **action**: A block of logic bound to UI events.
-- **container, text, button**: Built-in UI widgets.
+Run it from the repository root after building the Rust VM and bootstrap compiler:
+
+```powershell
+bin/aayu-vm.exe run hello.aayu
+```
+
+The `page`, reactive UI, and event-handler examples in older drafts are not part of this verified starter lesson. See [the language reference](language_reference.md) for the supported subset and limitations.

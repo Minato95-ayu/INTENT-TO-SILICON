@@ -1,26 +1,16 @@
 ---
 title: "Hello World"
-description: "Write your first AAYU program."
+description: "Write and run a small AAYU program."
 ---
 
 # Hello World
 
-## Overview
-The classic introductory program.
+Save this as `hello.aayu`:
 
-## Syntax
-<CodeBlock lang="aayu" code='fn main()\ndo\n    print("Hello, World!").\nend.' playgroundUrl="/playground" />
+```aayu
+print("Hello, AAYU!")
+```
 
-## Output
-<CodeBlock lang="bash" code="> aayu run main.aayu\nHello, World!" />
+Run it with `bin/aayu-vm run hello.aayu` from the repository root after building the VM and bootstrap compiler. AAYU blocks use `end`; statements do not need periods or semicolons.
 
-## Common Errors
-<ErrorBlock 
-    wrong="fn main() {\n    print(\"Hello, World!\");\n}"
-    correct='fn main()\ndo\n    print("Hello, World!").\nend.'
-    errorMsg="SyntaxError: Expected 'do' to start block, found '{'."
-/>
-
-## Best Practices
-Always end your statements with a period (.).
-\n\n[Edit on GitHub (Available in v1.0)](#)\n
+For more syntax, see the [Variables](/docs/2-language/2-variables) and [Functions](/docs/2-language/3-functions) pages.

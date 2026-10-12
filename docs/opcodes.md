@@ -77,10 +77,17 @@ Each opcode specifies its input operands, output behavior, and stack effect.
 
 ## Functions & Calls
 
+`LOAD_GLOBAL` (`0x07`) and `STORE_GLOBAL` (`0x08`) each take a one-byte global slot index. Globals persist across function calls; each call gets its own local frame.
+
 ### `CALL`
 - **Operands**: 1 (Number of Arguments)
-- **Description**: Calls a built-in function or creates a new frame for a user-defined task. Pops arguments from the stack.
+- **Description**: Invokes a built-in function such as `len`; the callee name and arguments are on the stack.
 - **Stack Effect**: `[arg1, ..., argN] → [result]` (after return)
+
+### `CALL_LOCAL` (opcode 36)
+- **Operands**: 2-byte argument count, 2-byte absolute function entry offset (big-endian)
+- **Description**: Calls a compiled AAYU action. Arguments move into a fresh local frame; return restores the caller frame and instruction pointer.
+- **Stack Effect**: arguments become one result after return.
 
 ### `CALL_TASK`
 - **Operands**: 1 (Task Name)

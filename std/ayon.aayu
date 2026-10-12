@@ -1,0 +1,224 @@
+# ==============================================================================
+# AAYU Standard Library: AYON (std/ayon.aayu)
+# 100% Pure AAYU - AAYU Object Notation Engine
+# Human-Readable, Comment-Aware, Unquoted Keys with Full JSON Bridge
+# Zero Python, Zero C, Zero External Dependencies
+# ==============================================================================
+
+action ayon_is_space(c)
+    if c == " "
+        return 1
+    end
+    if c == "\t"
+        return 1
+    end
+    if c == "\n"
+        return 1
+    end
+    if c == "\r"
+        return 1
+    end
+    return 0
+end
+
+# Strips '#' comments from AYON text while preserving strings
+action ayon_strip_comments(src)
+    let out = ""
+    let pos = 0
+    let l = len(src)
+    let in_str = 0
+
+    while pos < l
+        let ch = src[pos]
+        if in_str == 1
+            out = out + ch
+            if ch == "\\"
+                if (pos + 1) < l
+                    out = out + src[pos + 1]
+                    pos = pos + 2
+                else
+                    pos = pos + 1
+                end
+            else
+                if ch == "\""
+                    in_str = 0
+                end
+                pos = pos + 1
+            end
+        else
+            if ch == "\""
+                in_str = 1
+                out = out + ch
+                pos = pos + 1
+            else
+                if ch == "#"
+                    let in_comment = 1
+                    while in_comment == 1
+                        if pos < l
+                            if src[pos] == "\n"
+                                out = out + "\n"
+                                in_comment = 0
+                            end
+                            pos = pos + 1
+                        else
+                            in_comment = 0
+                        end
+                    end
+                else
+                    out = out + ch
+                    pos = pos + 1
+                end
+            end
+        end
+    end
+    return out
+end
+
+# Formats clean AYON key-value pair without mandatory quotes
+action ayon_format_pair(key, value_str)
+    return key + ": " + value_str
+end
+
+# Formats clean AYON object
+action ayon_format_object(pairs)
+    let out = "{\n"
+    let i = 0
+    let total = len(pairs)
+    while i < total
+        out = out + "    " + pairs[i]
+        if (i + 1) < total
+            out = out + ",\n"
+        else
+            out = out + "\n"
+        end
+        i = i + 1
+    end
+    out = out + "}"
+    return out
+end
+
+# Formats clean AYON array
+action ayon_format_array(items)
+    let out = "["
+    let i = 0
+    let total = len(items)
+    while i < total
+        out = out + items[i]
+        if (i + 1) < total
+            out = out + ", "
+        end
+        i = i + 1
+    end
+    out = out + "]"
+    return out
+end
+
+# Converts AYON string to standard RFC JSON for web browsers
+action ayon_to_json(ayon_src)
+    let clean = ayon_strip_comments(ayon_src)
+    let out = ""
+    let pos = 0
+    let l = len(clean)
+    let in_str = 0
+
+    while pos < l
+        let ch = clean[pos]
+        if in_str == 1
+            out = out + ch
+            if ch == "\""
+                in_str = 0
+            end
+            pos = pos + 1
+        else
+            if ch == "\""
+                in_str = 1
+                out = out + ch
+                pos = pos + 1
+            else
+                # Check for unquoted key identifier followed by ':'
+                let is_start = 0
+                if ch >= "a"
+                    if ch <= "z"
+                        is_start = 1
+                    end
+                end
+                if ch >= "A"
+                    if ch <= "Z"
+                        is_start = 1
+                    end
+                end
+                if ch == "_"
+                    is_start = 1
+                end
+
+                if is_start == 1
+                    let key_id = ""
+                    let collecting = 1
+                    while collecting == 1
+                        if pos < l
+                            let c = clean[pos]
+                            let is_id = 0
+                            if c >= "a"
+                                if c <= "z"
+                                    is_id = 1
+                                end
+                            end
+                            if c >= "A"
+                                if c <= "Z"
+                                    is_id = 1
+                                end
+                            end
+                            if c >= "0"
+                                if c <= "9"
+                                    is_id = 1
+                                end
+                            end
+                            if c == "_"
+                                is_id = 1
+                            end
+
+                            if is_id == 1
+                                key_id = key_id + c
+                                pos = pos + 1
+                            else
+                                collecting = 0
+                            end
+                        else
+                            collecting = 0
+                        end
+                    end
+
+                    # Skip whitespace looking for colon
+                    let peek_pos = pos
+                    let peeking = 1
+                    while peeking == 1
+                        if peek_pos < l
+                            if ayon_is_space(clean[peek_pos]) == 1
+                                peek_pos = peek_pos + 1
+                            else
+                                peeking = 0
+                            end
+                        else
+                            peeking = 0
+                        end
+                    end
+
+                    if peek_pos < l
+                        if clean[peek_pos] == ":"
+                            # It's an unquoted key! Wrap in JSON quotes
+                            out = out + "\"" + key_id + "\""
+                        else
+                            out = out + key_id
+                        end
+                    else
+                        out = out + key_id
+                    end
+                else
+                    out = out + ch
+                    pos = pos + 1
+                end
+            end
+        end
+    end
+    return out
+end

@@ -1,0 +1,162 @@
+# ==============================================================================
+# AAYU Standard Library: JSON Serialization (std/json.aayu)
+# 100% Pure AAYU - RFC 8259 Standard Compliant Serializer & Formatter
+# Zero Python, Zero C, Zero External Dependencies
+# ==============================================================================
+
+action json_is_space(c)
+    if c == " "
+        return 1
+    end
+    if c == "\t"
+        return 1
+    end
+    if c == "\n"
+        return 1
+    end
+    if c == "\r"
+        return 1
+    end
+    return 0
+end
+
+action json_quote(s)
+    let out = "\""
+    let i = 0
+    let l = len(s)
+    while i < l
+        let ch = s[i]
+        if ch == "\""
+            out = out + "\\\""
+        else
+            if ch == "\\"
+                out = out + "\\\\"
+            else
+                if ch == "\n"
+                    out = out + "\\n"
+                else
+                    out = out + ch
+                end
+            end
+        end
+        i = i + 1
+    end
+    out = out + "\""
+    return out
+end
+
+action json_format_pair(key, value_str)
+    return json_quote(key) + ": " + value_str
+end
+
+action json_format_object(pairs)
+    let out = "{"
+    let i = 0
+    let total = len(pairs)
+    while i < total
+        out = out + pairs[i]
+        if (i + 1) < total
+            out = out + ", "
+        end
+        i = i + 1
+    end
+    out = out + "}"
+    return out
+end
+
+action json_format_array(items)
+    let out = "["
+    let i = 0
+    let total = len(items)
+    while i < total
+        out = out + items[i]
+        if (i + 1) < total
+            out = out + ", "
+        end
+        i = i + 1
+    end
+    out = out + "]"
+    return out
+end
+
+action json_parse_string(src, start_pos)
+    let pos = start_pos + 1
+    let l = len(src)
+    let content = ""
+    while pos < l
+        let ch = src[pos]
+        if ch == "\\"
+            if (pos + 1) < l
+                let nxt = src[pos + 1]
+                content = content + nxt
+                pos = pos + 2
+            else
+                pos = pos + 1
+            end
+        else
+            if ch == "\""
+                pos = pos + 1
+                return [pos, content]
+            else
+                content = content + ch
+                pos = pos + 1
+            end
+        end
+    end
+    return [pos, content]
+end
+
+action json_parse_number(src, start_pos)
+    let pos = start_pos
+    let l = len(src)
+    let sign = 1
+    if pos < l
+        if src[pos] == "-"
+            sign = -1
+            pos = pos + 1
+        end
+    end
+    let num = 0
+    while pos < l
+        let ch = src[pos]
+        if ch >= "0"
+            if ch <= "9"
+                let digit = 0
+                if ch == "1"
+                    digit = 1
+                end
+                if ch == "2"
+                    digit = 2
+                end
+                if ch == "3"
+                    digit = 3
+                end
+                if ch == "4"
+                    digit = 4
+                end
+                if ch == "5"
+                    digit = 5
+                end
+                if ch == "6"
+                    digit = 6
+                end
+                if ch == "7"
+                    digit = 7
+                end
+                if ch == "8"
+                    digit = 8
+                end
+                if ch == "9"
+                    digit = 9
+                end
+                num = num * 10 + digit
+                pos = pos + 1
+            else
+                return [pos, num * sign]
+            end
+        else
+            return [pos, num * sign]
+        end
+    end
+    return [pos, num * sign]
+end

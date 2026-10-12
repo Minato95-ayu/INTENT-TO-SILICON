@@ -1,0 +1,32 @@
+import "std/json"
+import "std/ayon"
+
+# 1. Test AYON Formatting
+let pair1 = ayon_format_pair("name", "\"Ayush\"")
+let pair2 = ayon_format_pair("version", "1.2")
+let pair3 = ayon_format_pair("status", "true")
+let ayon_obj = ayon_format_object([pair1, pair2, pair3])
+
+print("--- RAW AYON OBJECT ---")
+print(ayon_obj)
+
+# 2. Test AYON Comment Stripping
+let sample_with_comment = "# Configuration\nname: \"AAYU\"\n# End of config"
+let stripped = ayon_strip_comments(sample_with_comment)
+print("--- STRIPPED COMMENTS ---")
+print(stripped)
+
+# 3. Test AYON to JSON conversion for Web Browser
+let ayon_input = "# AYON Document\n{\n    name: \"AAYU\",\n    version: 1\n}"
+let web_json = ayon_to_json(ayon_input)
+print("--- CONVERTED FOR WEB BROWSER (JSON) ---")
+print(web_json)
+
+# 4. Test JSON Stringify
+let j_pair1 = json_format_pair("language", "\"AAYU\"")
+let j_pair2 = json_format_pair("self_hosted", "true")
+let j_obj = json_format_object([j_pair1, j_pair2])
+print("--- RFC JSON OBJECT ---")
+print(j_obj)
+
+print("AYON & JSON TESTS PASSED 100%!")

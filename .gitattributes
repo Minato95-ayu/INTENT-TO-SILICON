@@ -1,22 +1,55 @@
-﻿# Auto-detect text files and perform LF normalization
+# Auto-detect text files and perform LF normalization
 * text=auto
 
-# Mark standard language files
-*.aayu linguist-language=AAYU
-*.aybc linguist-language=AAYU-Bytecode
+# ==============================================================================
+# AAYU PROGRAMMING LANGUAGE - GITHUB LINGUIST CONFIGURATION
+# ==============================================================================
 
-# Exclude legacy python compiler and scripts from statistics
-compiler_aayu/** linguist-vendored
+# Primary Language: AAYU (.aayu and .ayon)
+*.aayu linguist-language=AAYU
+*.aayu linguist-detectable=true
+*.ayon linguist-language=AAYU
+*.ayon linguist-detectable=true
+*.ayc linguist-language=AAYU
+*.aybc linguist-language=AAYU
+
+# Rust Virtual Machine (VM Execution Runtime Only per AAYU Protocol)
+runtime_rs/** linguist-language=Rust
+
+# ==============================================================================
+# EXCLUDE LEGACY SCRIPTS, DOCS, AND FRONTEND FROM LANGUAGE STATISTICS
+# ==============================================================================
+# All Python legacy scripts and prototypes (0% Python on GitHub)
+*.py linguist-vendored
+intent_engine/** linguist-vendored
+brainos/** linguist-vendored
+aayu_studio/** linguist-vendored
+compiler/** linguist-vendored
+compiler_bootstrap/** linguist-vendored
+runtime/** linguist-vendored
+tools/** linguist-vendored
+scripts/** linguist-vendored
 tests/** linguist-vendored
 examples/** linguist-vendored
-scripts/** linguist-vendored
 .archive/** linguist-vendored
-# *.py linguist-vendored
-*.c linguist-vendored
-*.cpp linguist-vendored
-*.js linguist-vendored
-*.ts linguist-vendored
-website/** linguist-vendored
 
-# Ensure Rust is prominent
-runtime_rs/** linguist-language=Rust
+# Frontend website and vscode extension assets
+website/** linguist-vendored
+vscode-aayu/** linguist-vendored
+*.ts linguist-vendored
+*.tsx linguist-vendored
+*.js linguist-vendored
+*.jsx linguist-vendored
+*.css linguist-vendored
+*.scss linguist-vendored
+*.html linguist-vendored
+
+# Shell scripts and config
+*.ps1 linguist-vendored
+*.sh linguist-vendored
+*.bat linguist-vendored
+*.cmd linguist-vendored
+*.tex linguist-documentation
+*.md linguist-documentation
+docs/** linguist-documentation
+specs/** linguist-documentation

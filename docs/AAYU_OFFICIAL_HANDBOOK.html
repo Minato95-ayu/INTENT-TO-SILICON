@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -316,16 +316,108 @@
     margin-bottom: 2px;
   }
 
-  .diagram-box {
+  /* MODERN VISUAL ARCHITECTURE CARDS */
+  .arch-flow {
     background: #0f172a;
-    color: #38bdf8;
-    padding: 12px;
+    border: 1px solid #1e293b;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 14px 0;
+    text-align: center;
+    break-inside: avoid;
+  }
+
+  .arch-node {
+    background: #1e293b;
+    border: 1px solid #3b82f6;
+    color: #93c5fd;
+    padding: 8px 14px;
     border-radius: 6px;
-    font-family: Consolas, monospace;
+    font-weight: 700;
+    display: inline-block;
+    margin: 4px auto;
+    font-size: 12px;
+  }
+
+  .arch-arrow {
+    color: #38bdf8;
+    font-size: 11.5px;
+    font-weight: 600;
+    margin: 5px 0;
+  }
+
+  .arch-runtime-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-top: 6px;
+  }
+
+  .arch-sub {
+    background: #1e1b4b;
+    border: 1px solid #6366f1;
+    color: #c7d2fe;
+    padding: 6px 10px;
+    border-radius: 6px;
     font-size: 11px;
-    line-height: 1.35;
-    margin: 10px 0;
-    overflow-x: auto;
+    font-weight: 600;
+  }
+
+  .arch-compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 14px 0;
+    break-inside: avoid;
+  }
+
+  .arch-compare-box {
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 11.5px;
+    line-height: 1.45;
+  }
+
+  .arch-compare-box.traditional {
+    background: #fef2f2;
+    border: 1.5px solid #f87171;
+    color: #991b1b;
+  }
+
+  .arch-compare-box.aayu-arch {
+    background: #f0fdf4;
+    border: 1.5px solid #4ade80;
+    color: #166534;
+  }
+
+  .arch-compare-box h4 {
+    font-size: 12.5px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .fragile-warning {
+    background: #fee2e2;
+    border: 1px solid #ef4444;
+    color: #b91c1c;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-weight: 700;
+    margin-top: 8px;
+    font-size: 11px;
+  }
+
+  .robust-success {
+    background: #dcfce7;
+    border: 1px solid #22c55e;
+    color: #15803d;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-weight: 700;
+    margin-top: 8px;
+    font-size: 11px;
   }
 </style>
 </head>
@@ -335,9 +427,8 @@
 <div class="cover-page">
   <div>
     <div class="cover-header">
-      <img class="cover-logo" src="data:image/png;base64,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
-" alt="AAYU Logo">
-      <div class="cover-badge">â˜… OFFICIAL INTENT-TO-SILICON ARCHITECTURE â˜…</div>
+      <img class="cover-logo" src="data:image/png;base64,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" alt="AAYU Logo">
+      <div class="cover-badge">&starf; OFFICIAL INTENT-TO-SILICON ARCHITECTURE &starf;</div>
     </div>
     
     <div class="cover-title">The Official AAYU<br>Master Handbook</div>
@@ -345,19 +436,19 @@
 
     <div class="cover-features">
       <div class="feat-card">
-        <h4>âš¡ Single-File Full-Stack</h4>
+        <h4>[FULL-STACK] Single-File Architecture</h4>
         <p>Database models, high-throughput API routes, and reactive UI pages declared cleanly in a single .ay file with zero glue code.</p>
       </div>
       <div class="feat-card">
-        <h4>ðŸš€ 10ms Boot & 2.4 MB RAM</h4>
+        <h4>[FAST] 10ms Boot & 2.4 MB RAM</h4>
         <p>Ultra-compact toolchain (735 KB compiler, 890 KB VM) with near-instant cold start and 36,000+ static req/sec.</p>
       </div>
       <div class="feat-card">
-        <h4>ðŸ§  Pure AAYU DSA & Algorithms</h4>
+        <h4>[DSA] Pure AAYU Algorithms</h4>
         <p>Complete algorithmic toolkit: Searching, Sorting, Two-Pointers, Stacks, Queues, Graphs, and DP verified on the native VM.</p>
       </div>
       <div class="feat-card">
-        <h4>ðŸ›¡ï¸ Zero External Dependencies</h4>
+        <h4>[ZERO-DEP] Zero External Dependencies</h4>
         <p>No npm, no pip, no fragmentation. Standard library includes native crypto, in-memory record store, math, and JSON/AYON.</p>
       </div>
     </div>
@@ -477,7 +568,7 @@
 </table>
 
 <div class="box-deepdive">
-  <strong>ðŸ’¡ How to use this Handbook:</strong><br>
+  <strong>How to use this Handbook:</strong><br>
   Every single code snippet in Chapters 1 through 15 has been <strong>compiled and verified on the official AAYU Virtual Machine</strong>. You can copy any snippet into a <code>.ay</code> file and run it immediately using <code>aayu filename.ay</code>.
 </div>
 
@@ -490,7 +581,7 @@
 <p>Today, building a simple web application with authentication, a database, and an API requires stitching together 150+ configuration files, 800 MB of <code>node_modules</code> or Python virtual environments, and 5 different frameworks. When modern autonomous AI agents (like Claude, Codex, or Antigravity) attempt to write full-stack code, they waste <strong>85% to 92% of their context window</strong> simply reading directory structures, import boilerplate, and schema synchronization files.</p>
 
 <div class="hinglish">
-  ðŸ’¡ <b>Concept Samjhein (Hindi/Hinglish):</b><br>
+  <b>Concept Samjhein (Hindi/Hinglish):</b><br>
   Python aur C purane zamaane ke hisab se bane the. Aaj jab AI ya human ek simple app banata hai, toh 100 alag files (Docker, package.json, tsconfig, venv, requirements.txt, orm migrations) banani padti hain. AAYU ne is saare jhanjhat ko khatam kar diya: <b>Ek Single .ay File ke andar Database Model, Backend Route, aur UI Page sab natively declare hote hain bina kisi external package ke!</b>
 </div>
 
@@ -555,9 +646,9 @@
 <h2>1. Running AAYU Files</h2>
 <p>AAYU natively recognizes three standard file extensions:</p>
 <ul>
-  <li><code>.ay</code> â€” <strong>Recommended Standard:</strong> Short, modern, and clean.</li>
-  <li><code>.aa</code> â€” <strong>Concise Alias:</strong> Ultra-short dual-character extension.</li>
-  <li><code>.aayu</code> â€” <strong>Full Name:</strong> The classic descriptive extension.</li>
+  <li><code>.ay</code> - <strong>Recommended Standard:</strong> Short, modern, and clean.</li>
+  <li><code>.aa</code> - <strong>Concise Alias:</strong> Ultra-short dual-character extension.</li>
+  <li><code>.aayu</code> - <strong>Full Name:</strong> The classic descriptive extension.</li>
 </ul>
 
 <pre><code># Run your application directly
@@ -592,8 +683,8 @@ aayu app.ayc</code></pre>
 Hello, World!</code></pre>
 
 <div class="hinglish">
-  ðŸ’¡ <b>Terminal Tip (Hindi/Hinglish):</b><br>
-  Pehle compiler terminal par bohot saara debug print (AST, tokens) fekta tha. Ab compiler bilkul silent hai â€” terminal par sirf wahi dikhega jo aapne <code>print()</code> kiya hai, bilkul clean aur professional!
+  <b>Terminal Tip (Hindi/Hinglish):</b><br>
+  Pehle compiler terminal par bohot saara debug print (AST, tokens) fekta tha. Ab compiler bilkul silent hai - terminal par sirf wahi dikhega jo aapne <code>print()</code> kiya hai, bilkul clean aur professional!
 </div>
 
 <div class="page-break"></div>
@@ -602,28 +693,20 @@ Hello, World!</code></pre>
 <h1>Chapter 1: The AAYU Ecosystem & Architecture</h1>
 <p>AAYU converts human or AI intent directly into silicon-executable bytecode through a deterministic 7-stage pipeline:</p>
 
-<div class="diagram-box">
-[ AAYU Source (.ay / .aa / .aayu) ]
-                â”‚
-                â–¼ (1. Lexer: Token Stream)
-    Tokens: KEYWORD, IDENTIFIER, LITERAL, OPERATOR
-                â”‚
-                â–¼ (2. Parser: Abstract Syntax Tree)
-    AST: AppNode, ModelNode, RouteNode, ActionNode
-                â”‚
-                â–¼ (3. Semantic Analyzer)
-    Scope Verification, Type Validation & Symbol Table
-                â”‚
-                â–¼ (4. Bytecode Emitter)
-    Opcode Emission: OP_PUSH_CONST, OP_CALL, OP_JMP
-                â”‚
-                â–¼ (5. AAYU Virtual Machine (VM))
-    48-bit Nan-Boxed Register Engine (C-level execution speed)
-                â”‚
-                â–¼ (6. Native Subsystems)
-    â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-    â”‚  AayuDb (RAM)  â”‚  HTTP Server   â”‚ Crypto Engine  â”‚
-    â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+<div class="arch-flow">
+  <div class="arch-node">AAYU Source Code (.ay / .aa / .aayu)</div>
+  <div class="arch-arrow">| 1. Lexer (Pure AAYU Tokenizer)</div>
+  <div class="arch-node">Token Stream (Keywords, Identifiers, Literals)</div>
+  <div class="arch-arrow">| 2. Parser (Pure AAYU AST Generator)</div>
+  <div class="arch-node">Abstract Syntax Tree (AST)</div>
+  <div class="arch-arrow">| 3. Semantic Analyzer & Bytecode Emitter</div>
+  <div class="arch-node">Nan-Boxed Register Bytecode</div>
+  <div class="arch-arrow">| 4. AAYU Native Runtime Engine</div>
+  <div class="arch-runtime-grid">
+    <div class="arch-sub">AayuDb (RAM + WAL)</div>
+    <div class="arch-sub">ASGI HTTP Server</div>
+    <div class="arch-sub">Crypto Engine</div>
+  </div>
 </div>
 
 <h2>The Self-Hosted Philosophy</h2>
@@ -653,7 +736,7 @@ print("Age:", age)</code></pre>
 state user_status = "offline"</code></pre>
 
 <div class="hinglish">
-  ðŸ’¡ <b>Concept Samjhein (Hindi/Hinglish):</b><br>
+  <b>Concept Samjhein (Hindi/Hinglish):</b><br>
   <code>let</code> normal local variable hota hai jo action (function) ke andar kaam karta hai. <code>state</code> reactive variable hota hai jisko change karne par UI ya API route automatically update ho jate hain!
 </div>
 
@@ -708,9 +791,9 @@ state user_status = "offline"</code></pre>
     <td><code>1</code> (True) or <code>0</code> (False)</td>
   </tr>
   <tr>
-    <td><code><</code>, <code><=</code>, <code>></code>, <code>>=</code></td>
+    <td><code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code></td>
     <td>Relational comparisons</td>
-    <td><code>score >= 90</code></td>
+    <td><code>score &gt;= 90</code></td>
     <td><code>1</code> (True) or <code>0</code> (False)</td>
   </tr>
 </table>
@@ -741,7 +824,7 @@ else
 end</code></pre>
 
 <div class="hinglish">
-  ðŸ’¡ <b>Concept Samjhein (Hindi/Hinglish):</b><br>
+  <b>Concept Samjhein (Hindi/Hinglish):</b><br>
   C me curly braces <code>{}</code> lagte hain aur Python me indentation (spaces) ki wajah se error aati hai. AAYU me na braces ka jhanjhat hai na indentation error ka: seedha <code>if ... elif ... else ... end</code> likho!
 </div>
 
@@ -885,7 +968,7 @@ end
 run main</code></pre>
 
 <div class="hinglish">
-  ðŸ’¡ <b>Concept Samjhein (Hindi/Hinglish):</b><br>
+  <b>Concept Samjhein (Hindi/Hinglish):</b><br>
   AAYU ke andar database pehle se baitha hua hai! Na SQLite install karni hai, na PostgreSQL, na koi ORM. Bas <code>model Article ... end</code> likha aur table automatically memory aur disk par create ho gayi!
 </div>
 
@@ -977,7 +1060,7 @@ end
 let sorted_arr = [10, 25, 30, 45, 50, 60]
 print("Binary search for 45:", binary_search(sorted_arr, 45)) # Output: 3</code></pre>
 
-<h2>12.3 Bubble Sort (O(NÂ²) Time, O(1) Space)</h2>
+<h2>12.3 Bubble Sort (O(N<sup>2</sup>) Time, O(1) Space)</h2>
 <pre><code>action bubble_sort(arr)
     let n = len(arr)
     let i = 0
@@ -1118,33 +1201,32 @@ print("Fibonacci(15):", fib_dp(15)) # 610</code></pre>
 <h2>13.1 The Single-File Full-Stack Architecture</h2>
 <p>In traditional architecture, frontend, backend, and database are divided across three separate stacks (e.g. Next.js, FastAPI, PostgreSQL), requiring REST serializers, ORM schemas, and TypeScript interfaces that must be kept manually in sync.</p>
 
-<div class="diagram-box">
-TRADITIONAL ARCHITECTURE (FRAGILE):
-[ Next.js React ] â”€â”€(HTTP/JSON)â”€â”€> [ Express / FastAPI ] â”€â”€(SQL/TCP)â”€â”€> [ PostgreSQL ]
-      â”‚                                    â”‚                                  â”‚
-  TS Types                           Pydantic Models                     SQL Migrations
-  (3 separate schemas that constantly break when fields change!)
+<div class="arch-compare-grid">
+  <div class="arch-compare-box traditional">
+    <h4>TRADITIONAL ARCHITECTURE (FRAGILE)</h4>
+    <p><b>Frontend:</b> Next.js / React (TypeScript interfaces)</p>
+    <p class="arch-arrow">| HTTP / REST Serializers</p>
+    <p><b>Backend:</b> Express / FastAPI (Pydantic / DTO models)</p>
+    <p class="arch-arrow">| SQL / ORM Drivers</p>
+    <p><b>Database:</b> PostgreSQL / SQLite (SQL Migrations)</p>
+    <div class="fragile-warning">! 3 Disconnected Schemas - 150+ files & constant schema desync!</div>
+  </div>
 
-AAYU INTENT-TO-SILICON ARCHITECTURE (ROBUST):
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚                            app.ay (Single Intent File)                      â”‚
-â”‚                                                                             â”‚
-â”‚  model User             route "/api/users"          Page Dashboard          â”‚
-â”‚    id Int                 get                         Column                â”‚
-â”‚    name String              respond(User.all())         Text("Users")       â”‚
-â”‚  end                      end                       end                     â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-                                       â”‚ Direct Compilation
-                                       â–¼
-                     [ AAYU Native Register Bytecode ]
-                                       â”‚
-                  [ 10ms Cold Boot | 2.4 MB RAM | Zero Glue Code ]
+  <div class="arch-compare-box aayu-arch">
+    <h4>AAYU INTENT ARCHITECTURE (SINGLE-FILE)</h4>
+    <p><b>One Unified Intent File (app.ay):</b></p>
+    <code>model User { id: Int, name: String }</code><br>
+    <code>route "/api/users" { get respond(User.all()) }</code><br>
+    <code>Page Dashboard { Column Text("Users") }</code>
+    <p class="arch-arrow">| Direct Native Compilation</p>
+    <div class="robust-success">✓ 10ms Cold Boot | 2.4 MB RAM | Zero Glue Code</div>
+  </div>
 </div>
 
 <h2>13.2 RAM-First In-Memory Storage Engine with WAL (AayuDb)</h2>
 <p>AayuDb employs a <strong>RAM-First + Write-Ahead Log (WAL)</strong> storage model:</p>
 <ol>
-  <li><strong>Read Operations:</strong> Serviced directly from nan-boxed memory tables in sub-microsecond time (~0.04 Âµs per lookup).</li>
+  <li><strong>Read Operations:</strong> Serviced directly from nan-boxed memory tables in sub-microsecond time (~0.04 &micro;s per lookup).</li>
   <li><strong>Write Operations:</strong> Appended sequentially to an append-only WAL on SSD, guaranteeing ACID durability.</li>
   <li><strong>Background Checkpointer:</strong> Asynchronously compacts WAL entries into persistent snapshot blocks without blocking incoming requests.</li>
 </ol>
@@ -1160,7 +1242,7 @@ AAYU INTENT-TO-SILICON ARCHITECTURE (ROBUST):
 
 <!-- PROJECT 1 -->
 <div class="project-card">
-  <div class="project-title">ðŸš€ Project 1: Production URL Shortener & Analytics API</div>
+  <div class="project-title">[PROJECT 1] Production URL Shortener & Analytics API</div>
   <p><strong>Use Case:</strong> Shortens long URLs into unique Base62 codes (like bit.ly) and tracks real-time click analytics.</p>
   
   <div class="q-sol-title">Complete Verified Source Code (url_shortener.ay):</div>
@@ -1212,7 +1294,7 @@ end</code></pre>
 
 <!-- PROJECT 2 -->
 <div class="project-card">
-  <div class="project-title">ðŸ“¡ Project 2: Real-Time In-Memory Pub/Sub Event Broker</div>
+  <div class="project-title">[PROJECT 2] Real-Time In-Memory Pub/Sub Event Broker</div>
   <p><strong>Use Case:</strong> Decouples microservices by allowing topics to publish and subscribe to in-memory events without external message brokers like RabbitMQ or Kafka.</p>
 
   <div class="q-sol-title">Complete Verified Source Code (event_broker.ay):</div>
@@ -1248,7 +1330,7 @@ run main</code></pre>
 
 <!-- PROJECT 3 -->
 <div class="project-card">
-  <div class="project-title">ðŸ¤– Project 3: Zero-Dependency AI Text Sentiment Classifier</div>
+  <div class="project-title">[PROJECT 3] Zero-Dependency AI Text Sentiment Classifier</div>
   <p><strong>Use Case:</strong> Performs on-device NLP sentiment analysis using dictionary vectorization with zero external Python/PyTorch dependencies.</p>
 
   <div class="q-sol-title">Complete Verified Source Code (sentiment_ai.ay):</div>
@@ -1281,7 +1363,7 @@ run main</code></pre>
 
 <!-- PROJECT 4 -->
 <div class="project-card">
-  <div class="project-title">ðŸ›’ Project 4: Production E-Commerce Inventory & Checkout Engine</div>
+  <div class="project-title">[PROJECT 4] Production E-Commerce Inventory & Checkout Engine</div>
   <p><strong>Use Case:</strong> Validates product inventory, computes discount taxes, and confirms orders with ACID transactional safety.</p>
 
   <div class="q-sol-title">Complete Verified Source Code (checkout_engine.ay):</div>
@@ -1326,7 +1408,7 @@ run main</code></pre>
 
 <!-- PROJECT 5 -->
 <div class="project-card">
-  <div class="project-title">ðŸ” Project 5: High-Entropy Cryptographic Token Verifier</div>
+  <div class="project-title">[PROJECT 5] High-Entropy Cryptographic Token Verifier</div>
   <p><strong>Use Case:</strong> Issues and validates tamper-proof session tokens using pure AAYU cryptographic polynomial hashing.</p>
 
   <div class="q-sol-title">Complete Verified Source Code (token_auth.ay):</div>
@@ -1366,7 +1448,7 @@ run main</code></pre>
 
 <!-- PROBLEM 1 -->
 <div class="practice-set">
-  <div class="practice-title">ðŸ† Problem 1: Even or Odd Checker</div>
+  <div class="practice-title">[Problem 1] Even or Odd Checker</div>
   <p>Write an action that checks whether a given number is Even or Odd using the modulo operator.</p>
   <div class="q-sol-title">Verified Solution:</div>
   <pre><code>action is_even(num)
@@ -1382,7 +1464,7 @@ print("Is 21 even:", is_even(21)) # 0</code></pre>
 
 <!-- PROBLEM 2 -->
 <div class="practice-set">
-  <div class="practice-title">ðŸ† Problem 2: Find Maximum of Three Numbers</div>
+  <div class="practice-title">[Problem 2] Find Maximum of Three Numbers</div>
   <p>Write an action that takes three numbers and returns the largest.</p>
   <div class="q-sol-title">Verified Solution:</div>
   <pre><code>action max_of_three(a, b, c)
@@ -1401,7 +1483,7 @@ print("Largest of (45, 92, 67):", max_of_three(45, 92, 67)) # 92</code></pre>
 
 <!-- PROBLEM 3 -->
 <div class="practice-set">
-  <div class="practice-title">ðŸ† Problem 3: Factorial Calculation (Iterative)</div>
+  <div class="practice-title">[Problem 3] Factorial Calculation (Iterative)</div>
   <p>Compute the factorial of a positive integer N (N!).</p>
   <div class="q-sol-title">Verified Solution:</div>
   <pre><code>action factorial(n)
@@ -1419,7 +1501,7 @@ print("Factorial of 5:", factorial(5)) # 120</code></pre>
 
 <!-- PROBLEM 4 -->
 <div class="practice-set">
-  <div class="practice-title">ðŸ† Problem 4: Reverse an Integer</div>
+  <div class="practice-title">[Problem 4] Reverse an Integer</div>
   <p>Given an integer (e.g. 12345), reverse its digits mathematically to produce 54321.</p>
   <div class="q-sol-title">Verified Solution:</div>
   <pre><code>action reverse_integer(num)
@@ -1438,7 +1520,7 @@ print("Reverse of 12345:", reverse_integer(12345)) # 54321</code></pre>
 
 <!-- PROBLEM 5 -->
 <div class="practice-set">
-  <div class="practice-title">ðŸ† Problem 5: Palindrome Number Checker</div>
+  <div class="practice-title">[Problem 5] Palindrome Number Checker</div>
   <p>Check if a number reads the same backward as forward (e.g., 121, 1331).</p>
   <div class="q-sol-title">Verified Solution:</div>
   <pre><code>action is_palindrome_num(num)
@@ -1462,7 +1544,7 @@ print("Is 1234 Palindrome:", is_palindrome_num(1234)) # 0</code></pre>
 
 <!-- PROBLEM 6 -->
 <div class="practice-set">
-  <div class="practice-title">ðŸ† Problem 6: Sum of Elements in an Array</div>
+  <div class="practice-title">[Problem 6] Sum of Elements in an Array</div>
   <p>Compute the total sum of all values in a numeric array.</p>
   <div class="q-sol-title">Verified Solution:</div>
   <pre><code>action sum_array(arr)
@@ -1481,7 +1563,7 @@ print("Sum of [10, 20, 30, 40]:", sum_array([10, 20, 30, 40])) # 100</code></pre
 
 <!-- PROBLEM 7 -->
 <div class="practice-set">
-  <div class="practice-title">ðŸ† Problem 7: Find Minimum and Maximum in Array</div>
+  <div class="practice-title">[Problem 7] Find Minimum and Maximum in Array</div>
   <p>Traverse an array in a single pass to find both the smallest and largest elements.</p>
   <div class="q-sol-title">Verified Solution:</div>
   <pre><code>action find_min_max(arr)
@@ -1508,7 +1590,7 @@ print("Maximum:", bounds[1]) # 99</code></pre>
 
 <!-- PROBLEM 8 -->
 <div class="practice-set">
-  <div class="practice-title">ðŸ† Problem 8: Prime Number Tester</div>
+  <div class="practice-title">[Problem 8] Prime Number Tester</div>
   <p>Determine whether a given number N is a prime number.</p>
   <div class="q-sol-title">Verified Solution:</div>
   <pre><code>action is_prime(n)
@@ -1531,7 +1613,7 @@ print("Is 35 prime:", is_prime(35)) # 0</code></pre>
 
 <!-- PROBLEM 9 -->
 <div class="practice-set">
-  <div class="practice-title">ðŸ† Problem 9: Count Primes up to Limit N (Sieve Logic)</div>
+  <div class="practice-title">[Problem 9] Count Primes up to Limit N (Sieve Logic)</div>
   <p>Count the total number of prime numbers in the range 2 through N.</p>
   <div class="q-sol-title">Verified Solution:</div>
   <pre><code>action count_primes_to(limit)
@@ -1561,7 +1643,7 @@ print("Primes up to 50:", count_primes_to(50)) # 15</code></pre>
 
 <!-- PROBLEM 10 -->
 <div class="practice-set">
-  <div class="practice-title">ðŸ† Problem 10: Two-Sum Target Matcher</div>
+  <div class="practice-title">[Problem 10] Two-Sum Target Matcher</div>
   <p>Given an array <code>[2, 7, 11, 15]</code> and target <code>9</code>, find two numbers whose sum equals the target.</p>
   <div class="q-sol-title">Verified Solution:</div>
   <pre><code>action find_two_sum(arr, target)
@@ -1586,7 +1668,7 @@ print("Two numbers that sum to 9:", pair) # [2, 7]</code></pre>
 
 <!-- PROBLEM 11 -->
 <div class="practice-set">
-  <div class="practice-title">ðŸ† Problem 11: Greatest Common Divisor (GCD)</div>
+  <div class="practice-title">[Problem 11] Greatest Common Divisor (GCD)</div>
   <p>Find the Greatest Common Divisor of two integers using the Euclidean Algorithm.</p>
   <div class="q-sol-title">Verified Solution:</div>
   <pre><code>action gcd(a, b)
@@ -1603,7 +1685,7 @@ print("GCD of 48 and 18:", gcd(48, 18)) # 6</code></pre>
 
 <!-- PROBLEM 12 -->
 <div class="practice-set">
-  <div class="practice-title">ðŸ† Problem 12: Least Common Multiple (LCM)</div>
+  <div class="practice-title">[Problem 12] Least Common Multiple (LCM)</div>
   <p>Compute the LCM of two integers using the formula <code>(a * b) / GCD(a, b)</code>.</p>
   <div class="q-sol-title">Verified Solution:</div>
   <pre><code>action lcm(a, b)
@@ -1616,7 +1698,7 @@ print("LCM of 12 and 15:", lcm(12, 15)) # 60</code></pre>
 
 <!-- PROBLEM 13 -->
 <div class="practice-set">
-  <div class="practice-title">ðŸ† Problem 13: Missing Number in Array 1 to N</div>
+  <div class="practice-title">[Problem 13] Missing Number in Array 1 to N</div>
   <p>Given an array containing N-1 unique numbers from 1 to N, find the missing number.</p>
   <div class="q-sol-title">Verified Solution:</div>
   <pre><code>action find_missing_number(arr, n)
@@ -1637,8 +1719,8 @@ print("Missing number:", find_missing_number(seq, 6)) # 3</code></pre>
 
 <!-- PROBLEM 14 -->
 <div class="practice-set">
-  <div class="practice-title">ðŸ† Problem 14: Armstrong Number Checker</div>
-  <p>Check if a 3-digit number equals the sum of cubes of its digits (e.g. 153 = 1Â³ + 5Â³ + 3Â³ = 1 + 125 + 27 = 153).</p>
+  <div class="practice-title">[Problem 14] Armstrong Number Checker</div>
+  <p>Check if a 3-digit number equals the sum of cubes of its digits (e.g. 153 = 1<sup>3</sup> + 5<sup>3</sup> + 3<sup>3</sup> = 1 + 125 + 27 = 153).</p>
   <div class="q-sol-title">Verified Solution:</div>
   <pre><code>action is_armstrong(num)
     let original = num
@@ -1661,7 +1743,7 @@ print("Is 240 Armstrong:", is_armstrong(240)) # 0</code></pre>
 
 <!-- PROBLEM 15 -->
 <div class="practice-set">
-  <div class="practice-title">ðŸ† Problem 15: String Length and Character Frequency</div>
+  <div class="practice-title">[Problem 15] String Length and Character Frequency</div>
   <p>Count the frequency of a target character within a string.</p>
   <div class="q-sol-title">Verified Solution:</div>
   <pre><code>action count_char_freq(str, target_char)
@@ -1683,7 +1765,7 @@ print("Count of 'i' in word:", count_char_freq(word, "i")) # 3</code></pre>
 
 <!-- PROBLEM 16 -->
 <div class="practice-set">
-  <div class="practice-title">ðŸ† Problem 16: Two-Pointers String Palindrome</div>
+  <div class="practice-title">[Problem 16] Two-Pointers String Palindrome</div>
   <p>Verify if a string reads the same forwards and backwards using two pointer indices.</p>
   <div class="q-sol-title">Verified Solution:</div>
   <pre><code>action is_palindrome_string(s)
@@ -1705,7 +1787,7 @@ print("Is 'silicon' palindrome:", is_palindrome_string("silicon")) # 0</code></p
 
 <!-- PROBLEM 17 -->
 <div class="practice-set">
-  <div class="practice-title">ðŸ† Problem 17: Maximum Subarray Sum of Size K (Sliding Window)</div>
+  <div class="practice-title">[Problem 17] Maximum Subarray Sum of Size K (Sliding Window)</div>
   <p>Find the maximum sum of any contiguous subarray of fixed size K.</p>
   <div class="q-sol-title">Verified Solution:</div>
   <pre><code>action max_subarray_k(arr, k)
@@ -1737,7 +1819,7 @@ print("Max sum of window size 3:", max_subarray_k(vals, 3)) # 9 ([5, 1, 3])</cod
 
 <!-- PROBLEM 18 -->
 <div class="practice-set">
-  <div class="practice-title">ðŸ† Problem 18: Selection Sort Implementation</div>
+  <div class="practice-title">[Problem 18] Selection Sort Implementation</div>
   <p>Sort an array by repeatedly finding the minimum element from the unsorted part.</p>
   <div class="q-sol-title">Verified Solution:</div>
   <pre><code>action selection_sort(arr)
@@ -1768,7 +1850,7 @@ print("Selection Sorted:", selection_sort(nums)) # [10, 20, 30, 40, 50]</code></
 
 <!-- PROBLEM 19 -->
 <div class="practice-set">
-  <div class="practice-title">ðŸ† Problem 19: 2D Matrix Transposition</div>
+  <div class="practice-title">[Problem 19] 2D Matrix Transposition</div>
   <p>Transpose a 2x3 matrix into a 3x2 matrix.</p>
   <div class="q-sol-title">Verified Solution:</div>
   <pre><code>action transpose_2x3(mat)
@@ -1787,7 +1869,7 @@ print("Transposed Matrix:", trans) # [[1, 4], [2, 5], [3, 6]]</code></pre>
 
 <!-- PROBLEM 20 -->
 <div class="practice-set">
-  <div class="practice-title">ðŸ† Problem 20: Fibonacci with Memoization (Dynamic Programming)</div>
+  <div class="practice-title">[Problem 20] Fibonacci with Memoization (Dynamic Programming)</div>
   <p>Find the N-th Fibonacci number in linear O(N) time with O(1) space.</p>
   <div class="q-sol-title">Verified Solution:</div>
   <pre><code>action fibonacci_fast(n)

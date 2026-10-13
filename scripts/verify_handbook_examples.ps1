@@ -23,7 +23,13 @@ $snippets = @(
     @{ Name = "Dictionaries"; Code = "let user = {`"name`": `"Ayush`", `"role`": `"Architect`"}`nprint(`"User:`", user[`"name`"])" },
     @{ Name = "std/math Sqrt & Pow"; Code = "import `"std/math`"`nprint(`"Sqrt:`", sqrt(64.0))`nprint(`"Pow:`", pow(2.0, 4.0))" },
     @{ Name = "std/crypto Hash Entropy"; Code = "import `"std/crypto`"`nlet h1 = hash_string(`"abc`")`nlet h2 = hash_string(`"xyz`")`nprint(`"Diff:`", h1 != h2)" },
-    @{ Name = "std/db Record Store"; Code = "import `"std/db`"`nlet r = db_create_record(1, `"Task`", `"Active`")`nprint(`"ID:`", r[`"id`"])" }
+    @{ Name = "std/db Record Store"; Code = "import `"std/db`"`nlet r = db_create_record(1, `"Task`", `"Active`")`nprint(`"ID:`", r[`"id`"])" },
+    @{ Name = "DSA: Binary Search"; Code = "action bs(arr, t)`nlet l = 0`nlet h = len(arr)-1`nwhile l <= h`nlet m = (l+h)/2`nif arr[m] == t`nreturn m`nelif arr[m] < t`nl = m + 1`nelse`nh = m - 1`nend`nend`nreturn -1`nend`nprint(`"BS:`", bs([10, 20, 30, 40], 30))" },
+    @{ Name = "DSA: Bubble Sort & SetAt"; Code = "action set_at(arr, idx, val)`nlet res = []`nlet i = 0`nwhile i < len(arr)`nif i == idx`nres = res + [val]`nelse`nres = res + [arr[i]]`nend`ni = i + 1`nend`nreturn res`nend`nlet a = [3, 1, 2]`na = set_at(a, 0, 1)`nprint(`"SetAt:`", a[0])" },
+    @{ Name = "DSA: Stack LIFO"; Code = "action spush(s, v)`nreturn s + [v]`nend`nlet s = spush([], 42)`nprint(`"Stack:`", s[0])" },
+    @{ Name = "Project: Base62 URL Shortener"; Code = "action b62(n)`nlet c = `"0123456789abcdefghijklmnopqrstuvwxyz`"`nlet s = `"`"`nwhile n > 0`ns = c[n % 36] + s`nn = n / 36`nend`nreturn s`nend`nprint(`"B62:`", b62(100))" },
+    @{ Name = "Logic: Missing Number in 1..N"; Code = "action miss(a, n)`nlet exp = (n * (n + 1)) / 2`nlet act = 0`nlet i = 0`nwhile i < len(a)`nact = act + a[i]`ni = i + 1`nend`nreturn exp - act`nend`nprint(`"Missing:`", miss([1, 2, 4, 5], 5))" },
+    @{ Name = "Logic: Palindrome Two Pointers"; Code = "action pal(s)`nlet l = 0`nlet r = len(s) - 1`nwhile l < r`nif s[l] != s[r]`nreturn 0`nend`nl = l + 1`nr = r - 1`nend`nreturn 1`nend`nprint(`"Pal:`", pal(`"racecar`"))" }
 )
 
 $passed = 0

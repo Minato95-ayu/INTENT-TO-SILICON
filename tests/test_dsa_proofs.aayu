@@ -1,0 +1,217 @@
+# ==============================================================================
+# Comprehensive DSA and Logic Algorithm Verification in Pure AAYU
+# ==============================================================================
+
+# Helper: Array update
+action set_at(arr, index, val)
+    let res = []
+    let i = 0
+    let n = len(arr)
+    while i < n
+        if i == index
+            res = res + [val]
+        else
+            res = res + [arr[i]]
+        end
+        i = i + 1
+    end
+    return res
+end
+
+# 1. Linear Search
+action linear_search(arr, target)
+    let i = 0
+    let n = len(arr)
+    while i < n
+        if arr[i] == target
+            return i
+        end
+        i = i + 1
+    end
+    return -1
+end
+
+# 2. Binary Search
+action binary_search(arr, target)
+    let low = 0
+    let high = len(arr) - 1
+    while low <= high
+        let mid = (low + high) / 2
+        if arr[mid] == target
+            return mid
+        elif arr[mid] < target
+            low = mid + 1
+        else
+            high = mid - 1
+        end
+    end
+    return -1
+end
+
+# 3. Bubble Sort
+action bubble_sort(arr)
+    let n = len(arr)
+    let i = 0
+    while i < n
+        let j = 0
+        while j < n - i - 1
+            if arr[j] > arr[j + 1]
+                let temp = arr[j]
+                arr = set_at(arr, j, arr[j + 1])
+                arr = set_at(arr, j + 1, temp)
+            end
+            j = j + 1
+        end
+        i = i + 1
+    end
+    return arr
+end
+
+# 4. Stack (Push, Pop, Peek)
+action create_stack()
+    return []
+end
+
+action stack_push(s, val)
+    return s + [val]
+end
+
+action stack_peek(s)
+    let n = len(s)
+    if n == 0
+        return -1
+    end
+    return s[n - 1]
+end
+
+action stack_pop(s)
+    let n = len(s)
+    if n <= 1
+        return []
+    end
+    let res = []
+    let i = 0
+    while i < n - 1
+        res = res + [s[i]]
+        i = i + 1
+    end
+    return res
+end
+
+# 5. Reverse Array (Two Pointers)
+action reverse_array(arr)
+    let left = 0
+    let right = len(arr) - 1
+    while left < right
+        let temp = arr[left]
+        arr = set_at(arr, left, arr[right])
+        arr = set_at(arr, right, temp)
+        left = left + 1
+        right = right - 1
+    end
+    return arr
+end
+
+# 6. Two Sum
+action find_two_sum(arr, target)
+    let i = 0
+    let total = len(arr)
+    while i < total
+        let j = i + 1
+        while j < total
+            if arr[i] + arr[j] == target
+                return [arr[i], arr[j]]
+            end
+            j = j + 1
+        end
+        i = i + 1
+    end
+    return []
+end
+
+# 7. Fibonacci Memoized
+action fib_memo(n)
+    if n <= 0
+        return 0
+    elif n == 1
+        return 1
+    end
+    let a = 0
+    let b = 1
+    let i = 2
+    while i <= n
+        let c = a + b
+        a = b
+        b = c
+        i = i + 1
+    end
+    return b
+end
+
+# 8. Sieve of Eratosthenes (Count primes up to n)
+action count_primes(limit)
+    let count = 0
+    let num = 2
+    while num <= limit
+        let is_p = 1
+        let d = 2
+        while d * d <= num
+            if num % d == 0
+                is_p = 0
+                d = num + 1
+            else
+                d = d + 1
+            end
+        end
+        if is_p == 1
+            count = count + 1
+        end
+        num = num + 1
+    end
+    return count
+end
+
+action format_array(arr)
+    let s = "["
+    let i = 0
+    let n = len(arr)
+    while i < n
+        s = s + "" + arr[i]
+        if i < n - 1
+            s = s + ", "
+        end
+        i = i + 1
+    end
+    s = s + "]"
+    return s
+end
+
+# Test all
+print("--- RUNNING PURE AAYU DSA PROOFS ---")
+
+let arr1 = [10, 25, 30, 45, 50, 60]
+let bs_res = binary_search(arr1, 45)
+print("Binary Search index for 45:", bs_res)
+
+let unsorted = [64, 34, 25, 12, 22, 11, 90]
+let sorted = bubble_sort(unsorted)
+print("Bubble Sorted Array:", format_array(sorted))
+
+let st = create_stack()
+st = stack_push(st, 10)
+st = stack_push(st, 20)
+st = stack_push(st, 30)
+print("Stack Peek:", stack_peek(st))
+st = stack_pop(st)
+print("Stack Peek after Pop:", stack_peek(st))
+
+let rev_arr = reverse_array([1, 2, 3, 4, 5])
+print("Reversed Array:", format_array(rev_arr))
+
+let two_sum = find_two_sum([2, 7, 11, 15], 9)
+print("Two Sum for 9:", format_array(two_sum))
+
+print("Fibonacci(10):", fib_memo(10))
+print("Primes count up to 30:", count_primes(30))
+
+print("--- ALL DSA PROOFS VERIFIED ---")

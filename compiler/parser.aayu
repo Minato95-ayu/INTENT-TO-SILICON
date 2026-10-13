@@ -364,51 +364,51 @@ action parse_primary(tokens, pos)
                 let dot_tok = prim_res[1]
                 let full_dot_name = prim_expr["name"] + "." + dot_tok["value"]
                 prim_expr = make_identifier(full_dot_name, prim_line, prim_col)
-                continue
-            end
-            if match(tokens, pos, "PUNCTUATION", "::")
-                pos = pos + 1
-                prim_res = expect(tokens, pos, "IDENTIFIER", "Expect member after '::'")
-                pos = prim_res[0]
-                let col_tok = prim_res[1]
-                let full_col_name = prim_expr["name"] + "::" + col_tok["value"]
-                prim_expr = make_identifier(full_col_name, prim_line, prim_col)
-                continue
-            end
-            if match(tokens, pos, "PUNCTUATION", "[")
-                pos = pos + 1
-                prim_res = parse_expression(tokens, pos)
-                pos = prim_res[0]
-                prim_idx = prim_res[1]
-                prim_res2 = expect_val(tokens, pos, "PUNCTUATION", "]", "Expect ']' after index.")
-                pos = prim_res2[0]
-                prim_expr = make_subscript(prim_expr, prim_idx, prim_line, prim_col)
             else
-                if match(tokens, pos, "PUNCTUATION", "(")
+                if match(tokens, pos, "PUNCTUATION", "::")
                     pos = pos + 1
-                    prim_args = []
-                    if match(tokens, pos, "PUNCTUATION", ")")
-                        pos = pos + 1
-                        prim_expr = make_call(prim_expr, prim_args, prim_line, prim_col)
-                    else
-                        prim_arg_loop = 1 == 1
-                        while prim_arg_loop
-                            prim_res = parse_expression(tokens, pos)
-                            pos = prim_res[0]
-                            prim_args = prim_args + [prim_res[1]]
-                            
-                            if match(tokens, pos, "PUNCTUATION", ",")
-                                pos = pos + 1
-                            else
-                                prim_arg_loop = 1 == 0
-                            end
-                        end
-                        prim_res2 = expect_val(tokens, pos, "PUNCTUATION", ")", "Expect ')' after arguments.")
-                        pos = prim_res2[0]
-                        prim_expr = make_call(prim_expr, prim_args, prim_line, prim_col)
-                    end
+                    prim_res = expect(tokens, pos, "IDENTIFIER", "Expect member after '::'")
+                    pos = prim_res[0]
+                    let col_tok = prim_res[1]
+                    let full_col_name = prim_expr["name"] + "::" + col_tok["value"]
+                    prim_expr = make_identifier(full_col_name, prim_line, prim_col)
                 else
-                    prim_loop = 1 == 0
+                    if match(tokens, pos, "PUNCTUATION", "[")
+                        pos = pos + 1
+                        prim_res = parse_expression(tokens, pos)
+                        pos = prim_res[0]
+                        prim_idx = prim_res[1]
+                        prim_res2 = expect_val(tokens, pos, "PUNCTUATION", "]", "Expect ']' after index.")
+                        pos = prim_res2[0]
+                        prim_expr = make_subscript(prim_expr, prim_idx, prim_line, prim_col)
+                    else
+                        if match(tokens, pos, "PUNCTUATION", "(")
+                            pos = pos + 1
+                            prim_args = []
+                            if match(tokens, pos, "PUNCTUATION", ")")
+                                pos = pos + 1
+                                prim_expr = make_call(prim_expr, prim_args, prim_line, prim_col)
+                            else
+                                prim_arg_loop = 1 == 1
+                                while prim_arg_loop
+                                    prim_res = parse_expression(tokens, pos)
+                                    pos = prim_res[0]
+                                    prim_args = prim_args + [prim_res[1]]
+                                    
+                                    if match(tokens, pos, "PUNCTUATION", ",")
+                                        pos = pos + 1
+                                    else
+                                        prim_arg_loop = 1 == 0
+                                    end
+                                end
+                                prim_res2 = expect_val(tokens, pos, "PUNCTUATION", ")", "Expect ')' after arguments.")
+                                pos = prim_res2[0]
+                                prim_expr = make_call(prim_expr, prim_args, prim_line, prim_col)
+                            end
+                        else
+                            prim_loop = 1 == 0
+                        end
+                    end
                 end
             end
         end

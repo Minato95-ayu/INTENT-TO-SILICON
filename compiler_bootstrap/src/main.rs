@@ -252,7 +252,10 @@ fn main() {
     
     let mut file = fs::File::create(output_file).expect("Failed to create .ayc file");
     file.write_all(&bc).expect("Failed to write bytecode");
-    println!("Compiled successfully to {}", output_file);
+    let is_verbose = args.contains(&"--verbose".to_string()) || args.contains(&"-v".to_string());
+    if is_verbose {
+        println!("Compiled successfully to {}", output_file);
+    }
 }
 
 #[cfg(test)]

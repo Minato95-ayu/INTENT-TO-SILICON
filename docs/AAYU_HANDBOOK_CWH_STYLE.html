@@ -396,6 +396,11 @@
       <td>C vs Python vs AAYU, Compiler Pipeline</td>
     </tr>
     <tr>
+      <td><strong>Chapter 0.5</strong></td>
+      <td>Terminal, PowerShell & Developer Environment</td>
+      <td>PowerShell, CMD, Notepad, CLI Flags, Git & AAYU Studio</td>
+    </tr>
+    <tr>
       <td><strong>Chapter 1</strong></td>
       <td>Variables, Constants & Data Types</td>
       <td>Nan-Boxing, 256 Slot Limit, let vs state</td>
@@ -546,6 +551,174 @@ print("Hello, World!")</code></pre>
     <div class="q-sol-title">Solution:</div>
     <p>Python me agar 1 space bhi aage-peeche ho jaye toh <code>IndentationError</code> crash ho jata hai. AAYU explicit <code>end</code> keyword use karta hai, isliye spaces chahe jaise ho, compiler scope 100% sahi pehchanta hai.</p>
   </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================================================== -->
+<!-- CHAPTER 0.5: TERMINAL & DEVELOPER ENVIRONMENT -->
+<!-- ============================================================================== -->
+<h1>Chapter 0.5: Terminal, PowerShell & Tooling Mastery</h1>
+
+<h2>1. AAYU Code Terminal Se Kaise Run Karein? (Step-by-Step)</h2>
+<p>Kayi baar students code toh likh lete hain par unhe samajh nahi aata ki terminal ya PowerShell me jakar kya command likhni hai. Yahan bilkul shuruat se samjhein:</p>
+
+<h3>Step A: File Banayein (Notepad ya VS Code se)</h3>
+<p>Aap chahein toh Windows ke simple <strong>Notepad</strong> me bhi AAYU code likh sakte hain:</p>
+<pre><code># Terminal / CMD me type karein:
+notepad my_first_code.aayu</code></pre>
+<p>Notepad khulne par usme yeh likhein aur save karke close karein:</p>
+<pre><code>print("AAYU running from pure terminal!")</code></pre>
+
+<h3>Step B: Terminal / PowerShell me Run Karein</h3>
+<p>Ab apne folder me PowerShell ya Command Prompt (CMD) kholein aur seedha type karein:</p>
+<pre><code># Direct execution command:
+aayu my_first_code.aayu
+
+# Ya phir run keyword ke saath:
+aayu run my_first_code.aayu</code></pre>
+
+<div class="box box-tip">
+  <div class="box-title">💡 Production Clean Output (Zero Noise!)</div>
+  Jaise Python me <code>python script.py</code> chalane par seedha result aata hai, waise hi ab AAYU me background compiler bina kisi AST ya debug kachre ke <strong>100% silent</strong> chalta hai aur console par seedha output deta hai:
+  <pre style="margin-top: 6px; margin-bottom: 2px;"><code>AAYU running from pure terminal!</code></pre>
+</div>
+
+<h2>2. Complete AAYU CLI Commands Reference</h2>
+<table>
+  <thead>
+    <tr>
+      <th style="width: 35%;">Command</th>
+      <th style="width: 35%;">Kaam Kya Karta Hai?</th>
+      <th style="width: 30%;">Kab Use Karein?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>aayu &lt;file.aayu&gt;</code></td>
+      <td>Compile karta hai aur seedha run karta hai</td>
+      <td>Daily development aur testing me</td>
+    </tr>
+    <tr>
+      <td><code>aayu run &lt;file.aayu&gt; --jit</code></td>
+      <td>JIT (Just-In-Time) native mode me run karta hai</td>
+      <td>Ultra-heavy mathematical loops me</td>
+    </tr>
+    <tr>
+      <td><code>aayu build &lt;file.aayu&gt; -o app.ayc</code></td>
+      <td>Source code ko pre-compiled <code>.ayc</code> bytecode me save karta hai</td>
+      <td>Code ko bina source code share kiye distribute karne ke liye</td>
+    </tr>
+    <tr>
+      <td><code>aayu app.ayc</code></td>
+      <td>Pre-compiled bytecode ko direct silicon speed par execute karta hai</td>
+      <td>Fastest production deployment me</td>
+    </tr>
+    <tr>
+      <td><code>aayu --version</code> ya <code>aayu -v</code></td>
+      <td>Engine version aur architecture batata hai</td>
+      <td>Version check karne ke liye</td>
+    </tr>
+    <tr>
+      <td><code>aayu --help</code> ya <code>aayu -h</code></td>
+      <td>CLI manual aur options guide dikhata hai</td>
+      <td>Command reference ke liye</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>3. Windows PowerShell & Global PATH Setup</h2>
+<p>Aapke computer me <code>aayu</code> command kisi bhi folder (Desktop, Downloads, D:\ drive) se chal sake, iske liye yeh globally configured hota hai:</p>
+
+<div class="box box-note">
+  <div class="box-title">📌 Global Executable Location</div>
+  Windows me AAYU ke primary engine binaries yahan rehte hain:
+  <code>C:\Users\&lt;YourUsername&gt;\.aayu\bin\</code>
+  <ul style="margin-left: 18px; margin-top: 4px;">
+    <li><code>aayu.exe</code> : Global CLI launcher</li>
+    <li><code>aayu-vm.exe</code> : High-speed Rust Virtual Machine</li>
+    <li><code>aayuc.exe</code> : Silent AAYU-to-Bytecode Compiler</li>
+  </ul>
+</div>
+
+<div class="box box-khatra">
+  <div class="box-title">⚠️ PowerShell Script Execution Policy Fix</div>
+  Agar naye Windows computer me PowerShell par <em>"Script execution is disabled"</em> error aaye, toh terminal me yeh one-liner run karein:
+  <pre><code>Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned</code></pre>
+  Isse aapka virtual environment aur AAYU CLI turant bina kisi permission error ke chalne lagega!
+</div>
+
+<h2>4. AAYU Compiler Ko Update Kaise Karein?</h2>
+<p>Jab bhi AAYU ka naya version ya silent engine update aaye, use update karna bohot simple hai:</p>
+<pre><code># 1. Latest repository pull karein:
+git pull origin main
+
+# 2. Updated clean compiler build karein:
+cargo build --release --manifest-path compiler_bootstrap/Cargo.toml
+
+# 3. Global directory me update kar dein:
+copy compiler_bootstrap\target\release\aayuc.exe C:\Users\&lt;Username&gt;\.aayu\bin\ /Y
+copy bin\aayu-vm.exe C:\Users\&lt;Username&gt;\.aayu\bin\aayu.exe /Y</code></pre>
+<p>Iske baad aap kisi bhi folder se <code>aayu file.aayu</code> chalayenge, toh updated version hi chalega!</p>
+
+<h2>5. Python ke Paas Jupyter Hai, Toh AAYU ke Paas Kya Hai?</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Ecosystem Tool</th>
+      <th>Python / JS / Java</th>
+      <th>AAYU ka Revolutionary Alternative</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Interactive Playground</strong></td>
+      <td>Jupyter Notebook (Python)</td>
+      <td><strong>AAYU Studio (<code>aayu_studio</code>):</strong> Visual Desktop IDE jisme Monaco editor, live execution, aur AI assistant built-in hai.</td>
+    </tr>
+    <tr>
+      <td><strong>API Testing Tool</strong></td>
+      <td>Postman / Insomnia</td>
+      <td><strong>Native Single-File Server:</strong> <code>Server.start(8080)</code> likhte hi browser par live REST API ready ho jata hai.</td>
+    </tr>
+    <tr>
+      <td><strong>Database GUI</strong></td>
+      <td>DBeaver / SQLite Browser</td>
+      <td><strong>In-Memory & SQLite Inspector:</strong> <code>model</code> likhne se bina kisi external client ke schema create ho jata hai.</td>
+    </tr>
+    <tr>
+      <td><strong>Security Checker</strong></td>
+      <td>Snyk / Bandit</td>
+      <td><strong>8-Layer Bytecode Verifier:</strong> Stack underflow, illegal jump target aur corrupt payload execution se pehle hi block ho jata hai.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>6. Git Workflow: AAYU Code Ko GitHub Par Kaise Push Karein?</h2>
+<p>Aapne AAYU me app bana li, ab use GitHub par save aur share karne ka standard terminal workflow:</p>
+
+<pre><code># Step 1: Git repository shuru karein (sirf pehli baar)
+git init
+
+# Step 2: Saari files add karein
+git add .
+
+# Step 3: Meaningful commit message likhein
+git commit -m "feat: my first full-stack aayu application"
+
+# Step 4: GitHub remote link karein (Apna URL daalein)
+git remote add origin https://github.com/Minato95-ayu/MY-AAYU-APP.git
+git branch -M main
+
+# Step 5: Remote server par push karein
+git push -u origin main</code></pre>
+
+<div class="box box-tip">
+  <div class="box-title">💡 Pro Tip for GitHub: AAYU Language Badge</div>
+  Aapke repository me <code>.gitattributes</code> file me yeh rule zaroor rakhein:
+  <pre><code>*.aayu linguist-language=AAYU
+*.py linguist-vendored</code></pre>
+  Isse GitHub aapki repo ko 100% <strong>AAYU Language</strong> ke roop me pehchanega aur kisi bhi extra script ko count nahi karega!
 </div>
 
 <div class="page-break"></div>

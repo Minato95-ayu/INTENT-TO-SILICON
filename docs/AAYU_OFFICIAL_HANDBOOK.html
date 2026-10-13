@@ -1,0 +1,1326 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Official AAYU Handbook - Ayush Ghrit Kaushik</title>
+<style>
+  @page {
+    size: A4;
+    margin: 16mm 14mm 16mm 14mm;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1e293b;
+    background: #ffffff;
+    line-height: 1.6;
+    font-size: 13.5px;
+  }
+
+  .page-break {
+    page-break-after: always;
+    break-after: page;
+  }
+
+  /* COVER PAGE */
+  .cover-page {
+    height: 100vh;
+    min-height: 960px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #090d16 0%, #111827 50%, #1e1b4b 100%);
+    color: #ffffff;
+    padding: 60px 48px;
+    border-radius: 12px;
+    page-break-after: always;
+  }
+
+  .cover-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .cover-logo {
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
+  }
+
+  .cover-badge {
+    display: inline-block;
+    background: rgba(99, 102, 241, 0.2);
+    border: 1px solid #6366f1;
+    color: #c7d2fe;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .cover-title {
+    font-size: 44px;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-top: 30px;
+    background: linear-gradient(to right, #ffffff, #c7d2fe, #818cf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .cover-subtitle {
+    font-size: 17px;
+    color: #94a3b8;
+    margin-top: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    max-width: 95%;
+  }
+
+  .cover-features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 40px;
+  }
+
+  .feat-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 16px 20px;
+    border-radius: 10px;
+  }
+
+  .feat-card h4 {
+    color: #a5b4fc;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+
+  .feat-card p {
+    color: #cbd5e1;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .cover-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    padding-top: 24px;
+  }
+
+  .author-box h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .author-box p {
+    color: #94a3b8;
+    font-size: 13px;
+    margin-top: 2px;
+  }
+
+  .edition-tag {
+    text-align: right;
+    color: #c7d2fe;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  /* HEADINGS */
+  h1 {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0f172a;
+    border-bottom: 2.5px solid #6366f1;
+    padding-bottom: 8px;
+    margin-top: 28px;
+    margin-bottom: 14px;
+  }
+
+  h2 {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+
+  h3 {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #334155;
+    margin-top: 14px;
+    margin-bottom: 6px;
+  }
+
+  p {
+    margin-bottom: 10px;
+  }
+
+  /* CODE BLOCKS */
+  pre {
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 1.55;
+    margin: 10px 0 14px 0;
+    border-left: 4px solid #6366f1;
+    overflow-x: auto;
+  }
+
+  code {
+    font-family: 'Consolas', 'Courier New', monospace;
+    background: #f1f5f9;
+    color: #4338ca;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    font-size: 12px;
+    font-weight: normal;
+  }
+
+  /* TABLES */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 16px 0;
+    font-size: 12.5px;
+  }
+
+  th, td {
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    text-align: left;
+  }
+
+  th {
+    background: #f8fafc;
+    color: #0f172a;
+    font-weight: 700;
+  }
+
+  tr:nth-child(even) td {
+    background: #fbfcfe;
+  }
+
+  /* CALLOUT BOXES */
+  .box {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin: 14px 0;
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+
+  .box-title {
+    font-weight: 700;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .box-tip {
+    background: #eef2ff;
+    border-left: 4px solid #6366f1;
+    color: #312e81;
+  }
+
+  .box-note {
+    background: #f0fdf4;
+    border-left: 4px solid #22c55e;
+    color: #14532d;
+  }
+
+  .box-caution {
+    background: #fffbeb;
+    border-left: 4px solid #f59e0b;
+    color: #78350f;
+  }
+
+  .box-deepdive {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-left: 4px solid #0f172a;
+    color: #334155;
+  }
+
+  .hinglish {
+    background: #faf5ff;
+    border-left: 4px solid #a855f7;
+    padding: 10px 14px;
+    border-radius: 6px;
+    margin: 10px 0;
+    font-size: 12.5px;
+    color: #581c87;
+  }
+
+  /* PRACTICE SETS */
+  .practice-set {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 16px 0;
+  }
+
+  .practice-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #4338ca;
+    margin-bottom: 10px;
+    border-bottom: 1px dashed #cbd5e1;
+    padding-bottom: 6px;
+  }
+
+  .q-block {
+    margin-bottom: 12px;
+  }
+
+  .q-text {
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 4px;
+  }
+
+  .q-sol-title {
+    font-weight: 600;
+    color: #16a34a;
+    font-size: 11.5px;
+    margin-top: 4px;
+    margin-bottom: 2px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================================== -->
+<!-- COVER PAGE -->
+<!-- ============================================================================== -->
+<div class="cover-page">
+  <div>
+    <div class="cover-header">
+      <img class="cover-logo" src="data:image/png;base64,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
+" alt="AAYU Logo">
+      <div class="cover-badge">â˜… OFFICIAL INTENT-TO-SILICON ARCHITECTURE â˜…</div>
+    </div>
+    
+    <div class="cover-title">The Official AAYU<br>Handbook</div>
+    <div class="cover-subtitle">The Complete Guide to Intent-to-Silicon Computing: Language Fundamentals, Architecture & Production Full-Stack Mastery. Written from the ground up for developers and autonomous AI coding agents.</div>
+
+    <div class="cover-features">
+      <div class="feat-card">
+        <h4>âš¡ Single-File Full-Stack</h4>
+        <p>Database models, API routes, and reactive UI pages declared cleanly in a single .ay file with zero glue code.</p>
+      </div>
+      <div class="feat-card">
+        <h4>ðŸš€ 10ms Boot & 2.4 MB RAM</h4>
+        <p>Ultra-compact toolchain (735 KB compiler, 890 KB VM) with near-instant cold start and 36,000+ static req/sec.</p>
+      </div>
+      <div class="feat-card">
+        <h4>ðŸ›¡ï¸ 48-Bit Nan-Boxed Register VM</h4>
+        <p>Hardware-level register optimization. C-level execution speed with deterministic compile-time memory bounds.</p>
+      </div>
+      <div class="feat-card">
+        <h4>ðŸ“¦ Zero External Dependencies</h4>
+        <p>No npm, no pip, no fragmentation. Standard library includes native crypto, math, record store, and JSON/AYON.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cover-footer">
+    <div class="author-box">
+      <h3>Ayush Ghrit Kaushik</h3>
+      <p>Creator & Lead Systems Architect of AAYU</p>
+      <p style="color: #64748b; font-size: 11px; margin-top: 4px;">Project: github.com/Minato95-ayu/INTENT-TO-SILICON</p>
+    </div>
+    <div class="edition-tag">
+      <strong>First Edition â€” 2026 Reference</strong><br>
+      Complete Pedagogical Guide<br>
+      English + Conceptual Intuition
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================================== -->
+<!-- TABLE OF CONTENTS -->
+<!-- ============================================================================== -->
+<h1>ðŸ“‘ Table of Contents</h1>
+<p>This handbook covers the core computer science fundamentals through the lens of the modern AAYU programming language:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width: 18%;">Chapter</th>
+      <th style="width: 52%;">Topic & Core Concepts</th>
+      <th style="width: 30%;">Key Takeaways</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Chapter 0</strong></td>
+      <td>Introduction to AAYU & Intent Computing</td>
+      <td>The Intent-to-Silicon philosophy, Modern 2026 perspective, Toolchain architecture</td>
+    </tr>
+    <tr>
+      <td><strong>Chapter 0.5</strong></td>
+      <td>Terminal, PowerShell & Tooling Mastery</td>
+      <td>Extensions (.ay, .aa, .aayu), CLI commands, Silent compilation, GitHub Linguist</td>
+    </tr>
+    <tr>
+      <td><strong>Chapter 1</strong></td>
+      <td>Variables, Constants & Data Types</td>
+      <td>let vs state, 48-bit Nan-Boxing, 256-slot frame limit</td>
+    </tr>
+    <tr>
+      <td><strong>Chapter 2</strong></td>
+      <td>Operators & Expressions</td>
+      <td>Arithmetic, Comparisons, Polymorphic + overloading</td>
+    </tr>
+    <tr>
+      <td><strong>Chapter 3</strong></td>
+      <td>Conditional Instructions (Decision Making)</td>
+      <td>if, elif, else, explicit end blocks, Guard clauses</td>
+    </tr>
+    <tr>
+      <td><strong>Chapter 4</strong></td>
+      <td>Loop Control & Invariant Iteration</td>
+      <td>while loops, Collection traversal with len(), Infinite-loop avoidance</td>
+    </tr>
+    <tr>
+      <td><strong>Chapter 5</strong></td>
+      <td>Functions & Actions (Modular Code)</td>
+      <td>action declarations, Scope isolation, 256-parameter limit, Recursion</td>
+    </tr>
+    <tr>
+      <td><strong>Chapter 6</strong></td>
+      <td>Data Structures: Arrays & Dictionaries</td>
+      <td>Dynamic arrays, Key-value dictionaries, In-place access</td>
+    </tr>
+    <tr>
+      <td><strong>Chapter 7</strong></td>
+      <td>The AYON Data Format & Web Standards</td>
+      <td>Human-friendly superset, Comment preservation, Browser JSON compatibility</td>
+    </tr>
+    <tr>
+      <td><strong>Chapter 8</strong></td>
+      <td>Full-Stack Architecture & Native Database</td>
+      <td>AayuDb RAM-first storage with WAL, HTTP response helpers, Single-file web pages</td>
+    </tr>
+    <tr>
+      <td><strong>Chapter 9</strong></td>
+      <td>The Standard Library (std/) Reference</td>
+      <td>math, crypto, db, server, http, fs, ai, ledger, json, ayon</td>
+    </tr>
+    <tr>
+      <td><strong>Chapter 10</strong></td>
+      <td>The Ultimate Cheat Sheet & 10 Master Problems</td>
+      <td>Syntax summary, Common pitfalls, 10 fully verified algorithmic solutions</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="page-break"></div>
+
+<!-- ============================================================================== -->
+<!-- CHAPTER 0: PHILOSOPHY -->
+<!-- ============================================================================== -->
+<h1>Chapter 0: Introduction to AAYU & Intent Computing</h1>
+
+<h2>1. What is AAYU?</h2>
+<p><strong>AAYU</strong> is an <em>Intent-to-Silicon</em> programming language designed and built by <strong>Ayush Ghrit Kaushik</strong>. The fundamental goal of AAYU is to eliminate the friction that slows down developers and autonomous AI coding agents:</p>
+<ul style="margin-left: 20px; margin-bottom: 12px;">
+  <li><strong>Eliminating Fragile Toolchains:</strong> Traditional stacks require complex build configs, package registries (npm/pip), and multi-directory boilerplate just to build a microservice.</li>
+  <li><strong>Deterministic Execution:</strong> By using explicit <code>end</code> blocks instead of whitespace indentation, AAYU guarantees 100% syntactic clarity across all platforms, editors, and AI agents.</li>
+  <li><strong>Zero Memory Corruption:</strong> Hardware-level 48-bit Nan-Boxing prevents pointer bugs, segmentation faults, and out-of-bounds memory corruption.</li>
+</ul>
+
+<div class="hinglish">
+  <strong>Aasan Bhasha Me:</strong> AAYU me aap jo intent sochte hain, wahi seedha code banta hai. Na kisi package manager ka jhanjhat, na semicolon, na whitespace crash hone ka darr. Iska execution Rust ke ultra-fast virtual machine par silicon speed par hota hai.
+</div>
+
+<h2>2. Modern 2026 Architectural Positioning</h2>
+<p>In modern software engineering (2026), different languages excel in specific domains. Here is where AAYU fits uniquely alongside industry standards:</p>
+<table>
+  <thead>
+    <tr>
+      <th>Dimension</th>
+      <th>Python 3.14+</th>
+      <th>Go / Rust</th>
+      <th>AAYU</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Primary Strength</strong></td>
+      <td>Data science, rich package ecosystem</td>
+      <td>Systems programming, large distributed backends</td>
+      <td>Single-file microservices, edge tools, AI agents</td>
+    </tr>
+    <tr>
+      <td><strong>Toolchain Footprint</strong></td>
+      <td>Heavy (100+ MB runtime, virtual environments)</td>
+      <td>Moderate compiler footprint</td>
+      <td>Ultra-light (735 KB compiler, 890 KB VM)</td>
+    </tr>
+    <tr>
+      <td><strong>Cold Boot Time</strong></td>
+      <td>~80-150 ms</td>
+      <td>~15-30 ms</td>
+      <td><strong>~10 ms</strong> (Instant VM startup)</td>
+    </tr>
+    <tr>
+      <td><strong>Runtime Memory</strong></td>
+      <td>~30-50 MB base RAM</td>
+      <td>~10-20 MB base RAM</td>
+      <td><strong>~2.4 MB</strong> base RAM</td>
+    </tr>
+    <tr>
+      <td><strong>Scope Delimitation</strong></td>
+      <td>Significant whitespace indentation</td>
+      <td>Curly braces <code>{}</code></td>
+      <td>Explicit <code>end</code> keywords</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>3. Hello World Program in AAYU</h2>
+<pre><code># The Purest Hello World
+print("Hello, World!")</code></pre>
+
+<div class="box box-deepdive">
+  <div class="box-title">ðŸ” Silicon Deep Dive: How Hello World Executes</div>
+  When you execute <code>print("Hello, World!")</code>:
+  <ol style="margin-left: 18px; margin-top: 4px;">
+    <li><strong>Lexer:</strong> Tokenizes the source into <code>[Token::Print, Token::LeftParen, Token::StringLiteral("Hello, World!"), Token::RightParen]</code>.</li>
+    <li><strong>Parser:</strong> Emits an AST node: <code>Statement::Print(Expr::StringLiteral)</code>.</li>
+    <li><strong>Emitter:</strong> Allocates string constant index 0 in the string table and generates native bytecode: <code>PUSH_CONST 0</code> followed by opcode 81 (<code>PRINT</code>).</li>
+    <li><strong>Virtual Machine:</strong> Evaluates the Nan-Boxed pointer and outputs cleanly to stdout with zero class overhead.</li>
+  </ol>
+</div>
+
+<div class="practice-set">
+  <div class="practice-title">ðŸ“ Practice Set 0 (Basics of AAYU)</div>
+  <div class="q-block">
+    <div class="q-text">Q1. Write the code to output your name and current project to the console.</div>
+    <div class="q-sol-title">Solution:</div>
+    <pre><code>print("Name: Ayush Kaushik, Project: AAYU")</code></pre>
+  </div>
+  <div class="q-block">
+    <div class="q-text">Q2. Why does AAYU use the explicit 'end' keyword instead of Python indentation or C braces?</div>
+    <div class="q-sol-title">Solution:</div>
+    <p>Whitespace indentation can easily break during copy-pasting, Git merges, or automated AI code generation. Braces require shift-key combos and extra punctuation. Explicit <code>end</code> keywords are unambiguous, visually clean, and read like natural English.</p>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================================================== -->
+<!-- CHAPTER 0.5: TOOLING & TERMINAL -->
+<!-- ============================================================================== -->
+<h1>Chapter 0.5: Terminal, PowerShell & Tooling Mastery</h1>
+
+<h2>1. Official File Extensions (.ay, .aa, .aayu)</h2>
+<p>AAYU supports three official extensions across the compiler, runtime, and editor toolchains:</p>
+<ul>
+  <li><code>.ay</code> â€” <strong>Recommended 2-Letter Short Extension!</strong> Fastest and cleanest to type (e.g. <code>main.ay</code>), similar to Python's <code>.py</code> and Rust's <code>.rs</code>.</li>
+  <li><code>.aa</code> â€” Alternative 2-letter double-A extension (e.g. <code>app.aa</code>).</li>
+  <li><code>.aayu</code> â€” Standard full-length extension (e.g. <code>program.aayu</code>).</li>
+</ul>
+
+<h2>2. Running Code from PowerShell / CMD / Terminal</h2>
+<p>You can create an AAYU file using any text editor (VS Code, Notepad, or Vim) and run it directly:</p>
+<pre><code># Step 1: Create a file in Notepad or VS Code
+notepad hello.ay
+
+# Step 2: Add code and save:
+print("AAYU running cleanly from terminal!")
+
+# Step 3: Run directly via PowerShell or CMD:
+aayu hello.ay</code></pre>
+
+<div class="box box-tip">
+  <div class="box-title">ðŸ’¡ Production Clean Output (Zero Debug Noise!)</div>
+  The modern AAYU compiler runs <strong>100% silently by default</strong>. Just like running <code>python script.py</code>, running <code>aayu script.ay</code> prints only your program output with zero AST dumps or internal compiler noise.
+</div>
+
+<h2>3. Complete AAYU CLI Reference</h2>
+<table>
+  <thead>
+    <tr>
+      <th style="width: 35%;">Command</th>
+      <th style="width: 35%;">What It Does</th>
+      <th style="width: 30%;">When to Use</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>aayu &lt;file.ay&gt;</code></td>
+      <td>Compiles and runs the file directly</td>
+      <td>Daily development and quick testing</td>
+    </tr>
+    <tr>
+      <td><code>aayu run &lt;file.ay&gt; --jit</code></td>
+      <td>Executes using the native JIT engine</td>
+      <td>Heavy math and tensor operations</td>
+    </tr>
+    <tr>
+      <td><code>aayu build &lt;file.ay&gt; -o app.ayc</code></td>
+      <td>Compiles source to pre-built bytecode</td>
+      <td>Distributing compiled binaries</td>
+    </tr>
+    <tr>
+      <td><code>aayu app.ayc</code></td>
+      <td>Executes pre-compiled bytecode at silicon speed</td>
+      <td>Production deployment & containers</td>
+    </tr>
+    <tr>
+      <td><code>aayu --version</code></td>
+      <td>Prints the engine version and architecture</td>
+      <td>Verifying toolchain updates</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>4. GitHub Linguist Integration</h2>
+<p>To ensure GitHub identifies your repository as 100% AAYU, include a <code>.gitattributes</code> file at the root of your project:</p>
+<pre><code>*.aayu linguist-language=AAYU
+*.ay linguist-language=AAYU
+*.aa linguist-language=AAYU
+*.py linguist-vendored</code></pre>
+
+<div class="page-break"></div>
+
+<!-- ============================================================================== -->
+<!-- CHAPTER 1: VARIABLES & TYPES -->
+<!-- ============================================================================== -->
+<h1>Chapter 1: Variables, Constants & Data Types</h1>
+
+<h2>1. Variables: let vs state</h2>
+<p>AAYU provides two distinct variable mechanisms tailored for specific programming patterns:</p>
+<pre><code># 1. Local Mutable Variable (Standard scoped variable)
+let name = "AAYU"
+let version = 1.2
+let counter = 0
+counter = counter + 1
+
+# 2. State Variable (Reactive component & application state)
+state active_users = 100
+active_users = active_users + 1
+
+# 3. Top-Level Global Declaration
+global ENGINE_MODE = "Silicon"</code></pre>
+
+<div class="hinglish">
+  <strong>Samjho Aasan Bhasha Me:</strong> <code>let</code> se aap standard variables banate hain jinhe function ya block me update kiya ja sakta hai (e.g. <code>counter = counter + 1</code>). <code>state</code> ko tab use kiya jata hai jab variable UI widgets ya reactive state se bind hota hai.
+</div>
+
+<h2>2. Primitive Data Types</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Example in AAYU</th>
+      <th>Internal Representation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Integer</strong></td>
+      <td>Signed whole numbers</td>
+      <td><code>let count = 42</code></td>
+      <td>48-bit Signed Int (Nan-Boxed)</td>
+    </tr>
+    <tr>
+      <td><strong>Float</strong></td>
+      <td>Floating-point numbers</td>
+      <td><code>let pi = 3.14159</code></td>
+      <td>IEEE 754 64-bit Double</td>
+    </tr>
+    <tr>
+      <td><strong>Boolean</strong></td>
+      <td>True or False states</td>
+      <td><code>let is_running = true</code></td>
+      <td>Nan-Boxed Tagged Bool</td>
+    </tr>
+    <tr>
+      <td><strong>String</strong></td>
+      <td>UTF-8 text characters</td>
+      <td><code>let title = "AAYU"</code></td>
+      <td>Heap String Arena</td>
+    </tr>
+    <tr>
+      <td><strong>Array</strong></td>
+      <td>Ordered sequence of values</td>
+      <td><code>let items = [1, 2, 3]</code></td>
+      <td>Heap Array Object</td>
+    </tr>
+    <tr>
+      <td><strong>Dictionary</strong></td>
+      <td>Key-value associative map</td>
+      <td><code>let d = {"k": "v"}</code></td>
+      <td>Heap Dict Object</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="box box-deepdive">
+  <div class="box-title">ðŸ” The 256 Slot Limit: Why 256 Local Variables Per Function?</div>
+  In AAYU, every function frame allocates exactly 256 indexed local slots addressed by a single byte (0..255). This design guarantees that local variable lookup is an instant array index with zero hashing overhead, providing maximum CPU L1-cache locality.
+</div>
+
+<div class="box box-caution">
+  <div class="box-title">âš ï¸ Common Mistakes to Avoid</div>
+  <ul style="margin-left: 18px;">
+    <li><strong>Semicolons:</strong> Do not write <code>let x = 10;</code>. Statements in AAYU are newline-delimited.</li>
+    <li><strong>Unquoted Strings:</strong> Always wrap text in double quotes: <code>let name = "Ayush"</code>.</li>
+    <li><strong>48-Bit Integer Range:</strong> Standard integer arithmetic operates within the signed 48-bit range (-140 trillion to +140 trillion). For scientific scales, use Floats.</li>
+  </ul>
+</div>
+
+<div class="practice-set">
+  <div class="practice-title">ðŸ“ Practice Set 1 (Variables & Calculations)</div>
+  <div class="q-block">
+    <div class="q-text">Q1. Calculate the Area of a Rectangle (Length = 15, Width = 8) and print the result.</div>
+    <div class="q-sol-title">Solution:</div>
+    <pre><code>let length = 15
+let width = 8
+let area = length * width
+print("Length:", length)
+print("Width:", width)
+print("Area of Rectangle:", area)</code></pre>
+  </div>
+  <div class="q-block">
+    <div class="q-text">Q2. Convert Celsius temperature (37.0 C) to Fahrenheit using the formula F = (C * 1.8) + 32.</div>
+    <div class="q-sol-title">Solution:</div>
+    <pre><code>let celsius = 37.0
+let fahrenheit = (celsius * 1.8) + 32.0
+print("Celsius:", celsius)
+print("Fahrenheit:", fahrenheit)</code></pre>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================================================== -->
+<!-- CHAPTER 2: OPERATORS -->
+<!-- ============================================================================== -->
+<h1>Chapter 2: Operators & Expressions</h1>
+
+<h2>1. Arithmetic & Comparison Operators</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Operator</th>
+      <th>Operation</th>
+      <th>Example</th>
+      <th>Evaluated Output</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><code>+</code></td><td>Addition / Polymorphic Concatenation</td><td><code>10 + 5</code></td><td><code>15</code></td></tr>
+    <tr><td><code>-</code></td><td>Subtraction</td><td><code>20 - 7</code></td><td><code>13</code></td></tr>
+    <tr><td><code>*</code></td><td>Multiplication</td><td><code>6 * 7</code></td><td><code>42</code></td></tr>
+    <tr><td><code>/</code></td><td>Division</td><td><code>100 / 4</code></td><td><code>25</code></td></tr>
+    <tr><td><code>%</code></td><td>Modulo (Remainder)</td><td><code>17 % 5</code></td><td><code>2</code></td></tr>
+    <tr><td><code>==</code></td><td>Equality Comparison</td><td><code>10 == 10</code></td><td><code>true</code></td></tr>
+    <tr><td><code>!=</code></td><td>Inequality Comparison</td><td><code>10 != 5</code></td><td><code>true</code></td></tr>
+    <tr><td><code>&lt;</code>, <code>&gt;</code></td><td>Relational Ordering</td><td><code>15 &gt; 8</code></td><td><code>true</code></td></tr>
+    <tr><td><code>&lt;=</code>, <code>&gt;=</code></td><td>Relational Inclusion</td><td><code>10 &gt;= 10</code></td><td><code>true</code></td></tr>
+  </tbody>
+</table>
+
+<h2>2. Polymorphic Overloading</h2>
+<p>The <code>+</code> operator automatically adapts to the types of its operands:</p>
+<pre><code># 1. Number Addition:
+print(10 + 20)           # 30
+
+# 2. String Concatenation:
+print("Hello " + "AAYU") # Hello AAYU
+
+# 3. String + Number Concatenation:
+print("Area: " + 42)     # Area: 42
+
+# 4. Array Concatenation:
+print([1, 2] + [3, 4])   # [1, 2, 3, 4]</code></pre>
+
+<h2>3. Clean Guard Clauses for Logic</h2>
+<p>To avoid operator precedence confusion and ensure deterministic execution for AI agents, multi-condition logic is expressed using clean nested blocks (Guard Clauses):</p>
+<pre><code>let age = 20
+let has_id = true
+
+if age >= 18
+    if has_id == true
+        print("Access granted!")
+    end
+end</code></pre>
+
+<div class="practice-set">
+  <div class="practice-title">ðŸ“ Practice Set 2 (Operators & Logic)</div>
+  <div class="q-block">
+    <div class="q-text">Q1. Determine whether a given number is Even or Odd using the Modulo operator.</div>
+    <div class="q-sol-title">Solution:</div>
+    <pre><code>let num = 28
+if num % 2 == 0
+    print(num, "is EVEN")
+else
+    print(num, "is ODD")
+end</code></pre>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================================================== -->
+<!-- CHAPTER 3: CONDITIONALS -->
+<!-- ============================================================================== -->
+<h1>Chapter 3: Conditional Branching</h1>
+
+<h2>1. The if / elif / else Structure</h2>
+<p>Conditional branches in AAYU evaluate conditions top-to-bottom and execute the first matching block. Every block is closed with an explicit <code>end</code> keyword:</p>
+<pre><code>let score = 84
+
+if score >= 90
+    print("Grade: A+ (Honors)")
+elif score >= 75
+    print("Grade: A (Distinction)")
+elif score >= 50
+    print("Grade: B (First Division)")
+else
+    print("Grade: Retake required")
+end</code></pre>
+
+<div class="practice-set">
+  <div class="practice-title">ðŸ“ Practice Set 3 (Decision Making)</div>
+  <div class="q-block">
+    <div class="q-text">Q1. Find the largest among three numbers (a = 45, b = 78, c = 32).</div>
+    <div class="q-sol-title">Solution:</div>
+    <pre><code>let a = 45
+let b = 78
+let c = 32
+
+let largest = a
+if b > largest
+    largest = b
+end
+if c > largest
+    largest = c
+end
+print("Largest number is:", largest)</code></pre>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================================================== -->
+<!-- CHAPTER 4: LOOPS -->
+<!-- ============================================================================== -->
+<h1>Chapter 4: Loop Control & Invariant Iteration</h1>
+
+<h2>1. The while Loop</h2>
+<p>AAYU uses <code>while</code> loops for repetition. The loop condition is checked before each iteration:</p>
+<pre><code># Basic counting loop:
+let i = 1
+while i <= 5
+    print("Step:", i)
+    i = i + 1
+end</code></pre>
+
+<h2>2. Traversing Collections</h2>
+<p>Arrays and strings are traversed cleanly using the built-in <code>len()</code> function:</p>
+<pre><code>let languages = ["AAYU", "Rust", "Go", "C"]
+let idx = 0
+let total = len(languages)
+
+while idx < total
+    print("Index", idx, ":", languages[idx])
+    idx = idx + 1
+end</code></pre>
+
+<div class="practice-set">
+  <div class="practice-title">ðŸ“ Practice Set 4 (Loops & Math)</div>
+  <div class="q-block">
+    <div class="q-text">Q1. Print the Multiplication Table for N = 7 from 1 to 10.</div>
+    <div class="q-sol-title">Solution:</div>
+    <pre><code>let n = 7
+let i = 1
+while i <= 10
+    print(n, "x", i, "=", n * i)
+    i = i + 1
+end</code></pre>
+  </div>
+  <div class="q-block">
+    <div class="q-text">Q2. Check whether a number (e.g. 29) is Prime.</div>
+    <div class="q-sol-title">Solution:</div>
+    <pre><code>let num = 29
+let is_prime = 1
+let d = 2
+while d < num
+    if num % d == 0
+        is_prime = 0
+    end
+    d = d + 1
+end
+if is_prime == 1
+    print(num, "is PRIME")
+else
+    print(num, "is NOT prime")
+end</code></pre>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================================================== -->
+<!-- CHAPTER 5: FUNCTIONS -->
+<!-- ============================================================================== -->
+<h1>Chapter 5: Functions & Actions</h1>
+
+<h2>1. Function Declarations (action)</h2>
+<p>Functions in AAYU are declared with the <code>action</code> keyword. They can accept parameters and return values:</p>
+<pre><code>action compute_rectangle_area(w, h)
+    let area = w * h
+    return area
+end
+
+let result = compute_rectangle_area(12, 5)
+print("Computed Area:", result) # 60</code></pre>
+
+<h2>2. Recursive Functions</h2>
+<p>Actions fully support recursion with frame safety up to the virtual machine stack depth limit:</p>
+<pre><code>action fibonacci(n)
+    if n <= 1
+        return n
+    end
+    return fibonacci(n - 1) + fibonacci(n - 2)
+end
+
+print("Fibonacci(7):", fibonacci(7)) # 13</code></pre>
+
+<div class="practice-set">
+  <div class="practice-title">ðŸ“ Practice Set 5 (Modular Actions)</div>
+  <div class="q-block">
+    <div class="q-text">Q1. Write an action that computes the average of three scores.</div>
+    <div class="q-sol-title">Solution:</div>
+    <pre><code>action average3(s1, s2, s3)
+    let total = s1 + s2 + s3
+    return total / 3.0
+end
+print("Average:", average3(85, 90, 95))</code></pre>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================================================== -->
+<!-- CHAPTER 6: ARRAYS & DICTIONARIES -->
+<!-- ============================================================================== -->
+<h1>Chapter 6: Data Structures: Arrays & Dictionaries</h1>
+
+<h2>1. Dynamic Arrays</h2>
+<p>Arrays hold an ordered list of elements indexed from 0:</p>
+<pre><code>let numbers = [10, 20, 30, 40]
+print("First item:", numbers[0])
+print("Total items:", len(numbers))
+
+# Append an element via array concatenation:
+numbers = numbers + [50]
+print("Updated items:", numbers) # [10, 20, 30, 40, 50]</code></pre>
+
+<h2>2. Key-Value Dictionaries</h2>
+<p>Dictionaries map string keys to values:</p>
+<pre><code>let user = {
+    "username": "ayush_kaushik",
+    "role": "Lead Architect",
+    "score": 100
+}
+print("Username:", user["username"])
+print("Role:", user["role"])</code></pre>
+
+<div class="page-break"></div>
+
+<!-- ============================================================================== -->
+<!-- CHAPTER 7: AYON & STANDARDS -->
+<!-- ============================================================================== -->
+<h1>Chapter 7: The AYON Data Format & Web Standards</h1>
+
+<h2>1. What is AYON?</h2>
+<p><strong>AYON</strong> (<em>AAYU Object Notation</em>) is a human-friendly data format that supports comments and clean key-value structures. Through the standard library module <code>std/ayon</code>, AAYU converts seamlessly between AYON and strict RFC-compliant JSON for browser and API compatibility:</p>
+<pre><code>import "std/ayon"
+
+let payload = { "service": "auth", "status": "active" }
+let json_str = ayon_stringify(payload)
+print("Serialized JSON:", json_str)</code></pre>
+
+<div class="page-break"></div>
+
+<!-- ============================================================================== -->
+<!-- CHAPTER 8: FULL-STACK & DB -->
+<!-- ============================================================================== -->
+<h1>Chapter 8: Full-Stack Architecture & Native Database</h1>
+
+<h2>1. AAYU Native Database (AayuDb)</h2>
+<p>AAYU features a zero-dependency, in-memory Key-Value and Document record store backed by an atomic Write-Ahead Log (WAL) and SSD persistence. Records are managed with pure AAYU helpers:</p>
+<pre><code>import "std/db"
+
+# Create typed records
+let r1 = db_create_record(1, "Task1", "Pending")
+let r2 = db_create_record(2, "Task2", "Completed")
+let store = [r1, r2]
+
+# Query and filter records
+let active = db_filter_records(store, "value", "Pending")
+print("Pending tasks count:", db_count_records(active))</code></pre>
+
+<h2>2. Declarative Web Pages</h2>
+<p>AAYU programs can define self-contained UI pages directly in the source file without external web frameworks:</p>
+<pre><code>Page Dashboard
+    Column
+        Heading "AAYU Systems Console"
+        Text "Zero-dependency single-file deployment active."
+    end
+end</code></pre>
+
+<div class="page-break"></div>
+
+<!-- ============================================================================== -->
+<!-- CHAPTER 9: STANDARD LIBRARY -->
+<!-- ============================================================================== -->
+<h1>Chapter 9: The Standard Library Reference (std/)</h1>
+<p>All official modules reside in the <code>std/</code> directory and can be imported from any location on the system:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width: 20%;">Module</th>
+      <th style="width: 35%;">Purpose</th>
+      <th style="width: 45%;">Verified Native Functions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>std/math</code></td>
+      <td>Mathematical operations</td>
+      <td><code>sqrt(x)</code>, <code>pow(base, exp)</code>, <code>abs(x)</code>, <code>min(a, b)</code>, <code>max(a, b)</code>, <code>clamp(v, l, h)</code></td>
+    </tr>
+    <tr>
+      <td><code>std/crypto</code></td>
+      <td>Cryptographic hashing & verification</td>
+      <td><code>hash_string(data)</code>, <code>hash_combine(h1, h2)</code>, <code>compute_merkle_root(list)</code>, <code>verify_pow_difficulty(h, z)</code></td>
+    </tr>
+    <tr>
+      <td><code>std/db</code></td>
+      <td>In-memory & persistent records</td>
+      <td><code>db_create_record(id, name, val)</code>, <code>db_filter_records(recs, fld, val)</code>, <code>db_find_by_id(recs, id)</code>, <code>db_count_records(recs)</code></td>
+    </tr>
+    <tr>
+      <td><code>std/server</code></td>
+      <td>HTTP response generators</td>
+      <td><code>format_response(status, type, body)</code>, <code>json_response(status, data)</code>, <code>html_response(status, html)</code></td>
+    </tr>
+    <tr>
+      <td><code>std/http</code></td>
+      <td>HTTP client request formatting</td>
+      <td><code>parse_url_protocol(url)</code>, <code>format_request(method, path, host, body)</code>, <code>status_is_ok(code)</code></td>
+    </tr>
+    <tr>
+      <td><code>std/fs</code></td>
+      <td>Path & extension utilities</td>
+      <td><code>file_exists(path)</code>, <code>format_path(dir, file)</code>, <code>get_extension(path)</code></td>
+    </tr>
+    <tr>
+      <td><code>std/ai</code></td>
+      <td>Tensor & neural forward passes</td>
+      <td><code>mat_vec_mul(mat, vec)</code>, <code>vec_add(v1, v2)</code>, <code>mlp_forward_pass(features)</code></td>
+    </tr>
+    <tr>
+      <td><code>std/ledger</code></td>
+      <td>State transitions & blockchain verification</td>
+      <td><code>verify_balance(bal, amt, fee)</code>, <code>apply_transfer(s, r, amt)</code>, <code>verify_chain_link(prev, curr)</code></td>
+    </tr>
+    <tr>
+      <td><code>std/json</code></td>
+      <td>RFC 8259 JSON serialization</td>
+      <td><code>json_quote(s)</code>, <code>json_format_object(pairs)</code>, <code>json_format_array(items)</code></td>
+    </tr>
+    <tr>
+      <td><code>std/ayon</code></td>
+      <td>AYON data parsing and conversion</td>
+      <td><code>ayon_parse_value(src)</code>, <code>ayon_stringify(val)</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<pre><code># Example: Using std/math and std/crypto
+import "std/math"
+import "std/crypto"
+
+print("Square root of 144:", sqrt(144.0))
+print("SHA-style hash of 'AAYU':", hash_string("AAYU"))</code></pre>
+
+<div class="page-break"></div>
+
+<!-- ============================================================================== -->
+<!-- CHAPTER 10: CHEAT SHEET & 10 MASTER PROBLEMS -->
+<!-- ============================================================================== -->
+<h1>Chapter 10: Cheat Sheet & 10 Master Practice Problems</h1>
+
+<h2>1. AAYU Syntax Cheat Sheet</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Task</th>
+      <th>AAYU Syntax</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Console Output</td><td><code>print("Value:", x)</code></td></tr>
+    <tr><td>Variable Declaration</td><td><code>let x = 10</code></td></tr>
+    <tr><td>Reactive State Variable</td><td><code>state counter = 0</code></td></tr>
+    <tr><td>Top-Level Global</td><td><code>global SYSTEM_ID = "Engine1"</code></td></tr>
+    <tr><td>Function Definition</td><td><code>action my_fn(a, b) ... return a + b ... end</code></td></tr>
+    <tr><td>Conditional Branching</td><td><code>if x &gt; 5 ... elif x == 5 ... else ... end</code></td></tr>
+    <tr><td>Loop Iteration</td><td><code>while i &lt; total ... i = i + 1 ... end</code></td></tr>
+    <tr><td>Array Creation & Append</td><td><code>let arr = [1, 2, 3]</code> &nbsp;|&nbsp; <code>arr = arr + [4]</code></td></tr>
+    <tr><td>Dictionary Creation</td><td><code>let user = {"name": "Ayush", "role": "Architect"}</code></td></tr>
+    <tr><td>Standard Library Import</td><td><code>import "std/math"</code></td></tr>
+  </tbody>
+</table>
+
+<h2>2. 10 Master Algorithmic Problems & Verified Solutions</h2>
+
+<div class="practice-set">
+  <div class="practice-title">ðŸ† Problem 1: Reverse an Array</div>
+  <p>Reverse an array <code>[10, 20, 30, 40, 50]</code> in place and print the reversed collection.</p>
+  <div class="q-sol-title">Verified Solution:</div>
+  <pre><code>let arr = [10, 20, 30, 40, 50]
+let reversed = []
+let idx = len(arr) - 1
+
+while idx >= 0
+    reversed = reversed + [arr[idx]]
+    idx = idx - 1
+end
+
+print("Reversed Array:", reversed)</code></pre>
+</div>
+
+<div class="practice-set">
+  <div class="practice-title">ðŸ† Problem 2: Fibonacci Sequence (First 10 Numbers)</div>
+  <p>Generate and print the first 10 numbers in the Fibonacci sequence: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34.</p>
+  <div class="q-sol-title">Verified Solution:</div>
+  <pre><code>let count = 10
+let a = 0
+let b = 1
+let i = 0
+
+print("Fibonacci Sequence:")
+while i < count
+    print(a)
+    let nxt = a + b
+    a = b
+    b = nxt
+    i = i + 1
+end</code></pre>
+</div>
+
+<div class="practice-set">
+  <div class="practice-title">ðŸ† Problem 3: Palindrome String Checker</div>
+  <p>Verify whether a string (e.g. <code>"madam"</code>) is a palindrome.</p>
+  <div class="q-sol-title">Verified Solution:</div>
+  <pre><code>let word = "madam"
+let l = len(word)
+let is_pal = 1
+let i = 0
+
+while i < l / 2
+    if word[i] != word[l - 1 - i]
+        is_pal = 0
+    end
+    i = i + 1
+end
+
+if is_pal == 1
+    print(word, "is a PALINDROME!")
+else
+    print(word, "is NOT a palindrome.")
+end</code></pre>
+</div>
+
+<div class="practice-set">
+  <div class="practice-title">ðŸ† Problem 4: Find Maximum & Minimum in an Array</div>
+  <p>Locate both the maximum and minimum numbers in an unsorted array.</p>
+  <div class="q-sol-title">Verified Solution:</div>
+  <pre><code>let nums = [45, 12, 89, 3, 67, 99, 23]
+let max_val = nums[0]
+let min_val = nums[0]
+let i = 1
+let total = len(nums)
+
+while i < total
+    if nums[i] > max_val
+        max_val = nums[i]
+    end
+    if nums[i] < min_val
+        min_val = nums[i]
+    end
+    i = i + 1
+end
+
+print("Maximum:", max_val)
+print("Minimum:", min_val)</code></pre>
+</div>
+
+<div class="practice-set">
+  <div class="practice-title">ðŸ† Problem 5: Linear Search Algorithm</div>
+  <p>Search for target 308 in an array and return its 0-based index, or -1 if not found.</p>
+  <div class="q-sol-title">Verified Solution:</div>
+  <pre><code>action search(arr, target)
+    let i = 0
+    let total = len(arr)
+    while i < total
+        if arr[i] == target
+            return i
+        end
+        i = i + 1
+    end
+    return 0 - 1
+end
+
+let items = [101, 204, 308, 412, 550]
+let found_idx = search(items, 308)
+print("Found target 308 at index:", found_idx)</code></pre>
+</div>
+
+<div class="practice-set">
+  <div class="practice-title">ðŸ† Problem 6: Character Frequency Counter</div>
+  <p>Count the occurrences of character <code>'a'</code> in the string <code>"aayulanguage"</code>.</p>
+  <div class="q-sol-title">Verified Solution:</div>
+  <pre><code>let text = "aayulanguage"
+let target_char = "a"
+let count = 0
+let i = 0
+let l = len(text)
+
+while i < l
+    if text[i] == target_char
+        count = count + 1
+    end
+    i = i + 1
+end
+
+print("Frequency of 'a':", count) # 4</code></pre>
+</div>
+
+<div class="practice-set">
+  <div class="practice-title">ðŸ† Problem 7: Factorial Calculation (Iterative)</div>
+  <p>Compute N! for N = 5 using iterative multiplication.</p>
+  <div class="q-sol-title">Verified Solution:</div>
+  <pre><code>action factorial(n)
+    let result = 1
+    let curr = 1
+    while curr <= n
+        result = result * curr
+        curr = curr + 1
+    end
+    return result
+end
+
+print("Factorial of 5 is:", factorial(5)) # 120</code></pre>
+</div>
+
+<div class="practice-set">
+  <div class="practice-title">ðŸ† Problem 8: Sum & Average Calculation</div>
+  <p>Calculate the sum and average of an array of student scores.</p>
+  <div class="q-sol-title">Verified Solution:</div>
+  <pre><code>let scores = [80, 90, 70, 85, 95]
+let sum = 0
+let i = 0
+let total = len(scores)
+
+while i < total
+    sum = sum + scores[i]
+    i = i + 1
+end
+
+let avg = sum / total
+print("Total Sum:", sum)
+print("Average Score:", avg)</code></pre>
+</div>
+
+<div class="practice-set">
+  <div class="practice-title">ðŸ† Problem 9: Filter Even and Odd Numbers</div>
+  <p>Separate an array of integers into distinct lists of even and odd values.</p>
+  <div class="q-sol-title">Verified Solution:</div>
+  <pre><code>let numbers = [12, 7, 19, 24, 31, 40, 55]
+let evens = []
+let odds = []
+let i = 0
+let total = len(numbers)
+
+while i < total
+    let n = numbers[i]
+    if n % 2 == 0
+        evens = evens + [n]
+    else
+        odds = odds + [n]
+    end
+    i = i + 1
+end
+
+print("Evens:", evens)
+print("Odds:", odds)</code></pre>
+</div>
+
+<div class="practice-set">
+  <div class="practice-title">ðŸ† Problem 10: Two-Sum Target Matcher</div>
+  <p>Given an array <code>[2, 7, 11, 15]</code>, find two numbers that sum up to target <code>9</code>.</p>
+  <div class="q-sol-title">Verified Solution:</div>
+  <pre><code>action find_two_sum(arr, target)
+    let i = 0
+    let total = len(arr)
+    while i < total
+        let j = i + 1
+        while j < total
+            if arr[i] + arr[j] == target
+                return [arr[i], arr[j]]
+            end
+            j = j + 1
+        end
+        i = i + 1
+    end
+    return []
+end
+
+let pair = find_two_sum([2, 7, 11, 15], 9)
+print("Two numbers that sum to 9:", pair) # [2, 7]</code></pre>
+</div>
+
+</body>
+</html>

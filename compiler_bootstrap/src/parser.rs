@@ -82,7 +82,7 @@ impl Parser {
 
     fn parse_block(&mut self) -> Vec<Statement> {
         let mut stmts = Vec::new();
-        while self.current() != &Token::Eof && self.current() != &Token::End && self.current() != &Token::Else {
+        while self.current() != &Token::Eof && self.current() != &Token::End && self.current() != &Token::Else && self.current() != &Token::Elif {
             if let Some(stmt) = self.parse_statement() {
                 stmts.push(stmt);
             }
@@ -181,36 +181,77 @@ impl Parser {
                 }
                 return Some(Statement::While { cond, body });
             }
-            Token::If => {
+            Token::If | Token::Elif => {
                 self.pos += 1;
                 let cond = self.parse_expression();
                 let mut then_branch = Vec::new();
                 let mut else_branch = Vec::new();
-                while self.current() != &Token::Eof && self.current() != &Token::End && self.current() != &Token::Else {
+                while self.current() != &Token::Eof && self.current() != &Token::End && self.current() != &Token::Else && self.current() != &Token::Elif {
                     if let Some(stmt) = self.parse_statement() {
                         then_branch.push(stmt);
                     }
                 }
-                if self.current() == &Token::Else {
+                if self.current() == &Token::Elif {
+                    if let Some(stmt) = self.parse_statement() {
+                        else_branch.push(stmt);
+                    }
+                } else if self.current() == &Token::Else {
                     self.pos += 1;
                     while self.current() != &Token::Eof && self.current() != &Token::End {
                         if let Some(stmt) = self.parse_statement() {
                             else_branch.push(stmt);
                         }
                     }
-                }
-                if self.current() == &Token::End {
+                    if self.current() == &Token::End {
+                        self.pos += 1;
+                    } else {
+                        self.errors.push("unterminated if block: expected 'end'".to_string());
+                    }
+                } else if self.current() == &Token::End {
                     self.pos += 1;
                 } else {
                     self.errors.push("unterminated if block: expected 'end'".to_string());
                 }
                 return Some(Statement::If { cond, then_branch, else_branch });
             }
+            Token::Global => {
+                self.pos += 1;
+                if let Token::Identifier(name) = self.current() {
+                    let var_name = name.clone();
+                    self.pos += 1;
+                    if self.current() == &Token::Equal {
+                        self.pos += 1;
+                        let value = self.parse_expression();
+                        return Some(Statement::Let { name: var_name, value });
+                    }
+                }
+                self.errors.push("expected 'name = value' after global".to_string());
+                return None;
+            }
             Token::Print => {
                 self.pos += 1;
                 let has_paren = self.current() == &Token::LeftParen;
                 if has_paren { self.pos += 1; }
-                let expr = self.parse_expression();
+                let mut expr = if has_paren && self.current() == &Token::RightParen {
+                    Expr::StringLiteral("".to_string())
+                } else {
+                    self.parse_expression()
+                };
+                while self.current() == &Token::Comma {
+                    self.pos += 1;
+                    let next_expr = self.parse_expression();
+                    let space = Expr::StringLiteral(" ".to_string());
+                    let with_space = Expr::Binary {
+                        left: Box::new(expr),
+                        op: BinaryOp::Add,
+                        right: Box::new(space),
+                    };
+                    expr = Expr::Binary {
+                        left: Box::new(with_space),
+                        op: BinaryOp::Add,
+                        right: Box::new(next_expr),
+                    };
+                }
                 if has_paren && self.current() == &Token::RightParen { self.pos += 1; }
                 return Some(Statement::Print(expr));
             }

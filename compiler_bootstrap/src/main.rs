@@ -102,6 +102,31 @@ fn expand_file(path: &Path, visiting: &mut HashSet<PathBuf>, loaded: &mut HashSe
                     if found.is_some() { break; }
                     curr = parent.parent();
                 }
+                if found.is_none() {
+                    let home = std::env::var("USERPROFILE").or_else(|_| std::env::var("HOME")).map(PathBuf::from);
+                    if let Ok(home_path) = home {
+                        let aayu_home = home_path.join(".aayu");
+                        for ext in &["aayu", "ay", "aa"] {
+                            let cand1 = aayu_home.join("std").join(requested).with_extension(ext);
+                            if cand1.exists() {
+                                found = Some(cand1);
+                                break;
+                            }
+                            let cand2 = aayu_home.join(requested).with_extension(ext);
+                            if cand2.exists() {
+                                found = Some(cand2);
+                                break;
+                            }
+                            if let Ok(rel) = requested.strip_prefix("std") {
+                                let cand3 = aayu_home.join("std").join(rel).with_extension(ext);
+                                if cand3.exists() {
+                                    found = Some(cand3);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
                 if let Some(f) = found {
                     resolved = f;
                 }

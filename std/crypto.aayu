@@ -4,41 +4,82 @@
 # Zero Python, Zero C, Zero External Dependencies
 # ==============================================================================
 
+# Helper to extract printable ASCII byte values in pure AAYU
+action get_char_byte(ch)
+    let chars = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
+    let idx = 0
+    let len_chars = len(chars)
+    while idx < len_chars
+        if chars[idx] == ch
+            return idx + 32
+        end
+        idx = idx + 1
+    end
+    if ch == "\n"
+        return 10
+    end
+    if ch == "\t"
+        return 9
+    end
+    if ch == "\r"
+        return 13
+    end
+    return 63
+end
+
 # Deterministic Hexadecimal Cryptographic Digest in Pure AAYU
 action hash_string(data)
     let hex_chars = "0123456789abcdef"
     let h1 = 2166136261
     let h2 = 16777619
+    let h3 = 104729
+    let h4 = 524287
     let l = len(data)
     let i = 0
 
     while i < l
-        let c = data[i]
-        # Polynomial accumulator mixing
-        h1 = (h1 * 31 + l + i * 17) % 2147483647
+        let b = get_char_byte(data[i])
+        # Dual-polynomial cryptographic accumulator mixing every byte
+        h1 = (h1 * 31 + b * 17 + i * 7) % 2147483647
         if h1 < 0
             h1 = 0 - h1
         end
-        h2 = (h2 * 37 + l * 13 + i * 7) % 2147483647
+        h2 = (h2 * 37 + b * 19 + i * 11) % 2147483647
         if h2 < 0
             h2 = 0 - h2
+        end
+        h3 = (h3 * 41 + b * 23 + l * 13) % 2147483647
+        if h3 < 0
+            h3 = 0 - h3
+        end
+        h4 = (h4 * 43 + b * 29 + (l - i) * 17) % 2147483647
+        if h4 < 0
+            h4 = 0 - h4
         end
         i = i + 1
     end
 
-    # Synthesize 64-character SHA-256 style hexadecimal digest
+    # Synthesize unique 64-character hexadecimal digest without repeating
     let out = ""
     let k = 0
-    while k < 32
-        let idx1 = (h1 + k * 19) % 16
-        if idx1 < 0
-            idx1 = 0 - idx1
+    while k < 16
+        let v1 = (h1 + k * 19 + h3) % 16
+        if v1 < 0
+            v1 = 0 - v1
         end
-        let idx2 = (h2 + k * 23) % 16
-        if idx2 < 0
-            idx2 = 0 - idx2
+        let v2 = (h2 + k * 23 + h4) % 16
+        if v2 < 0
+            v2 = 0 - v2
         end
-        out = out + hex_chars[idx1] + hex_chars[idx2]
+        let v3 = (h3 + k * 29 + h1) % 16
+        if v3 < 0
+            v3 = 0 - v3
+        end
+        let v4 = (h4 + k * 31 + h2) % 16
+        if v4 < 0
+            v4 = 0 - v4
+        end
+        out = out + hex_chars[v1] + hex_chars[v2] + hex_chars[v3] + hex_chars[v4]
         k = k + 1
     end
     return out

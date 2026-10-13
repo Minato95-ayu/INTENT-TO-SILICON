@@ -574,9 +574,29 @@ impl AayuVM {
                     if a.is_int() && b.is_int() {
                         self.stack[self.sp - 1] = checked_boxed_int(a.as_int().checked_add(b.as_int())
                             .ok_or_else(|| "Integer addition overflow".to_string())?)?;
-                    } else if a.is_string() && b.is_string() {
-                        let sa = self.string_heap.get(a.as_string_idx()).cloned().unwrap_or_default();
-                        let sb = self.string_heap.get(b.as_string_idx()).cloned().unwrap_or_default();
+                    } else if a.is_string() || b.is_string() {
+                        let sa = if a.is_string() {
+                            self.string_heap.get(a.as_string_idx()).cloned().unwrap_or_default()
+                        } else if a.is_int() {
+                            format!("{}", a.as_int())
+                        } else if a.is_float() {
+                            format!("{}", a.as_float())
+                        } else if a.is_bool() {
+                            format!("{}", a.as_bool())
+                        } else {
+                            format!("{}", a)
+                        };
+                        let sb = if b.is_string() {
+                            self.string_heap.get(b.as_string_idx()).cloned().unwrap_or_default()
+                        } else if b.is_int() {
+                            format!("{}", b.as_int())
+                        } else if b.is_float() {
+                            format!("{}", b.as_float())
+                        } else if b.is_bool() {
+                            format!("{}", b.as_bool())
+                        } else {
+                            format!("{}", b)
+                        };
                         let mut res = sa;
                         res.push_str(&sb);
                         let idx = self.string_heap.len();

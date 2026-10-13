@@ -21,6 +21,8 @@
   "folderExpanded": "_folder_open",
   "fileExtensions": {
     "aayu": "_aayu",
+    "ay": "_aayu",
+    "aa": "_aayu",
     "ayon": "_aayu",
     "ayc": "_aayu",
     "aybc": "_aayu"
@@ -28,6 +30,8 @@
   "light": {
     "fileExtensions": {
       "aayu": "_aayu_light",
+      "ay": "_aayu_light",
+      "aa": "_aayu_light",
       "ayon": "_aayu_light",
       "ayc": "_aayu_light",
       "aybc": "_aayu_light"

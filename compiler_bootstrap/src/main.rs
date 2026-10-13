@@ -76,23 +76,30 @@ fn expand_file(path: &Path, visiting: &mut HashSet<PathBuf>, loaded: &mut HashSe
                 return Err(format!("{}: imports must use relative paths", canonical.display()));
             }
             let mut resolved = canonical.parent().unwrap_or(Path::new(".")).join(requested);
-            if resolved.extension().is_none() { resolved.set_extension("aayu"); }
+            if resolved.extension().is_none() {
+                if let Some(c) = ["aayu", "ay", "aa"].iter().map(|ext| resolved.with_extension(ext)).find(|p| p.exists()) {
+                    resolved = c;
+                } else {
+                    resolved.set_extension("aayu");
+                }
+            }
             if !resolved.exists() {
                 let mut curr = canonical.parent();
                 let mut found = None;
                 while let Some(parent) = curr {
-                    let mut candidate = parent.join(requested);
-                    if candidate.extension().is_none() { candidate.set_extension("aayu"); }
-                    if candidate.exists() {
-                        found = Some(candidate);
-                        break;
+                    for ext in &["aayu", "ay", "aa"] {
+                        let candidate = parent.join(requested).with_extension(ext);
+                        if candidate.exists() {
+                            found = Some(candidate);
+                            break;
+                        }
+                        let std_candidate = parent.join("std").join(requested).with_extension(ext);
+                        if std_candidate.exists() {
+                            found = Some(std_candidate);
+                            break;
+                        }
                     }
-                    let mut std_candidate = parent.join("std").join(requested);
-                    if std_candidate.extension().is_none() { std_candidate.set_extension("aayu"); }
-                    if std_candidate.exists() {
-                        found = Some(std_candidate);
-                        break;
-                    }
+                    if found.is_some() { break; }
                     curr = parent.parent();
                 }
                 if let Some(f) = found {

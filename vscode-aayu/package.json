@@ -36,6 +36,8 @@
         ],
         "extensions": [
           ".aayu",
+          ".ay",
+          ".aa",
           ".ayon",
           ".ayc",
           ".aybc"

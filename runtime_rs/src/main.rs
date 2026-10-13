@@ -307,7 +307,7 @@ fn main() {
         cmd
     };
 
-    if target_file.ends_with(".aayu") {
+    if target_file.ends_with(".aayu") || target_file.ends_with(".ay") || target_file.ends_with(".aa") {
         let temp_ayc = format!("{}.tmp.ayc", target_file);
         if !compile_aayu_file(target_file, &temp_ayc) {
             std::process::exit(1);

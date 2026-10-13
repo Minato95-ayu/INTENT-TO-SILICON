@@ -563,20 +563,26 @@ print("Hello, World!")</code></pre>
 <h2>1. AAYU Code Terminal Se Kaise Run Karein? (Step-by-Step)</h2>
 <p>Kayi baar students code toh likh lete hain par unhe samajh nahi aata ki terminal ya PowerShell me jakar kya command likhni hai. Yahan bilkul shuruat se samjhein:</p>
 
-<h3>Step A: File Banayein (Notepad ya VS Code se)</h3>
+<h3>Step A: File Banayein (.aayu, .ay, ya .aa Extension Ke Saath)</h3>
+<p>AAYU me file save karne ke <strong>teen official extensions</strong> supported hain:</p>
+<ul>
+  <li><code>.aayu</code> — Standard full extension (e.g. <code>main.aayu</code>)</li>
+  <li><code>.ay</code> — <strong>Recommended 2-Letter Short Extension!</strong> Python ke <code>.py</code> aur Rust ke <code>.rs</code> ki tarah sabse tez aur aasan type karne ke liye (e.g. <code>main.ay</code>)</li>
+  <li><code>.aa</code> — Alternative 2-letter double-A extension (e.g. <code>app.aa</code>)</li>
+</ul>
 <p>Aap chahein toh Windows ke simple <strong>Notepad</strong> me bhi AAYU code likh sakte hain:</p>
-<pre><code># Terminal / CMD me type karein:
-notepad my_first_code.aayu</code></pre>
-<p>Notepad khulne par usme yeh likhein aur save karke close karein:</p>
+<pre><code># Terminal / CMD me short extension se file banayein:
+notepad my_first_code.ay</code></pre>
+<p>Notepad khulne par usme yeh simple code likhein aur save karke close karein:</p>
 <pre><code>print("AAYU running from pure terminal!")</code></pre>
 
 <h3>Step B: Terminal / PowerShell me Run Karein</h3>
 <p>Ab apne folder me PowerShell ya Command Prompt (CMD) kholein aur seedha type karein:</p>
-<pre><code># Direct execution command:
-aayu my_first_code.aayu
+<pre><code># Direct execution command (.ay ya .aayu dono chalenge):
+aayu my_first_code.ay
 
-# Ya phir run keyword ke saath:
-aayu run my_first_code.aayu</code></pre>
+# Ya phir run command ke saath:
+aayu run my_first_code.ay</code></pre>
 
 <div class="box box-tip">
   <div class="box-title">💡 Production Clean Output (Zero Noise!)</div>
@@ -595,17 +601,17 @@ aayu run my_first_code.aayu</code></pre>
   </thead>
   <tbody>
     <tr>
-      <td><code>aayu &lt;file.aayu&gt;</code></td>
-      <td>Compile karta hai aur seedha run karta hai</td>
+      <td><code>aayu &lt;file.ay / file.aayu&gt;</code></td>
+      <td>Compile karta hai aur seedha run karta hai (Zero noise)</td>
       <td>Daily development aur testing me</td>
     </tr>
     <tr>
-      <td><code>aayu run &lt;file.aayu&gt; --jit</code></td>
+      <td><code>aayu run &lt;file.ay&gt; --jit</code></td>
       <td>JIT (Just-In-Time) native mode me run karta hai</td>
       <td>Ultra-heavy mathematical loops me</td>
     </tr>
     <tr>
-      <td><code>aayu build &lt;file.aayu&gt; -o app.ayc</code></td>
+      <td><code>aayu build &lt;file.ay&gt; -o app.ayc</code></td>
       <td>Source code ko pre-compiled <code>.ayc</code> bytecode me save karta hai</td>
       <td>Code ko bina source code share kiye distribute karne ke liye</td>
     </tr>
@@ -717,6 +723,8 @@ git push -u origin main</code></pre>
   <div class="box-title">💡 Pro Tip for GitHub: AAYU Language Badge</div>
   Aapke repository me <code>.gitattributes</code> file me yeh rule zaroor rakhein:
   <pre><code>*.aayu linguist-language=AAYU
+*.ay linguist-language=AAYU
+*.aa linguist-language=AAYU
 *.py linguist-vendored</code></pre>
   Isse GitHub aapki repo ko 100% <strong>AAYU Language</strong> ke roop me pehchanega aur kisi bhi extra script ko count nahi karega!
 </div>

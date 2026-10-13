@@ -5,9 +5,13 @@
 # AAYU PROGRAMMING LANGUAGE - GITHUB LINGUIST CONFIGURATION
 # ==============================================================================
 
-# Primary Language: AAYU (.aayu and .ayon)
+# Primary Language: AAYU (.aayu, .ay, .aa, .ayon)
 *.aayu linguist-language=AAYU
 *.aayu linguist-detectable=true
+*.ay linguist-language=AAYU
+*.ay linguist-detectable=true
+*.aa linguist-language=AAYU
+*.aa linguist-detectable=true
 *.ayon linguist-language=AAYU
 *.ayon linguist-detectable=true
 *.ayc linguist-language=AAYU

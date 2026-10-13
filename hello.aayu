@@ -1,7 +1,6 @@
-app Simple
+# ==============================================================================
+# Official AAYU Hello World
+# Run: aayu hello.aayu  (or aayu hello.ay)
+# ==============================================================================
 
-action main
-    print("HELLO AAYU")
-end
-
-run main
+print("Hello, World!")

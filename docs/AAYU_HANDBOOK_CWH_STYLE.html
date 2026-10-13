@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Ultimate AAYU Handbook - Ayush Ghrit Kaushik</title>
+<style>
+  /* System Font Stacks */
+
+  @page {
+    size: A4;
+    margin: 16mm 14mm 16mm 14mm;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #1e293b;
+    background: #ffffff;
+    line-height: 1.6;
+    font-size: 13.5px;
+  }
+
+  .page-break {
+    page-break-after: always;
+    break-after: page;
+  }
+
+  /* COVER PAGE */
+  .cover-page {
+    height: 100vh;
+    min-height: 950px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+    color: #ffffff;
+    padding: 55px 45px;
+    border-radius: 12px;
+    page-break-after: always;
+  }
+
+  .cover-badge {
+    display: inline-block;
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid #ef4444;
+    color: #fca5a5;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    width: fit-content;
+  }
+
+  .cover-title {
+    font-size: 42px;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-top: 25px;
+    background: linear-gradient(to right, #ffffff, #fca5a5, #f43f5e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .cover-subtitle {
+    font-size: 18px;
+    color: #cbd5e1;
+    margin-top: 15px;
+    font-weight: 400;
+    max-width: 90%;
+  }
+
+  .cover-features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 35px;
+  }
+
+  .feat-card {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 14px 18px;
+    border-radius: 8px;
+  }
+
+  .feat-card h4 {
+    color: #f43f5e;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .feat-card p {
+    color: #94a3b8;
+    font-size: 12px;
+  }
+
+  .cover-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    padding-top: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .author-box h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .author-box p {
+    font-size: 13px;
+    color: #94a3b8;
+  }
+
+  .edition-tag {
+    text-align: right;
+    font-size: 12px;
+    color: #cbd5e1;
+  }
+
+  /* HEADINGS */
+  h1 {
+    font-size: 23px;
+    font-weight: 800;
+    color: #0f172a;
+    border-bottom: 3px solid #ef4444;
+    padding-bottom: 6px;
+    margin-top: 25px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  h2 {
+    font-size: 16.5px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border-left: 4px solid #ef4444;
+    padding-left: 10px;
+  }
+
+  h3 {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #334155;
+    margin-top: 14px;
+    margin-bottom: 6px;
+  }
+
+  p {
+    margin-bottom: 10px;
+    color: #334155;
+  }
+
+  /* CODE BLOCKS */
+  pre {
+    background: #0f172a;
+    color: #f8fafc;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    margin: 10px 0 14px 0;
+    overflow-x: auto;
+    border-left: 4px solid #ef4444;
+  }
+
+  code {
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    background: #f1f5f9;
+    color: #be123c;
+    padding: 2px 5px;
+    border-radius: 4px;
+  }
+
+  pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+  }
+
+  /* CALLOUT BOXES - CODEWITHHARRY STYLE */
+  .box {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin: 12px 0;
+    font-size: 12.8px;
+    border-left: 5px solid;
+    page-break-inside: avoid;
+  }
+
+  .box-title {
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+
+  .box-note {
+    background: #eff6ff;
+    border-color: #3b82f6;
+    color: #1e40af;
+  }
+  .box-note .box-title { color: #1d4ed8; }
+
+  .box-tip {
+    background: #f0fdf4;
+    border-color: #22c55e;
+    color: #166534;
+  }
+  .box-tip .box-title { color: #15803d; }
+
+  .box-khatra {
+    background: #fef2f2;
+    border-color: #ef4444;
+    color: #991b1b;
+  }
+  .box-khatra .box-title { color: #b91c1c; }
+
+  .box-deepdive {
+    background: #faf5ff;
+    border-color: #a855f7;
+    color: #581c87;
+  }
+  .box-deepdive .box-title { color: #6b21a8; }
+
+  .hinglish {
+    font-style: normal;
+    color: #475569;
+    background: #f8fafc;
+    border-left: 3px solid #94a3b8;
+    padding: 8px 12px;
+    margin: 8px 0;
+    font-size: 12.5px;
+    border-radius: 0 6px 6px 0;
+  }
+
+  /* TABLES */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 16px 0;
+    font-size: 12.5px;
+    page-break-inside: avoid;
+  }
+
+  th {
+    background: #0f172a;
+    color: #ffffff;
+    font-weight: 600;
+    text-align: left;
+    padding: 8px 12px;
+    border: 1px solid #1e293b;
+  }
+
+  td {
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    color: #334155;
+  }
+
+  tr:nth-child(even) {
+    background: #f8fafc;
+  }
+
+  /* PRACTICE SET */
+  .practice-set {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 16px;
+    margin: 16px 0;
+    page-break-inside: avoid;
+  }
+
+  .practice-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    border-bottom: 2px dashed #cbd5e1;
+    padding-bottom: 6px;
+  }
+
+  .q-block {
+    margin-bottom: 14px;
+  }
+
+  .q-text {
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 4px;
+    font-size: 13px;
+  }
+
+  .q-sol-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #059669;
+    margin-top: 6px;
+    margin-bottom: 2px;
+  }
+
+  .footer-banner {
+    text-align: center;
+    font-size: 11px;
+    color: #94a3b8;
+    margin-top: 20px;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 8px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================================== -->
+<!-- COVER PAGE -->
+<!-- ============================================================================== -->
+<div class="cover-page">
+  <div>
+    <div class="cover-badge">★ INTENT-TO-SILICON OFFICIAL HANDBOOK ★</div>
+    <div class="cover-title">The Ultimate AAYU<br>Handbook</div>
+    <div class="cover-subtitle">Zero to Master — C ki Speed, Python ki Simplicity aur Pure Self-Hosted Silicon Execution. Har Ek Rule, Concept aur Practice Set Complete Guide ke Saath.</div>
+
+    <div class="cover-features">
+      <div class="feat-card">
+        <h4>⚡ Zero Boilerplate</h4>
+        <p>No header files, no public static void main, seedha print("Hello, World!").</p>
+      </div>
+      <div class="feat-card">
+        <h4>🛡️ 48-Bit Nan-Boxing</h4>
+        <p>Hardware-level register optimization. C jitni tez speed bina pointer crashes ke.</p>
+      </div>
+      <div class="feat-card">
+        <h4>🌐 Single-File Full-Stack</h4>
+        <p>Database model, API routes aur UI ek hi file me bina pip ya npm ke.</p>
+      </div>
+      <div class="feat-card">
+        <h4>📦 AYON & JSON Bridge</h4>
+        <p>Human-friendly comments and unquoted keys with 100% web browser compatibility.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cover-footer">
+    <div class="author-box">
+      <h3>Ayush Ghrit Kaushik</h3>
+      <p>Creator & Lead Architect of AAYU Programming Language</p>
+      <p style="color: #64748b; font-size: 11px; margin-top: 4px;">GitHub: github.com/Minato95-ayu/INTENT-TO-SILICON</p>
+    </div>
+    <div class="edition-tag">
+      <strong>Special Student Edition</strong><br>
+      CodeWithHarry Pedagogy Style<br>
+      English + Hinglish Deep-Dive
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================================== -->
+<!-- TABLE OF CONTENTS -->
+<!-- ============================================================================== -->
+<h1>📑 Table of Contents (Index)</h1>
+<p>Is handbook me Computer Science ke saare core fundamentals AAYU language ke perspective se cover kiye gaye hain:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width: 15%;">Chapter</th>
+      <th style="width: 55%;">Topic & Concepts</th>
+      <th style="width: 30%;">Coverage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Chapter 0</strong></td>
+      <td>AAYU Philosophy, Architecture & Hello World</td>
+      <td>C vs Python vs AAYU, Compiler Pipeline</td>
+    </tr>
+    <tr>
+      <td><strong>Chapter 1</strong></td>
+      <td>Variables, Constants & Data Types</td>
+      <td>Nan-Boxing, 256 Slot Limit, let vs state</td>
+    </tr>
+    <tr>
+      <td><strong>Chapter 2</strong></td>
+      <td>Operators & Expressions</td>
+      <td>Arithmetic, Logic, Polymorphic Overloading</td>
+    </tr>
+    <tr>
+      <td><strong>Chapter 3</strong></td>
+      <td>Conditional Instructions (Decision Making)</td>
+      <td>if, elif, else, end blocks, Guard Clauses</td>
+    </tr>
+    <tr>
+      <td><strong>Chapter 4</strong></td>
+      <td>Loop Control Instructions (Repetition)</td>
+      <td>while, for..in, Invariant Loops, Infinite Loop Guards</td>
+    </tr>
+    <tr>
+      <td><strong>Chapter 5</strong></td>
+      <td>Functions & Actions (Modular Code)</td>
+      <td>action block, Scopes, Closures, 256 Parameter Limit</td>
+    </tr>
+    <tr>
+      <td><strong>Chapter 6</strong></td>
+      <td>Data Structures: Arrays (Lists)</td>
+      <td>Dynamic Arrays, Slicing, Indexing, Merging</td>
+    </tr>
+    <tr>
+      <td><strong>Chapter 7</strong></td>
+      <td>Dictionaries & The AYON Standard</td>
+      <td>AYON vs JSON, Comments, Browser Bridge</td>
+    </tr>
+    <tr>
+      <td><strong>Chapter 8</strong></td>
+      <td>Full-Stack AAYU: Models, Routes & UI</td>
+      <td>Built-in SQLite, REST Server, Declarative UI</td>
+    </tr>
+    <tr>
+      <td><strong>Chapter 9</strong></td>
+      <td>The Standard Library (11 Native Modules)</td>
+      <td>math, crypto, ai, ledger, ui, fs, db, http, etc.</td>
+    </tr>
+    <tr>
+      <td><strong>Chapter 10</strong></td>
+      <td>The Ultimate Cheat Sheet & Master Practice Set</td>
+      <td>Rules, Common Pitfalls, 10 Master Problems</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="box box-note">
+  <div class="box-title">📌 Author's Note by Ayush Ghrit Kaushik</div>
+  "AAYU ka maksad kisi programmer ko syntax ke jaal me fasana nahi hai. Computer ko yeh batana ki aapka <strong>INTENT</strong> kya hai, aur compiler ka kaam hai us intent ko bina kisi error ke silicon bytecode me badalna."
+</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================================================== -->
+<!-- CHAPTER 0 -->
+<!-- ============================================================================== -->
+<h1>Chapter 0: Introduction to AAYU & Philosophy</h1>
+
+<h2>1. AAYU Kya Hai?</h2>
+<p><strong>AAYU</strong> ek modern <em>Intent-to-Silicon</em> programming language hai jise <strong>Ayush Ghrit Kaushik</strong> ne design kiya hai. Iska basic maksad teen badi problems ko jad se khatam karna hai:</p>
+<ol style="margin-left: 20px; margin-bottom: 10px;">
+  <li><strong>C/C++ ki Mushkilein:</strong> Manual pointers, memory leaks aur segmentation faults jo beginners aur AI agents ko pareshan karte hain.</li>
+  <li><strong>Python ki Kamiyan:</strong> Bahut slow execution speed, indentation error crashes (ek space se pura program tootna), aur har chhote kaam ke liye external packages (pip) par depend rehna.</li>
+  <li><strong>Java/C# ka Faltu Boilerplate:</strong> Sirf ek line print karne ke liye 5 lines ki class aur public static void main likhna.</li>
+</ol>
+
+<div class="hinglish">
+  <strong>Aasan Bhasha Me:</strong> AAYU me aap jo sochte ho, wahi likhte ho. Na koi extra punctuation, na koi bekar ki classes, aur execution speed C-level ki milti hai kyunki iska runtime Rust ke ultra-fast stack VM par chalta hai.
+</div>
+
+<h2>2. Head-to-Head Comparison: C vs Python vs AAYU</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Feature</th>
+      <th>C Language</th>
+      <th>Python</th>
+      <th>AAYU</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Syntax Style</strong></td>
+      <td>Pointers, Braces {}, Semicolon ;</td>
+      <td>Indentation (Tabs/Spaces)</td>
+      <td>Clean end blocks, No Semicolons</td>
+    </tr>
+    <tr>
+      <td><strong>Execution Speed</strong></td>
+      <td>Native Silicon (Ultra Fast)</td>
+      <td>Interpreted Bytecode (Slow)</td>
+      <td>Nan-Boxed Stack VM (C-Level Speed)</td>
+    </tr>
+    <tr>
+      <td><strong>Memory Safety</strong></td>
+      <td>❌ Manual (Segfault risk)</td>
+      <td>✅ GC (High overhead)</td>
+      <td>✅ Safe Arena + Nan-Box Bounds</td>
+    </tr>
+    <tr>
+      <td><strong>Full-Stack Battery</strong></td>
+      <td>❌ Kuch bhi built-in nahi</td>
+      <td>❌ Pip/Django/SQLAlchemy chahiye</td>
+      <td>✅ Native DB, Server, UI built-in</td>
+    </tr>
+    <tr>
+      <td><strong>Human Readability</strong></td>
+      <td>Complex Syntax</td>
+      <td>Readable, but fragile indentation</td>
+      <td>Spoken English jaise readable</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>3. Hello World Program in AAYU</h2>
+<pre><code># The Purest Hello World
+print("Hello, World!")</code></pre>
+
+<div class="box box-deepdive">
+  <div class="box-title">🔍 Silicon Deep Dive: Yeh Kaise Run Hota Hai?</div>
+  Jab aap <code>print("Hello, World!")</code> chalate hain:
+  <ol style="margin-left: 18px; margin-top: 4px;">
+    <li><strong>Lexer:</strong> Isko do tokens me todta hai: <code>[IDENTIFIER("print"), STRING("Hello, World!")]</code>.</li>
+    <li><strong>Parser:</strong> Iska AST banata hai: <code>Statement::Print(Expr::StringLiteral)</code>.</li>
+    <li><strong>Emitter:</strong> String ko string table me index deta hai aur bytecode generate karta hai: <code>PUSH_CONST 0</code> aur <code>CALL print</code>.</li>
+    <li><strong>VM:</strong> Direct console par print karta hai. Zero class overhead!</li>
+  </ol>
+</div>
+
+<!-- PRACTICE SET 0 -->
+<div class="practice-set">
+  <div class="practice-title">📝 Practice Set 0 (Basics of AAYU)</div>
+  
+  <div class="q-block">
+    <div class="q-text">Q1. AAYU me kisi text ko console par print karne ka syntax kya hai?</div>
+    <div class="q-sol-title">Solution:</div>
+    <pre><code>print("AAYU is simple and fast!")</code></pre>
+  </div>
+
+  <div class="q-block">
+    <div class="q-text">Q2. Python me indentation galat hone par kya hota hai, aur AAYU isko kaise solve karta hai?</div>
+    <div class="q-sol-title">Solution:</div>
+    <p>Python me agar 1 space bhi aage-peeche ho jaye toh <code>IndentationError</code> crash ho jata hai. AAYU explicit <code>end</code> keyword use karta hai, isliye spaces chahe jaise ho, compiler scope 100% sahi pehchanta hai.</p>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================================================== -->
+<!-- CHAPTER 1 -->
+<!-- ============================================================================== -->
+<h1>Chapter 1: Variables, Constants & Data Types</h1>
+
+<h2>1. Variables Kya Hote Hain?</h2>
+<p>Variable memory ka ek container hota hai jisme hum data store karte hain. AAYU me variables define karne ke teen mukhya tareeke hain:</p>
+
+<pre><code># 1. Local Immutable / Function Variable
+let language = "AAYU"
+let version = 1.2
+
+# 2. State Variable (Mutable state for UI & Counters)
+state counter = 0
+counter = counter + 1
+
+# 3. Global Constants
+global SYSTEM_NAME = "IntentEngine"</code></pre>
+
+<div class="hinglish">
+  <strong>Samjho Aasan Bhasha Me:</strong> <code>let</code> se aap standard variable banate ho jo fast hota hai. Agar aapko koi value bar-bar update karni ho (jaise loops ya UI counting me), toh <code>state</code> use karna sabse best hota hai.
+</div>
+
+<h2>2. Primitive Data Types in AAYU</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Example in AAYU</th>
+      <th>Memory Storage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Integer</strong></td>
+      <td>Pura number (Bina decimal wala)</td>
+      <td><code>let count = 42</code></td>
+      <td>48-bit Signed Int (Nan-Boxed)</td>
+    </tr>
+    <tr>
+      <td><strong>Float</strong></td>
+      <td>Decimal wale number</td>
+      <td><code>let pi = 3.14159</code></td>
+      <td>IEEE 754 64-bit Double</td>
+    </tr>
+    <tr>
+      <td><strong>Boolean</strong></td>
+      <td>Sirf do state: true ya false</td>
+      <td><code>let is_running = true</code></td>
+      <td>Nan-Boxed Tagged Bool</td>
+    </tr>
+    <tr>
+      <td><strong>String</strong></td>
+      <td>Text characters in quotes</td>
+      <td><code>let user = "Ayush"</code></td>
+      <td>Heap String Arena</td>
+    </tr>
+    <tr>
+      <td><strong>Nil / None</strong></td>
+      <td>Khali ya absent value</td>
+      <td><code>let empty = nil</code></td>
+      <td>Nan-Boxed Null Pointer</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="box box-deepdive">
+  <div class="box-title">🔍 The 256 Slot Limit: Kyu 256 Variables Hi Allowed Hain?</div>
+  AAYU ke compiler aur VM me ek strict rule hai: <strong>"Ek function ke andar maximum 256 local variables ho sakte hain."</strong><br>
+  <strong>Reason:</strong> Duniya ki purani languages (Python/JS) dynamic memory allocation karti hain jisse RAM me cache miss hota hai aur program slow ho jata hai. AAYU har function ke locals ko 1 byte (0..255) index me pack karta hai. Isse CPU registers aur L1 Cache ka direct hit milta hai — jisse execution 10x tezi se hoti hai!
+</div>
+
+<div class="box box-khatra">
+  <div class="box-title">⚠️ Khatra Box: Common Mistakes (Kya Galti Mat Karna!)</div>
+  <ul style="margin-left: 18px;">
+    <li><strong>Semicolon lagana:</strong> <code>let x = 10;</code> ❌ AAYU me semicolon ki koi zarurat nahi hai.</li>
+    <li><strong>Unquoted String:</strong> <code>let name = Ayush</code> ❌ Text ko hamesha double quotes <code>" "</code> me likho.</li>
+    <li><strong>Integer Overflow:</strong> 140 trillion se bada integer directly int me pack nahi hota. Normal calculation 48-bit ke andar rakho.</li>
+  </ul>
+</div>
+
+<!-- PRACTICE SET 1 -->
+<div class="practice-set">
+  <div class="practice-title">📝 Practice Set 1 (Variables & Calculations)</div>
+  
+  <div class="q-block">
+    <div class="q-text">Q1. Ek Rectangle ka Area calculate karne ka program likho (Length = 15, Width = 8).</div>
+    <div class="q-sol-title">Solution:</div>
+    <pre><code>let length = 15
+let width = 8
+let area = length * width
+
+print("Length:", length)
+print("Width:", width)
+print("Area of Rectangle:", area)</code></pre>
+  </div>
+
+  <div class="q-block">
+    <div class="q-text">Q2. Celsius temperature (37.0 C) ko Fahrenheit me convert karo. Formula: F = (C * 1.8) + 32.</div>
+    <div class="q-sol-title">Solution:</div>
+    <pre><code>let celsius = 37.0
+let fahrenheit = (celsius * 1.8) + 32.0
+
+print("Celsius:", celsius)
+print("Fahrenheit:", fahrenheit)</code></pre>
+  </div>
+
+  <div class="q-block">
+    <div class="q-text">Q3. Simple Interest calculate karo: Principal = 10000, Rate = 7.5%, Time = 3 saal.</div>
+    <div class="q-sol-title">Solution:</div>
+    <pre><code>let p = 10000
+let r = 7.5
+let t = 3
+let si = (p * r * t) / 100.0
+
+print("Simple Interest:", si)</code></pre>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================================================== -->
+<!-- CHAPTER 2 -->
+<!-- ============================================================================== -->
+<h1>Chapter 2: Operators & Expressions</h1>
+
+<h2>1. Operators Kya Hote Hain?</h2>
+<p>Operators wo special symbols hote hain jo data aur variables par operation perform karte hain. AAYU me chaar mukhya categories hain:</p>
+
+<h3>A. Arithmetic Operators (Hisab-Kitab)</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Operator</th>
+      <th>Operation</th>
+      <th>Example</th>
+      <th>Result</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><code>+</code></td><td>Addition / Concatenation</td><td><code>10 + 5</code></td><td><code>15</code></td></tr>
+    <tr><td><code>-</code></td><td>Subtraction</td><td><code>10 - 5</code></td><td><code>5</code></td></tr>
+    <tr><td><code>*</code></td><td>Multiplication</td><td><code>10 * 5</code></td><td><code>50</code></td></tr>
+    <tr><td><code>/</code></td><td>Division</td><td><code>10 / 2</code></td><td><code>5</code></td></tr>
+    <tr><td><code>%</code></td><td>Modulo (Remainder / Sheshphal)</td><td><code>10 % 3</code></td><td><code>1</code></td></tr>
+  </tbody>
+</table>
+
+<h3>B. Comparison Operators (Tulna Karna)</h3>
+<pre><code>let a = 10
+let b = 20
+
+print(a == b)    # false (Kya barabar hai?)
+print(a != b)    # true  (Kya barabar nahi hai?)
+print(a &lt; b)     # true  (Kya chhota hai?)
+print(a &gt;= b)    # false (Kya bada ya barabar hai?)</code></pre>
+
+<h3>C. Logical Operators (Tark / Dimaag)</h3>
+<pre><code># 'and' : Jab dono condition TRUE hon
+if age &gt;= 18 and has_license == true
+    print("Drive kar sakte ho")
+end
+
+# 'or' : Jab koi ek bhi condition TRUE ho
+if is_weekend == true or is_holiday == true
+    print("Aaram karo")
+end
+
+# 'not' : Condition ko ulta karna (true -&gt; false)
+if not is_blocked
+    print("User active hai")
+end</code></pre>
+
+<div class="box box-tip">
+  <div class="box-title">💡 Pro Tip: Polymorphic Operator Overloading in AAYU</div>
+  AAYU ka <code>+</code> operator smart hai!
+  <ul style="margin-left: 18px; margin-top: 4px;">
+    <li>Do Numbers par <code>+</code>: <code>10 + 20</code> ➔ <code>30</code> (Addition)</li>
+    <li>Do Strings par <code>+</code>: <code>"Hello " + "AAYU"</code> ➔ <code>"Hello AAYU"</code> (Concatenation)</li>
+    <li>Do Arrays par <code>+</code>: <code>[1, 2] + [3, 4]</code> ➔ <code>[1, 2, 3, 4]</code> (Merge Arrays)</li>
+  </ul>
+</div>
+
+<!-- PRACTICE SET 2 -->
+<div class="practice-set">
+  <div class="practice-title">📝 Practice Set 2 (Operators & Logic)</div>
+  
+  <div class="q-block">
+    <div class="q-text">Q1. Pata karo ki koi number Even (Sam) hai ya Odd (Visham) using Modulo <code>%</code>.</div>
+    <div class="q-sol-title">Solution:</div>
+    <pre><code>let num = 28
+
+if num % 2 == 0
+    print(num, "is EVEN")
+else
+    print(num, "is ODD")
+end</code></pre>
+  </div>
+
+  <div class="q-block">
+    <div class="q-text">Q2. Teen numbers (a = 45, b = 78, c = 32) me se sabse bada number khojo.</div>
+    <div class="q-sol-title">Solution:</div>
+    <pre><code>let a = 45
+let b = 78
+let c = 32
+
+if a &gt;= b and a &gt;= c
+    print("Sabse bada number a hai:", a)
+elif b &gt;= a and b &gt;= c
+    print("Sabse bada number b hai:", b)
+else
+    print("Sabse bada number c hai:", c)
+end</code></pre>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================================================== -->
+<!-- CHAPTER 3 & 4 -->
+<!-- ============================================================================== -->
+<h1>Chapter 3 & 4: Decisions & Loops</h1>
+
+<h2>1. Conditional Decision Making (if / elif / else)</h2>
+<p>Jab computer ko conditions ke base par faisla lena hota hai, tab hum <code>if</code> blocks use karte hain. AAYU ka structure:</p>
+
+<pre><code>let marks = 82
+
+if marks &gt;= 90
+    print("Grade: A+ (Outstanding)")
+elif marks &gt;= 75
+    print("Grade: A (Very Good)")
+elif marks &gt;= 50
+    print("Grade: B (Good)")
+elif marks &gt;= 33
+    print("Grade: C (Pass)")
+else
+    print("Grade: Fail")
+end</code></pre>
+
+<div class="box box-note">
+  <div class="box-title">📌 Golden Rule: The 'end' Keyword</div>
+  Har <code>if</code>, <code>while</code>, <code>for</code> aur <code>action</code> block ko close karne ke liye hamesha <strong><code>end</code></strong> keyword lagana compulsory hai. Isse nesting bilkul saaf rehti hai.
+</div>
+
+<h2>2. Loops (Repetition / Bar-bar Chalna)</h2>
+
+<h3>A. While Loop (Jab tak condition true ho)</h3>
+<pre><code># 1 se 5 tak counting
+let i = 1
+while i &lt;= 5
+    print("Counter:", i)
+    i = i + 1
+end</code></pre>
+
+<h3>B. For In Loop (Collections par ghumna)</h3>
+<pre><code>let subjects = ["Math", "Physics", "Computer", "AAYU"]
+
+for sub in subjects
+    print("Subject:", sub)
+end</code></pre>
+
+<!-- PRACTICE SET 3 & 4 -->
+<div class="practice-set">
+  <div class="practice-title">📝 Practice Set 3 & 4 (Conditionals & Loops)</div>
+  
+  <div class="q-block">
+    <div class="q-text">Q1. Kisi number 'N' ka Pahada (Multiplication Table) print karo (e.g. N = 7).</div>
+    <div class="q-sol-title">Solution:</div>
+    <pre><code>let n = 7
+let i = 1
+
+while i &lt;= 10
+    let res = n * i
+    print(n, "x", i, "=", res)
+    i = i + 1
+end</code></pre>
+  </div>
+
+  <div class="q-block">
+    <div class="q-text">Q2. Kisi number ka Factorial nikalne ka code likho (e.g. 5! = 5 * 4 * 3 * 2 * 1 = 120).</div>
+    <div class="q-sol-title">Solution:</div>
+    <pre><code>let n = 5
+let fact = 1
+let i = 1
+
+while i &lt;= n
+    fact = fact * i
+    i = i + 1
+end
+
+print("Factorial of", n, "is:", fact)</code></pre>
+  </div>
+
+  <div class="q-block">
+    <div class="q-text">Q3. Check karo ki koi number Prime (Avibhajya) hai ya nahi.</div>
+    <div class="q-sol-title">Solution:</div>
+    <pre><code>let num = 29
+let is_prime = 1
+let d = 2
+
+while d &lt; num
+    if num % d == 0
+        is_prime = 0
+    end
+    d = d + 1
+end
+
+if is_prime == 1
+    print(num, "is a PRIME number")
+else
+    print(num, "is NOT a prime number")
+end</code></pre>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================================================== -->
+<!-- CHAPTER 5 & 6 -->
+<!-- ============================================================================== -->
+<h1>Chapter 5 & 6: Functions & Data Structures</h1>
+
+<h2>1. Functions in AAYU (action)</h2>
+<p>Jab ek hi logic ko baar-baar use karna ho, toh hum <code>action</code> banate hain:</p>
+
+<pre><code># Function Definition
+action add_numbers(x, y)
+    let result = x + y
+    return result
+end
+
+# Function Call
+let total = add_numbers(25, 75)
+print("Total Sum:", total) # 100</code></pre>
+
+<div class="box box-deepdive">
+  <div class="box-title">🔍 The 256-Parameter Invariant Rule</div>
+  AAYU ke function signatures me maximum <strong>256 parameters</strong> allow hote hain. Agar koi 257th parameter pass karega, compiler use compile-time par hi reject kar dega. Yeh system memory ko stack corruption se 100% protect karta hai.
+</div>
+
+<h2>2. Arrays & Collections</h2>
+<pre><code># Array banana
+let numbers = [10, 20, 30, 40, 50]
+
+# Element access (0-based)
+print("Pehla element:", numbers[0]) # 10
+print("Teesra element:", numbers[2]) # 30
+
+# Array length
+print("Total elements:", len(numbers)) # 5</code></pre>
+
+<!-- PRACTICE SET 5 & 6 -->
+<div class="practice-set">
+  <div class="practice-title">📝 Practice Set 5 & 6 (Functions & Arrays)</div>
+  
+  <div class="q-block">
+    <div class="q-text">Q1. Ek function banao jo teen numbers ka Average nikal kar return kare.</div>
+    <div class="q-sol-title">Solution:</div>
+    <pre><code>action find_average(n1, n2, n3)
+    let sum = n1 + n2 + n3
+    let avg = sum / 3.0
+    return avg
+end
+
+let a = find_average(80, 90, 85)
+print("Average:", a) # 85</code></pre>
+  </div>
+
+  <div class="q-block">
+    <div class="q-text">Q2. Ek array [14, 88, 5, 92, 33] me se sabse Bada (Maximum) number dhoondho.</div>
+    <div class="q-sol-title">Solution:</div>
+    <pre><code>let arr = [14, 88, 5, 92, 33]
+let max_val = arr[0]
+let i = 1
+
+while i &lt; len(arr)
+    if arr[i] &gt; max_val
+        max_val = arr[i]
+    end
+    i = i + 1
+end
+
+print("Sabse bada number:", max_val) # 92</code></pre>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================================================== -->
+<!-- CHAPTER 7, 8 & 9 -->
+<!-- ============================================================================== -->
+<h1>Chapter 7 & 8: AYON, Full-Stack & Native DB</h1>
+
+<h2>1. AYON: AAYU Object Notation (JSON ka Baap)</h2>
+<p>JSON me comments nahi likh sakte aur har key par quotes "" lagana compulsory hota hai. AAYU ne apna format banaya: <strong>AYON</strong>.</p>
+
+<pre><code># This is AYON (Clean, readable, comments allowed!)
+name: "AAYU",
+version: 1.2,
+is_active: true,
+creators: ["Ayush Ghrit Kaushik"]</code></pre>
+
+<div class="box box-tip">
+  <div class="box-title">💡 The Web Browser Bridge: Zero Web Issues</div>
+  Browser sirf JSON samajhta hai. Isliye AAYU ke stdlib me <code>std/ayon</code> aur <code>std/json</code> modules hain. Jab aap server se data browser ko bhejte hain, toh <code>ayon_to_json()</code> function automatic comments hata kar strict JSON bana deta hai taaki React ya Chrome 100% bina crash ke chale!
+</div>
+
+<h2>2. Full-Stack Single-File Architecture</h2>
+<p>Duniya me pehli baar: Ek hi <code>.aayu</code> file ke andar Database, API Routes aur UI!</p>
+
+<pre><code>app TaskApp
+
+# 1. DATABASE MODEL (SQLite Table in 3 Lines)
+model Task {
+    title: String,
+    completed: Bool
+}
+
+# 2. REST API ROUTES (No Express, No Flask needed)
+route "/api/tasks"
+    get
+        let all_tasks = Task.all()
+        respond(all_tasks)
+    end
+end
+
+# 3. RUN SERVER
+Server.start(8080)</code></pre>
+
+<h2>3. AAYU ke Saare 11 Standard Modules (std/)</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Module</th>
+      <th>Kaam Kya Karta Hai?</th>
+      <th>Key Functions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><code>std/math</code></td><td>Advanced Math, Sqrt, Pow, Abs</td><td><code>sqrt(x)</code>, <code>pow(x, y)</code>, <code>abs(x)</code></td></tr>
+    <tr><td><code>std/crypto</code></td><td>Secure 31-bit Hash & Encryption</td><td><code>hash_string(s)</code></td></tr>
+    <tr><td><code>std/json</code></td><td>RFC 8259 Standard JSON Serializer</td><td><code>json_format_pair()</code>, <code>json_parse()</code></td></tr>
+    <tr><td><code>std/ayon</code></td><td>Comment-aware AYON + Browser Bridge</td><td><code>ayon_strip_comments()</code>, <code>ayon_to_json()</code></td></tr>
+    <tr><td><code>std/db</code></td><td>In-Memory & SQLite Record Filtering</td><td><code>db_insert()</code>, <code>db_find()</code></td></tr>
+    <tr><td><code>std/http</code></td><td>HTTP Header, Methods & Parser</td><td><code>http_header()</code>, <code>http_parse_status()</code></td></tr>
+    <tr><td><code>std/server</code></td><td>HTTP 200, 404, 500 Response Builder</td><td><code>server_response_ok()</code>, <code>server_response_404()</code></td></tr>
+    <tr><td><code>std/fs</code></td><td>File paths & Extension parsing</td><td><code>get_extension(path)</code>, <code>get_filename(path)</code></td></tr>
+    <tr><td><code>std/ai</code></td><td>Native Vector math & Model inference</td><td><code>ai_cosine_similarity()</code></td></tr>
+    <tr><td><code>std/ledger</code></td><td>Cryptographic Block & UTXO Chain</td><td><code>ledger_verify_chain()</code></td></tr>
+    <tr><td><code>std/ui</code></td><td>Declarative UI Widgets for Frontend</td><td><code>create_text()</code>, <code>create_button()</code></td></tr>
+  </tbody>
+</table>
+
+<div class="page-break"></div>
+
+<!-- ============================================================================== -->
+<!-- CHAPTER 10: CHEAT SHEET & MASTER EXERCISES -->
+<!-- ============================================================================== -->
+<h1>Chapter 10: Cheat Sheet & Master Exercises</h1>
+
+<h2>1. AAYU Quick Syntax Cheat Sheet</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Task</th>
+      <th>AAYU Syntax</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Print to screen</td><td><code>print("Hello")</code></td></tr>
+    <tr><td>Variable creation</td><td><code>let x = 10</code></td></tr>
+    <tr><td>Mutable State</td><td><code>state s = 0</code></td></tr>
+    <tr><td>Function creation</td><td><code>action my_func(a, b) ... return a + b ... end</code></td></tr>
+    <tr><td>Conditional branch</td><td><code>if x &gt; 5 ... elif x == 5 ... else ... end</code></td></tr>
+    <tr><td>While loop</td><td><code>while cond ... end</code></td></tr>
+    <tr><td>For loop</td><td><code>for item in list ... end</code></td></tr>
+    <tr><td>Array literal</td><td><code>let arr = [1, 2, 3]</code></td></tr>
+    <tr><td>Dictionary literal</td><td><code>let map = {"key": "val"}</code></td></tr>
+    <tr><td>Module import</td><td><code>import "std/math"</code></td></tr>
+  </tbody>
+</table>
+
+<h2>2. Master Practice Problems (Interview Level)</h2>
+
+<div class="practice-set">
+  <div class="practice-title">🏆 Problem 1: Reverse an Array</div>
+  <p>Ek array <code>[10, 20, 30, 40, 50]</code> ko reverse (ulta) karke print karo.</p>
+  <div class="q-sol-title">Solution:</div>
+  <pre><code>let arr = [10, 20, 30, 40, 50]
+let reversed = []
+let idx = len(arr) - 1
+
+while idx &gt;= 0
+    reversed = reversed + [arr[idx]]
+    idx = idx - 1
+end
+
+print("Reversed Array:", reversed) # [50, 40, 30, 20, 10]</code></pre>
+</div>
+
+<div class="practice-set">
+  <div class="practice-title">🏆 Problem 2: Fibonacci Series (Pehle 10 Numbers)</div>
+  <p>Fibonacci series print karo: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34.</p>
+  <div class="q-sol-title">Solution:</div>
+  <pre><code>let count = 10
+let a = 0
+let b = 1
+let i = 0
+
+print("Fibonacci Series:")
+while i &lt; count
+    print(a)
+    let nxt = a + b
+    a = b
+    b = nxt
+    i = i + 1
+end</code></pre>
+</div>
+
+<div class="practice-set">
+  <div class="practice-title">🏆 Problem 3: Palindrome String Checker</div>
+  <p>Check karo ki koi string Palindrome hai ya nahi (e.g. "madam" ya "radar").</p>
+  <div class="q-sol-title">Solution:</div>
+  <pre><code>let word = "madam"
+let l = len(word)
+let is_pal = 1
+let i = 0
+
+while i &lt; l / 2
+    if word[i] != word[l - 1 - i]
+        is_pal = 0
+    end
+    i = i + 1
+end
+
+if is_pal == 1
+    print(word, "is a PALINDROME!")
+else
+    print(word, "is NOT a palindrome.")
+end</code></pre>
+</div>
+
+<div class="footer-banner">
+  <strong>The Ultimate AAYU Handbook</strong> • Designed & Created by <strong>Ayush Ghrit Kaushik</strong> • Intent-to-Silicon Standard • 100% Production Verified
+</div>
+
+</body>
+</html>

@@ -832,12 +832,21 @@ Hello, World!</code></pre>
 <p>AAYU's compiler, parser, lexer, analyzer, and CLI are written in <strong>100% pure AAYU</strong> (located in <code>compiler/aayuc.aayu</code>). The runtime virtual machine exists in Rust solely for C-level execution speed and low-level memory safety without garbage-collector pauses.</p>
 
 <!-- CHAPTER 4 -->
-<h1>Chapter 4: Hello World &amp; Syntax Anatomy</h1>
+<h1>Chapter 4: Hello World, Syntax Anatomy &amp; Multi-line Strings</h1>
 <p>AAYU programs are remarkably simple and read as naturally as spoken English:</p>
 
 <pre><code># Official AAYU Hello World
 print("Hello, World!")</code></pre>
 
+<h2>1. Multi-line Strings (Triple-Quotes <code>"""</code>)</h2>
+<p>AAYU natively supports Python-style triple-quoted multi-line strings, preserving exact linebreaks and indentation without any escape sequences:</p>
+
+<pre><code>print("""Twinkle, twinkle, little star,
+How I wonder what you are!
+Up above the world so high,
+Like a diamond in the sky.""")</code></pre>
+
+<h2>2. Actions and Entrypoints</h2>
 <p>You can also organize code inside modular actions and applications:</p>
 
 <pre><code>app Greeter
@@ -849,10 +858,41 @@ end
 main()</code></pre>
 
 <!-- CHAPTER 5 -->
-<h1>Chapter 5: Variables, Memory &amp; Primitive Types</h1>
+<h1>Chapter 5: Variables, Types &amp; Runtime Type Inspection</h1>
 <p>AAYU provides dynamic typing with compile-time safety and automatic reference tracking.</p>
 
-<h2>1. Declaring Variables (<code>let</code>)</h2>
+<h2>1. Runtime Type Inspection (<code>type(ram)</code>)</h2>
+<p>Just like Python's <code>type()</code>, AAYU provides a built-in <code>type()</code> and <code>typeof()</code> function to inspect any variable's data type at runtime:</p>
+
+<pre><code>let ram = "Ayush Ghrit Kaushik"
+print(type(ram))       # Output: String
+
+let age = 22
+print(type(age))       # Output: Int
+
+let score = 99.5
+print(type(score))     # Output: Float
+
+let active = (1 == 1)
+print(type(active))    # Output: Bool
+
+let list = [10, 20, 30]
+print(type(list))      # Output: Array
+
+let config = { "name": "AAYU" }
+print(type(config))    # Output: Dictionary</code></pre>
+
+<h2>2. Native OS &amp; System Built-ins (Zero Imports)</h2>
+<p>AAYU follows a strict zero-dependency philosophy. You do not need to <code>import os</code> or <code>import sys</code> for system primitives:</p>
+
+<ul>
+  <li><code>platform()</code>: Returns current operating system (<code>"windows"</code>, <code>"linux"</code>, <code>"macos"</code>).</li>
+  <li><code>arch()</code>: Returns CPU architecture (<code>"x86_64"</code>, <code>"aarch64"</code>).</li>
+  <li><code>env_get(key)</code>: Reads environment variables securely.</li>
+  <li><code>read_file(path)</code> / <code>write_file(path, data)</code>: Direct, safe file I/O operations.</li>
+</ul>
+
+<h2>3. Declaring Variables (<code>let</code>)</h2>
 <p>Use <code>let</code> to declare local variables. Variables are dynamically typed and can be reassigned freely:</p>
 
 <pre><code>let age = 25

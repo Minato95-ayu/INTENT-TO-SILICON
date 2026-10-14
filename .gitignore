@@ -56,10 +56,8 @@ WINDSURF.md
 .windsurfrules
 .aayu-context.md
 
-# Internal dev docs (archived, not public-facing)
-COMPILER_CONFIDENCE_REPORT.md
-LANGUAGE_RESEARCH_ANALYSIS.md
-REPOSITORY_AUDIT.md
-BOOTSTRAP.md
-BRAND_GUIDELINES.md
-AAYU_LANGUAGE_HANDBOOK_V1.md
+# Markdown files: hide all internal documentation across the entire project
+*.md
+**/*.md
+!/README.md
+

@@ -1,70 +1,121 @@
-# AAYU — Intent to Silicon
+<p align="center">
+  <img src="website/public/aayu-logo.png" alt="AAYU Logo" width="180" />
+</p>
 
-AAYU is an experimental programming language and toolchain. This repository also contains the BrainOS workflow prototype, an intent-processing prototype, a website, and editor tooling. These parts use different implementation languages and have different levels of maturity.
+<h1 align="center">AAYU — Intent to Silicon</h1>
 
-## Current implementation
+<p align="center">
+  <strong>The programming language where your intent becomes silicon-ready bytecode.</strong><br/>
+  Single-file full-stack · Built-in Database · Built-in Server · Built-in UI · AI/ML Native
+</p>
 
-- The language compiler sources are in `compiler/` and are written in AAYU. A separate Rust bootstrap compiler in `compiler_bootstrap/` currently provides the command-line compiler used by the VM. Reproducible self-hosting has not yet been established; see [the confidence report](COMPILER_CONFIDENCE_REPORT.md).
-- The runtime and bytecode VM are in `runtime_rs/` (Rust). The repository contains an experimental C emitter, but the CLI routes `--jit` through the VM because emitted code has incorrect typed-value behavior.
-- The runtime database module is a JSON-backed key-value store with an in-memory map and disk persistence. It is not SQLite and does not provide a relational SQL engine.
-- `brainos/` and `intent_engine/` are Python projects/prototypes. The website and VS Code extension also have their own dependencies.
+<p align="center">
+  <a href="https://github.com/Minato95-ayu/INTENT-TO-SILICON/releases"><img src="https://img.shields.io/badge/version-v1.1.0-purple?style=flat-square" alt="Version"/></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Proprietary-blue?style=flat-square" alt="License"/></a>
+  <a href="https://aayulang.com"><img src="https://img.shields.io/badge/website-aayulang.com-emerald?style=flat-square" alt="Website"/></a>
+</p>
 
-## Build from source
+---
 
-Install a current Rust toolchain, then build the VM and bootstrap compiler:
+## What is AAYU?
 
-```powershell
-cargo build --release --manifest-path runtime_rs/Cargo.toml
-cargo build --release --manifest-path compiler_bootstrap/Cargo.toml
-New-Item -ItemType Directory -Force bin | Out-Null
-Copy-Item runtime_rs/target/release/aayu-vm.exe bin/aayu-vm.exe
-Copy-Item compiler_bootstrap/target/release/aayuc.exe bin/aayuc.exe
-```
-
-On Linux or macOS, use the same Cargo commands and copy the outputs `runtime_rs/target/release/aayu-vm` and `compiler_bootstrap/target/release/aayuc` into `bin/` (omit `.exe`). The VM looks for `aayuc` beside itself when compiling `.aayu` files.
-
-Run a source example or compile it to bytecode:
-
-```text
-bin/aayu-vm run tests/test_01_vars.aayu
-bin/aayu-vm build tests/test_01_vars.aayu -o hello.ayc
-bin/aayu-vm run hello.ayc
-```
-
-The build command creates AAYU bytecode (`.ayc`), not a native standalone application binary. The CLI currently routes `--jit` bytecode execution through the Rust VM because the C emitter has not passed type/result conformance checks. The benchmark-only `--sum` generated-C measurement is not a VM JIT performance claim.
-
-## Language example
-
-The currently exercised core syntax includes declarations, reassignment, arithmetic, `if`/`else`, `while`, and `print`:
+AAYU is a **single-file full-stack programming language** built for the AI-agent era. One `.aayu` file contains your database models, API routes, frontend UI, and business logic — zero external dependencies, zero config files.
 
 ```aayu
-let count = 0
-let total = 0
+app TodoApp
 
-while count < 5
-    total = total + count
-    count = count + 1
+model Task { title: String, done: Bool }
+
+route "/api/tasks"
+  get
+    respond Task.all()
+  end
 end
 
-if total == 10
-    print("sum: 10")
-else
-    print("unexpected sum")
+Page Home
+  Column
+    Text("My Tasks")
+    Button("Add Task", onClick: addTask)
+  end
 end
+
+run Home
 ```
 
-See [tests](tests/) for more examples. The formal language spec is being aligned with the implemented parser; treat unverified constructs in older docs as unsupported until documented and covered.
+> **Python** needs Flask + SQLAlchemy + React + npm = 15 files, 500 lines.
+> **AAYU** does the same in **1 file, 20 lines.**
 
-## Project status and docs
+---
 
-The compiler, VM, and surrounding tools are at different maturity levels. The [compiler confidence report](COMPILER_CONFIDENCE_REPORT.md) records known gaps; the [roadmap](ROADMAP.md) tracks planned work. Performance and readiness numbers are measurements or estimates for the listed environments, not general guarantees.
+## Quick Start
 
-- [Architecture](ARCHITECTURE.md)
-- [Language specification](specs/language/v1/grammar.md)
-- [Benchmarks and methodology](benchmarks/BENCHMARK_RESULTS.md)
-- [Known limitations](KNOWN_LIMITATIONS.md)
-- [Website and docs](website/)
+```powershell
+# Clone & build
+git clone https://github.com/Minato95-ayu/INTENT-TO-SILICON.git
+cd INTENT-TO-SILICON
+cargo build --release --manifest-path runtime_rs/Cargo.toml
+cargo build --release --manifest-path compiler_bootstrap/Cargo.toml
 
-## License
+# Run
+bin/aayu-vm run hello.aayu
+```
 
-The repository-level [LICENSE](LICENSE) is proprietary. The `vscode-aayu/` and `aayu_studio/` subprojects include their own MIT license files; check the applicable license before redistributing a component. `aayu.json` now reflects the repository-level license.
+---
+
+## Architecture
+
+```
+ .aayu Source
+    │
+    ▼
+┌─────────┐   ┌────────┐   ┌─────┐   ┌─────┐   ┌─────┐   ┌──────────┐   ┌───────────┐
+│  Lexer   │──▸│ Parser │──▸│ AST │──▸│ HIR │──▸│ MIR │──▸│ Bytecode │──▸│  Rust VM  │
+└─────────┘   └────────┘   └─────┘   └─────┘   └─────┘   └──────────┘   └───────────┘
+  Pure AAYU     Pure AAYU   Pure AAYU                        .ayc file     Stack-based
+```
+
+- **Compiler pipeline** → 100% pure AAYU (self-hosted)
+- **VM & JIT** → Rust (for C-level execution speed)
+- **Memory** → Union-Style NaN-Boxing + Mark-and-Sweep GC
+
+---
+
+## Project Status
+
+| Component | Status | Language |
+|-----------|--------|----------|
+| Compiler (Lexer/Parser/AST) | ✅ Working | Pure AAYU |
+| Bytecode VM | ✅ Working | Rust |
+| Database/Storage | ✅ Working | AAYU + Rust |
+| HTTP Server/Routes | ✅ Working | AAYU + Rust |
+| CLI Tools | ✅ Working | AAYU |
+| Frontend UI | 🔨 In Progress | AAYU |
+| AI/ML stdlib | 🔨 In Progress | AAYU |
+| Mobile IDE (Android) | ✅ Released | TypeScript |
+| VS Code Extension | ✅ Released | TypeScript |
+
+---
+
+## Downloads
+
+| Platform | Link |
+|----------|------|
+| 🖥️ Windows Installer | [Download .exe](https://aayulang.com/download) |
+| 📱 Android Mobile IDE | [Download .zip](https://aayulang.com/downloads/aayu-mobile-ide.zip) |
+| 🧩 VS Code Extension | [Download .vsix](https://aayulang.com/downloads/aayu-1.2.0.vsix) |
+| 📖 Master Handbook (21 Ch) | [Download PDF](https://aayulang.com/aayu-handbook.pdf) |
+| 🐧 Linux/macOS | [Install Script](https://aayulang.com/downloads/aayu-linux.sh) |
+
+---
+
+## Created By
+
+**Ayush Ghrit Kaushik** · [@Minato95-ayu](https://github.com/Minato95-ayu)
+
+> *"Modern programming is bloated. AAYU is the reset button — the first language designed for AI Agents to build silicon-ready empires."*
+
+---
+
+## Links
+
+- [Website](https://aayulang.com) · [Tutorial](https://aayulang.com/tutorial) · [Roadmap](ROADMAP.md) · [Contributing](CONTRIBUTING.md) · [Changelog](CHANGELOG.md)

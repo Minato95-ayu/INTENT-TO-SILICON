@@ -44,3 +44,22 @@ node_modules/
 .archive/
 generated/
 !website/public/releases/*.exe
+
+# AI agent guidance files (dev-only, not for public repo)
+GEMINI.md
+CLAUDE.md
+CODEX.md
+COPILOT.md
+CURSOR.md
+WINDSURF.md
+.cursorrules
+.windsurfrules
+.aayu-context.md
+
+# Internal dev docs (archived, not public-facing)
+COMPILER_CONFIDENCE_REPORT.md
+LANGUAGE_RESEARCH_ANALYSIS.md
+REPOSITORY_AUDIT.md
+BOOTSTRAP.md
+BRAND_GUIDELINES.md
+AAYU_LANGUAGE_HANDBOOK_V1.md

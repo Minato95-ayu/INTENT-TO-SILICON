@@ -79,6 +79,36 @@ impl<'a> Lexer<'a> {
 
             // 2. Strings
             if ch == '"' {
+                // Check for triple-quote: """..."""
+                if self.pos + 2 < self.input.len() {
+                    let bytes = self.input.as_bytes();
+                    if bytes[self.pos + 1] == b'"' && bytes[self.pos + 2] == b'"' {
+                        self.pos += 3; // skip opening """
+                        let mut s = String::new();
+                        while self.pos < self.input.len() {
+                            if self.pos + 2 < self.input.len()
+                                && self.input.as_bytes()[self.pos] == b'"'
+                                && self.input.as_bytes()[self.pos + 1] == b'"'
+                                && self.input.as_bytes()[self.pos + 2] == b'"'
+                            {
+                                break;
+                            }
+                            let c = self.current_char();
+                            s.push(c);
+                            self.pos += c.len_utf8();
+                        }
+                        if self.pos + 2 < self.input.len() {
+                            self.pos += 3; // skip closing """
+                        } else {
+                            tokens.push(Token::Invalid("unterminated triple-quote string".to_string()));
+                            continue;
+                        }
+                        tokens.push(Token::StringLiteral(s));
+                        continue;
+                    }
+                }
+
+                // Regular single double-quote string
                 self.pos += 1;
                 let mut s = String::new();
                 while self.pos < self.input.len() {

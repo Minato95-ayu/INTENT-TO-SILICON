@@ -397,7 +397,7 @@ impl Emitter {
                     self.bytecode.push(1);
                     self.bytecode.push((null_idx >> 8) as u8);
                     self.bytecode.push((null_idx & 0xFF) as u8);
-                } else if callee == "len" {
+                } else if callee == "len" || callee == "type" || callee == "typeof" || callee == "platform" || callee == "arch" || callee == "env_get" || callee == "read_file" || callee == "write_file" {
                     let (name_idx, _) = self.add_constant_str(callee.clone());
                     self.bytecode.push(1); // PUSH_CONST (func name)
                     self.bytecode.push((name_idx >> 8) as u8);

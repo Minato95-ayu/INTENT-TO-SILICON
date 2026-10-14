@@ -712,6 +712,91 @@ impl AayuVM {
                             self.sp -= argc + 1;
                             self.stack[self.sp] = NanVal::int(l as i64);
                             self.sp += 1;
+                        } else if func_name == "type" || func_name == "typeof" {
+                            let a = if argc > 0 { self.stack[self.sp - 1] } else { NanVal::null() };
+                            let type_name = if a.is_int() {
+                                "Int"
+                            } else if a.is_float() {
+                                "Float"
+                            } else if a.is_bool() {
+                                "Bool"
+                            } else if a.is_null() {
+                                "Null"
+                            } else if a.is_string() {
+                                "String"
+                            } else if a.is_array() {
+                                "Array"
+                            } else if a.is_dict() {
+                                "Dictionary"
+                            } else {
+                                "Unknown"
+                            };
+                            self.sp -= argc + 1;
+                            let idx = self.string_heap.len();
+                            self.string_heap.push(type_name.to_string());
+                            self.stack[self.sp] = NanVal::string(idx);
+                            self.sp += 1;
+                        } else if func_name == "platform" {
+                            self.sp -= argc + 1;
+                            let idx = self.string_heap.len();
+                            self.string_heap.push(std::env::consts::OS.to_string());
+                            self.stack[self.sp] = NanVal::string(idx);
+                            self.sp += 1;
+                        } else if func_name == "arch" {
+                            self.sp -= argc + 1;
+                            let idx = self.string_heap.len();
+                            self.string_heap.push(std::env::consts::ARCH.to_string());
+                            self.stack[self.sp] = NanVal::string(idx);
+                            self.sp += 1;
+                        } else if func_name == "env_get" {
+                            let key = if argc > 0 {
+                                let k = self.stack[self.sp - 1];
+                                if k.is_string() && k.as_string_idx() < self.string_heap.len() {
+                                    self.string_heap[k.as_string_idx()].clone()
+                                } else { String::new() }
+                            } else { String::new() };
+                            self.sp -= argc + 1;
+                            if let Ok(v) = std::env::var(&key) {
+                                let idx = self.string_heap.len();
+                                self.string_heap.push(v);
+                                self.stack[self.sp] = NanVal::string(idx);
+                            } else {
+                                self.stack[self.sp] = NanVal::null();
+                            }
+                            self.sp += 1;
+                        } else if func_name == "read_file" {
+                            let path = if argc > 0 {
+                                let p = self.stack[self.sp - 1];
+                                if p.is_string() && p.as_string_idx() < self.string_heap.len() {
+                                    self.string_heap[p.as_string_idx()].clone()
+                                } else { String::new() }
+                            } else { String::new() };
+                            self.sp -= argc + 1;
+                            if let Ok(content) = std::fs::read_to_string(&path) {
+                                let idx = self.string_heap.len();
+                                self.string_heap.push(content);
+                                self.stack[self.sp] = NanVal::string(idx);
+                            } else {
+                                self.stack[self.sp] = NanVal::null();
+                            }
+                            self.sp += 1;
+                        } else if func_name == "write_file" {
+                            let content = if argc > 1 {
+                                let c = self.stack[self.sp - 1];
+                                if c.is_string() && c.as_string_idx() < self.string_heap.len() {
+                                    self.string_heap[c.as_string_idx()].clone()
+                                } else { format!("{}", c) }
+                            } else { String::new() };
+                            let path = if argc > 0 {
+                                let p = self.stack[self.sp - argc];
+                                if p.is_string() && p.as_string_idx() < self.string_heap.len() {
+                                    self.string_heap[p.as_string_idx()].clone()
+                                } else { String::new() }
+                            } else { String::new() };
+                            self.sp -= argc + 1;
+                            let ok = std::fs::write(&path, &content).is_ok();
+                            self.stack[self.sp] = NanVal::bool(ok);
+                            self.sp += 1;
                         } else {
                             return Err(format!("Unknown built-in function '{}'", func_name));
                         }

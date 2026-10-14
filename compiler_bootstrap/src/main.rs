@@ -154,8 +154,14 @@ fn validate_supported(statements: &[parser::Statement]) -> Result<(), String> {
                 format!("integer literal {} is outside the signed 48-bit VM range", value)
             ),
             Expr::Call { callee, args } => {
-                if callee == "len" {
-                    if args.len() != 1 { return Err("len() expects exactly one argument".into()); }
+                if callee == "len" || callee == "type" || callee == "typeof" {
+                    if args.len() != 1 { return Err(format!("{}() expects exactly one argument", callee)); }
+                } else if callee == "platform" || callee == "arch" {
+                    if !args.is_empty() { return Err(format!("{}() expects zero arguments", callee)); }
+                } else if callee == "env_get" || callee == "read_file" {
+                    if args.len() != 1 { return Err(format!("{}() expects exactly one argument", callee)); }
+                } else if callee == "write_file" {
+                    if args.len() != 2 { return Err("write_file() expects 2 arguments: (path, content)".into()); }
                 } else if callee != "print" {
                     let expected = functions.get(callee).ok_or_else(|| format!("unknown function '{}'", callee))?;
                     if args.len() != *expected {

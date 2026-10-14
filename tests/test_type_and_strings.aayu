@@ -1,0 +1,40 @@
+# ==============================================================================
+# Test: Multi-line Triple-Quote Strings & Type Inspection in AAYU
+# ==============================================================================
+
+# 1. Multi-line Triple Quote String
+print("""Twinkle, twinkle, little star,
+How I wonder what you are!
+Up above the world so high,
+Like a diamond in the sky.""")
+
+# 2. Type Checking (like Python's print(type(ram)))
+let ram = "Ayush Ghrit Kaushik"
+print("Type of ram:")
+print(type(ram))
+
+let age = 22
+print("Type of age:")
+print(type(age))
+
+let score = 99.5
+print("Type of score:")
+print(type(score))
+
+let active = 1 == 1
+print("Type of active:")
+print(type(active))
+
+let list = [10, 20, 30]
+print("Type of list:")
+print(type(list))
+
+let config = { "os": "aayu", "version": 1 }
+print("Type of config:")
+print(type(config))
+
+# 3. System / OS info built-ins
+print("OS Platform:")
+print(platform())
+print("Architecture:")
+print(arch())

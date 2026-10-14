@@ -298,6 +298,63 @@ tokens = tokens + [{ "type": "NUMBER", "value": value, "line": start_line, "colu
                         is_quote = 1 == 1
                     end
                     if is_quote
+                        # Check for triple-quote: """..."""
+                        let is_triple = 1 == 0
+                        if c == "\""
+                            if pos + 2 < length
+                                if src[pos + 1] == "\""
+                                    if src[pos + 2] == "\""
+                                        is_triple = 1 == 1
+                                    end
+                                end
+                            end
+                        end
+
+                        if is_triple
+                            start_line = line
+                            start_col = column
+                            pos = pos + 3
+                            column = column + 3
+                            value = ""
+                            let tri_loop = 1 == 1
+                            while tri_loop
+                                if pos + 2 >= length
+                                    tri_loop = 1 == 0
+                                else
+                                    if src[pos] == "\""
+                                        if src[pos + 1] == "\""
+                                            if src[pos + 2] == "\""
+                                                tri_loop = 1 == 0
+                                            else
+                                                value = value + src[pos]
+                                                pos = pos + 1
+                                                column = column + 1
+                                            end
+                                        else
+                                            value = value + src[pos]
+                                            pos = pos + 1
+                                            column = column + 1
+                                        end
+                                    else
+                                        let tc = src[pos]
+                                        if tc == "\n"
+                                            line = line + 1
+                                            column = 1
+                                        else
+                                            column = column + 1
+                                        end
+                                        value = value + tc
+                                        pos = pos + 1
+                                    end
+                                end
+                            end
+                            if pos + 2 < length
+                                pos = pos + 3
+                                column = column + 3
+                            end
+                            tokens = tokens + [{ "type": "STRING", "value": value, "line": start_line, "column": start_col }]
+                        else
+                        # Regular single-quote or double-quote string
                         let quote_c = c
                         start_line = line
                         start_col = column
@@ -327,6 +384,7 @@ tokens = tokens + [{ "type": "NUMBER", "value": value, "line": start_line, "colu
                         end
                         
                         tokens = tokens + [{ "type": "STRING", "value": value, "line": start_line, "column": start_col }]
+                        end
                     else
                     if 1 == 0
                         start_line = line

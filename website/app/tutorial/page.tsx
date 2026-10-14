@@ -36,7 +36,7 @@ export default function TutorialPage() {
           >
             <Download className="w-4 h-4 text-white" />
             <span>Download Master Handbook PDF</span>
-            <span className="rounded bg-black/30 px-2 py-0.5 text-xs text-indigo-200">1.6 MB · 21 Ch</span>
+            <span className="rounded bg-black/30 px-2 py-0.5 text-xs text-indigo-200">1.8 MB · 21 Ch</span>
           </a>
         </div>
 

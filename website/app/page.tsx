@@ -388,7 +388,7 @@ export default function Home() {
                   >
                     <BookOpen className="w-4 h-4 text-purple-200" />
                     <span>Download Handbook (21 Ch PDF)</span>
-                    <span className="rounded bg-black/30 px-2 py-0.5 text-xs text-purple-200 font-mono">1.6 MB</span>
+                    <span className="rounded bg-black/30 px-2 py-0.5 text-xs text-purple-200 font-mono">1.8 MB</span>
                   </a>
 
                   <a

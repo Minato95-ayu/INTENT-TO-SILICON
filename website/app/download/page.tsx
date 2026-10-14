@@ -1,6 +1,6 @@
 "use client";
 import { useState } from 'react';
-import { Terminal, Copy, Download, Cpu, Check } from 'lucide-react';
+import { Terminal, Copy, Download, Cpu, Check, Smartphone, BookOpen } from 'lucide-react';
 
 export default function DownloadPage() {
   const [copied, setCopied] = useState(false);
@@ -15,8 +15,10 @@ export default function DownloadPage() {
 
   const sdkDownloads = [
     { os: 'Windows (SDK)', icon: <Cpu className="w-8 h-8 text-blue-400" />, desc: 'CLI & Compiler (.zip)', file: 'aayu-windows.zip', color: 'hover:border-blue-500/50' },
-    { os: 'macOS (SDK)', icon: <Cpu className="w-8 h-8 text-zinc-300" />, desc: 'CLI & Compiler (.zip)', file: 'aayu-macos.zip', color: 'hover:border-zinc-500/50' },
-    { os: 'Linux (SDK)', icon: <Cpu className="w-8 h-8 text-orange-400" />, desc: 'CLI & Compiler (.tar.gz)', file: 'aayu-linux.tar.gz', color: 'hover:border-orange-500/50' }
+    { os: 'Android Mobile (APK)', icon: <Smartphone className="w-8 h-8 text-emerald-400" />, desc: 'Native Mobile IDE (.apk)', file: 'aayu-android.apk', localUrl: '/downloads/aayu-android.apk', color: 'hover:border-emerald-500/50' },
+    { os: 'Master Handbook (PDF)', icon: <BookOpen className="w-8 h-8 text-purple-400" />, desc: 'Official 21-Chapter PDF', file: 'The_Ultimate_AAYU_Handbook_Ayush_Ghrit_Kaushik.pdf', localUrl: '/aayu-handbook.pdf', color: 'hover:border-purple-500/50' },
+    { os: 'Linux (SDK)', icon: <Cpu className="w-8 h-8 text-orange-400" />, desc: 'CLI & Compiler (.tar.gz)', file: 'aayu-linux.tar.gz', color: 'hover:border-orange-500/50' },
+    { os: 'macOS (SDK)', icon: <Cpu className="w-8 h-8 text-zinc-300" />, desc: 'CLI & Compiler (.zip)', file: 'aayu-macos.zip', color: 'hover:border-zinc-500/50' }
   ];
 
   return (
@@ -29,31 +31,22 @@ export default function DownloadPage() {
             Download <span className="text-purple-400">AAYU</span>
           </h1>
           <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
-            Download the AAYU VM and bootstrap compiler release, or build them from source.
+            Download the native AAYU Silicon Engine, Android Mobile IDE APK, or the Official 21-Chapter Engineering Handbook.
           </p>
-        </div>
-
-        {/* Studio status */}
-        <div className="mb-16">
-          <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-            <Terminal className="w-6 h-6 text-purple-400" /> AAYU Studio
-          </h2>
-          <p className="text-zinc-400 mb-6">Studio is a separate project. This page does not currently list verified Studio installer releases.</p>
-          <a href="https://github.com/Minato95-ayu/INTENT-TO-SILICON/tree/main/aayu_studio" className="text-cyan-400 hover:underline">View Studio source and build notes</a>
         </div>
 
         {/* SDK Section */}
         <div className="mb-20">
           <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-            <Terminal className="w-6 h-6 text-cyan-400" /> AAYU VM and Bootstrap Compiler
+            <Terminal className="w-6 h-6 text-cyan-400" /> AAYU Native Binaries, Mobile APK &amp; Handbook
           </h2>
-          <p className="text-zinc-400 mb-6">Release archives include the VM and bootstrap compiler needed to run .aayu source files.</p>
+          <p className="text-zinc-400 mb-6">Cross-platform releases built with zero external dependencies. Choose your platform below:</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {sdkDownloads.map((d, i) => (
               <div key={i} className={"bg-[#0a0a0a] border border-white/5 rounded-xl p-6 transition-all duration-300 group " + d.color}>
                 <div className="flex justify-between items-start mb-4">
                   {d.icon}
-                  <a href={"https://github.com/Minato95-ayu/INTENT-TO-SILICON/releases/latest/download/" + d.file}  className="p-2 bg-white/5 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-colors">
+                  <a href={d.localUrl || ("https://github.com/Minato95-ayu/INTENT-TO-SILICON/releases/latest/download/" + d.file)} download className="p-2 bg-white/5 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-colors">
                     <Download className="w-4 h-4" />
                   </a>
                 </div>

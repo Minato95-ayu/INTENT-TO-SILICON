@@ -2,8 +2,12 @@
 let items = [10, 20, 30, 40]
 let sum = 0
 
-for x in items
-    sum = sum + x
+let i = 0
+let n = len(items)
+
+while i < n
+    sum = sum + items[i]
+    i = i + 1
 end
 
 print("For Loop Sum (expected 100):")

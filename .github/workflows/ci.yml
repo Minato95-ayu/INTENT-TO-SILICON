@@ -28,19 +28,18 @@ jobs:
         run: cargo test --manifest-path runtime_rs/Cargo.toml
 
       - name: Build release engine & compiler
-        run: |
-          cargo build --release --manifest-path runtime_rs/Cargo.toml
-          cargo build --release --manifest-path compiler_bootstrap/Cargo.toml
+        run: cargo build --release --manifest-path runtime_rs/Cargo.toml
 
       - name: Verify CLI & Run Test Suites on Windows
         if: matrix.os == 'windows-latest'
         run: |
           New-Item -ItemType Directory -Path bin -Force | Out-Null
           Copy-Item .\runtime_rs\target\release\aayu-vm.exe bin\aayu-vm.exe -Force
-          Copy-Item .\runtime_rs\target\release\aayu-vm.exe bin\aayu.exe -Force
-          Copy-Item .\compiler_bootstrap\target\release\aayuc.exe bin\aayuc.exe -Force
+          Copy-Item .\runtime_rs\target\release\aayu.exe bin\aayu.exe -Force
+          Copy-Item .\runtime_rs\target\release\aayuc.exe bin\aayuc.exe -Force
           .\bin\aayu.exe --version
           .\bin\aayu.exe --help
+          .\bin\aayu.exe info
           .\bin\aayu.exe --sum 1000000
           powershell -ExecutionPolicy Bypass -File tests/test_malformed_bytecode.ps1
           powershell -ExecutionPolicy Bypass -File tests/run_tests.ps1
@@ -51,11 +50,12 @@ jobs:
         run: |
           mkdir -p bin
           cp runtime_rs/target/release/aayu-vm bin/aayu-vm
-          cp runtime_rs/target/release/aayu-vm bin/aayu
-          cp compiler_bootstrap/target/release/aayuc bin/aayuc
+          cp runtime_rs/target/release/aayu bin/aayu
+          cp runtime_rs/target/release/aayuc bin/aayuc
           chmod +x bin/*
           ./bin/aayu --version
           ./bin/aayu --help
+          ./bin/aayu info
           ./bin/aayu --sum 1000000
           # Run comprehensive malformed security test suite on Linux
           bash tests/test_malformed_bytecode.sh

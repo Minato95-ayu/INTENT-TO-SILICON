@@ -24,19 +24,16 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Build aayu-vm
+      - name: Build Native Engine & Compiler
         run: cargo build --release --manifest-path runtime_rs/Cargo.toml
-
-      - name: Build aayuc bootstrap compiler
-        run: cargo build --release --manifest-path compiler_bootstrap/Cargo.toml
 
       - name: Package Windows (zip)
         if: matrix.os == 'windows-latest'
         run: |
           mkdir dist
           copy runtime_rs\target\release\aayu-vm.exe dist\aayu-vm.exe
-          copy runtime_rs\target\release\aayu-vm.exe dist\aayu.exe
-          copy compiler_bootstrap\target\release\aayuc.exe dist\aayuc.exe
+          copy runtime_rs\target\release\aayu.exe dist\aayu.exe
+          copy runtime_rs\target\release\aayuc.exe dist\aayuc.exe
           if (Test-Path aayu-publisher.cer) { copy aayu-publisher.cer dist\aayu-publisher.cer }
           Copy-Item std dist\std -Recurse
           Copy-Item examples dist\examples -Recurse
@@ -48,8 +45,8 @@ jobs:
         run: |
           mkdir dist
           cp runtime_rs/target/release/aayu-vm dist/aayu-vm
-          cp runtime_rs/target/release/aayu-vm dist/aayu
-          cp compiler_bootstrap/target/release/aayuc dist/aayuc
+          cp runtime_rs/target/release/aayu dist/aayu
+          cp runtime_rs/target/release/aayuc dist/aayuc
           cp -r std dist/std
           cp -r examples dist/examples
           cd dist && tar -czvf ../aayu-linux.tar.gz *
@@ -59,8 +56,8 @@ jobs:
         run: |
           mkdir dist
           cp runtime_rs/target/release/aayu-vm dist/aayu-vm
-          cp runtime_rs/target/release/aayu-vm dist/aayu
-          cp compiler_bootstrap/target/release/aayuc dist/aayuc
+          cp runtime_rs/target/release/aayu dist/aayu
+          cp runtime_rs/target/release/aayuc dist/aayuc
           cp -r std dist/std
           cp -r examples dist/examples
           cd dist && zip -r ../aayu-macos.zip *

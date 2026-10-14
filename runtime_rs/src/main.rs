@@ -1,80 +1,163 @@
 use std::env;
 use std::fs::File;
 use std::io::Read;
-use std::path::{Path, PathBuf};
-use std::process::Command;
+use std::path::Path;
 
 use aayu_vm::vm::{AayuVM, NanVal};
 use aayu_vm::jit;
+use aayu_vm::compiler;
 
 fn print_banner() {
     println!("AAYU Intent-to-Silicon Engine v1.2.0");
     println!("Architecture: {} ({})", env::consts::ARCH, env::consts::OS);
-    println!("Runtime: Rust bytecode VM | Source compilation uses the separate aayuc executable");
+    println!("Runtime: Native Rust Bytecode VM | Embedded Compiler & JIT");
 }
 
 fn print_help() {
     print_banner();
     println!("\nUsage: aayu [command] [options] <file>\n");
     println!("Commands:");
-    println!("  run <file.aayu> [--jit]    Compile with aayuc and run in the Rust VM");
+    println!("  run <file.aayu> [--jit]    Compile and execute AAYU source code");
     println!("  run <file.ayc> [--jit]     Execute precompiled bytecode directly");
     println!("  build <file.aayu> [-o out] Compile source to .ayc bytecode");
+    println!("  check <file.aayu>          Validate syntax & structure without running");
+    println!("  init <project_name>        Scaffold a brand new AAYU project");
+    println!("  info, sysinfo              Display detailed environment & system info");
     println!("  version, -v, --version     Display engine version information");
     println!("  help, -h, --help           Display this help manual\n");
     println!("Examples:");
     println!("  aayu run hello.aayu");
     println!("  aayu run portfolio.ayc --jit");
     println!("  aayu build app.aayu -o app.ayc");
+    println!("  aayu check app.aayu");
+    println!("  aayu init my_app");
 }
 
-fn find_compiler() -> Option<PathBuf> {
-    if let Some(configured) = env::var_os("AAYU_COMPILER_PATH") {
-        let path = PathBuf::from(configured);
-        return path.is_file().then_some(path);
-    }
-    let names = if cfg!(windows) {
-        vec!["aayuc.exe", "aayuc"]
+fn print_sysinfo() {
+    println!("==================================================");
+    println!("       AAYU INTENT-TO-SILICON ENGINE INFO         ");
+    println!("==================================================");
+    println!("Engine Version:   1.2.0 (Self-Hosted Intent-to-Silicon)");
+    println!("Operating System: {}", env::consts::OS);
+    println!("Architecture:     {}", env::consts::ARCH);
+    let is_termux = env::var("TERMUX_VERSION").is_ok()
+        || Path::new("/data/data/com.termux").exists()
+        || env::var("PREFIX").map(|p| p.contains("com.termux")).unwrap_or(false);
+    if is_termux {
+        let ver = env::var("TERMUX_VERSION").unwrap_or_else(|_| "detected".into());
+        println!("Environment:      Android Termux (v{})", ver);
     } else {
-        vec!["aayuc", "aayuc.exe"]
-    };
-    if let Ok(current_exe) = env::current_exe() {
-        if let Some(parent) = current_exe.parent() {
-            for name in &names {
-                let direct = parent.join(name);
-                if direct.exists() { return Some(direct); }
-                let bin_dir = parent.join("bin").join(name);
-                if bin_dir.exists() { return Some(bin_dir); }
-                let parent_bin = parent.parent().unwrap_or(parent).join("bin").join(name);
-                if parent_bin.exists() { return Some(parent_bin); }
-            }
-        }
+        println!("Environment:      Native Host ({})", env::consts::OS);
     }
-    for name in &names {
-        let local = PathBuf::from(format!("bin/{}", name));
-        if local.exists() { return Some(local); }
-        let curr = PathBuf::from(name);
-        if curr.exists() { return Some(curr); }
-    }
-    None
+    println!("VM Runtime:       AAYU High-Speed Silicon Stack VM");
+    println!("JIT Acceleration: Dynamic C-Level JIT Engine");
+    println!("Compiler Engine:  Pure Self-Hosted AAYU Lexer/Parser/Emitter");
+    println!("Standard Library: std/ (math, collections, fs, os, ai, db, http, json, ledger, server, ui)");
+    println!("Zero Dependencies: SQLite, HTTP, Math, UI, DB Built-In");
+    println!("==================================================");
 }
 
 fn compile_aayu_file(input_path: &str, output_path: &str) -> bool {
-    let compiler = match find_compiler() {
-        Some(c) => c,
-        None => {
-            eprintln!("[AAYU Error] Compiler (aayuc.exe) not found in PATH or bin directory.");
-            return false;
+    let path = Path::new(input_path);
+    match compiler::compile_file(path) {
+        Ok(bytecode) => {
+            if let Err(e) = std::fs::write(output_path, bytecode) {
+                eprintln!("[AAYU Error] Failed to write bytecode output '{}': {}", output_path, e);
+                return false;
+            }
+            true
+        }
+        Err(e) => {
+            eprintln!("[AAYU Compile Error in '{}']:\n{}", input_path, e);
+            false
+        }
+    }
+}
+
+fn run_aayuc_cli(args: &[String]) {
+    if args.len() < 2 {
+        println!("AAYU Compiler (aayuc) v1.2.0");
+        println!("Usage: aayuc <input.aayu> [-o <output.ayc>]");
+        return;
+    }
+    let input_file = &args[1];
+    let mut output_file = "output.ayc".to_string();
+    if let Some(pos) = args.iter().position(|a| a == "-o") {
+        if pos + 1 < args.len() {
+            output_file = args[pos + 1].clone();
+        }
+    } else if args.len() >= 3 && !args[2].starts_with('-') {
+        output_file = args[2].clone();
+    } else {
+        let stem = Path::new(input_file).file_stem().and_then(|s| s.to_str()).unwrap_or("app");
+        output_file = format!("{}.ayc", stem);
+    }
+    if compile_aayu_file(input_file, &output_file) {
+        println!("Compiled successfully to {}", output_file);
+    } else {
+        std::process::exit(1);
+    }
+}
+
+fn run_init(project_name: &str) {
+    let dir = Path::new(project_name);
+    if let Err(e) = std::fs::create_dir_all(dir) {
+        eprintln!("[AAYU Error] Failed to create directory '{}': {}", project_name, e);
+        std::process::exit(1);
+    }
+    let main_aayu = format!(
+r#"# AAYU Application: {}
+app {}
+
+action main
+    print("==================================================")
+    print("Welcome to {} written in pure AAYU!")
+    print("Platform: " + platform() + " | Architecture: " + arch())
+    print("==================================================")
+end
+
+run main
+"#, project_name, project_name.replace('-', "_"), project_name);
+
+    let config_json = format!(
+r#"{{
+  "name": "{}",
+  "version": "0.1.0",
+  "entry": "main.aayu",
+  "description": "AAYU Intent-to-Silicon Project"
+}}
+"#, project_name);
+
+    let gitignore = "*.ayc\n*.tmp*\n";
+
+    let _ = std::fs::write(dir.join("main.aayu"), main_aayu);
+    let _ = std::fs::write(dir.join("aayu.json"), config_json);
+    let _ = std::fs::write(dir.join(".gitignore"), gitignore);
+
+    println!("Created new AAYU project '{}' successfully!", project_name);
+    println!("  - {}/main.aayu", project_name);
+    println!("  - {}/aayu.json", project_name);
+    println!("  - {}/.gitignore", project_name);
+    println!("\nTo run your project:");
+    println!("  cd {}", project_name);
+    println!("  aayu run main.aayu");
+}
+
+fn run_check(input_file: &str) {
+    let contents = match std::fs::read_to_string(input_file) {
+        Ok(c) => c,
+        Err(e) => {
+            eprintln!("[AAYU Error] Failed to read file '{}': {}", input_file, e);
+            std::process::exit(1);
         }
     };
-    let status = Command::new(compiler)
-        .args([input_path, "-o", output_path])
-        .status();
-    match status {
-        Ok(s) => s.success(),
+    match compiler::compile(&contents) {
+        Ok(bc) => {
+            println!("[AAYU Check] Syntax OK: '{}' (Generated {} bytes bytecode)", input_file, bc.len());
+        }
         Err(e) => {
-            eprintln!("[AAYU Error] Failed to execute compiler: {}", e);
-            false
+            eprintln!("[AAYU Syntax Error in '{}']:\n{}", input_file, e);
+            std::process::exit(1);
         }
     }
 }
@@ -255,6 +338,14 @@ fn main() {
         return;
     }
 
+    // Check if executed as aayuc or aayuc.exe
+    let prog = &args[0];
+    let is_aayuc = prog.ends_with("aayuc") || prog.ends_with("aayuc.exe");
+    if is_aayuc {
+        run_aayuc_cli(&args);
+        return;
+    }
+
     let cmd = &args[1];
     let use_jit = args.contains(&"--jit".to_string());
 
@@ -265,6 +356,26 @@ fn main() {
 
     if cmd == "-h" || cmd == "--help" || cmd == "help" {
         print_help();
+        return;
+    }
+
+    if cmd == "info" || cmd == "sysinfo" {
+        print_sysinfo();
+        return;
+    }
+
+    if cmd == "check" {
+        if args.len() < 3 {
+            eprintln!("[AAYU Error] Usage: aayu check <file.aayu>");
+            std::process::exit(2);
+        }
+        run_check(&args[2]);
+        return;
+    }
+
+    if cmd == "init" {
+        let name = if args.len() >= 3 { &args[2] } else { "aayu_app" };
+        run_init(name);
         return;
     }
 

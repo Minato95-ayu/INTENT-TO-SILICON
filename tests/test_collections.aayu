@@ -1,0 +1,91 @@
+import "std/collections"
+
+print("--- Testing AAYU Collections Standard Library ---")
+
+let numbers = [5, 10, 15, 20, 25]
+
+# Sum
+let s = sum(numbers)
+print("Sum:")
+print(s)
+
+# Min & Max
+let mn = array_min(numbers)
+print("Min:")
+print(mn)
+let mx = array_max(numbers)
+print("Max:")
+print(mx)
+
+# Mean
+let m = mean(numbers)
+print("Mean:")
+print(m)
+
+# Contains & Index
+print("Contains 15:")
+print(contains(numbers, 15))
+print("Contains 99:")
+print(contains(numbers, 99))
+print("Index of 20:")
+print(index_of(numbers, 20))
+print("Index of 100:")
+print(index_of(numbers, 100))
+
+# Slice & Reverse
+let sl = slice(numbers, 1, 4)
+print("Slice [1..4]:")
+print(sl[0])
+print(sl[1])
+print(sl[2])
+print(len(sl))
+
+let rev = reverse(numbers)
+print("Reversed first:")
+print(rev[0])
+print("Reversed last:")
+print(rev[4])
+
+# Range
+let r = range(1, 6, 1)
+print("Range length:")
+print(len(r))
+print("Range first and last:")
+print(r[0])
+print(r[4])
+
+# Fill
+let fl = fill(3, 42)
+print("Fill values:")
+print(fl[0])
+print(fl[1])
+print(fl[2])
+
+# Unique
+let dupes = [1, 2, 2, 3, 1, 4, 3]
+let u = unique(dupes)
+print("Unique length:")
+print(len(u))
+
+# Join
+let words = ["AAYU", "High", "Speed"]
+let j = join(words, " - ")
+print("Joined string:")
+print(j)
+
+# Flatten
+let grid = [[1, 2], [3, 4], [5]]
+let flat = flatten(grid)
+print("Flatten length:")
+print(len(flat))
+print(flat[0])
+print(flat[4])
+
+# Zip
+let z1 = [1, 2, 3]
+let z2 = ["a", "b", "c"]
+let zipped = zip(z1, z2)
+print("Zipped length:")
+print(len(zipped))
+
+print("COLLECTIONS TEST SUITE COMPLETED SUCCESSFULLY!")

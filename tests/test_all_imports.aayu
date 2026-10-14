@@ -9,6 +9,7 @@ import "std/server"
 import "std/db"
 import "std/json"
 import "std/ayon"
+import "std/collections"
 
 let s = sqrt(16.0)
 print("Math Sqrt 16:")
@@ -28,4 +29,7 @@ print(j_sample)
 let a_sample = ayon_format_pair("version", "1.2")
 print("AYON Sample:")
 print(a_sample)
-print("ALL 11 STDLIB MODULES IMPORTED AND RUNNING CLEANLY!")
+let c_sum = sum([10, 20, 30])
+print("Collections Sum:")
+print(c_sum)
+print("ALL 12 STDLIB MODULES IMPORTED AND RUNNING CLEANLY!")

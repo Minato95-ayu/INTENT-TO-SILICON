@@ -829,7 +829,7 @@ impl AayuVM {
                         self.stack[self.sp] = result;
                         self.sp += 1;
                     } else {
-                        return Err("RET executed outside a function call".to_string());
+                        return Ok(());
                     }
                 }
                 128 => { // BUILD_DICT

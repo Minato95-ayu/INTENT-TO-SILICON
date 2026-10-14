@@ -1,0 +1,269 @@
+# ==============================================================================
+# AAYU Standard Library: Collections & Algorithms (std/collections.aayu)
+# 100% Pure AAYU - Production Collection Operations & Higher-Level Utilities
+# Zero External Dependencies | Intent-to-Silicon Standard
+# ==============================================================================
+
+# Calculate total sum of numbers in an array
+action sum(arr)
+    let total = 0
+    let i = 0
+    let n = len(arr)
+    while i < n
+        total = total + arr[i]
+        i = i + 1
+    end
+    return total
+end
+
+# Find minimum value in an array
+action array_min(arr)
+    let n = len(arr)
+    if n == 0
+        return null
+    end
+    let min_val = arr[0]
+    let i = 1
+    while i < n
+        if arr[i] < min_val
+            min_val = arr[i]
+        end
+        i = i + 1
+    end
+    return min_val
+end
+
+# Find maximum value in an array
+action array_max(arr)
+    let n = len(arr)
+    if n == 0
+        return null
+    end
+    let max_val = arr[0]
+    let i = 1
+    while i < n
+        if arr[i] > max_val
+            max_val = arr[i]
+        end
+        i = i + 1
+    end
+    return max_val
+end
+
+# Calculate arithmetic mean (average) of an array
+action mean(arr)
+    let n = len(arr)
+    if n == 0
+        return 0.0
+    end
+    let total = sum(arr)
+    return total / n
+end
+
+# Check if an array contains the specified target value (returns 1 or 0)
+action contains(arr, target)
+    let i = 0
+    let n = len(arr)
+    while i < n
+        if arr[i] == target
+            return 1
+        end
+        i = i + 1
+    end
+    return 0
+end
+
+# Find the first index of target in array, or -1 if not found
+action index_of(arr, target)
+    let i = 0
+    let n = len(arr)
+    while i < n
+        if arr[i] == target
+            return i
+        end
+        i = i + 1
+    end
+    return -1
+end
+
+# Find the last index of target in array, or -1 if not found
+action last_index_of(arr, target)
+    let n = len(arr)
+    let i = n - 1
+    while i >= 0
+        if arr[i] == target
+            return i
+        end
+        i = i - 1
+    end
+    return -1
+end
+
+# Count the occurrences of target value in array
+action count_occurrences(arr, target)
+    let count = 0
+    let i = 0
+    let n = len(arr)
+    while i < n
+        if arr[i] == target
+            count = count + 1
+        end
+        i = i + 1
+    end
+    return count
+end
+
+# Extract a slice of array from start_idx up to end_idx (exclusive)
+action slice(arr, start_idx, end_idx)
+    let res = []
+    let n = len(arr)
+    let start = start_idx
+    let stop = end_idx
+    if start < 0
+        start = 0
+    end
+    if stop > n
+        stop = n
+    end
+    let i = start
+    while i < stop
+        res = res + [arr[i]]
+        i = i + 1
+    end
+    return res
+end
+
+# Concatenate two arrays together
+action concat(arr1, arr2)
+    return arr1 + arr2
+end
+
+# Reverse an array
+action reverse(arr)
+    let res = []
+    let n = len(arr)
+    let i = n - 1
+    while i >= 0
+        res = res + [arr[i]]
+        i = i - 1
+    end
+    return res
+end
+
+# Generate a range of integers [start, start+step, ...] while < stop
+action range(start, stop, step)
+    let res = []
+    let s = step
+    if s <= 0
+        s = 1
+    end
+    let curr = start
+    while curr < stop
+        res = res + [curr]
+        curr = curr + s
+    end
+    return res
+end
+
+# Generate a 0-indexed range [0, 1, 2, ... count - 1]
+action range_simple(count)
+    return range(0, count, 1)
+end
+
+# Create an array of length count filled with initial value val
+action fill(count, val)
+    let res = []
+    let i = 0
+    while i < count
+        res = res + [val]
+        i = i + 1
+    end
+    return res
+end
+
+# Flatten a 2D array into a 1D array
+action flatten(arr_of_arrs)
+    let res = []
+    let i = 0
+    let n = len(arr_of_arrs)
+    while i < n
+        res = res + arr_of_arrs[i]
+        i = i + 1
+    end
+    return res
+end
+
+# Return array with duplicate values removed, preserving order
+action unique(arr)
+    let res = []
+    let i = 0
+    let n = len(arr)
+    while i < n
+        let val = arr[i]
+        if contains(res, val) == 0
+            res = res + [val]
+        end
+        i = i + 1
+    end
+    return res
+end
+
+# Split array into chunks of given size
+action chunk(arr, chunk_size)
+    let res = []
+    let n = len(arr)
+    let sz = chunk_size
+    if sz <= 0
+        sz = 1
+    end
+    let i = 0
+    while i < n
+        let piece = slice(arr, i, i + sz)
+        res = res + [piece]
+        i = i + sz
+    end
+    return res
+end
+
+# Join array elements with delimiter into a single string
+action join(arr, delimiter)
+    let n = len(arr)
+    if n == 0
+        return ""
+    end
+    let out_str = "" + arr[0]
+    let i = 1
+    while i < n
+        out_str = out_str + delimiter + arr[i]
+        i = i + 1
+    end
+    return out_str
+end
+
+# Zip two arrays into an array of 2-element pairs
+action zip(arr1, arr2)
+    let res = []
+    let l1 = len(arr1)
+    let l2 = len(arr2)
+    let min_len = l1
+    if l2 < min_len
+        min_len = l2
+    end
+    let i = 0
+    while i < min_len
+        let pair = [arr1[i], arr2[i]]
+        res = res + [pair]
+        i = i + 1
+    end
+    return res
+end
+
+# Take the first n elements of an array
+action take(arr, n)
+    return slice(arr, 0, n)
+end
+
+# Drop the first n elements of an array
+action drop(arr, n)
+    return slice(arr, n, len(arr))
+end

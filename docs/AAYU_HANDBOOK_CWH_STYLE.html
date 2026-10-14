@@ -565,8 +565,8 @@
     <div class="toc-card-header">
       <span class="toc-chap-badge">Chapter 2</span>
     </div>
-    <div class="toc-chap-title">Terminal, PowerShell & Tooling</div>
-    <div class="toc-chap-desc">CLI commands (run, build, --web), .ay/.aa/.aayu extensions, clean terminal.</div>
+    <div class="toc-chap-title">Terminal, CLI, Termux &amp; Mobile IDE</div>
+    <div class="toc-chap-desc">CLI commands (run, check, init, info), Android APK &amp; Mobile IDE, Termux mobile support.</div>
   </div>
   <div class="toc-card">
     <div class="toc-card-header">
@@ -663,8 +663,8 @@
     <div class="toc-card-header">
       <span class="toc-chap-badge">Chapter 16</span>
     </div>
-    <div class="toc-chap-title">Math & Computational Standard Library</div>
-    <div class="toc-chap-desc">Fast square root, powers, absolute values, statistical math.</div>
+    <div class="toc-chap-title">Math &amp; Collections Standard Libraries</div>
+    <div class="toc-chap-desc">std/collections (21 array utilities), std/fs, std/os, std/math, std/crypto.</div>
   </div>
   <div class="toc-card">
     <div class="toc-card-header">
@@ -828,7 +828,17 @@ aayu sysinfo</code></pre>
 # Output detects: Environment: Android Termux (v0.118+)
 ./aayu run hello.ay</code></pre>
 
-<h2>8. Clean Terminal Output Guarantee</h2>
+<h2>8. Android Mobile IDE &amp; Native APK</h2>
+<p>The official AAYU Mobile IDE is engineered specifically for Android devices (Android 8.0+ through Android 15+). It brings pure silicon intent compilation right into your pocket:</p>
+<ul>
+  <li><strong>Native On-Device Execution:</strong> Compiles and runs AAYU bytecode offline in milliseconds with zero cloud roundtrips.</li>
+  <li><strong>Universal Screen Adaptation:</strong> Fluid responsive interface that adapts seamlessly across compact smartphones, foldables, and tablets.</li>
+  <li><strong>Touch-Optimized Symbol Bar:</strong> Quick-insert bar for brackets, arrows, quotes, and indentation eliminating cumbersome mobile keyboard switching.</li>
+  <li><strong>Integrated Terminal Console:</strong> Real-time process drawer with live execution logs, exit codes, and millisecond execution timers.</li>
+  <li><strong>GitHub Auto-Update Sync:</strong> Background CI/CD pipeline verification that auto-syncs the latest engine bytecodes securely with SHA-256 integrity.</li>
+</ul>
+
+<h2>9. Clean Terminal Output Guarantee</h2>
 <p>Unlike debug-heavy development interpreters, AAYU compiler runs silently and cleanly by default. Only errors or explicit <code>print()</code> statements produce output:</p>
 
 <pre><code>PS D:\INTENT-TO-SILICON> aayu hello.ay
@@ -1295,6 +1305,41 @@ let unique_items = unique([1, 2, 2, 3, 1]) # [1, 2, 3]
 let text = join(["Intent", "To", "Silicon"], " -> ") # "Intent -> Silicon"
 let flat = flatten([[1, 2], [3, 4]]) # [1, 2, 3, 4]
 let pairs = zip([1, 2], ["a", "b"])  # [[1, "a"], [2, "b"]]</code></pre>
+
+<h2>16.3 Native File System (std/fs)</h2>
+<p>Read, write, append, and inspect local files with zero external runtime dependencies:</p>
+
+<pre><code>import "std/fs"
+
+# Writing and reading files
+let status = write_file("data.txt", "Pure Silicon Speed")
+let content = read_file("data.txt")
+print("File Content:", content)
+
+# File status inspection
+let exists = file_exists("data.txt")
+print("Exists:", exists) # 1 (true)</code></pre>
+
+<h2>16.4 OS &amp; Process Environment (std/os)</h2>
+<p>Query runtime host details, operating system name, working directory, and environment variables:</p>
+
+<pre><code>import "std/os"
+
+print("Platform:", os_platform()) # "windows", "linux", or "android"
+print("Working Directory:", os_cwd())
+let user = os_env("USER")
+print("Current User:", user)</code></pre>
+
+<h2>16.5 Cryptographic Engine (std/crypto)</h2>
+<p>High-speed cryptographic hash algorithms executed directly by the stack VM without third-party C bindings:</p>
+
+<pre><code>import "std/crypto"
+
+let hash256 = sha256("Intent-to-Silicon")
+print("SHA256:", hash256)
+
+let md = md5("AAYU-2026")
+print("MD5:", md)</code></pre>
 
 <!-- CHAPTER 17 -->
 <h1>Chapter 17: Error Handling &amp; Defensive Programming</h1>

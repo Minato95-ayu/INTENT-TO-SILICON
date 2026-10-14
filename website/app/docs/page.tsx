@@ -1,4 +1,4 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 import { Book, Code, Database, BrainCircuit, MonitorPlay, Server, Search, Terminal, Zap } from 'lucide-react';
 
 export default function DocsPage() {
@@ -162,7 +162,8 @@ run HomePage`}</code>
         </div>
 
         {/* AI & Math */}
-        <div className="mb-10">
+        {/* AI & Math */}
+        <div className="mb-20">
           <h2 className="text-2xl font-bold mb-6 border-b border-white/10 pb-4">6. Native Tensor Engine</h2>
           <p className="text-zinc-400 mb-6 leading-relaxed">
             AI math shouldn't require downloading 5GB of PyTorch/CUDA binaries. AAYU has zero-copy multi-dimensional Tensors built directly into the language syntax and VM.
@@ -186,6 +187,111 @@ end
 run train`}</code>
             </pre>
           </div>
+        </div>
+
+        {/* Standard Libraries */}
+        <div className="mb-20">
+          <h2 className="text-2xl font-bold mb-6 border-b border-white/10 pb-4">7. Pure AAYU Standard Libraries</h2>
+          <p className="text-zinc-400 mb-6 leading-relaxed">
+            The standard libraries are written in 100% pure AAYU (.aayu) under <code className="text-purple-300">std/</code> with zero external dependencies. They provide functional collection shortcuts, file I/O, OS interactions, and cryptography.
+          </p>
+          <div className="bg-[#0a0a0a] border border-white/10 rounded-xl overflow-hidden mb-6">
+            <div className="bg-[#111] px-4 py-2 border-b border-white/5 text-xs text-zinc-500 font-mono">std/collections.aayu &amp; std/fs.aayu</div>
+            <pre className="p-6 text-sm text-zinc-300 overflow-x-auto">
+              <code>{`import "std/collections"
+import "std/fs"
+import "std/os"
+
+// 1. Functional Array Shortcuts (21 pure AAYU utilities)
+let nums = [10, 20, 30, 40, 50]
+print("Sum:", sum(nums))          // 150
+print("Min:", array_min(nums))   // 10
+print("Max:", array_max(nums))   // 50
+print("Mean:", mean(nums))        // 30
+let slice_part = slice(nums, 1, 4) // [20, 30, 40]
+let rev = reverse(nums)           // [50, 40, 30, 20, 10]
+let nums_range = range(1, 10, 2)  // [1, 3, 5, 7, 9]
+
+// 2. Pure File System & OS Queries
+write_file("cache.json", "{\\"status\\": \\"active\\"}")
+let raw_data = read_file("cache.json")
+print("Host OS:", os_platform())
+print("Working Directory:", os_cwd())`}</code>
+            </pre>
+          </div>
+        </div>
+
+        {/* Multi-line Strings & Type Reflection */}
+        <div className="mb-20">
+          <h2 className="text-2xl font-bold mb-6 border-b border-white/10 pb-4">8. Multi-line Strings &amp; Runtime Type Reflection</h2>
+          <p className="text-zinc-400 mb-6 leading-relaxed">
+            AAYU natively supports multi-line triple-quoted strings (<code className="text-purple-300">&quot;&quot;&quot;...&quot;&quot;&quot;</code>) for clean templates, poetry, or SQL queries, alongside the native <code className="text-purple-300">type()</code> runtime reflection operator.
+          </p>
+          <div className="bg-[#0a0a0a] border border-white/10 rounded-xl overflow-hidden">
+            <div className="bg-[#111] px-4 py-2 border-b border-white/5 text-xs text-zinc-500 font-mono">reflection.aayu</div>
+            <pre className="p-6 text-sm text-zinc-300 overflow-x-auto">
+              <code>{`// 1. Multi-line Triple-Quoted Strings
+print("""Twinkle, twinkle, little star,
+How I wonder what you are!
+Up above the world so high,
+Like a diamond in the sky.""")
+
+// 2. Runtime Type Inspection
+let ram = 100
+let name = "Ayush"
+let items = [1, 2, 3]
+
+print("Type of ram:", type(ram))     // "Int"
+print("Type of name:", type(name))   // "String"
+print("Type of items:", type(items)) // "Array"`}</code>
+            </pre>
+          </div>
+        </div>
+
+        {/* Android Mobile IDE & Termux */}
+        <div className="mb-20">
+          <h2 className="text-2xl font-bold mb-6 border-b border-white/10 pb-4">9. Mobile IDE &amp; Android Termux Support</h2>
+          <p className="text-zinc-400 mb-6 leading-relaxed">
+            AAYU includes a full touch-first Mobile IDE (inspired by Pydroid 3) and direct Termux CLI runtime support for offline on-device coding.
+          </p>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="p-6 rounded-xl bg-zinc-900/60 border border-emerald-500/30">
+              <h3 className="text-lg font-bold text-emerald-400 mb-2">AAYU Android APK &amp; PWA</h3>
+              <p className="text-zinc-400 text-sm mb-4 leading-relaxed">
+                Installable on Android 8.0+ devices. Features a touch symbol keyboard strip, real-time bytecode execution, and GitHub Auto-Update sync.
+              </p>
+              <a href="/downloads/aayu-android.apk" download className="inline-flex items-center gap-2 text-sm font-bold text-emerald-300 hover:text-emerald-200">
+                Download APK (v1.1.0) &rarr;
+              </a>
+            </div>
+
+            <div className="p-6 rounded-xl bg-zinc-900/60 border border-purple-500/30">
+              <h3 className="text-lg font-bold text-purple-400 mb-2">Termux CLI Execution</h3>
+              <p className="text-zinc-400 text-sm mb-4 leading-relaxed">
+                Run natively in Termux with auto-environment detection. Zero dependencies, zero configuration.
+              </p>
+              <code className="text-xs bg-black px-3 py-1.5 rounded border border-white/10 text-purple-300 block font-mono">
+                curl -sSL https://intent-to-silicon.com/install.sh | bash
+              </code>
+            </div>
+          </div>
+        </div>
+
+        {/* Download Master Handbook Banner */}
+        <div className="p-8 rounded-2xl bg-gradient-to-r from-purple-900/30 via-indigo-900/20 to-black border border-purple-500/40 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div>
+            <h3 className="text-xl font-bold text-white mb-2">The Ultimate AAYU Master Handbook (21 Chapters)</h3>
+            <p className="text-zinc-400 text-sm max-w-xl">
+              Complete engineering manual by Ayush Ghrit Kaushik. Includes all 21 chapters, memory architecture, 20 master interview problems, and full source code.
+            </p>
+          </div>
+          <a
+            href="/aayu-handbook.pdf"
+            download="The_Ultimate_AAYU_Handbook_Ayush_Ghrit_Kaushik.pdf"
+            className="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-sm shrink-0 shadow-lg shadow-purple-600/30 transition hover:scale-105"
+          >
+            Download PDF (1.8 MB)
+          </a>
         </div>
 
       </div>

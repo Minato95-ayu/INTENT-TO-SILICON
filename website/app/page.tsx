@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ChevronRight, Terminal, Copy, Check, Bot, Sparkles, Zap, Server, Database, LayoutTemplate, ShieldCheck, Activity, Download, Smartphone, RefreshCw, Cpu, Play, ExternalLink, FolderGit2 } from 'lucide-react';
+import { ChevronRight, Terminal, Copy, Check, Bot, Sparkles, Zap, Server, Database, LayoutTemplate, ShieldCheck, Activity, Download, Smartphone, RefreshCw, Cpu, Play, ExternalLink, FolderGit2, BookOpen } from 'lucide-react';
 
 const codeString = `// Welcome to AAYU: The AI-Agent Language
 app CoreApp
@@ -372,23 +372,43 @@ export default function Home() {
 
                 <div className="flex flex-wrap gap-3">
                   <a
-                    href="/downloads/aayu-mobile-ide.zip"
-                    download="aayu-mobile-ide.zip"
+                    href="/downloads/aayu-android.apk"
+                    download="aayu-android.apk"
                     className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-5 py-3 text-sm font-bold text-black shadow-lg shadow-emerald-500/20 transition hover:scale-105 hover:from-emerald-400 hover:to-teal-500"
                   >
                     <Download className="w-4 h-4 text-black" />
-                    <span>Download Mobile IDE (.zip)</span>
-                    <span className="rounded bg-black/20 px-2 py-0.5 text-xs text-black/90 font-mono">124 KB</span>
+                    <span>Download Android App (.apk)</span>
+                    <span className="rounded bg-black/20 px-2 py-0.5 text-xs text-black/90 font-mono">APK</span>
+                  </a>
+
+                  <a
+                    href="/aayu-handbook.pdf"
+                    download="The_Ultimate_AAYU_Handbook_Ayush_Ghrit_Kaushik.pdf"
+                    className="inline-flex items-center gap-2 rounded-xl bg-purple-600 hover:bg-purple-500 border border-purple-400/30 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-purple-600/20 transition hover:scale-105"
+                  >
+                    <BookOpen className="w-4 h-4 text-purple-200" />
+                    <span>Download Handbook (21 Ch PDF)</span>
+                    <span className="rounded bg-black/30 px-2 py-0.5 text-xs text-purple-200 font-mono">1.6 MB</span>
+                  </a>
+
+                  <a
+                    href="/downloads/aayu-mobile-ide.zip"
+                    download="aayu-mobile-ide.zip"
+                    className="inline-flex items-center gap-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:scale-105"
+                  >
+                    <Download className="w-4 h-4 text-zinc-400" />
+                    <span>Mobile IDE (.zip)</span>
+                    <span className="rounded bg-black/20 px-2 py-0.5 text-xs text-zinc-400 font-mono">124 KB</span>
                   </a>
 
                   <a
                     href="https://github.com/Minato95-ayu/INTENT-TO-SILICON"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-white/10 px-5 py-3 text-sm font-semibold text-white transition"
+                    className="inline-flex items-center gap-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-white/10 px-4 py-3 text-sm font-semibold text-white transition"
                   >
                     <FolderGit2 className="w-4 h-4 text-zinc-400" />
-                    <span>View GitHub Source</span>
+                    <span>GitHub Source</span>
                     <ExternalLink className="w-3.5 h-3.5 text-zinc-500" />
                   </a>
                 </div>

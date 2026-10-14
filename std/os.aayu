@@ -1,0 +1,20 @@
+# ==============================================================================
+# AAYU Standard Library: Operating System (std/os.aayu)
+# 100% Pure AAYU - System & Environment Primitives
+# ==============================================================================
+
+action get_os()
+    return platform()
+end
+
+action get_architecture()
+    return arch()
+end
+
+action get_env_var(name)
+    return env_get(name)
+end
+
+action get_type(value)
+    return type(value)
+end

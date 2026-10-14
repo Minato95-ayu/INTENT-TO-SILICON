@@ -15,7 +15,7 @@ export default function DownloadPage() {
 
   const sdkDownloads = [
     { os: 'Windows (SDK)', icon: <Cpu className="w-8 h-8 text-blue-400" />, desc: 'CLI & Compiler (.zip)', file: 'aayu-windows.zip', color: 'hover:border-blue-500/50' },
-    { os: 'Android Mobile (APK)', icon: <Smartphone className="w-8 h-8 text-emerald-400" />, desc: 'Native Mobile IDE (.apk)', file: 'aayu-android.apk', localUrl: '/downloads/aayu-android.apk', color: 'hover:border-emerald-500/50' },
+    { os: 'Android Mobile (APK)', icon: <Smartphone className="w-8 h-8 text-emerald-400" />, desc: 'Native Mobile IDE · 11.9 MB (.apk)', file: 'aayu-android.apk', localUrl: '/downloads/aayu-android.apk', color: 'hover:border-emerald-500/50' },
     { os: 'Master Handbook (PDF)', icon: <BookOpen className="w-8 h-8 text-purple-400" />, desc: 'Official 21-Chapter PDF', file: 'The_Ultimate_AAYU_Handbook_Ayush_Ghrit_Kaushik.pdf', localUrl: '/aayu-handbook.pdf', color: 'hover:border-purple-500/50' },
     { os: 'Linux (SDK)', icon: <Cpu className="w-8 h-8 text-orange-400" />, desc: 'CLI & Compiler (.tar.gz)', file: 'aayu-linux.tar.gz', color: 'hover:border-orange-500/50' },
     { os: 'macOS (SDK)', icon: <Cpu className="w-8 h-8 text-zinc-300" />, desc: 'CLI & Compiler (.zip)', file: 'aayu-macos.zip', color: 'hover:border-zinc-500/50' }

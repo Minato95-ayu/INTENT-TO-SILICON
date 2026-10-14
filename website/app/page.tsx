@@ -378,7 +378,7 @@ export default function Home() {
                   >
                     <Download className="w-4 h-4 text-black" />
                     <span>Download Android App (.apk)</span>
-                    <span className="rounded bg-black/20 px-2 py-0.5 text-xs text-black/90 font-mono">APK</span>
+                    <span className="rounded bg-black/20 px-2 py-0.5 text-xs text-black/90 font-mono">11.9 MB · APK</span>
                   </a>
 
                   <a

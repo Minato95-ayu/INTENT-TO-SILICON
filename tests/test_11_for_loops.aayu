@@ -1,0 +1,16 @@
+# Test 11: For Loops Iteration & Aggregations
+let items = [10, 20, 30, 40]
+let sum = 0
+
+for x in items
+    sum = sum + x
+end
+
+print("For Loop Sum (expected 100):")
+print(sum)
+
+if sum == 100
+    print("PASS: For loop aggregated successfully")
+else
+    print("FAIL: Incorrect sum")
+end

@@ -63,6 +63,10 @@ end
 action make_while(cond, body, line, column)
     return { "type": "While", "condition": cond, "body": body, "line": line, "column": column }
 end
+
+action make_for(variable, iterable, body, line, column)
+    return { "type": "For", "variable": variable, "iterable": iterable, "body": body, "line": line, "column": column }
+end
 action make_action(name, args, stmts, line, column)
     return { "type": "ActionDeclaration", "name": name, "args": args, "statements": stmts, "line": line, "column": column }
 end
@@ -870,6 +874,38 @@ action parse_statement(tokens, pos)
         end
         
         return [pos, make_while(stmt_cond, stmt_body, stmt_line, stmt_col)]
+    end
+
+    if match(tokens, pos, "KEYWORD", "for")
+        stmt_line = tokens[pos]["line"]
+        stmt_col = tokens[pos]["column"]
+        pos = pos + 1
+        
+        stmt_res = expect(tokens, pos, "IDENTIFIER", "Expect loop variable after for.")
+        pos = stmt_res[0]
+        let for_var = stmt_res[1]["value"]
+        
+        stmt_res = expect_val(tokens, pos, "KEYWORD", "in", "Expect 'in' after for variable.")
+        pos = stmt_res[0]
+        
+        stmt_res = parse_expression(tokens, pos)
+        pos = stmt_res[0]
+        let for_iter = stmt_res[1]
+        
+        let for_body = []
+        let for_loop = 1 == 1
+        while for_loop
+            if match(tokens, pos, "KEYWORD", "end")
+                pos = pos + 1
+                for_loop = 1 == 0
+            else
+                stmt_res = parse_statement(tokens, pos)
+                pos = stmt_res[0]
+                for_body = for_body + [stmt_res[1]]
+            end
+        end
+        
+        return [pos, make_for(for_var, for_iter, for_body, stmt_line, stmt_col)]
     end
     
     if match(tokens, pos, "KEYWORD", "return")

@@ -499,6 +499,9 @@ end
 action make_while(cond, body, line, column)
     return { "type": "While", "condition": cond, "body": body, "line": line, "column": column }
 end
+action make_for(variable, iterable, body, line, column)
+    return { "type": "For", "variable": variable, "iterable": iterable, "body": body, "line": line, "column": column }
+end
 action make_action(name, args, stmts, line, column)
     return { "type": "ActionDeclaration", "name": name, "args": args, "statements": stmts, "line": line, "column": column }
 end
@@ -957,6 +960,38 @@ action parse_statement(tokens, pos)
         end
         
         return [pos, make_while(w_cond, w_body, w_line, w_col)]
+    end
+
+    if match(tokens, pos, "KEYWORD", "for")
+        let f_line = tokens[pos]["line"]
+        let f_col = tokens[pos]["column"]
+        pos = pos + 1
+        
+        let f_res = expect(tokens, pos, "IDENTIFIER", "Expect loop variable after for.")
+        pos = f_res[0]
+        let f_var = f_res[1]["value"]
+        
+        let f_res2 = expect_val(tokens, pos, "KEYWORD", "in", "Expect 'in' after for variable.")
+        pos = f_res2[0]
+        
+        let f_iter_res = parse_expression(tokens, pos)
+        pos = f_iter_res[0]
+        let f_iter = f_iter_res[1]
+        
+        let f_body = []
+        let f_loop = 1 == 1
+        while f_loop
+            if match(tokens, pos, "KEYWORD", "end")
+                pos = pos + 1
+                f_loop = 1 == 0
+            else
+                let f_inner = parse_statement(tokens, pos)
+                pos = f_inner[0]
+                f_body = f_body + [f_inner[1]]
+            end
+        end
+        
+        return [pos, make_for(f_var, f_iter, f_body, f_line, f_col)]
     end
     
     if match(tokens, pos, "KEYWORD", "return")
@@ -1638,6 +1673,54 @@ action compile_statement(stmt)
         
         emit(OP_JMP, wc_start, 0)
         patch_jump(wc_jmp)
+    end
+    if cs_type == "For"
+        let fc_id = len(bytecode)
+        let fc_iter_name = "__iter_" + fc_id
+        let fc_idx_name = "__idx_" + fc_id
+        
+        compile_expression(stmt["iterable"])
+        let fc_iter_cidx = add_constant(fc_iter_name)
+        emit(OP_STORE_STATE, fc_iter_cidx, 0)
+        
+        let fc_zero_cidx = add_constant(0)
+        emit(OP_PUSH_CONST, fc_zero_cidx, 0)
+        let fc_idx_cidx = add_constant(fc_idx_name)
+        emit(OP_STORE_STATE, fc_idx_cidx, 0)
+        
+        let fc_loop_start = len(bytecode)
+        
+        emit(OP_LOAD_STATE, fc_idx_cidx, 0)
+        let fc_len_cidx = add_constant("len")
+        emit(OP_PUSH_CONST, fc_len_cidx, 0)
+        emit(OP_LOAD_STATE, fc_iter_cidx, 0)
+        emit(OP_CALL, 1, 0)
+        emit_op(41)
+        
+        let fc_jmp_exit = emit_patchable(OP_JMP_IF_FALSE)
+        
+        emit(OP_LOAD_STATE, fc_iter_cidx, 0)
+        emit(OP_LOAD_STATE, fc_idx_cidx, 0)
+        emit_op(136)
+        let fc_var_cidx = add_constant(stmt["variable"])
+        emit(OP_STORE_STATE, fc_var_cidx, 0)
+        
+        let fc_body = stmt["body"]
+        let fc_i = 0
+        let fc_len = len(fc_body)
+        while fc_i < fc_len
+            compile_statement(fc_body[fc_i])
+            fc_i = fc_i + 1
+        end
+        
+        emit(OP_LOAD_STATE, fc_idx_cidx, 0)
+        let fc_one_cidx = add_constant(1)
+        emit(OP_PUSH_CONST, fc_one_cidx, 0)
+        emit_op(OP_ADD)
+        emit(OP_STORE_STATE, fc_idx_cidx, 0)
+        
+        emit(OP_JMP, fc_loop_start, 0)
+        patch_jump(fc_jmp_exit)
     end
     if cs_type == "Return"
         if stmt["value"] != ""

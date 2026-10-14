@@ -55,6 +55,7 @@ pub enum Statement {
     Return(Option<Expr>),
     Run(String),
     Expr(Expr),
+    For { var_name: String, iterable: Expr, body: Vec<Statement> },
 }
 
 pub struct Parser {
@@ -180,6 +181,31 @@ impl Parser {
                     self.errors.push("unterminated while block: expected 'end'".to_string());
                 }
                 return Some(Statement::While { cond, body });
+            }
+            Token::For => {
+                self.pos += 1;
+                let var_name = if let Token::Identifier(v) = self.current() {
+                    let n = v.clone();
+                    self.pos += 1;
+                    n
+                } else {
+                    self.errors.push("expected loop variable after 'for'".to_string());
+                    return None;
+                };
+                if self.current() == &Token::In {
+                    self.pos += 1;
+                } else {
+                    self.errors.push("expected 'in' after loop variable in 'for'".to_string());
+                    return None;
+                }
+                let iterable = self.parse_expression();
+                let body = self.parse_block();
+                if self.current() == &Token::End {
+                    self.pos += 1;
+                } else {
+                    self.errors.push("unterminated for block: expected 'end'".to_string());
+                }
+                return Some(Statement::For { var_name, iterable, body });
             }
             Token::If | Token::Elif => {
                 self.pos += 1;

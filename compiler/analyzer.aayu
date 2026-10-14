@@ -229,6 +229,18 @@ action analyze_statement(stmt)
         pop_scope()
         return { "type": "SemanticWhileNode", "condition": as_cond, "body": as_body }
     end
+    if as_type == "For"
+        let as_iter = analyze_expression(stmt["iterable"])
+        push_scope()
+        define_symbol(stmt["variable"], "local")
+        let as_body = []
+        let as_stmts = stmt["body"]
+        while len(as_body) < len(as_stmts)
+            as_body = as_body + [analyze_statement(as_stmts[len(as_body)])]
+        end
+        pop_scope()
+        return { "type": "For", "variable": stmt["variable"], "iterable": as_iter, "body": as_body }
+    end
     if as_type == "ComponentDeclaration"
         define_symbol(stmt["name"], "component")
         push_scope()

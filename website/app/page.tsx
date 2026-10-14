@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ChevronRight, Terminal, Copy, Check, Bot, Sparkles, Zap, Server, Database, LayoutTemplate, ShieldCheck, Activity , Download} from 'lucide-react';
+import { ChevronRight, Terminal, Copy, Check, Bot, Sparkles, Zap, Server, Database, LayoutTemplate, ShieldCheck, Activity, Download, Smartphone, RefreshCw, Cpu, Play, ExternalLink, FolderGit2 } from 'lucide-react';
 
 const codeString = `// Welcome to AAYU: The AI-Agent Language
 app CoreApp
@@ -142,6 +142,264 @@ export default function Home() {
                   </div>
                 ))}
                 {!done && <span className="inline-block w-2 h-5 bg-purple-400 ml-12 animate-pulse rounded-sm" />}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* AAYU MOBILE IDE FOR ANDROID SECTION */}
+      <section className="py-24 relative overflow-hidden bg-gradient-to-b from-black via-[#08080c] to-[#050505] border-t border-white/10">
+        <div className="absolute top-1/4 right-1/4 w-[600px] h-[600px] bg-emerald-600/10 rounded-full blur-[140px] pointer-events-none" />
+        <div className="container mx-auto px-4 max-w-7xl relative z-10">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-xs font-semibold text-emerald-400 mb-4">
+              <Smartphone className="w-3.5 h-3.5" />
+              Official AAYU Mobile IDE for Android · Native On-Device Engine
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4 text-white">
+              Code on the Go.{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-400">
+                Pure Silicon Power in Your Pocket.
+              </span>
+            </h2>
+            <p className="text-zinc-400 text-base sm:text-lg leading-relaxed">
+              Inspired by Pydroid 3, modernized for 2026 Intent Computing. Write, compile, and execute real AAYU bytecode on your Android device with zero external dependencies, touch-optimized symbol strips, and instant GitHub Auto-Update sync.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-12 gap-12 items-center">
+            {/* ANDROID PHONE MOCKUP (5 cols) */}
+            <div className="lg:col-span-5 flex justify-center">
+              <div className="relative w-full max-w-[340px] sm:max-w-[370px]">
+                {/* Glow ring */}
+                <div className="absolute -inset-2 bg-gradient-to-tr from-emerald-500/20 via-cyan-500/20 to-purple-500/20 rounded-[50px] blur-xl opacity-70" />
+
+                {/* Phone Chassis */}
+                <div className="relative rounded-[44px] bg-[#121217] p-3 shadow-2xl border-4 border-zinc-800 ring-1 ring-white/10">
+                  {/* Speaker & Camera Notch */}
+                  <div className="absolute top-4 left-1/2 -translate-x-1/2 w-24 h-4 bg-black rounded-full z-30 flex items-center justify-center gap-2">
+                    <div className="w-2.5 h-2.5 rounded-full bg-zinc-900 border border-zinc-800" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-blue-950/80" />
+                  </div>
+
+                  {/* Inner Screen */}
+                  <div className="rounded-[36px] bg-[#09090d] border border-white/5 overflow-hidden flex flex-col pt-7 pb-4 text-white select-none">
+                    {/* Status Bar */}
+                    <div className="px-5 pb-2 flex justify-between items-center text-[11px] font-mono text-zinc-400">
+                      <span>09:41</span>
+                      <div className="flex items-center gap-1.5 text-[10px]">
+                        <span>5G</span>
+                        <div className="w-4 h-2 rounded-sm border border-zinc-400 flex p-0.5 items-center">
+                          <div className="h-full w-full bg-emerald-400 rounded-2xs" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* App Bar */}
+                    <div className="px-4 py-2.5 bg-black/60 border-y border-white/5 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-md bg-gradient-to-tr from-red-600 to-purple-600 flex items-center justify-center text-[10px] font-bold text-white shadow-sm">
+                          A
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold leading-tight">AAYU Mobile</div>
+                          <div className="text-[9px] font-mono text-emerald-400 flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                            v1.1.0 ARM64
+                          </div>
+                        </div>
+                      </div>
+                      <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-[9px] font-mono text-cyan-300">
+                        <RefreshCw className="w-2.5 h-2.5 text-cyan-400" />
+                        <span>Git: c84a29f</span>
+                      </div>
+                    </div>
+
+                    {/* File Tabs */}
+                    <div className="flex items-center px-3 pt-2 bg-[#0d0d14] border-b border-white/5 text-xs font-mono">
+                      <div className="px-3 py-1.5 rounded-t-lg bg-[#141420] text-purple-300 border-t border-x border-purple-500/30 flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+                        <span>main.aayu</span>
+                      </div>
+                      <div className="px-3 py-1.5 text-zinc-500 hover:text-zinc-300">
+                        <span>device.aayu</span>
+                      </div>
+                    </div>
+
+                    {/* Code Editor Window */}
+                    <div className="p-3 font-mono text-[11px] leading-[1.65] bg-[#09090d] min-h-[220px]">
+                      <div className="flex text-zinc-600">
+                        <span className="w-5 text-right mr-3 select-none">1</span>
+                        <span className="text-purple-400 font-bold">app</span>&nbsp;<span className="text-white">MobileSilicon</span>
+                      </div>
+                      <div className="flex text-zinc-600">
+                        <span className="w-5 text-right mr-3 select-none">2</span>
+                        <span className="text-purple-400 font-bold">action</span>&nbsp;<span className="text-cyan-300">main</span>
+                      </div>
+                      <div className="flex text-zinc-600">
+                        <span className="w-5 text-right mr-3 select-none">3</span>
+                        <span className="text-zinc-500 pl-3">// Pure Intent on Android</span>
+                      </div>
+                      <div className="flex text-zinc-600">
+                        <span className="w-5 text-right mr-3 select-none">4</span>
+                        <span className="pl-3 text-purple-400">let</span>&nbsp;<span className="text-zinc-300">core =</span>&nbsp;<span className="text-yellow-300">&quot;ARM64-v8a&quot;</span>
+                      </div>
+                      <div className="flex text-zinc-600">
+                        <span className="w-5 text-right mr-3 select-none">5</span>
+                        <span className="pl-3 text-blue-400">print</span><span className="text-zinc-300">(</span><span className="text-yellow-300">&quot;Silicon Active: &quot;</span>&nbsp;<span className="text-purple-400">+</span>&nbsp;<span className="text-zinc-300">core)</span>
+                      </div>
+                      <div className="flex text-zinc-600">
+                        <span className="w-5 text-right mr-3 select-none">6</span>
+                        <span className="pl-3 text-purple-400 font-bold">for</span>&nbsp;<span className="text-zinc-200">id</span>&nbsp;<span className="text-purple-400 font-bold">in</span>&nbsp;<span className="text-zinc-300">[1, 2, 3]</span>
+                      </div>
+                      <div className="flex text-zinc-600">
+                        <span className="w-5 text-right mr-3 select-none">7</span>
+                        <span className="pl-6 text-blue-400">print</span><span className="text-zinc-300">(</span><span className="text-yellow-300">&quot;Running task #&quot;</span>&nbsp;<span className="text-purple-400">+</span>&nbsp;<span className="text-zinc-300">str(id))</span>
+                      </div>
+                      <div className="flex text-zinc-600">
+                        <span className="w-5 text-right mr-3 select-none">8</span>
+                        <span className="pl-3 text-purple-400 font-bold">end</span>
+                      </div>
+                      <div className="flex text-zinc-600">
+                        <span className="w-5 text-right mr-3 select-none">9</span>
+                        <span className="pl-3 text-purple-400 font-bold">end</span>
+                      </div>
+                      <div className="flex text-zinc-600">
+                        <span className="w-5 text-right mr-3 select-none">10</span>
+                        <span className="text-purple-400 font-bold">run</span>&nbsp;<span className="text-cyan-300">main</span>
+                      </div>
+                    </div>
+
+                    {/* Mobile Symbol Keyboard Strip */}
+                    <div className="px-2 py-1.5 bg-[#14141e] border-y border-white/10 flex items-center gap-1.5 overflow-x-auto text-xs font-mono">
+                      {['{', '}', '(', ')', '[', ']', '=', ':', '->', ';', '"', '+', '-', '←', '→'].map((sym) => (
+                        <span
+                          key={sym}
+                          className="px-2 py-1 rounded bg-black/50 text-cyan-200 border border-white/10 text-[11px] font-bold shadow-xs shrink-0"
+                        >
+                          {sym}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Integrated Terminal Drawer */}
+                    <div className="p-3 bg-black/80 border-t border-emerald-500/30 font-mono text-[10px] leading-relaxed">
+                      <div className="flex items-center justify-between text-zinc-400 mb-1 border-b border-white/5 pb-1">
+                        <span className="text-emerald-400 font-bold flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                          AAYU VM Output
+                        </span>
+                        <span className="text-[9px] text-zinc-500">1.4ms</span>
+                      </div>
+                      <div className="text-emerald-300">Silicon Active: ARM64-v8a</div>
+                      <div className="text-zinc-300">Running task #1</div>
+                      <div className="text-zinc-300">Running task #2</div>
+                      <div className="text-zinc-300">Running task #3</div>
+                      <div className="text-zinc-500 text-[9px] mt-1">[Process exited with code 0]</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Floating Run Button badge */}
+                <div className="absolute -bottom-4 right-2 sm:-right-4 bg-emerald-500 text-black font-extrabold text-xs px-4 py-2.5 rounded-2xl shadow-xl shadow-emerald-500/30 flex items-center gap-2 border border-emerald-300">
+                  <Play className="w-4 h-4 fill-black" />
+                  <span>Run on Android</span>
+                </div>
+              </div>
+            </div>
+
+            {/* FEATURES & DOWNLOADS (7 cols) */}
+            <div className="lg:col-span-7">
+              <div className="grid sm:grid-cols-2 gap-5 mb-8">
+                <div className="p-5 rounded-2xl bg-zinc-900/60 border border-white/10 hover:border-emerald-500/40 transition-colors">
+                  <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-3">
+                    <Cpu className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-white font-bold text-base mb-1">On-Device Native Execution</h3>
+                  <p className="text-zinc-400 text-xs leading-relaxed">
+                    Compiles directly into AAYU bytecode on your Android phone. Zero cloud latency, zero external packages, 100% offline capability.
+                  </p>
+                </div>
+
+                <div className="p-5 rounded-2xl bg-zinc-900/60 border border-white/10 hover:border-cyan-500/40 transition-colors">
+                  <div className="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 mb-3">
+                    <RefreshCw className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-white font-bold text-base mb-1">GitHub Auto-Update Sync</h3>
+                  <p className="text-zinc-400 text-xs leading-relaxed">
+                    Auto-fetches the latest releases and compiler bytecodes directly from the official repository with SHA-256 validation. Your code is never touched.
+                  </p>
+                </div>
+
+                <div className="p-5 rounded-2xl bg-zinc-900/60 border border-white/10 hover:border-purple-500/40 transition-colors">
+                  <div className="w-9 h-9 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 mb-3">
+                    <Smartphone className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-white font-bold text-base mb-1">Custom Symbol Keyboard &amp; D-Pad</h3>
+                  <p className="text-zinc-400 text-xs leading-relaxed">
+                    Never struggle with clumsy mobile keyboards again. Fast auto-pairing brackets, math operators, indentation, and cursor stepping built into the bar.
+                  </p>
+                </div>
+
+                <div className="p-5 rounded-2xl bg-zinc-900/60 border border-white/10 hover:border-amber-500/40 transition-colors">
+                  <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-3">
+                    <Zap className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-white font-bold text-base mb-1">Android Studio Scaffold</h3>
+                  <p className="text-zinc-400 text-xs leading-relaxed">
+                    One-click export generates a clean Kotlin + Jetpack Compose Android Studio project with pre-bundled native AAYU runtime bindings.
+                  </p>
+                </div>
+              </div>
+
+              {/* ACTION BUTTONS & DOWNLOADS */}
+              <div className="p-6 rounded-2xl bg-gradient-to-r from-emerald-950/40 via-zinc-900/80 to-[#121218] border border-emerald-500/30">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+                  <div>
+                    <h4 className="text-white font-extrabold text-lg flex items-center gap-2">
+                      <Download className="w-5 h-5 text-emerald-400" />
+                      Get AAYU Mobile IDE for Android
+                    </h4>
+                    <p className="text-zinc-400 text-xs mt-1">
+                      Production ready bundle · Supports Android 8.0+ (ARM64 &amp; x86_64) · 100% Free &amp; Open Source
+                    </p>
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-mono font-bold border border-emerald-500/40">
+                    v1.1.0 Ready
+                  </span>
+                </div>
+
+                <div className="flex flex-wrap gap-3">
+                  <a
+                    href="/downloads/aayu-mobile-ide.zip"
+                    download="aayu-mobile-ide.zip"
+                    className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-5 py-3 text-sm font-bold text-black shadow-lg shadow-emerald-500/20 transition hover:scale-105 hover:from-emerald-400 hover:to-teal-500"
+                  >
+                    <Download className="w-4 h-4 text-black" />
+                    <span>Download Mobile IDE (.zip)</span>
+                    <span className="rounded bg-black/20 px-2 py-0.5 text-xs text-black/90 font-mono">124 KB</span>
+                  </a>
+
+                  <a
+                    href="https://github.com/Minato95-ayu/INTENT-TO-SILICON"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-white/10 px-5 py-3 text-sm font-semibold text-white transition"
+                  >
+                    <FolderGit2 className="w-4 h-4 text-zinc-400" />
+                    <span>View GitHub Source</span>
+                    <ExternalLink className="w-3.5 h-3.5 text-zinc-500" />
+                  </a>
+                </div>
+
+                {/* Termux one-liner */}
+                <div className="mt-4 pt-3 border-t border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono text-zinc-400">
+                  <span className="text-zinc-500">Termux Quick-Install:</span>
+                  <code className="bg-black/60 px-3 py-1.5 rounded-lg border border-white/10 text-emerald-300 text-[11px] select-all overflow-x-auto">
+                    curl -fsSL https://raw.githubusercontent.com/Minato95-ayu/INTENT-TO-SILICON/main/website/public/downloads/aayu-termux-install.sh | bash
+                  </code>
+                </div>
               </div>
             </div>
           </div>

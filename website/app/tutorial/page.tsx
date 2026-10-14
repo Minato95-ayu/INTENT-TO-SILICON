@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { BookOpen, Download, FileText, Sparkles } from 'lucide-react';
 import { chapters } from '@/lib/tutorial-data';
 
 export default function TutorialPage() {
@@ -17,11 +18,15 @@ export default function TutorialPage() {
         <div className="mb-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 rounded-2xl border border-indigo-500/40 bg-gradient-to-r from-indigo-950/70 via-purple-950/50 to-zinc-950 p-6 md:p-8 shadow-2xl">
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-indigo-400/30 bg-indigo-500/20 px-3 py-1 text-xs font-bold text-indigo-300 uppercase tracking-widest mb-3">
-              ★ Official 2026 Master Handbook PDF ★
+              <Sparkles className="w-3.5 h-3.5 text-indigo-300" />
+              Official 2026 Master Handbook PDF
             </div>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-white">The Ultimate AAYU Master Handbook</h2>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-white flex items-center gap-3">
+              <BookOpen className="w-7 h-7 text-indigo-400" />
+              The Ultimate AAYU Master Handbook
+            </h2>
             <p className="mt-2 text-sm leading-6 text-zinc-300">
-              The complete engineering reference by <strong>Ayush Ghrit Kaushik</strong>. 15 Chapters covering Language Fundamentals, Data Structures &amp; Algorithms (DSA), System Design, 5 Real-World Projects, and 20 Master Interview Problems with verified proofs.
+              The complete engineering reference by <strong>Ayush Ghrit Kaushik</strong>. 21 comprehensive chapters covering Language Fundamentals, Memory Architecture (Union-Style NaN-Boxing &amp; Stack-Style Execution), Native For &amp; While Loops, Data Structures &amp; Algorithms (DSA), System Design, 5 Real-World Production Projects, and 20 Master Interview Problems with verified proofs.
             </p>
           </div>
           <a
@@ -29,8 +34,9 @@ export default function TutorialPage() {
             download="The_Ultimate_AAYU_Handbook_Ayush_Ghrit_Kaushik.pdf"
             className="inline-flex items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-4 text-sm font-bold text-white shadow-lg shadow-indigo-500/25 transition hover:scale-105 hover:from-indigo-400 hover:to-purple-500 whitespace-nowrap"
           >
-            <span>📥 Download Free Handbook PDF</span>
-            <span className="rounded bg-black/30 px-2 py-0.5 text-xs text-indigo-200">1.5 MB</span>
+            <Download className="w-4 h-4 text-white" />
+            <span>Download Master Handbook PDF</span>
+            <span className="rounded bg-black/30 px-2 py-0.5 text-xs text-indigo-200">1.6 MB · 21 Ch</span>
           </a>
         </div>
 

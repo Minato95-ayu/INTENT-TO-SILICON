@@ -140,10 +140,6 @@ impl Emitter {
             match statement {
                 Statement::Let { name, .. } => { names.insert(name.clone()); }
                 Statement::While { body, .. } => Self::collect_declared_locals(body, names),
-                Statement::For { var_name, body, .. } => {
-                    names.insert(var_name.clone());
-                    Self::collect_declared_locals(body, names);
-                }
                 Statement::If { then_branch, else_branch, .. } => {
                     Self::collect_declared_locals(then_branch, names);
                     Self::collect_declared_locals(else_branch, names);
@@ -193,83 +189,6 @@ impl Emitter {
                 }
 
                 self.bytecode.push(32); // OP_JMP (0x20)
-                self.bytecode.push((loop_start >> 8) as u8);
-                self.bytecode.push((loop_start & 0xFF) as u8);
-
-                let exit_target = self.bytecode.len();
-                self.bytecode[jmp_false_idx] = (exit_target >> 8) as u8;
-                self.bytecode[jmp_false_idx + 1] = (exit_target & 0xFF) as u8;
-            }
-            Statement::For { var_name, iterable, body } => {
-                let iter_slot_name = format!("__iter_{}", self.bytecode.len());
-                let idx_slot_name = format!("__idx_{}", self.bytecode.len());
-
-                // Store iterable in __iter
-                self.emit_expression(iterable);
-                let (iter_slot, is_iter_global) = self.variable_slot(&iter_slot_name);
-                self.bytecode.push(if is_iter_global { 8 } else { 6 });
-                self.bytecode.push((iter_slot % 256) as u8);
-
-                // Store 0 in __idx
-                let zero_idx = self.add_constant_int(0);
-                self.bytecode.push(1); // PUSH_CONST
-                self.bytecode.push((zero_idx >> 8) as u8);
-                self.bytecode.push((zero_idx & 0xFF) as u8);
-                let (idx_slot, is_idx_global) = self.variable_slot(&idx_slot_name);
-                self.bytecode.push(if is_idx_global { 8 } else { 6 });
-                self.bytecode.push((idx_slot % 256) as u8);
-
-                let loop_start = self.bytecode.len();
-
-                // Condition: __idx < len(__iter)
-                self.bytecode.push(if is_idx_global { 7 } else { 5 });
-                self.bytecode.push((idx_slot % 256) as u8);
-
-                let (len_name_idx, _) = self.add_constant_str("len".to_string());
-                self.bytecode.push(1); // PUSH_CONST
-                self.bytecode.push((len_name_idx >> 8) as u8);
-                self.bytecode.push((len_name_idx & 0xFF) as u8);
-                self.bytecode.push(if is_iter_global { 7 } else { 5 });
-                self.bytecode.push((iter_slot % 256) as u8);
-                self.bytecode.push(34); // OP_CALL
-                self.bytecode.push(0);
-                self.bytecode.push(1); // 1 arg
-
-                self.bytecode.push(41); // OP_CMP_LT
-
-                self.bytecode.push(33); // OP_JMP_IF_FALSE
-                let jmp_false_idx = self.bytecode.len();
-                self.bytecode.push(0);
-                self.bytecode.push(0);
-
-                // var_name = __iter[__idx]
-                self.bytecode.push(if is_iter_global { 7 } else { 5 });
-                self.bytecode.push((iter_slot % 256) as u8);
-                self.bytecode.push(if is_idx_global { 7 } else { 5 });
-                self.bytecode.push((idx_slot % 256) as u8);
-                self.bytecode.push(136); // LOAD_SUBSCR
-                let (var_slot, is_var_global) = self.variable_slot(var_name);
-                self.bytecode.push(if is_var_global { 8 } else { 6 });
-                self.bytecode.push((var_slot % 256) as u8);
-
-                // Body
-                for s in body {
-                    self.emit_statement(s);
-                }
-
-                // __idx = __idx + 1
-                self.bytecode.push(if is_idx_global { 7 } else { 5 });
-                self.bytecode.push((idx_slot % 256) as u8);
-                let one_idx = self.add_constant_int(1);
-                self.bytecode.push(1);
-                self.bytecode.push((one_idx >> 8) as u8);
-                self.bytecode.push((one_idx & 0xFF) as u8);
-                self.bytecode.push(16); // ADD
-                self.bytecode.push(if is_idx_global { 8 } else { 6 });
-                self.bytecode.push((idx_slot % 256) as u8);
-
-                // Jump to loop_start
-                self.bytecode.push(32); // OP_JMP
                 self.bytecode.push((loop_start >> 8) as u8);
                 self.bytecode.push((loop_start & 0xFF) as u8);
 

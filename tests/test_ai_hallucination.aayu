@@ -1,0 +1,7 @@
+# Test file containing common AI Python/JS syntax leaks
+action calculate_area(radius)
+let factor = 2
+    if radius > 0
+        return 3 * radius * factor
+end
+end

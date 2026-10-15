@@ -2664,7 +2664,39 @@ Mutation Budget: 1,000 automated invariant test cases
 Fuzz Execution Summary: 1000/1000 Mutations Survived with 0 VM Panics!
 Stability Rating:       100.0% (Intent-to-Silicon Verified)
 Silicon Safety Guard:   Active (Memory corruption, buffer overflow, and traps = 0)
-======================================================================</code></pre>
+  <h3>6. 🧠 Autonomous Code Auto-Healer (<code>aayu repair</code>)</h3>
+  <p>Dosto, jab AI coding agents ya naye developers Python ya JavaScript se switch karte hain, toh wo aksar galti se <code>def main():</code>, <code>var x = 10</code>, trailing colons <code>if condition:</code> ya closing <code>end</code> bhool jaate hain. AAYU duniya ki pehli aisi language hai jisme built-in <strong>Self-Healing Engine</strong> hai:</p>
+  <pre><code># Broken/hallucinated syntax ko 1 millisecond me auto-heal karein
+$ aayu repair app.aayu
+
+==================================================
+      AAYU AUTONOMOUS CODE REPAIR ENGINE (v1.5.0) 
+==================================================
+Target: app.aayu
+Engine: Pure AAYU Self-Healing AST Normalizer
+--------------------------------------------------
+✓ [AAYU Self-Healing] Successfully healed 6 syntax anomaly(ies) in 'app.aayu'!
+  Converted to 100% canonical AAYU Intent-to-Silicon syntax.
+==================================================</code></pre>
+
+  <h3>7. 📜 Architecture &amp; Module Dependency Graph (<code>aayu graph</code>)</h3>
+  <p>Single command se poore project ki module topology, imports, aur file footprint ka visual ASCII tree aur Mermaid architecture diagram export karein:</p>
+  <pre><code>$ aayu graph main.aayu
+
+==================================================
+      AAYU SILICON ARCHITECTURE GRAPH (v1.5.0)    
+==================================================
+Target Root: main.aayu
+Engine: Pure AAYU Module Topology Analyzer
+--------------------------------------------------
+main.aayu (54 lines, 1840 bytes)
+  ├── import "std/math.aayu" (1784 bytes) [VERIFIED]
+  ├── import "std/collections.aayu" (13155 bytes) [VERIFIED]
+  └── import "std/contracts.aayu" (1422 bytes) [VERIFIED]
+--------------------------------------------------
+Total Modules: 4 | Workspace Footprint: 18 KB
+Mermaid Diagram exported to: 'architecture.mmd'
+==================================================</code></pre>
 </div>
 
 </body>

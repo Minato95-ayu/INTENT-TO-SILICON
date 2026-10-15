@@ -26,6 +26,8 @@ fn print_help() {
     println!("  profile <file.aayu>        Silicon microsecond execution & memory profiler");
     println!("  dev <file.aayu>            Start instant live hot-reload development server");
     println!("  fuzz [target]              Run native property-based fuzz & mutation test harness");
+    println!("  repair <file.aayu>         Autonomous code healer (fixes AI/JS/Python syntax leaks)");
+    println!("  graph [file.aayu]          Visualize module dependency topology and architecture");
     println!("  lsp                        Start pure Language Server Protocol engine");
     println!("  pack <file.aayu> [-o out]  Bundle imports and compile standalone package");
     println!("  fmt <file.aayu> [--check]  Format AAYU source code with canonical 4-space indentation");
@@ -974,6 +976,34 @@ fn main() {
             run_source_file(fuzz_tool, false);
         } else {
             eprintln!("[AAYU Fuzz Error] Pure fuzzer tool not found at {}", fuzz_tool);
+            std::process::exit(1);
+        }
+        return;
+    }
+
+    if cmd == "repair" {
+        if args.len() >= 3 {
+            std::env::set_var("AAYU_TARGET", &args[2]);
+        }
+        let repair_tool = "tools/repair.aayu";
+        if Path::new(repair_tool).exists() {
+            run_source_file(repair_tool, false);
+        } else {
+            eprintln!("[AAYU Repair Error] Pure repair tool not found at {}", repair_tool);
+            std::process::exit(1);
+        }
+        return;
+    }
+
+    if cmd == "graph" {
+        if args.len() >= 3 {
+            std::env::set_var("AAYU_TARGET", &args[2]);
+        }
+        let graph_tool = "tools/graph.aayu";
+        if Path::new(graph_tool).exists() {
+            run_source_file(graph_tool, false);
+        } else {
+            eprintln!("[AAYU Graph Error] Pure graph tool not found at {}", graph_tool);
             std::process::exit(1);
         }
         return;

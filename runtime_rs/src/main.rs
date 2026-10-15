@@ -408,15 +408,47 @@ fn main() {
         return;
     }
 
+    let is_web = args.contains(&"--web".to_string());
+    let mut custom_port: Option<u16> = None;
+    if let Some(pos) = args.iter().position(|a| a == "--port") {
+        if pos + 1 < args.len() {
+            if let Ok(p) = args[pos + 1].parse::<u16>() {
+                custom_port = Some(p);
+            }
+        }
+    }
+
     let target_file = if cmd == "run" {
         if args.len() < 3 {
-            eprintln!("[AAYU Error] Usage: aayu run <file.aayu | file.ayc> [--jit]");
+            eprintln!("[AAYU Error] Usage: aayu run <file.aayu | file.ayc> [--web] [--port <PORT>] [--jit]");
             std::process::exit(2);
         }
         &args[2]
     } else {
         cmd
     };
+
+    if is_web {
+        // Strict CLI verification: ensure that file contains route definitions or server startup
+        if target_file.ends_with(".aayu") || target_file.ends_with(".ay") || target_file.ends_with(".aa") {
+            let content = match std::fs::read_to_string(target_file) {
+                Ok(c) => c,
+                Err(e) => {
+                    eprintln!("[AAYU Error] Failed to read source file '{}': {}", target_file, e);
+                    std::process::exit(1);
+                }
+            };
+            let has_route = content.contains("route ") || content.contains("route\"") || content.contains("route '") || content.contains("Server.start");
+            if !has_route {
+                eprintln!("[AAYU CLI Error] --web flag provided, but no routes found in '{}'", target_file);
+                eprintln!("Execution halted. Please define 'route' blocks or remove the --web flag.");
+                std::process::exit(1);
+            }
+        }
+        if let Some(p) = custom_port {
+            std::env::set_var("PORT", p.to_string());
+        }
+    }
 
     if target_file.ends_with(".aayu") || target_file.ends_with(".ay") || target_file.ends_with(".aa") {
         let temp_ayc = format!("{}.tmp.ayc", target_file);

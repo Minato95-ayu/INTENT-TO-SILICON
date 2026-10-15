@@ -267,3 +267,366 @@ end
 action drop(arr, n)
     return slice(arr, n, len(arr))
 end
+
+# Enumerate array into an array of [index, element] pairs
+action enumerate(arr)
+    let res = []
+    let i = 0
+    let n = len(arr)
+    while i < n
+        let pair = [i, arr[i]]
+        res = res + [pair]
+        i = i + 1
+    end
+    return res
+end
+
+# Check if any element in array is truthy (non-zero, non-null, non-empty, non-false)
+action any(arr)
+    let i = 0
+    let n = len(arr)
+    while i < n
+        let val = arr[i]
+        if val != 0
+            if val != null
+                if val != false
+                    if val != ""
+                        return 1
+                    end
+                end
+            end
+        end
+        i = i + 1
+    end
+    return 0
+end
+
+# Check if all elements in array are truthy
+action all(arr)
+    let i = 0
+    let n = len(arr)
+    if n == 0
+        return 1
+    end
+    while i < n
+        let val = arr[i]
+        if val == 0
+            return 0
+        end
+        if val == null
+            return 0
+        end
+        if val == false
+            return 0
+        end
+        if val == ""
+            return 0
+        end
+        i = i + 1
+    end
+    return 1
+end
+
+# Return a new sorted copy of the array in ascending order
+action sorted(arr)
+    let remaining = []
+    let i = 0
+    let n = len(arr)
+    while i < n
+        remaining = remaining + [arr[i]]
+        i = i + 1
+    end
+    let res = []
+    while len(remaining) > 0
+        let min_idx = 0
+        let min_val = remaining[0]
+        let j = 1
+        let rem_len = len(remaining)
+        while j < rem_len
+            if remaining[j] < min_val
+                min_val = remaining[j]
+                min_idx = j
+            end
+            j = j + 1
+        end
+        res = res + [min_val]
+        remaining = slice(remaining, 0, min_idx) + slice(remaining, min_idx + 1, rem_len)
+    end
+    return res
+end
+
+# Split a string into an array of substrings using the given delimiter
+action split(str_val, delimiter)
+    let res = []
+    let curr = ""
+    let i = 0
+    let n = len(str_val)
+    let dlen = len(delimiter)
+    if dlen == 0
+        while i < n
+            res = res + [str_val[i]]
+            i = i + 1
+        end
+        return res
+    end
+    while i < n
+        let is_match = 1
+        let k = 0
+        if i + dlen <= n
+            while k < dlen
+                if str_val[i + k] != delimiter[k]
+                    is_match = 0
+                end
+                k = k + 1
+            end
+        else
+            is_match = 0
+        end
+        if is_match == 1
+            res = res + [curr]
+            curr = ""
+            i = i + dlen
+        else
+            curr = curr + str_val[i]
+            i = i + 1
+        end
+    end
+    res = res + [curr]
+    return res
+end
+
+action is_whitespace(ch)
+    if ch == " "
+        return 1
+    end
+    if ch == "\t"
+        return 1
+    end
+    if ch == "\n"
+        return 1
+    end
+    if ch == "\r"
+        return 1
+    end
+    return 0
+end
+
+# Strip leading and trailing whitespace characters from a string
+action strip(str_val)
+    let n = len(str_val)
+    if n == 0
+        return ""
+    end
+    let start = 0
+    let searching = 1
+    while searching == 1
+        if start < n
+            if is_whitespace(str_val[start]) == 1
+                start = start + 1
+            else
+                searching = 0
+            end
+        else
+            searching = 0
+        end
+    end
+    let stop = n - 1
+    searching = 1
+    while searching == 1
+        if stop >= start
+            if is_whitespace(str_val[stop]) == 1
+                stop = stop - 1
+            else
+                searching = 0
+            end
+        else
+            searching = 0
+        end
+    end
+    if start > stop
+        return ""
+    end
+    let res = ""
+    let i = start
+    while i <= stop
+        res = res + str_val[i]
+        i = i + 1
+    end
+    return res
+end
+
+# Replace occurrences of target substring with replacement in string
+action replace(str_val, target, replacement)
+    let parts = split(str_val, target)
+    return join(parts, replacement)
+end
+
+action char_to_digit(ch)
+    if ch == "0"
+        return 0
+    end
+    if ch == "1"
+        return 1
+    end
+    if ch == "2"
+        return 2
+    end
+    if ch == "3"
+        return 3
+    end
+    if ch == "4"
+        return 4
+    end
+    if ch == "5"
+        return 5
+    end
+    if ch == "6"
+        return 6
+    end
+    if ch == "7"
+        return 7
+    end
+    if ch == "8"
+        return 8
+    end
+    if ch == "9"
+        return 9
+    end
+    return -1
+end
+
+# Parse a base-10 integer from a string value
+action parse_int(str_val)
+    let s = strip(str_val)
+    let n = len(s)
+    if n == 0
+        return 0
+    end
+    let is_neg = 0
+    let start = 0
+    if s[0] == "-"
+        is_neg = 1
+        start = 1
+    end
+    if s[0] == "+"
+        start = 1
+    end
+    let num = 0
+    let i = start
+    let parsing = 1
+    while parsing == 1
+        if i < n
+            let d = char_to_digit(s[i])
+            if d < 0
+                parsing = 0
+            else
+                num = (num * 10) + d
+                i = i + 1
+            end
+        else
+            parsing = 0
+        end
+    end
+    if is_neg == 1
+        return 0 - num
+    end
+    return num
+end
+
+# Convert array of string numbers into integers in a single call (Clean, zero-boilerplate alternative to Python list(map(int, ...)))
+action parse_ints(arr)
+    let res = []
+    let i = 0
+    let n = len(arr)
+    while i < n
+        let val = parse_int(arr[i])
+        res = res + [val]
+        i = i + 1
+    end
+    return res
+end
+
+action char_to_lower(ch)
+    if ch == "A" return "a" end
+    if ch == "B" return "b" end
+    if ch == "C" return "c" end
+    if ch == "D" return "d" end
+    if ch == "E" return "e" end
+    if ch == "F" return "f" end
+    if ch == "G" return "g" end
+    if ch == "H" return "h" end
+    if ch == "I" return "i" end
+    if ch == "J" return "j" end
+    if ch == "K" return "k" end
+    if ch == "L" return "l" end
+    if ch == "M" return "m" end
+    if ch == "N" return "n" end
+    if ch == "O" return "o" end
+    if ch == "P" return "p" end
+    if ch == "Q" return "q" end
+    if ch == "R" return "r" end
+    if ch == "S" return "s" end
+    if ch == "T" return "t" end
+    if ch == "U" return "u" end
+    if ch == "V" return "v" end
+    if ch == "W" return "w" end
+    if ch == "X" return "x" end
+    if ch == "Y" return "y" end
+    if ch == "Z" return "z" end
+    return ch
+end
+
+# Convert all ASCII uppercase characters in string to lowercase
+action lower(str_val)
+    let res = ""
+    let i = 0
+    let n = len(str_val)
+    while i < n
+        res = res + char_to_lower(str_val[i])
+        i = i + 1
+    end
+    return res
+end
+
+action char_to_upper(ch)
+    if ch == "a" return "A" end
+    if ch == "b" return "B" end
+    if ch == "c" return "C" end
+    if ch == "d" return "D" end
+    if ch == "e" return "E" end
+    if ch == "f" return "F" end
+    if ch == "g" return "G" end
+    if ch == "h" return "H" end
+    if ch == "i" return "I" end
+    if ch == "j" return "J" end
+    if ch == "k" return "K" end
+    if ch == "l" return "L" end
+    if ch == "m" return "M" end
+    if ch == "n" return "N" end
+    if ch == "o" return "O" end
+    if ch == "p" return "P" end
+    if ch == "q" return "Q" end
+    if ch == "r" return "R" end
+    if ch == "s" return "S" end
+    if ch == "t" return "T" end
+    if ch == "u" return "U" end
+    if ch == "v" return "V" end
+    if ch == "w" return "W" end
+    if ch == "x" return "X" end
+    if ch == "y" return "Y" end
+    if ch == "z" return "Z" end
+    return ch
+end
+
+# Convert all ASCII lowercase characters in string to uppercase
+action upper(str_val)
+    let res = ""
+    let i = 0
+    let n = len(str_val)
+    while i < n
+        res = res + char_to_upper(str_val[i])
+        i = i + 1
+    end
+    return res
+end
+

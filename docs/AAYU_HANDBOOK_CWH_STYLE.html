@@ -793,6 +793,13 @@ aayu run app.ay --web
 # Start on custom port (e.g., 8080)
 aayu run app.ay --web --port 8080</code></pre>
 
+<div class="tip-box">
+  <b>Strict CLI Validation Rule:</b> If the <code>--web</code> flag is provided for a source file that contains no <code>route</code> blocks, the compiler immediately halts execution with an explicit error:
+  <pre><code>[AAYU CLI Error] --web flag provided, but no routes found in 'script.ay'
+Execution halted. Please define 'route' blocks or remove the --web flag.</code></pre>
+  This prevents silent failures and ensures strict Developer Experience (DX).
+</div>
+
 <h2>3. Compiling to Bytecode (.ayc)</h2>
 <p>To compile your human-readable AAYU source into optimized, compact AAYU bytecode:</p>
 
@@ -1149,27 +1156,56 @@ print("Total fruits:", len(fruits)) # 3
 fruits = fruits + ["Orange"]
 print("After adding Orange, total:", len(fruits)) # 4</code></pre>
 
-<h2>Safe Functional Array Mutation (<code>set_at</code>)</h2>
-<p>In AAYU, in-place index assignment is handled reliably through functional reconstruction:</p>
+<h2>The AAYU Standard Library: <code>std/collections</code></h2>
+<p>Unlike languages that require multiple external packages or awkward nested wrappers (e.g. Python's <code>list(map(int, input().split()))</code>), AAYU provides direct, intent-driven operations built in pure AAYU.</p>
 
-<pre><code>action set_at(arr, index, val)
-    let res = []
-    let i = 0
-    let n = len(arr)
-    while i < n
-        if i == index
-            res = res + [val]
-        else
-            res = res + [arr[i]]
-        end
-        i = i + 1
-    end
-    return res
-end
+<h3>1. Functional Array Algorithms</h3>
+<pre><code>import "std/collections"
 
-let scores = [10, 20, 30]
-scores = set_at(scores, 1, 99)
-print("Updated scores:", scores) # [10, 99, 30]</code></pre>
+let numbers = [42, 10, 88, 3, 25]
+
+# Sorting: pure selection sort returning an ordered copy
+let ordered = sorted(numbers) # [3, 10, 25, 42, 88]
+
+# Mathematical Reductions
+print("Sum:", sum(numbers))       # 168
+print("Average:", mean(numbers))  # 33.6
+print("Min:", array_min(numbers)) # 3
+print("Max:", array_max(numbers)) # 88
+
+# Enumerate: Index + Value pairs
+let items = enumerate(["Rust", "AAYU", "Silicon"])
+# Returns: [[0, "Rust"], [1, "AAYU"], [2, "Silicon"]]
+
+# Logical Predicates
+print(any([0, 0, 5, 0])) # 1 (truthy item found)
+print(all([1, 2, 3]))    # 1 (all truthy)
+print(all([1, 0, 3]))    # 0 (contains zero)
+
+# Pairing with Zip
+let names = ["Ayush", "Rahul"]
+let marks = [90, 85]
+let pairs = zip(names, marks) # [["Ayush", 90], ["Rahul", 85]]</code></pre>
+
+<h3>2. String Processing &amp; Single-Call Number Parsing</h3>
+<pre><code>import "std/collections"
+
+# Splitting and Trimming Strings
+let input_text = "100 200 300"
+let tokens = split(input_text, " ") # ["100", "200", "300"]
+
+# Zero-Boilerplate Number Conversion (Replaces Python list(map(int, ...)))
+let money = parse_ints(tokens)
+print("Total Money:", sum(money)) # 600
+
+# String Utilities
+let raw = "   Hello AAYU World   "
+let clean = strip(raw)                       # "Hello AAYU World"
+let small = lower(clean)                     # "hello aayu world"
+let big = upper(clean)                       # "HELLO AAYU WORLD"
+let replaced = replace(clean, "World", "OS") # "Hello AAYU OS"
+let joined = join(["A", "B", "C"], "-")      # "A-B-C"</code></pre>
+
 
 <!-- CHAPTER 11 -->
 <h1>Chapter 11: Dictionaries &amp; Structured Records</h1>

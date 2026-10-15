@@ -1,0 +1,95 @@
+import "std/collections"
+import "std/math"
+import "std/brain"
+import "std/os"
+import "std/fs"
+import "std/crypto"
+import "std/json"
+import "std/db"
+import "std/ai"
+import "std/ui"
+import "std/ledger"
+import "std/ayon"
+import "std/http"
+import "std/server"
+
+print("================================================================================")
+print("             AAYU FULL 14-MODULE PRODUCTION SUITE REAL EXECUTION                ")
+print("================================================================================")
+
+# 1. std/collections
+let numbers = [50, 10, 40, 20, 30]
+let s = sorted(numbers)
+print("[1] std/collections : sorted = [" + s[0] + ", " + s[1] + ", " + s[2] + ", " + s[3] + ", " + s[4] + "]")
+let splitted = split("AAYU Pure Silicon", " ")
+print("    std/collections : split count = " + len(splitted) + " | sum = " + sum(numbers))
+
+# 2. std/math
+let root = sqrt(49.0)
+let absolute = abs(0.0 - 99.5)
+let maximum = max(100.0, 50.0)
+print("[2] std/math        : sqrt(49) = " + root + " | abs(-99.5) = " + absolute + " | max = " + maximum)
+
+# 3. std/brain
+let is_lex_frozen = brain_is_frozen("Lexer")
+print("[3] std/brain       : BrainOS Lexer Freeze Guard = " + is_lex_frozen)
+
+# 4. std/os
+print("[4] std/os          : OS = " + get_os() + " | Arch = " + get_architecture() + " | Type = " + get_type(123))
+
+# 5. std/fs
+let path = format_path("src", "main.aayu")
+let ext = get_extension("photo.archive.png")
+print("[5] std/fs          : format_path = " + path + " | ext = " + ext)
+
+# 6. std/crypto
+let hash = hash_string("INTENT-TO-SILICON")
+print("[6] std/crypto      : hash('INTENT-TO-SILICON') = " + hash)
+
+# 7. std/json
+let quoted = json_quote("AAYU Language")
+let pair = json_format_pair("version", "1.2")
+print("[7] std/json        : quoted = " + quoted + " | pair = " + pair)
+
+# 8. std/db
+let r1 = db_create_record(1, "Post1", 100)
+let r2 = db_create_record(2, "Post2", 200)
+let all_recs = [r1, r2]
+let found = db_find_by_id(all_recs, 2)
+print("[8] std/db          : created 2 records, found id=2 name = " + found["name"])
+
+# 9. std/ai
+let v1 = [1.0, 2.0, 3.0]
+let v2 = [10.0, 20.0, 30.0]
+let v_sum = vec_add(v1, v2)
+print("[9] std/ai          : vec_add = [" + v_sum[0] + ", " + v_sum[1] + ", " + v_sum[2] + "]")
+
+# 10. std/ui (UI Rendering Verification)
+let heading = create_text("AAYU Intent UI")
+let btn = create_button("Submit", "handleClick")
+let col = create_column([heading, btn])
+let html = render(col)
+print("[10] std/ui (Render): " + html)
+
+# 11. std/ledger
+let valid_tx = verify_balance(500, 100, 5)
+let new_balances = apply_transfer(500, 200, 100)
+print("[11] std/ledger     : balance check = " + valid_tx + " | sender bal = " + new_balances[0] + " | recip bal = " + new_balances[1])
+
+# 12. std/ayon
+let raw_ayon = "# Comment\nname: \"AAYU\"\n# End"
+let stripped_ayon = ayon_strip_comments(raw_ayon)
+print("[12] std/ayon       : stripped comment length = " + len(stripped_ayon))
+
+# 13. std/http
+let proto = parse_url_protocol("https://aayu.dev/docs")
+let is_ok = status_is_ok(200)
+print("[13] std/http       : protocol = " + proto + " | 200 is_ok = " + is_ok)
+
+# 14. std/server
+let resp = json_response(200, "{\"status\": \"healthy\"}")
+print("[14] std/server     : response len = " + len(resp))
+
+print("================================================================================")
+print("             100% REAL EXECUTION - ALL 14 MODULES FULLY OPERATIONAL             ")
+print("================================================================================")

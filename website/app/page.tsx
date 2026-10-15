@@ -366,7 +366,7 @@ export default function Home() {
                     </p>
                   </div>
                   <span className="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-mono font-bold border border-emerald-500/40">
-                    v1.1.0 Ready
+                    v1.4.0 Native Ready
                   </span>
                 </div>
 
@@ -378,7 +378,7 @@ export default function Home() {
                   >
                     <Download className="w-4 h-4 text-black" />
                     <span>Download Android App (.apk)</span>
-                    <span className="rounded bg-black/20 px-2 py-0.5 text-xs text-black/90 font-mono">11.9 MB · APK</span>
+                    <span className="rounded bg-black/20 px-2 py-0.5 text-xs text-black/90 font-mono">12.5 MB · APK (v1.4)</span>
                   </a>
 
                   <a

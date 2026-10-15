@@ -15,7 +15,7 @@ export default function DownloadPage() {
 
   const sdkDownloads = [
     { os: 'Windows (SDK)', icon: <Cpu className="w-8 h-8 text-blue-400" />, desc: 'CLI & Compiler (.zip)', file: 'aayu-windows.zip', color: 'hover:border-blue-500/50' },
-    { os: 'Android Mobile (APK)', icon: <Smartphone className="w-8 h-8 text-emerald-400" />, desc: 'Native Mobile IDE v1.3 · 12.5 MB (Real-time Syntax Highlighting)', file: 'aayu-android.apk', localUrl: '/downloads/aayu-android.apk', color: 'hover:border-emerald-500/50' },
+    { os: 'Android Mobile (APK)', icon: <Smartphone className="w-8 h-8 text-emerald-400" />, desc: 'Native Mobile IDE v1.4 · 12.5 MB (Cursor Lock, Git Snapshots & Real-time Evaluation)', file: 'aayu-android.apk', localUrl: '/downloads/aayu-android.apk', color: 'hover:border-emerald-500/50' },
     { os: 'VS Code Extension (.vsix)', icon: <Terminal className="w-8 h-8 text-cyan-400" />, desc: 'AAYU Pro Suite v1.3 · 1.3 MB (.vsix)', file: 'aayu-vscode.vsix', localUrl: '/downloads/aayu-vscode.vsix', color: 'hover:border-cyan-500/50' },
     { os: 'Master Handbook (PDF)', icon: <BookOpen className="w-8 h-8 text-purple-400" />, desc: 'Official Master PDF (3.0 MB)', file: 'The_Ultimate_AAYU_Handbook_Ayush_Ghrit_Kaushik.pdf', localUrl: '/aayu-handbook.pdf', color: 'hover:border-purple-500/50' },
     { os: 'Linux (SDK)', icon: <Cpu className="w-8 h-8 text-orange-400" />, desc: 'CLI & Compiler (.tar.gz)', file: 'aayu-linux.tar.gz', color: 'hover:border-orange-500/50' },

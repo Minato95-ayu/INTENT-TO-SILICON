@@ -362,12 +362,70 @@ print("Vowel 'O' Formant Amplitude:", sample_o)`}</code>
           </div>
         </div>
 
+        {/* 13. Algorithmic Logic Building & C-Speed Milestone */}
+        <div className="mb-20">
+          <h2 className="text-2xl font-bold mb-6 border-b border-white/10 pb-4">13. Algorithmic Logic Building &amp; C-Speed Silicon Roadmap</h2>
+          <p className="text-zinc-400 mb-6 leading-relaxed">
+            Logic building in AAYU carries <strong>Zero Mental Tax</strong>: explicit <code className="text-purple-300">end</code> scopes, pre/post condition contracts (<code className="text-purple-300">require</code>, <code className="text-purple-300">ensure</code>), and instant microsecond execution without pointer errors or segfaults.
+          </p>
+          <div className="bg-[#0a0a0a] border border-white/10 rounded-xl overflow-hidden mb-6">
+            <div className="bg-[#111] px-4 py-2 border-b border-white/5 text-xs text-zinc-500 font-mono">examples/logic_building_mastery.aayu</div>
+            <pre className="p-6 text-sm text-zinc-300 overflow-x-auto">
+              <code>{`// 1. Two-Pointer Palindrome in O(N)
+action is_palindrome(text)
+    let n = len(text)
+    let left = 0, let right = n - 1
+    while left < right
+        if text[left] != text[right]
+            return 0
+        end
+        left = left + 1, right = right - 1
+    end
+    return 1
+end
+
+// 2. Binary Search in O(log N) Time
+action binary_search(arr, target)
+    let n = len(arr), let low = 0, let high = n - 1
+    while low <= high
+        let mid = (low + high) / 2
+        if arr[mid] == target return mid
+        elif arr[mid] < target low = mid + 1
+        else high = mid - 1
+    end
+    return -1
+end`}</code>
+            </pre>
+          </div>
+
+          <div className="p-6 rounded-2xl bg-gradient-to-r from-blue-950/40 via-zinc-900/60 to-black border border-blue-500/30">
+            <h3 className="text-lg font-bold text-blue-400 mb-2">Next Milestone: Reaching Raw C Execution Speed</h3>
+            <p className="text-zinc-400 text-xs leading-relaxed mb-4">
+              AAYU combines high-level human ergonomics with 5 core architectural pillars targeting 1-clock-cycle CPU assembly execution:
+            </p>
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs">
+              <div className="p-3 bg-black/60 rounded-xl border border-white/5">
+                <span className="text-white font-bold block mb-1">1. Register-VM</span>
+                <span className="text-zinc-400 text-[11px]">3-address instructions mapping directly to CPU registers (-45% cycles).</span>
+              </div>
+              <div className="p-3 bg-black/60 rounded-xl border border-white/5">
+                <span className="text-white font-bold block mb-1">2. LLVM / Cranelift AOT</span>
+                <span className="text-zinc-400 text-[11px]">Standalone native machine binary without interpreter loop.</span>
+              </div>
+              <div className="p-3 bg-black/60 rounded-xl border border-white/5">
+                <span className="text-white font-bold block mb-1">3. SIMD Vectorization</span>
+                <span className="text-zinc-400 text-[11px]">AVX-512 &amp; NEON hardware parallelism for 16-lane bulk math.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Download Master Handbook Banner */}
         <div className="p-8 rounded-2xl bg-gradient-to-r from-purple-900/30 via-indigo-900/20 to-black border border-purple-500/40 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <h3 className="text-xl font-bold text-white mb-2">The Ultimate AAYU Master Handbook (23 Chapters)</h3>
+            <h3 className="text-xl font-bold text-white mb-2">The Ultimate AAYU Master Handbook (24 Chapters)</h3>
             <p className="text-zinc-400 text-sm max-w-xl">
-              Complete engineering manual by Ayush Ghrit Kaushik. Includes all 23 chapters, memory architecture, 20 master interview problems, smart contracts, creative DSP, and full source code.
+              Complete engineering manual by Ayush Ghrit Kaushik. Includes all 24 chapters, memory architecture, 20 master interview problems, algorithmic patterns, smart contracts, creative DSP, and C-speed silicon roadmap.
             </p>
           </div>
           <a

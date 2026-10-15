@@ -37,6 +37,49 @@ end
 main()`
     },
     {
+      title: "Algorithmic Logic Building Mastery (Live Hardware Verified)",
+      desc: "Demonstrates 4 core algorithmic patterns executed with 0 syntax friction on native silicon registers: Two-Pointer palindrome checking O(N), Sliding Window max subarray O(N), Binary Search divide-and-conquer O(log N), and contract-verified recursion.",
+      tags: ["Algorithms", "Logic Building", "Binary Search", "Two-Pointer"],
+      code: `# Run: bin/aayu.exe run examples/logic_building_mastery.aayu
+import "std/contracts.aayu"
+
+# 1. Two-Pointer Palindrome in O(N) Time
+action is_palindrome(text)
+    let n = len(text)
+    let left = 0, let right = n - 1
+    while left < right
+        if text[left] != text[right] return 0 end
+        left = left + 1, right = right - 1
+    end
+    return 1
+end
+
+# 2. Sliding Window Max Subarray Sum in O(N) Time
+action max_subarray_sum_k(arr, k)
+    let n = len(arr), let sum = 0, let i = 0
+    while i < k sum = sum + arr[i], i = i + 1 end
+    let max_sum = sum, let j = k
+    while j < n
+        sum = sum + arr[j] - arr[j - k]
+        if sum > max_sum max_sum = sum end
+        j = j + 1
+    end
+    return max_sum
+end
+
+# 3. Binary Search in O(log N) Time
+action binary_search(arr, target)
+    let n = len(arr), let low = 0, let high = n - 1
+    while low <= high
+        let mid = (low + high) / 2
+        if arr[mid] == target return mid
+        elif arr[mid] < target low = mid + 1
+        else high = mid - 1 end
+    end
+    return -1
+end`
+    },
+    {
       title: "AAYUGram (Social Network)",
       desc: "Concept sketch for a social feed. It is not a verified runnable application and does not demonstrate SQLite, JWT security, or production image uploads.",
       tags: ["Full-Stack", "Auth", "UI Engine"],

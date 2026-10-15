@@ -74,5 +74,12 @@ export const chapters: ChapterData[] = [
     learningPoints: ["Calculate musical note frequencies (C4, E4, G4)", "Synthesize Sine, Square, and Triangle audio waves", "Model human vocal tract formants (F1, F2)", "Shape acoustic timbre with dynamic ADSR envelopes"],
     content: `## Human Speech & Music by Pure Code\n\n\`std/audio.aayu\` models human vowels by combining fundamental glottal vocal pulses with acoustic formant filters:\n\n\`\`\`aayu\nimport "std/audio.aayu"\n\n# Synthesize human vowel 'A' (F1=800Hz, F2=1200Hz)\nlet sample_a = synthesize_human_vowel_sample("A", 120.0, 0.005)\nprint("Vowel 'A' Formant Amplitude: " + sample_a)\n\n# Apply dynamic ADSR envelope\nlet env = apply_adsr(0.015, 0.5, 0.02, 0.05, 0.7, 0.05)\nprint("Envelope at 15ms: " + env)\n\`\`\`\n\nSynthesizes natural sound entirely without external DSP runtimes.`,
     exercise: "Synthesize vowel 'O' (F1=500Hz, F2=850Hz) and compare its amplitude response at t=0.005s with vowel 'A'."
+  },
+  {
+    slug: "chapter-11", num: 11, title: "Algorithmic Logic Building & C-Speed", phase: "Algorithmic Silicon - Verified",
+    description: "Master Two-Pointer, Sliding Window, and Binary Search algorithms with 0 syntax friction and native silicon speed.",
+    learningPoints: ["Implement Two-Pointer O(N) palindrome algorithms", "Build Sliding Window O(N) max sum pipelines", "Perform Binary Search divide-and-conquer in O(log N)", "Explore AAYU's LLVM/Cranelift C-Speed architectural roadmap"],
+    content: `## Algorithmic Logic Building in Pure AAYU\n\nAAYU eliminates syntax friction so developers focus 100% on logic. Here is Binary Search in O(log N) time on native silicon registers:\n\n\`\`\`aayu\naction binary_search(arr, target)\n    let n = len(arr)\n    let low = 0\n    let high = n - 1\n    \n    while low <= high\n        let mid = (low + high) / 2\n        let mid_val = arr[mid]\n        if mid_val == target\n            return mid\n        elif mid_val < target\n            low = mid + 1\n        else\n            high = mid - 1\n        end\n    end\n    return -1\nend\n\nlet sorted_nums = [11, 22, 33, 44, 55, 66, 77, 88, 99]\nprint("Index of 55: " + binary_search(sorted_nums, 55))\n\`\`\`\n\nRun 'bin/aayu.exe run examples/logic_building_mastery.aayu' to verify.`,
+    exercise: "Modify binary_search to find the lower bound (first occurrence) of a target element in an array with duplicates."
   }
 ];

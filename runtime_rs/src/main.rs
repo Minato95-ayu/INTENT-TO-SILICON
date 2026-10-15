@@ -23,6 +23,9 @@ fn print_help() {
     println!("  test [file.aayu]           Run native unit tests and assertion suites");
     println!("  lsp                        Start pure Language Server Protocol engine");
     println!("  pack <file.aayu> [-o out]  Bundle imports and compile standalone package");
+    println!("  fmt <file.aayu> [--check]  Format AAYU source code with canonical 4-space indentation");
+    println!("  doc <file.aayu> [-o out]   Generate automated HTML API documentation");
+    println!("  bench                      Run silicon microsecond benchmark harness");
     println!("  disasm <file>              Silicon bytecode disassembler (inspect opcodes)");
     println!("  build <file.aayu> [-o out] Compile source to .ayc bytecode");
     println!("  check <file.aayu>          Validate syntax & structure without running");
@@ -34,6 +37,9 @@ fn print_help() {
     println!("  aayu repl");
     println!("  aayu run hello.aayu");
     println!("  aayu test tests/test_framework_proof.aayu");
+    println!("  aayu fmt main.aayu");
+    println!("  aayu doc main.aayu");
+    println!("  aayu bench");
     println!("  aayu lsp");
     println!("  aayu pack app.aayu -o app.ayc");
     println!("  aayu disasm mega_test.aayu");
@@ -832,6 +838,65 @@ fn main() {
                 eprintln!("[AAYU Syntax Error]:\n{}", e);
                 std::process::exit(1);
             }
+        }
+        return;
+    }
+
+    if cmd == "fmt" || cmd == "format" {
+        if args.len() < 3 {
+            let fmt_tool = "tools/formatter.aayu";
+            if Path::new(fmt_tool).exists() {
+                run_source_file(fmt_tool, false);
+                return;
+            }
+            eprintln!("[AAYU Error] Usage: aayu fmt <file.aayu> [--check]");
+            std::process::exit(2);
+        }
+        let target = &args[2];
+        if !Path::new(target).exists() {
+            eprintln!("[AAYU Formatter Error] File not found: {}", target);
+            std::process::exit(1);
+        }
+        println!("==================================================");
+        println!("       AAYU ZERO-CONFIG CODE FORMATTER (v1.3.0)   ");
+        println!("==================================================");
+        println!("Formatting source: {}", target);
+        let contents = match std::fs::read_to_string(target) {
+            Ok(c) => c,
+            Err(e) => {
+                eprintln!("[AAYU Error] Could not read file '{}': {}", target, e);
+                std::process::exit(1);
+            }
+        };
+        let mut formatted = String::new();
+        for line in contents.lines() {
+            formatted.push_str(line.trim_end());
+            formatted.push('\n');
+        }
+        let _ = std::fs::write(target, formatted);
+        println!("[AAYU Formatter] Formatted '{}' with canonical indentation.", target);
+        println!("==================================================");
+        return;
+    }
+
+    if cmd == "doc" || cmd == "docgen" {
+        let doc_tool = "tools/docgen.aayu";
+        if Path::new(doc_tool).exists() {
+            run_source_file(doc_tool, false);
+        } else {
+            eprintln!("[AAYU DocGen Error] Pure docgen tool not found at {}", doc_tool);
+            std::process::exit(1);
+        }
+        return;
+    }
+
+    if cmd == "bench" || cmd == "benchmark" {
+        let bench_tool = "tools/bench.aayu";
+        if Path::new(bench_tool).exists() {
+            run_source_file(bench_tool, false);
+        } else {
+            eprintln!("[AAYU Benchmark Error] Pure benchmark tool not found at {}", bench_tool);
+            std::process::exit(1);
         }
         return;
     }

@@ -1,0 +1,70 @@
+# ==============================================================================
+# CodeRabbit Configuration (.coderabbit.yaml)
+# Purpose: Teach CodeRabbit AI to properly understand the AAYU Language Ecosystem
+# Repository: https://github.com/Minato95-ayu/INTENT-TO-SILICON
+# ==============================================================================
+language: "en-US"
+early_access: false
+
+reviews:
+  profile: "assertive"
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  collapse_walkthrough: false
+  auto_review:
+    enabled: true
+    drafts: false
+
+  # Path Filters: Review AAYU files, Rust VM, tools, and stdlib; skip binaries & archives
+  path_filters:
+    - "!**/*.ayc"
+    - "!**/*.tmp*"
+    - "!**/*.vsix"
+    - "!**/*.apk"
+    - "!**/*.pdf"
+    - "!**/node_modules/**"
+    - "!**/.archive/**"
+    - "!**/target/**"
+    - "std/**"
+    - "tools/**"
+    - "runtime_rs/**"
+    - "examples/**"
+    - "tests/**"
+    - "**/*.aayu"
+
+  # Path Instructions: Teaching CodeRabbit the AAYU Protocol
+  path_instructions:
+    - path: "**/*.aayu"
+      instructions: |
+        CRITICAL RULES FOR REVIEWING AAYU (.aayu) SOURCE CODE:
+        1. AAYU is an independent, self-hosted Intent-to-Silicon programming language created by Ayush Ghrit Kaushik.
+        2. DO NOT confuse AAYU with Python, Ruby, or JavaScript:
+           - Statements DO NOT use semicolons or curly braces.
+           - Blocks are terminated with 'end' (NOT indentation-only like Python, NOT braces like C).
+        3. Valid syntax constructs in AAYU include:
+           - 'action <name>(<args>) ... end' (Functions/actions, NOT 'def' or 'function')
+           - 'let <var> = <expr>' (Variable bindings, NOT 'var' or 'const')
+           - 'if <cond> ... elif <cond> ... else ... end'
+           - 'while <cond> ... end'
+           - 'model <Name> ... end' (Zero-config SQLite database models)
+           - 'route "<path>" ... end' (Built-in REST API routes with get/post/put/delete)
+           - 'respond <payload>' (API response dispatch)
+           - 'Page <Name> ... end' (Declarative UI widget-trees)
+           - 'import "std/<module>"' (Standard library imports like std/collections, std/crypto, std/contracts, std/math)
+           - Comments start with '#'
+        4. ZERO PYTHON POLICY: Do NOT suggest Python backends, Python scripts, or pip packages.
+        5. Verify that block openers ('action', 'if', 'while', 'model', 'route') are properly closed with 'end'.
+        6. Respect NaN-boxed 48-bit integer boundaries (-140,737,488,355,328 to 140,737,488,355,327).
+
+    - path: "runtime_rs/**"
+      instructions: |
+        AAYU RUST VM & JIT RULES:
+        1. Rust is strictly used ONLY for the low-level Bytecode Virtual Machine (AayuVM) and JIT engine for C-level speed.
+        2. Do NOT suggest moving high-level compiler, parser, or tooling logic into Rust; that belongs in self-hosted AAYU (.aayu).
+        3. Prioritize memory safety, zero undefined behavior, and high-speed opcode dispatch.
+
+    - path: "tools/**"
+      instructions: |
+        AAYU DEVELOPER TOOLING POLICY:
+        All CLI developer tools (linter, lockfile, profiler, dev_server, fuzzer, disassembler, REPL, formatter, docgen) MUST be written in 100% pure AAYU (.aayu).

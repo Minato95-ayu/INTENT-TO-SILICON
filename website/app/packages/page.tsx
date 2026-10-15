@@ -107,6 +107,20 @@ const standardModules: StdModule[] = [
     description: 'HTTP response builders, MIME content-type headers, and JSON/HTML response formatters.',
     functions: ['format_response(status, type, body)', 'json_response(status, data)', 'html_response(status, html)'],
     example: 'import "std/server"\nlet resp = json_response(200, "{\\"status\\":\\"ready\\"}")\nprint(resp)'
+  },
+  {
+    name: 'std/test',
+    category: 'Native Unit Testing & Assertions',
+    description: 'Zero-dependency assertion engine, test suite coordinator, and test runner with granular value and type-coerced validation.',
+    functions: ['assert_eq(actual, exp, name)', 'assert_neq(actual, unexp, name)', 'assert_true(cond, name)', 'assert_false(cond, name)', 'assert_gt(a, b, name)', 'assert_lt(a, b, name)', 'test_begin_suite(name)', 'test_end_suite()'],
+    example: 'import "std/test"\ntest_begin_suite("Math Suite")\nassert_eq(sqrt(81.0), 9.0, "Root check")\ntest_end_suite()'
+  },
+  {
+    name: 'std/contracts',
+    category: 'Intent-to-Silicon Contracts',
+    description: 'Design-by-Contract verification primitives for mission-critical intent enforcement, type checking, and system invariants.',
+    functions: ['require(cond, name)', 'ensure(cond, name)', 'invariant(cond, name)', 'check_type(val, exp_type, param)'],
+    example: 'import "std/contracts"\naction withdraw(bal, amt)\n  require(amt > 0, "positive amount")\n  return bal - amt\nend'
   }
 ];
 
@@ -119,7 +133,7 @@ export default function PackagesPage() {
             <CheckCircle2 className="w-4 h-4" /> 100% Pure Self-Hosted Standard Library (Zero Python, Zero C)
           </div>
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
-            AAYU Standard Libraries (All 14 Modules)
+            AAYU Standard Libraries (All 16 Production Modules)
           </h1>
           <p className="text-lg text-zinc-400 max-w-3xl mx-auto">
             Production-ready, deterministic standard libraries running natively on the AAYU Silicon Stack VM.

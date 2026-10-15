@@ -1,0 +1,130 @@
+# ==============================================================================
+# AAYU STANDARD LIBRARY: std/test
+# Zero-Dependency Native Unit Testing & Assertion Framework
+# Architecture: 100% Pure Self-Hosted AAYU (.aayu)
+# ==============================================================================
+
+# Global test state accumulator
+let __test_passed_count = 0
+let __test_failed_count = 0
+let __test_total_count = 0
+
+# Assertion: Assert that actual equals expected (supports value & coerced equality)
+action assert_eq(actual, expected, test_name)
+    __test_total_count = __test_total_count + 1
+    let is_match = 0
+    if actual == expected
+        is_match = 1
+    else
+        if ("" + actual) == ("" + expected)
+            is_match = 1
+        end
+    end
+
+    if is_match == 1
+        __test_passed_count = __test_passed_count + 1
+        print("  [PASS] " + test_name + " (value: " + actual + ")")
+        return 1
+    else
+        __test_failed_count = __test_failed_count + 1
+        print("  [FAIL] " + test_name + " -> Expected: " + expected + ", Got: " + actual)
+        return 0
+    end
+end
+
+# Assertion: Assert that actual does NOT equal unexpected
+action assert_neq(actual, unexpected, test_name)
+    __test_total_count = __test_total_count + 1
+    let is_diff = 0
+    if actual != unexpected
+        is_diff = 1
+    end
+    if ("" + actual) != ("" + unexpected)
+        is_diff = 1
+    end
+
+    if is_diff == 1
+        __test_passed_count = __test_passed_count + 1
+        print("  [PASS] " + test_name + " (not equal: " + actual + ")")
+        return 1
+    else
+        __test_failed_count = __test_failed_count + 1
+        print("  [FAIL] " + test_name + " -> Did not expect value: " + actual)
+        return 0
+    end
+end
+
+# Assertion: Assert that condition is strictly truthy
+action assert_true(condition, test_name)
+    __test_total_count = __test_total_count + 1
+    if condition
+        __test_passed_count = __test_passed_count + 1
+        print("  [PASS] " + test_name)
+        return 1
+    else
+        __test_failed_count = __test_failed_count + 1
+        print("  [FAIL] " + test_name + " -> Expected condition to be True")
+        return 0
+    end
+end
+
+# Assertion: Assert that condition is strictly falsy
+action assert_false(condition, test_name)
+    __test_total_count = __test_total_count + 1
+    if condition
+        __test_failed_count = __test_failed_count + 1
+        print("  [FAIL] " + test_name + " -> Expected condition to be False")
+        return 0
+    else
+        __test_passed_count = __test_passed_count + 1
+        print("  [PASS] " + test_name)
+        return 1
+    end
+end
+
+# Assertion: Assert greater than (a > b)
+action assert_gt(a, b, test_name)
+    __test_total_count = __test_total_count + 1
+    if a > b
+        __test_passed_count = __test_passed_count + 1
+        print("  [PASS] " + test_name + " (" + a + " > " + b + ")")
+        return 1
+    else
+        __test_failed_count = __test_failed_count + 1
+        print("  [FAIL] " + test_name + " -> Expected " + a + " > " + b)
+        return 0
+    end
+end
+
+# Assertion: Assert less than (a < b)
+action assert_lt(a, b, test_name)
+    __test_total_count = __test_total_count + 1
+    if a < b
+        __test_passed_count = __test_passed_count + 1
+        print("  [PASS] " + test_name + " (" + a + " < " + b + ")")
+        return 1
+    else
+        __test_failed_count = __test_failed_count + 1
+        print("  [FAIL] " + test_name + " -> Expected " + a + " < " + b)
+        return 0
+    end
+end
+
+# Test Suite Header
+action test_begin_suite(suite_name)
+    print("==================================================")
+    print("  RUNNING SUITE: " + suite_name)
+    print("==================================================")
+end
+
+# Test Suite Summary
+action test_end_suite()
+    print("--------------------------------------------------")
+    if __test_failed_count == 0
+        print("  TEST SUITE PASSED: " + __test_passed_count + "/" + __test_total_count + " assertions verified cleanly.")
+    else
+        print("  TEST SUITE FAILED: " + __test_failed_count + " failures encountered out of " + __test_total_count + ".")
+    end
+    print("==================================================")
+    return __test_failed_count
+end

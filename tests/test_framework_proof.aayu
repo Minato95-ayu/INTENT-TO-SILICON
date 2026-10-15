@@ -1,0 +1,37 @@
+# ==============================================================================
+# PROOF OF AAYU NATIVE TESTING FRAMEWORK (std/test)
+# ==============================================================================
+import "std/test.aayu"
+import "std/math.aayu"
+import "std/collections.aayu"
+
+test_begin_suite("Silicon Core Algorithms & Math Suite")
+
+# 1. Math Assertions
+let root = sqrt(81.0)
+assert_eq(root, 9, "Square root of 81 is 9")
+
+let clamped = clamp(150, 0, 100)
+assert_eq(clamped, 100, "Clamp upper boundary restricts 150 to 100")
+
+let neg_abs = abs(-42)
+assert_eq(neg_abs, 42, "Absolute value of -42 is 42")
+
+# 2. Collections Assertions
+let unsorted = [99, 12, 45, 1, 60]
+let s = sorted(unsorted)
+assert_eq(s[0], 1, "First element of sorted array is 1")
+assert_eq(s[4], 99, "Last element of sorted array is 99")
+
+let nums = [10, 20, 30]
+assert_eq(sum(nums), 60, "Sum of [10, 20, 30] is 60")
+assert_eq(mean(nums), 20, "Mean of [10, 20, 30] is 20")
+
+# 3. Boolean / Relational Assertions
+assert_true(100 > 50, "100 is strictly greater than 50")
+assert_false(50 > 100, "50 is not greater than 100")
+assert_gt(200, 100, "200 exceeds 100")
+assert_lt(25, 75, "25 is under 75")
+assert_neq(root, 10, "sqrt(81) is not equal to 10")
+
+test_end_suite()

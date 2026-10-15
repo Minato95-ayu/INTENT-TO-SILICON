@@ -1,0 +1,43 @@
+# ==============================================================================
+# AAYU STANDARD LIBRARY: std/contracts
+# Intent Contracts & Pre/Post-condition Verification Engine
+# Architecture: 100% Pure Self-Hosted AAYU (.aayu)
+# ==============================================================================
+import "std/os.aayu"
+
+# Pre-condition: Must be satisfied before entering action body
+action require(condition, contract_name)
+    if condition
+        return 1
+    end
+    print("[CONTRACT VIOLATION] Precondition failed: " + contract_name)
+    return 0
+end
+
+# Post-condition: Must be satisfied before exiting action body
+action ensure(condition, contract_name)
+    if condition
+        return 1
+    end
+    print("[CONTRACT VIOLATION] Postcondition failed: " + contract_name)
+    return 0
+end
+
+# Invariant: Must hold continuously across state mutations
+action invariant(condition, invariant_name)
+    if condition
+        return 1
+    end
+    print("[CONTRACT VIOLATION] System invariant broken: " + invariant_name)
+    return 0
+end
+
+# Type contract: Asserts that runtime value strictly matches expected type
+action check_type(value, expected_type, param_name)
+    let actual_type = get_type(value)
+    if actual_type == expected_type
+        return 1
+    end
+    print("[TYPE CONTRACT VIOLATION] Parameter '" + param_name + "' expected type: " + expected_type + ", received: " + actual_type)
+    return 0
+end

@@ -20,6 +20,9 @@ fn print_help() {
     println!("  repl                       Launch interactive microsecond REPL shell");
     println!("  run <file.aayu> [--jit]    Compile and execute AAYU source code");
     println!("  run <file.ayc> [--jit]     Execute precompiled bytecode directly");
+    println!("  test [file.aayu]           Run native unit tests and assertion suites");
+    println!("  lsp                        Start pure Language Server Protocol engine");
+    println!("  pack <file.aayu> [-o out]  Bundle imports and compile standalone package");
     println!("  disasm <file>              Silicon bytecode disassembler (inspect opcodes)");
     println!("  build <file.aayu> [-o out] Compile source to .ayc bytecode");
     println!("  check <file.aayu>          Validate syntax & structure without running");
@@ -30,6 +33,9 @@ fn print_help() {
     println!("Examples:");
     println!("  aayu repl");
     println!("  aayu run hello.aayu");
+    println!("  aayu test tests/test_framework_proof.aayu");
+    println!("  aayu lsp");
+    println!("  aayu pack app.aayu -o app.ayc");
     println!("  aayu disasm mega_test.aayu");
     println!("  aayu init my_api --template rest");
     println!("  aayu init my_ai --template ml");
@@ -692,6 +698,19 @@ fn execute_bytecode(filename: &str, use_jit: bool) {
     }
 }
 
+fn run_source_file(target_file: &str, use_jit: bool) {
+    if target_file.ends_with(".aayu") || target_file.ends_with(".ay") || target_file.ends_with(".aa") {
+        let temp_ayc = format!("{}.tmp.ayc", target_file);
+        if !compile_aayu_file(target_file, &temp_ayc) {
+            std::process::exit(1);
+        }
+        execute_bytecode(&temp_ayc, use_jit);
+        let _ = std::fs::remove_file(temp_ayc);
+    } else {
+        execute_bytecode(target_file, use_jit);
+    }
+}
+
 fn main() {
     let args: Vec<String> = env::args().collect();
     
@@ -753,6 +772,67 @@ fn main() {
             }
         }
         run_init(name, template);
+        return;
+    }
+
+    if cmd == "test" {
+        let test_target = if args.len() >= 3 { &args[2] } else { "tests/test_framework_proof.aayu" };
+        if !Path::new(test_target).exists() {
+            eprintln!("[AAYU Test Error] Test file not found: {}", test_target);
+            std::process::exit(1);
+        }
+        println!("==================================================");
+        println!("         AAYU SILICON NATIVE TEST RUNNER          ");
+        println!("==================================================");
+        println!("Target suite: {}", test_target);
+        run_source_file(test_target, false);
+        return;
+    }
+
+    if cmd == "lsp" {
+        let lsp_script = "tools/lsp.aayu";
+        if Path::new(lsp_script).exists() {
+            run_source_file(lsp_script, false);
+        } else {
+            eprintln!("[AAYU LSP Error] Pure LSP tool not found at {}", lsp_script);
+            std::process::exit(1);
+        }
+        return;
+    }
+
+    if cmd == "pack" || cmd == "bundle" {
+        if args.len() < 3 {
+            eprintln!("[AAYU Error] Usage: aayu pack <file.aayu> [-o <out.ayc>]");
+            std::process::exit(2);
+        }
+        let input_file = &args[2];
+        let mut output_file = "package.ayc".to_string();
+        if let Some(pos) = args.iter().position(|a| a == "-o") {
+            if pos + 1 < args.len() {
+                output_file = args[pos + 1].clone();
+            }
+        }
+        println!("[AAYU Packager] Bundling and compiling '{}' -> '{}'", input_file, output_file);
+        let contents = match std::fs::read_to_string(input_file) {
+            Ok(c) => c,
+            Err(e) => {
+                eprintln!("[AAYU Error] Could not read file '{}': {}", input_file, e);
+                std::process::exit(1);
+            }
+        };
+        match compiler::compile(&contents) {
+            Ok(bytecode) => {
+                if let Err(e) = std::fs::write(&output_file, bytecode) {
+                    eprintln!("[AAYU Error] Failed to write bytecode: {}", e);
+                    std::process::exit(1);
+                }
+                println!("[AAYU Packager] Standalone package '{}' created successfully!", output_file);
+            }
+            Err(e) => {
+                eprintln!("[AAYU Syntax Error]:\n{}", e);
+                std::process::exit(1);
+            }
+        }
         return;
     }
 

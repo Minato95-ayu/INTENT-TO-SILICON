@@ -2385,5 +2385,89 @@ $ aayu init my_ui --template web
 $ cd my_ui && aayu run main.aayu</code></pre>
 </div>
 
+<!-- ============================================================================== -->
+<!-- CHAPTER 18: NATIVE UNIT TESTING, PURE LSP & INTENT CONTRACTS                  -->
+<!-- ============================================================================== -->
+<div class="chapter-card" id="ch18">
+  <div class="chapter-badge">Chapter 18</div>
+  <div class="chapter-title">Native Unit Testing, Pure LSP, Bytecode Bundler &amp; Intent Contracts</div>
+  <div class="chapter-desc">Zero-dependency test runner (aayu test), pure JSON-RPC LSP (aayu lsp), bytecode packager (aayu pack), and intent contracts (std/contracts).</div>
+
+  <p>Dosto, AAYU ko enterprise-ready aur developer-friendly banane ke liye, ab hume external testing tools ya third-party linters ki zaroorat nahi hai. Sab kuch native hai:</p>
+
+  <h3>1. 🧪 Native Unit Testing &amp; Assertions (<code>std/test</code>)</h3>
+  <p>Bina pytest ya kisi package ke, seedhe <code>assert_eq</code>, <code>assert_true</code>, aur <code>test_begin_suite</code> use karein:</p>
+  <pre><code>import "std/test"
+import "std/math"
+
+test_begin_suite("Silicon Core Math Suite")
+
+let root = sqrt(81.0)
+assert_eq(root, 9, "Square root of 81 is 9")
+
+let bound = clamp(150, 0, 100)
+assert_eq(bound, 100, "Clamp restricts 150 to 100")
+
+assert_true(100 > 50, "100 is strictly greater than 50")
+assert_neq(root, 10, "root is not 10")
+
+test_end_suite()</code></pre>
+
+  <p>Terminal me seedhe test run karein:</p>
+  <pre><code>$ aayu test
+==================================================
+         AAYU SILICON NATIVE TEST RUNNER          
+==================================================
+Target suite: tests/test_framework_proof.aayu
+  [PASS] Square root of 81 is 9 (value: 9)
+  [PASS] Clamp upper boundary restricts 150 to 100 (value: 100)
+  [PASS] Absolute value of -42 is 42 (value: 42)
+  [PASS] First element of sorted array is 1 (value: 1)
+  [PASS] 100 is strictly greater than 50
+--------------------------------------------------
+  TEST SUITE PASSED: 12/12 assertions verified cleanly.
+==================================================</code></pre>
+
+  <h3>2. 🔌 Pure AAYU Language Server Protocol (<code>aayu lsp</code>)</h3>
+  <p>VS Code aur Android IDE ko real-time auto-complete, hover documentation aur diagnostic squiggly errors dene wala pure AAYU LSP server:</p>
+  <pre><code>$ aayu lsp
+==================================================
+      AAYU PURE LANGUAGE SERVER PROTOCOL (LSP)    
+==================================================
+1. [LSP Initialize Handshake]:
+{"jsonrpc":"2.0","id":1,"result":{"capabilities":{"completionProvider":{"triggerCharacters":[" ","\"","."]},"hoverProvider":true}}}
+
+2. [LSP Completion Items Count: 37 total keywords & modules]:
+Returned valid JSON-RPC completion list with trigger characters.
+
+3. [LSP Hover Documentation for 'action']:
+{"jsonrpc":"2.0","id":3,"result":{"contents":{"kind":"markdown","value":"**action**: Declares an isolated, executable function..."}}}
+==================================================</code></pre>
+
+  <h3>3. 📦 Silicon Bytecode Bundler (<code>aayu pack</code>)</h3>
+  <p>Multi-file projects aur relative imports ko ek single, standalone, pre-compiled bytecode <code>.ayc</code> me bundle karein:</p>
+  <pre><code># Multi-file source ko single standalone bytecode me compile karein
+$ aayu pack app.aayu -o release_app.ayc
+
+# Kahin bhi zero-dependency execute karein
+$ aayu run release_app.ayc</code></pre>
+
+  <h3>4. 🛡️ Intent-to-Silicon Contracts (<code>std/contracts</code>)</h3>
+  <p>Design-by-Contract verification se mission-critical financial aur logic integrity ensure karein:</p>
+  <pre><code>import "std/contracts"
+
+action withdraw_money(balance, amount)
+    # Pre-conditions
+    require(amount > 0, "amount must be positive")
+    require(balance >= amount, "sufficient funds required")
+
+    let new_balance = balance - amount
+
+    # Post-conditions
+    ensure(new_balance < balance, "balance must decrease")
+    return new_balance
+end</code></pre>
+</div>
+
 </body>
 </html>

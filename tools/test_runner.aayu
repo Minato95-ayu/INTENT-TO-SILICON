@@ -1,0 +1,26 @@
+# ==============================================================================
+# AAYU SILICON NATIVE TEST RUNNER
+# Architecture: 100% Pure Self-Hosted AAYU (.aayu)
+# Runs unit tests and assertions with zero external test runners
+# ==============================================================================
+import "std/test.aayu"
+
+action run_suite_example()
+    test_begin_suite("AAYU Self-Hosted Test Runner Verification")
+
+    # Array operations
+    let items = [10, 20, 30, 40]
+    assert_eq(len(items), 4, "Array length check")
+    assert_eq(items[0], 10, "Array indexing check")
+
+    # Math & Logic
+    assert_true(100 > 10, "Relational greater than")
+    assert_false(5 > 100, "Relational less than")
+    assert_neq("AAYU", "Python", "String mismatch check")
+    assert_eq("Silicon", "Silicon", "String equality check")
+
+    let failed = test_end_suite()
+    return failed
+end
+
+run_suite_example()

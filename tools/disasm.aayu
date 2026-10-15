@@ -1,0 +1,219 @@
+# AAYU Silicon Bytecode Disassembler
+# 100% Pure Self-Hosted AAYU (.aayu)
+# Decodes compiled bytecode into human-readable silicon assembly instructions
+
+action opcode_name(op)
+    if op == 0
+        return "HALT"
+    end
+    if op == 1
+        return "PUSH_CONST"
+    end
+    if op == 2
+        return "POP"
+    end
+    if op == 5
+        return "LOAD_VAR"
+    end
+    if op == 6
+        return "STORE_VAR"
+    end
+    if op == 7
+        return "LOAD_GLOBAL"
+    end
+    if op == 8
+        return "STORE_GLOBAL"
+    end
+    if op == 16
+        return "ADD"
+    end
+    if op == 17
+        return "SUB"
+    end
+    if op == 18
+        return "MUL"
+    end
+    if op == 19
+        return "DIV"
+    end
+    if op == 20
+        return "MOD"
+    end
+    if op == 32
+        return "JUMP"
+    end
+    if op == 33
+        return "JUMP_IF_FALSE"
+    end
+    if op == 34
+        return "CALL"
+    end
+    if op == 35
+        return "RET"
+    end
+    if op == 36
+        return "CALL_LOCAL"
+    end
+    if op == 38
+        return "EQ"
+    end
+    if op == 39
+        return "NEQ"
+    end
+    if op == 41
+        return "LT"
+    end
+    if op == 42
+        return "GT"
+    end
+    if op == 43
+        return "LTE"
+    end
+    if op == 44
+        return "GTE"
+    end
+    if op == 48
+        return "STORE_STATE"
+    end
+    if op == 49
+        return "LOAD_STATE"
+    end
+    if op == 50
+        return "INIT_STATE"
+    end
+    if op == 81
+        return "PRINT"
+    end
+    if op == 134
+        return "CREATE_ARRAY"
+    end
+    if op == 136
+        return "ARRAY_GET"
+    end
+    if op == 137
+        return "ARRAY_SET"
+    end
+    if op == 142
+        return "LEN"
+    end
+    return "UNKNOWN_OP_" + op
+end
+
+action format_hex4(n)
+    let s = "" + n
+    while len(s) < 4
+        s = "0" + s
+    end
+    return s
+end
+
+action disassemble(bytecode, constants)
+    print("==================================================")
+    print("       AAYU SILICON BYTECODE DISASSEMBLER         ")
+    print("==================================================")
+    print("Bytecode size: " + len(bytecode) + " bytes | Constants: " + len(constants))
+    print("")
+    print("[CONSTANT POOL]:")
+    let ci = 0
+    while ci < len(constants)
+        print("  #" + ci + ": " + constants[ci])
+        ci = ci + 1
+    end
+    print("")
+    print("[SILICON INSTRUCTION STREAM]:")
+    
+    let pc = 0
+    let bc_len = len(bytecode)
+    while pc < bc_len
+        let op = bytecode[pc]
+        let name = opcode_name(op)
+        let addr = format_hex4(pc)
+        pc = pc + 1
+        
+        # Opcodes with 2-byte operand: PUSH_CONST (1), JUMP (32), JUMP_IF_FALSE (33), STORE_STATE (48), LOAD_STATE (49)
+        if op == 1
+            if pc + 1 < bc_len
+                let hi = bytecode[pc]
+                let lo = bytecode[pc + 1]
+                let idx = (hi * 256) + lo
+                pc = pc + 2
+                let val = ""
+                if idx < len(constants)
+                    val = constants[idx]
+                end
+                print("  " + addr + ": " + name + " #" + idx + " (" + val + ")")
+            end
+        else
+            if op == 48
+                if pc + 1 < bc_len
+                    let shi = bytecode[pc]
+                    let slo = bytecode[pc + 1]
+                    let s_idx = (shi * 256) + slo
+                    pc = pc + 2
+                    let s_name = ""
+                    if s_idx < len(constants)
+                        s_name = constants[s_idx]
+                    end
+                    print("  " + addr + ": " + name + " slot:" + s_idx + " (" + s_name + ")")
+                end
+            else
+                if op == 49
+                    if pc + 1 < bc_len
+                        let lhi = bytecode[pc]
+                        let llo = bytecode[pc + 1]
+                        let l_idx = (lhi * 256) + llo
+                        pc = pc + 2
+                        let l_name = ""
+                        if l_idx < len(constants)
+                            l_name = constants[l_idx]
+                        end
+                        print("  " + addr + ": " + name + " slot:" + l_idx + " (" + l_name + ")")
+                    end
+                else
+                    if op == 32
+                        if pc + 1 < bc_len
+                            let jhi = bytecode[pc]
+                            let jlo = bytecode[pc + 1]
+                            let j_tgt = (jhi * 256) + jlo
+                            pc = pc + 2
+                            print("  " + addr + ": " + name + " -> target: " + format_hex4(j_tgt))
+                        end
+                    else
+                        if op == 33
+                            if pc + 1 < bc_len
+                                let fhi = bytecode[pc]
+                                let flo = bytecode[pc + 1]
+                                let f_tgt = (fhi * 256) + flo
+                                pc = pc + 2
+                                print("  " + addr + ": " + name + " -> target: " + format_hex4(f_tgt))
+                            end
+                        else
+                            if op == 34
+                                if pc + 1 < bc_len
+                                    let chi = bytecode[pc]
+                                    let clo = bytecode[pc + 1]
+                                    let argc = (chi * 256) + clo
+                                    pc = pc + 2
+                                    print("  " + addr + ": " + name + " argc:" + argc)
+                                end
+                            else
+                                print("  " + addr + ": " + name)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+    print("==================================================")
+end
+
+action main
+    # Demonstration sample bytecode compiled directly from AAYU
+    let sample_bytecode = [1, 0, 0, 48, 0, 1, 1, 0, 0, 48, 0, 2, 49, 0, 1, 1, 0, 3, 39, 0, 0, 33, 0, 51, 49, 0, 2, 49, 0, 1, 16, 0, 0, 48, 0, 2, 49, 0, 1, 1, 0, 4, 16, 0, 0, 48, 0, 1, 32, 0, 12, 1, 0, 5, 49, 0, 2, 34, 0, 1, 2, 0, 0, 0, 0, 0]
+    let sample_constants = ["0", "i", "sum", "5", "1", "print"]
+    
+    disassemble(sample_bytecode, sample_constants)
+end
+
+main()

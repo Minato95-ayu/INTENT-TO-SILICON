@@ -2297,7 +2297,92 @@ print("Transposed Matrix:", trans) # [[1, 4], [2, 5], [3, 6]]</code></pre>
     return curr
 end
 
-print("Fibonacci(20):", fibonacci_fast(20)) # 6765</code></pre>
+<!-- ============================================================================== -->
+<!-- CHAPTER 17: THE 5 KILLER UPDATES — WORLD-CLASS DEVELOPER EXPERIENCE             -->
+<!-- ============================================================================== -->
+<div class="chapter-card" id="ch17">
+  <div class="chapter-badge">Chapter 17</div>
+  <div class="chapter-title">The 5 Killer Updates: Interactive REPL, Diagnostics, Disassembler, Mobile IDE &amp; Scaffolding</div>
+  <div class="chapter-desc">AAYU ko Python aur Go se aage le jaane ke liye 5 sabse powerful production-grade developer tools.</div>
+
+  <p>Dosto, ek programming language tabhi world-class banti hai jab uska <strong>Developer Experience (DX)</strong> unbeatable ho. AAYU v1.2.0 me humne 5 killer features add kiye hain jo har developer ko instantly productive banate hain:</p>
+
+  <h3>1. ⚡ Live Interactive REPL (<code>aayu repl</code>)</h3>
+  <p>Bina koi file banaye, seedhe terminal me microsecond speed par AAYU code execute karein:</p>
+  <pre><code>$ aayu repl
+==================================================
+     AAYU Silicon Interactive Shell (REPL) v1.2.0 
+     Architecture: x86_64 (Native Intent-to-Silicon)
+     Type 'exit' to quit, 'help' for guidance.    
+==================================================
+aayu> let score = 100
+aayu> score * 5 + 10
+=> 510
+aayu> import "std/collections"
+aayu> sorted([50, 10, 40, 20])
+=> [10, 20, 40, 50]
+aayu> exit</code></pre>
+
+  <h3>2. 🎨 Rust-Style Visual Compiler Diagnostics</h3>
+  <p>Ab syntax errors sirf line number nahi dete, balki <strong>Rust compiler ki tarah visually stunning pointer aur suggestions</strong> dete hain:</p>
+  <pre><code>error[E0012]: unexpected identifier 'endutwt8chfe5u8' at statement position
+  --> source:12:5
+   |
+12 |     endutwt8chfe5u8 elif action
+   |     ^^^^^ unexpected token
+   |
+   = help: in AAYU, statements must start with 'let', 'action', 'if', 'while', or 'print'</code></pre>
+
+  <h3>3. 🔬 Silicon Bytecode Disassembler (<code>aayu disasm</code>)</h3>
+  <p>Silicon level par har instruction ko inspect karein:</p>
+  <pre><code>$ aayu disasm tests/test_04_fibonacci.aayu
+==================================================
+       AAYU SILICON BYTECODE DISASSEMBLER         
+==================================================
+Target: tests/test_04_fibonacci.aayu (Bytecode: 78 bytes, Constants: 9)
+
+[CONSTANT POOL (9 entries)]:
+  #0: Int(0)
+  #1: Int(1)
+  #3: Int(20)
+  #5: String("fib(20):")
+  #6: Int(6765)
+
+[BYTECODE INSTRUCTION STREAM]:
+  0000: PUSH_CONST     #0 (0)
+  0003: STORE_GLOBAL   slot:0
+  0005: PUSH_CONST     #1 (1)
+  000F: LOAD_GLOBAL    slot:2
+  0011: PUSH_CONST     #3 (20)
+  0014: LT
+  0015: JUMP_IF_FALSE  -> 0x0032
+  001C: ADD
+  004D: HALT
+==================================================</code></pre>
+
+  <h3>4. 📱 Android Mobile IDE Real-Time Syntax Highlighting</h3>
+  <p>Android app par code type karte waqt Jetpack Compose <code>AayuSyntaxVisualTransformation</code> real-time syntax coloring karta hai:</p>
+  <ul>
+    <li><strong>Keywords (<code>app, action, let, if, while, print</code>):</strong> Electric Purple (<code>#7C3AED</code>) with Bold</li>
+    <li><strong>Strings (<code>"..."</code>):</strong> Emerald Green (<code>#0D9488</code>)</li>
+    <li><strong>Numbers (<code>100, 42.5</code>):</strong> Warm Orange (<code>#D97706</code>)</li>
+    <li><strong>Comments (<code># ..., // ...</code>):</strong> Slate Gray (<code>#6B7280</code>)</li>
+    <li><strong>Standard Functions (<code>len, type, sum, sorted</code>):</strong> Vibrant Blue (<code>#2563EB</code>)</li>
+  </ul>
+
+  <h3>5. 🚀 1-Click Project Scaffolding Templates (<code>aayu init</code>)</h3>
+  <p>Ek command se production-ready templates ready karein:</p>
+  <pre><code># 1. High-Speed REST API Backend
+$ aayu init my_api --template rest
+$ cd my_api && aayu run main.aayu
+
+# 2. AI / Neural Network Model
+$ aayu init my_ai --template ml
+$ cd my_ai && aayu run main.aayu
+
+# 3. Full-Stack Declarative UI
+$ aayu init my_ui --template web
+$ cd my_ui && aayu run main.aayu</code></pre>
 </div>
 
 </body>

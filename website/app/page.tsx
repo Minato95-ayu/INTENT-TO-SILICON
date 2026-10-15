@@ -89,7 +89,7 @@ export default function Home() {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm text-zinc-300 mb-6">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              v1.1.0 Developer Preview
+              v1.2.0 Developer Preview · 5 Killer Updates Active
             </div>
             
             <h1 className="text-5xl lg:text-7xl font-extrabold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-br from-white via-white to-zinc-500">
@@ -419,6 +419,130 @@ export default function Home() {
                   <code className="bg-black/60 px-3 py-1.5 rounded-lg border border-white/10 text-emerald-300 text-[11px] select-all overflow-x-auto">
                     curl -fsSL https://raw.githubusercontent.com/Minato95-ayu/INTENT-TO-SILICON/main/website/public/downloads/aayu-termux-install.sh | bash
                   </code>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5 KILLER UPDATES SECTION */}
+      <section className="py-24 bg-gradient-to-b from-black via-[#080811] to-[#050505] border-t border-white/10 relative overflow-hidden">
+        <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="container mx-auto px-4 max-w-7xl relative z-10">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-xs font-semibold text-purple-300 mb-4">
+              <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+              AAYU v1.2.0 Developer Experience (DX)
+            </div>
+            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
+              5 Killer Updates. <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400">World-Class DX.</span>
+            </h2>
+            <p className="text-zinc-400 max-w-3xl mx-auto text-base md:text-lg leading-relaxed">
+              Designed to make AAYU more developer-friendly, intuitive, and productive than Python, Go, or Rust. Tested and verified on real silicon.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* 1. REPL */}
+            <div className="bg-[#0b0d14] border border-purple-500/20 hover:border-purple-500/50 rounded-2xl p-6 transition-all group">
+              <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-5 group-hover:scale-105 transition-transform">
+                <Terminal className="w-6 h-6" />
+              </div>
+              <div className="text-xs font-mono text-purple-400 mb-2 font-semibold">01 / INSTANT SHELL</div>
+              <h3 className="text-xl font-bold text-white mb-2">⚡ Live Interactive REPL</h3>
+              <p className="text-zinc-400 text-sm leading-relaxed mb-4">
+                Execute pure AAYU statements and expressions in microseconds directly in your terminal without creating a file.
+              </p>
+              <pre className="bg-black/80 rounded-xl p-3 border border-white/5 font-mono text-xs text-zinc-300 overflow-x-auto">
+                <span className="text-zinc-500">$</span> aayu repl<br/>
+                <span className="text-purple-400">aayu&gt;</span> let x = [10, 50, 20]<br/>
+                <span className="text-purple-400">aayu&gt;</span> sorted(x)<br/>
+                <span className="text-emerald-400">=&gt; [10, 20, 50]</span>
+              </pre>
+            </div>
+
+            {/* 2. DIAGNOSTICS */}
+            <div className="bg-[#0b0d14] border border-cyan-500/20 hover:border-cyan-500/50 rounded-2xl p-6 transition-all group">
+              <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mb-5 group-hover:scale-105 transition-transform">
+                <ShieldCheck className="w-6 h-6" />
+              </div>
+              <div className="text-xs font-mono text-cyan-400 mb-2 font-semibold">02 / COMPILER COMPASSION</div>
+              <h3 className="text-xl font-bold text-white mb-2">🎨 Rust-Style Diagnostics</h3>
+              <p className="text-zinc-400 text-sm leading-relaxed mb-4">
+                Beautiful arrow pointers, underline indicators (<code className="text-cyan-300">^^^^^</code>), and actionable <code className="text-cyan-300">= help:</code> suggestions for fast debugging.
+              </p>
+              <pre className="bg-black/80 rounded-xl p-3 border border-white/5 font-mono text-xs text-zinc-300 overflow-x-auto">
+                <span className="text-red-400 font-bold">error[E0012]</span>: unexpected token<br/>
+                <span className="text-cyan-400">  --&gt;</span> main.aayu:12:5<br/>
+                <span className="text-zinc-500">   |</span> 12 | invalid token<br/>
+                <span className="text-red-400 font-bold">   |     ^^^^^^^</span><br/>
+                <span className="text-emerald-400">   = help:</span> statements start with &apos;let&apos;, &apos;action&apos;
+              </pre>
+            </div>
+
+            {/* 3. DISASSEMBLER */}
+            <div className="bg-[#0b0d14] border border-emerald-500/20 hover:border-emerald-500/50 rounded-2xl p-6 transition-all group">
+              <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-5 group-hover:scale-105 transition-transform">
+                <Cpu className="w-6 h-6" />
+              </div>
+              <div className="text-xs font-mono text-emerald-400 mb-2 font-semibold">03 / SILICON TRANSPARENCY</div>
+              <h3 className="text-xl font-bold text-white mb-2">🔬 Silicon Bytecode Disasm</h3>
+              <p className="text-zinc-400 text-sm leading-relaxed mb-4">
+                Inspect raw instructions, opcode addresses, constant pool tables, and zero-overhead silicon bytecode with zero guesswork.
+              </p>
+              <pre className="bg-black/80 rounded-xl p-3 border border-white/5 font-mono text-xs text-zinc-300 overflow-x-auto">
+                <span className="text-zinc-500">$</span> aayu disasm app.aayu<br/>
+                <span className="text-emerald-400">0000:</span> PUSH_CONST #0 (10)<br/>
+                <span className="text-emerald-400">0003:</span> STORE_VAR  slot:0 (x)<br/>
+                <span className="text-emerald-400">0005:</span> PRINT<br/>
+                <span className="text-emerald-400">0006:</span> HALT
+              </pre>
+            </div>
+
+            {/* 4. MOBILE SYNTAX HIGHLIGHTING */}
+            <div className="bg-[#0b0d14] border border-pink-500/20 hover:border-pink-500/50 rounded-2xl p-6 transition-all group">
+              <div className="w-12 h-12 rounded-xl bg-pink-500/10 border border-pink-500/30 flex items-center justify-center text-pink-400 mb-5 group-hover:scale-105 transition-transform">
+                <Smartphone className="w-6 h-6" />
+              </div>
+              <div className="text-xs font-mono text-pink-400 mb-2 font-semibold">04 / MOBILE-FIRST IDE</div>
+              <h3 className="text-xl font-bold text-white mb-2">📱 Android Real-Time Highlighting</h3>
+              <p className="text-zinc-400 text-sm leading-relaxed mb-4">
+                Native Android Jetpack Compose editor with live token coloring: Purple keywords, Green strings, Orange numbers, and Gray comments.
+              </p>
+              <div className="bg-black/80 rounded-xl p-3 border border-white/5 font-mono text-xs text-zinc-300 space-y-1">
+                <div><span className="text-purple-400 font-bold">action</span> <span className="text-blue-400">main</span></div>
+                <div className="pl-3"><span className="text-purple-400 font-bold">let</span> msg = <span className="text-emerald-400">&quot;Hello Silicon&quot;</span></div>
+                <div className="pl-3"><span className="text-blue-400">print</span>(msg) <span className="text-zinc-500"># Native Mobile APK</span></div>
+                <div><span className="text-purple-400 font-bold">end</span></div>
+              </div>
+            </div>
+
+            {/* 5. SCAFFOLDING TEMPLATES */}
+            <div className="bg-[#0b0d14] border border-amber-500/20 hover:border-amber-500/50 rounded-2xl p-6 transition-all group md:col-span-2 lg:col-span-2">
+              <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mb-5 group-hover:scale-105 transition-transform">
+                <Zap className="w-6 h-6" />
+              </div>
+              <div className="text-xs font-mono text-amber-400 mb-2 font-semibold">05 / ZERO-CONFIG SCAFFOLDING</div>
+              <h3 className="text-xl font-bold text-white mb-2">🚀 1-Click Project Templates</h3>
+              <p className="text-zinc-400 text-sm leading-relaxed mb-4">
+                Bootstrap fully working, production-ready architectures instantly with <code className="text-amber-300">aayu init &lt;name&gt; --template &lt;rest|ml|web&gt;</code>.
+              </p>
+              <div className="grid sm:grid-cols-3 gap-3">
+                <div className="bg-black/60 rounded-xl p-3 border border-white/5 font-mono text-xs">
+                  <div className="text-amber-400 font-bold mb-1">--template rest</div>
+                  <div className="text-zinc-400 text-[11px] mb-2">REST API + DB Store</div>
+                  <code className="text-zinc-300 text-[10px] block bg-zinc-900/60 p-1.5 rounded">aayu init api -t rest</code>
+                </div>
+                <div className="bg-black/60 rounded-xl p-3 border border-white/5 font-mono text-xs">
+                  <div className="text-cyan-400 font-bold mb-1">--template ml</div>
+                  <div className="text-zinc-400 text-[11px] mb-2">AI Perceptron &amp; Math</div>
+                  <code className="text-zinc-300 text-[10px] block bg-zinc-900/60 p-1.5 rounded">aayu init ai -t ml</code>
+                </div>
+                <div className="bg-black/60 rounded-xl p-3 border border-white/5 font-mono text-xs">
+                  <div className="text-purple-400 font-bold mb-1">--template web</div>
+                  <div className="text-zinc-400 text-[11px] mb-2">Declarative UI Tree</div>
+                  <code className="text-zinc-300 text-[10px] block bg-zinc-900/60 p-1.5 rounded">aayu init ui -t web</code>
                 </div>
               </div>
             </div>

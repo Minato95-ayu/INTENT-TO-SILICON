@@ -120,7 +120,7 @@ fn validate_supported(statements: &[parser::Statement]) -> Result<(), String> {
             Expr::Call { callee, args } => {
                 if callee == "len" {
                     if args.len() != 1 { return Err("len() expects exactly one argument".into()); }
-                } else if callee != "print" && callee != "type" && callee != "typeof" && callee != "platform" && callee != "arch" && callee != "env_get" && callee != "read_file" && callee != "write_file" && callee != "time_micros" && callee != "time_us" && callee != "time_ms" && callee != "file_mtime" && callee != "file_size" && callee != "sleep_ms" && callee != "append" && callee != "push" {
+                } else if callee != "print" && callee != "respond" && callee != "hash_str" && callee != "type" && callee != "typeof" && callee != "platform" && callee != "arch" && callee != "env_get" && callee != "read_file" && callee != "write_file" && callee != "time_micros" && callee != "time_us" && callee != "time_ms" && callee != "file_mtime" && callee != "file_size" && callee != "sleep_ms" && callee != "append" && callee != "push" {
                     let expected = functions.get(callee).ok_or_else(|| format!("unknown function '{}'", callee))?;
                     if args.len() != *expected {
                         return Err(format!("function '{}' expects {} arguments, got {}", callee, expected, args.len()));
@@ -157,13 +157,24 @@ fn validate_supported(statements: &[parser::Statement]) -> Result<(), String> {
                 Statement::Let { name, value } | Statement::Assignment { name, value } => {
                     vars.insert(name.clone()); collect_expr_vars(value, vars);
                 }
+                Statement::SubscriptAssignment { object, key, value } => {
+                    collect_expr_vars(object, vars);
+                    collect_expr_vars(key, vars);
+                    collect_expr_vars(value, vars);
+                }
                 Statement::Print(value) | Statement::State { value, .. } |
-                Statement::Return(Some(value)) | Statement::Expr(value) => collect_expr_vars(value, vars),
+                Statement::Return(Some(value)) | Statement::Expr(value) |
+                Statement::Respond(value) => collect_expr_vars(value, vars),
                 Statement::While { cond, body } => { collect_expr_vars(cond, vars); collect_body_vars(body, vars); }
                 Statement::If { cond, then_branch, else_branch } => {
                     collect_expr_vars(cond, vars); collect_body_vars(then_branch, vars); collect_body_vars(else_branch, vars);
                 }
                 Statement::Page { body, .. } | Statement::Widget { children: body, .. } => collect_body_vars(body, vars),
+                Statement::Route { handlers, .. } => {
+                    for (_, h_body) in handlers {
+                        collect_body_vars(h_body, vars);
+                    }
+                }
                 _ => {}
             }
         }
@@ -215,6 +226,18 @@ fn validate_supported(statements: &[parser::Statement]) -> Result<(), String> {
                 }
                 Statement::Return(None) if !in_function => return Err("return is only valid inside an action".into()),
                 Statement::Expr(value) => check_expr(value, functions)?,
+                Statement::SubscriptAssignment { object, key, value } => {
+                    check_expr(object, functions)?;
+                    check_expr(key, functions)?;
+                    check_expr(value, functions)?;
+                }
+                Statement::Respond(value) => check_expr(value, functions)?,
+                Statement::Route { handlers, .. } => {
+                    for (_, h_body) in handlers {
+                        validate_body(h_body, functions, in_function)?;
+                    }
+                }
+                Statement::Model { .. } => {}
                 Statement::Page { body, .. } | Statement::Widget { children: body, .. } => validate_body(body, functions, in_function)?,
                 _ => {}
             }

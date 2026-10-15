@@ -85,6 +85,11 @@ action hash_string(data)
     return out
 end
 
+# Fast hash alias for hash_string
+action hash_str(data)
+    return hash_string(data)
+end
+
 # Cryptographic combination of two hashes (for Merkle Trees)
 action hash_combine(left_hash, right_hash)
     let combined = left_hash + ":" + right_hash

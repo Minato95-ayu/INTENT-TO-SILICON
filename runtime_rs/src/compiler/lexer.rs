@@ -1,4 +1,4 @@
-﻿#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Token {
     Let,
     Import,
@@ -25,6 +25,13 @@ pub enum Token {
     Icon,
     Grid,
     Run,
+    Route,
+    Get,
+    Post,
+    Put,
+    Delete,
+    Respond,
+    Model,
     StringLiteral(String),
     Identifier(String),
     Integer(i64),
@@ -191,6 +198,13 @@ impl<'a> Lexer<'a> {
                     "Input" => tokens.push(Token::Input),
                     "run" | "Run" => tokens.push(Token::Run),
                     "end" => tokens.push(Token::End),
+                    "route" => tokens.push(Token::Route),
+                    "get" | "GET" => tokens.push(Token::Get),
+                    "post" | "POST" => tokens.push(Token::Post),
+                    "put" | "PUT" => tokens.push(Token::Put),
+                    "delete" | "DELETE" => tokens.push(Token::Delete),
+                    "respond" => tokens.push(Token::Respond),
+                    "model" => tokens.push(Token::Model),
                     _ => tokens.push(Token::Identifier(word.to_string())),
                 }
             } else if ch.is_ascii_digit() {

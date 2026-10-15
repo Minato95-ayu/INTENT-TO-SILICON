@@ -44,6 +44,7 @@ pub enum Statement {
     Import(String),
     Let { name: String, value: Expr },
     Assignment { name: String, value: Expr },
+    SubscriptAssignment { object: Expr, key: Expr, value: Expr },
     While { cond: Expr, body: Vec<Statement> },
     If { cond: Expr, then_branch: Vec<Statement>, else_branch: Vec<Statement> },
     Print(Expr),
@@ -55,6 +56,9 @@ pub enum Statement {
     Return(Option<Expr>),
     Run(String),
     Expr(Expr),
+    Route { path: String, handlers: Vec<(String, Vec<Statement>)> },
+    Respond(Expr),
+    Model { name: String, fields: Vec<(String, String)> },
 }
 
 pub struct Parser {
@@ -314,6 +318,32 @@ impl Parser {
                     self.pos += 1;
                     let expr = self.parse_expression();
                     return Some(Statement::Assignment { name: var_name, value: expr });
+                } else if self.current() == &Token::LeftBracket {
+                    self.pos += 1;
+                    let mut key = self.parse_expression();
+                    if self.current() == &Token::RightBracket {
+                        self.pos += 1;
+                    } else {
+                        self.errors.push("expected ']' after index".to_string());
+                    }
+                    let mut object = Expr::Variable(var_name);
+                    while self.current() == &Token::LeftBracket {
+                        object = Expr::Index { object: Box::new(object), key: Box::new(key) };
+                        self.pos += 1;
+                        key = self.parse_expression();
+                        if self.current() == &Token::RightBracket {
+                            self.pos += 1;
+                        } else {
+                            self.errors.push("expected ']' after index".to_string());
+                        }
+                    }
+                    if self.current() == &Token::Equal {
+                        self.pos += 1;
+                        let value = self.parse_expression();
+                        return Some(Statement::SubscriptAssignment { object, key, value });
+                    } else {
+                        self.errors.push("expected '=' after subscript assignment target".to_string());
+                    }
                 } else if self.current() == &Token::LeftParen {
                     self.pos += 1;
                     let mut args = Vec::new();
@@ -331,6 +361,13 @@ impl Parser {
                             return Some(Statement::Print(args.remove(0)));
                         } else {
                             return Some(Statement::Print(Expr::StringLiteral(String::new())));
+                        }
+                    }
+                    if var_name == "respond" {
+                        if !args.is_empty() {
+                            return Some(Statement::Respond(args.remove(0)));
+                        } else {
+                            return Some(Statement::Respond(Expr::StringLiteral(String::new())));
                         }
                     }
                     return Some(Statement::Expr(Expr::Call { callee: var_name, args }));
@@ -375,6 +412,131 @@ impl Parser {
                 if self.current() == &Token::End { self.pos += 1; }
                 else { self.errors.push(format!("unterminated {} widget: expected 'end'", kind)); }
                 return Some(Statement::Widget { kind, text, style, children });
+            }
+            Token::Route => {
+                self.pos += 1;
+                while self.current() == &Token::Newline { self.pos += 1; }
+                let path = if let Token::StringLiteral(ref p) = self.current() {
+                    let p = p.clone();
+                    self.pos += 1;
+                    p
+                } else {
+                    self.errors.push("expected string literal after 'route'".to_string());
+                    String::new()
+                };
+                while self.current() == &Token::Newline { self.pos += 1; }
+                let mut handlers = Vec::new();
+                while self.current() != &Token::End && self.current() != &Token::Eof {
+                    while self.current() == &Token::Newline { self.pos += 1; }
+                    if self.current() == &Token::End || self.current() == &Token::Eof { break; }
+                    let method = match self.current() {
+                        Token::Get => "GET",
+                        Token::Post => "POST",
+                        Token::Put => "PUT",
+                        Token::Delete => "DELETE",
+                        Token::Identifier(m) if m.eq_ignore_ascii_case("get") => "GET",
+                        Token::Identifier(m) if m.eq_ignore_ascii_case("post") => "POST",
+                        Token::Identifier(m) if m.eq_ignore_ascii_case("put") => "PUT",
+                        Token::Identifier(m) if m.eq_ignore_ascii_case("delete") => "DELETE",
+                        token => {
+                            self.errors.push(format!("expected HTTP method in route '{}', found {:?}", path, token));
+                            self.pos += 1;
+                            continue;
+                        }
+                    }.to_string();
+                    self.pos += 1;
+                    while self.current() == &Token::Newline { self.pos += 1; }
+                    let mut body = Vec::new();
+                    while self.current() != &Token::End && self.current() != &Token::Eof {
+                        if let Some(s) = self.parse_statement() {
+                            body.push(s);
+                        }
+                    }
+                    if self.current() == &Token::End {
+                        self.pos += 1;
+                    } else {
+                        self.errors.push(format!("unterminated {} block in route '{}': expected 'end'", method, path));
+                    }
+                    handlers.push((method, body));
+                    while self.current() == &Token::Newline { self.pos += 1; }
+                }
+                if self.current() == &Token::End {
+                    self.pos += 1;
+                } else {
+                    self.errors.push(format!("unterminated route '{}': expected 'end'", path));
+                }
+                return Some(Statement::Route { path, handlers });
+            }
+            Token::Respond => {
+                self.pos += 1;
+                while self.current() == &Token::Newline { self.pos += 1; }
+                let expr = self.parse_expression();
+                return Some(Statement::Respond(expr));
+            }
+            Token::Model => {
+                self.pos += 1;
+                while self.current() == &Token::Newline { self.pos += 1; }
+                let model_name = if let Token::Identifier(ref n) = self.current() {
+                    let n = n.clone();
+                    self.pos += 1;
+                    n
+                } else {
+                    self.errors.push("expected model name after 'model'".to_string());
+                    String::new()
+                };
+                while self.current() == &Token::Newline { self.pos += 1; }
+                let mut fields = Vec::new();
+                if self.current() == &Token::LeftBrace {
+                    self.pos += 1;
+                    while self.current() != &Token::RightBrace && self.current() != &Token::Eof {
+                        while self.current() == &Token::Newline || self.current() == &Token::Comma { self.pos += 1; }
+                        if self.current() == &Token::RightBrace || self.current() == &Token::Eof { break; }
+                        if let Token::Identifier(fname) = self.current() {
+                            let field_name = fname.clone();
+                            self.pos += 1;
+                            let mut field_type = "String".to_string();
+                            if self.current() == &Token::Colon { self.pos += 1; }
+                            if let Token::Identifier(ftype) = self.current() {
+                                field_type = ftype.clone();
+                                self.pos += 1;
+                            }
+                            if self.current() == &Token::Equal {
+                                self.pos += 1;
+                                let _ = self.parse_expression();
+                            }
+                            fields.push((field_name, field_type));
+                        } else {
+                            self.pos += 1;
+                        }
+                    }
+                    if self.current() == &Token::RightBrace { self.pos += 1; }
+                    else { self.errors.push(format!("unterminated model '{}': expected '}}'", model_name)); }
+                } else {
+                    while self.current() != &Token::End && self.current() != &Token::Eof {
+                        while self.current() == &Token::Newline { self.pos += 1; }
+                        if self.current() == &Token::End || self.current() == &Token::Eof { break; }
+                        if let Token::Identifier(fname) = self.current() {
+                            let field_name = fname.clone();
+                            self.pos += 1;
+                            let mut field_type = "String".to_string();
+                            if self.current() == &Token::Colon { self.pos += 1; }
+                            if let Token::Identifier(ftype) = self.current() {
+                                field_type = ftype.clone();
+                                self.pos += 1;
+                            }
+                            if self.current() == &Token::Equal {
+                                self.pos += 1;
+                                let _ = self.parse_expression();
+                            }
+                            fields.push((field_name, field_type));
+                        } else {
+                            self.pos += 1;
+                        }
+                    }
+                    if self.current() == &Token::End { self.pos += 1; }
+                    else { self.errors.push(format!("unterminated model '{}': expected 'end'", model_name)); }
+                }
+                return Some(Statement::Model { name: model_name, fields });
             }
             Token::Newline => { self.pos += 1; return None; }
             token => {

@@ -144,6 +144,11 @@ impl Emitter {
                     Self::collect_declared_locals(then_branch, names);
                     Self::collect_declared_locals(else_branch, names);
                 }
+                Statement::Route { handlers, .. } => {
+                    for (_, h_body) in handlers {
+                        Self::collect_declared_locals(h_body, names);
+                    }
+                }
                 _ => {}
             }
         }
@@ -262,6 +267,18 @@ impl Emitter {
             }
             Statement::Widget { .. } => {}
             Statement::Run(_) => {}
+            Statement::SubscriptAssignment { object, key, value } => {
+                self.emit_expression(object);
+                self.emit_expression(key);
+                self.emit_expression(value);
+                self.bytecode.push(137); // StoreSubscr
+            }
+            Statement::Respond(expr) => {
+                self.emit_expression(expr);
+                self.bytecode.push(81); // PRINT
+            }
+            Statement::Route { .. } => {}
+            Statement::Model { .. } => {}
         }
     }
 

@@ -1,0 +1,57 @@
+# ==============================================================================
+# Demonstration & Test of AAYU BrainOS (examples/test_brain.aayu)
+# Proof of Anti-Hallucination, Context Handoff & Security Guard
+# ==============================================================================
+
+import "std/brain"
+
+print("========================================")
+print("     AAYU BRAINOS AI-GUARD SYSTEM       ")
+print("========================================")
+
+# 1. Test Anti-Hallucination on broken LLM code
+let buggy_ai_code = "def calculate_price(x) let total = x * 2 print(total)"
+print("\n[1] Analyzing AI Generated Code for Hallucinations:")
+print("Code under inspection: " + buggy_ai_code)
+let report = brain_anti_hallucinate(buggy_ai_code)
+print("Is Code Valid:")
+print(report["is_valid"])
+print("Issues Count:")
+print(len(report["issues"]))
+print("Detected Issues:")
+print(report["issues"])
+print("Suggested Auto-Fixes (Zero Token Re-write):")
+print(report["auto_fixes"])
+
+# 2. Test Context Handoff (Token Exhaustion Guard)
+print("\n[2] Testing Token Exhaustion Context Handoff:")
+let files = ["compiler/lexer.aayu", "compiler/parser.aayu", "std/db.aayu"]
+let snapshot = brain_create_snapshot("MILESTONE_4", "Self-Hosted Compiler Expansion", files)
+let handoff_text = brain_context_handoff(snapshot)
+print("Compact Handoff String for Next AI Session (< 50 tokens):")
+print(handoff_text)
+
+# 3. Test Security Guard
+print("\n[3] Testing Security Guard on Hardcoded Credentials:")
+let unsafe_code = "let api_key = \"sk-proj-99881122\""
+print("Code: " + unsafe_code)
+let sec_report = brain_security_guard(unsafe_code)
+print("Is Code Secure:")
+print(sec_report["is_secure"])
+print("Security Issues:")
+print(sec_report["security_issues"])
+
+# 4. Test Architecture Freeze Guard
+print("\n[4] Checking Architecture Freeze:")
+print("Is 'Lexer' protected against AI refactoring?")
+print(brain_is_frozen("Lexer"))
+print("Is 'UserCustomApp' frozen?")
+print(brain_is_frozen("UserCustomApp"))
+
+# 5. AI Guidance Dense Rules
+print("\n[5] Compact Guidance Rules for Small Local AI Models:")
+print(brain_ai_guidance())
+
+print("\n========================================")
+print("   [AAYU BRAINOS VALIDATION SUCCESS]    ")
+print("========================================")

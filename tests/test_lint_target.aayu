@@ -1,0 +1,10 @@
+# Test target for AAYU Linter verification
+action calculate_sum(a, b)
+    let unused_cache = 999
+    var deprecated_val = 50
+    let danger = 100 / 0
+    return a + b
+    let dead_statement = 42
+end
+
+calculate_sum(10, 20)

@@ -8,7 +8,7 @@ use aayu_vm::jit;
 use aayu_vm::compiler;
 
 fn print_banner() {
-    println!("AAYU Intent-to-Silicon Engine v1.2.0");
+    println!("AAYU Intent-to-Silicon Engine v1.4.0");
     println!("Architecture: {} ({})", env::consts::ARCH, env::consts::OS);
     println!("Runtime: Native Rust Bytecode VM | Embedded Compiler & JIT");
 }
@@ -21,6 +21,11 @@ fn print_help() {
     println!("  run <file.aayu> [--jit]    Compile and execute AAYU source code");
     println!("  run <file.ayc> [--jit]     Execute precompiled bytecode directly");
     println!("  test [file.aayu]           Run native unit tests and assertion suites");
+    println!("  lint <file.aayu>           Run pure static linter and dead-code detector");
+    println!("  lock [--verify]            Generate or verify cryptographic SHA-256 lockfile (aayu.lock)");
+    println!("  profile <file.aayu>        Silicon microsecond execution & memory profiler");
+    println!("  dev <file.aayu>            Start instant live hot-reload development server");
+    println!("  fuzz [target]              Run native property-based fuzz & mutation test harness");
     println!("  lsp                        Start pure Language Server Protocol engine");
     println!("  pack <file.aayu> [-o out]  Bundle imports and compile standalone package");
     println!("  fmt <file.aayu> [--check]  Format AAYU source code with canonical 4-space indentation");
@@ -37,6 +42,11 @@ fn print_help() {
     println!("  aayu repl");
     println!("  aayu run hello.aayu");
     println!("  aayu test tests/test_framework_proof.aayu");
+    println!("  aayu lint main.aayu");
+    println!("  aayu lock --verify");
+    println!("  aayu profile app.aayu");
+    println!("  aayu dev server.aayu");
+    println!("  aayu fuzz std/collections");
     println!("  aayu fmt main.aayu");
     println!("  aayu doc main.aayu");
     println!("  aayu bench");
@@ -44,8 +54,6 @@ fn print_help() {
     println!("  aayu pack app.aayu -o app.ayc");
     println!("  aayu disasm mega_test.aayu");
     println!("  aayu init my_api --template rest");
-    println!("  aayu init my_ai --template ml");
-    println!("  aayu init my_ui --template web");
 }
 
 fn print_sysinfo() {
@@ -896,6 +904,76 @@ fn main() {
             run_source_file(bench_tool, false);
         } else {
             eprintln!("[AAYU Benchmark Error] Pure benchmark tool not found at {}", bench_tool);
+            std::process::exit(1);
+        }
+        return;
+    }
+
+    if cmd == "lint" {
+        if args.len() >= 3 {
+            std::env::set_var("AAYU_TARGET", &args[2]);
+        }
+        let lint_tool = "tools/linter.aayu";
+        if Path::new(lint_tool).exists() {
+            run_source_file(lint_tool, false);
+        } else {
+            eprintln!("[AAYU Lint Error] Pure linter tool not found at {}", lint_tool);
+            std::process::exit(1);
+        }
+        return;
+    }
+
+    if cmd == "lock" {
+        if args.len() >= 3 {
+            std::env::set_var("AAYU_TARGET", &args[2]);
+        }
+        let lock_tool = "tools/lockfile.aayu";
+        if Path::new(lock_tool).exists() {
+            run_source_file(lock_tool, false);
+        } else {
+            eprintln!("[AAYU Lock Error] Pure lockfile tool not found at {}", lock_tool);
+            std::process::exit(1);
+        }
+        return;
+    }
+
+    if cmd == "profile" {
+        if args.len() >= 3 {
+            std::env::set_var("AAYU_TARGET", &args[2]);
+        }
+        let prof_tool = "tools/profiler.aayu";
+        if Path::new(prof_tool).exists() {
+            run_source_file(prof_tool, false);
+        } else {
+            eprintln!("[AAYU Profile Error] Pure profiler tool not found at {}", prof_tool);
+            std::process::exit(1);
+        }
+        return;
+    }
+
+    if cmd == "dev" {
+        if args.len() >= 3 {
+            std::env::set_var("AAYU_TARGET", &args[2]);
+        }
+        let dev_tool = "tools/dev_server.aayu";
+        if Path::new(dev_tool).exists() {
+            run_source_file(dev_tool, false);
+        } else {
+            eprintln!("[AAYU Dev Error] Pure dev server tool not found at {}", dev_tool);
+            std::process::exit(1);
+        }
+        return;
+    }
+
+    if cmd == "fuzz" {
+        if args.len() >= 3 {
+            std::env::set_var("AAYU_TARGET", &args[2]);
+        }
+        let fuzz_tool = "tools/fuzzer.aayu";
+        if Path::new(fuzz_tool).exists() {
+            run_source_file(fuzz_tool, false);
+        } else {
+            eprintln!("[AAYU Fuzz Error] Pure fuzzer tool not found at {}", fuzz_tool);
             std::process::exit(1);
         }
         return;

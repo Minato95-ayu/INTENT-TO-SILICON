@@ -1,0 +1,74 @@
+# ==============================================================================
+# AAYU Standard Library: Property & Fuzz Testing (std/fuzz.aayu)
+# 100% Pure Self-Hosted AAYU (.aayu)
+# Generates randomized edge-case mutations and verifies invariant durability
+# Zero External Dependencies | Zero C | Zero Python
+# ==============================================================================
+
+# Numeric Boundary Vectors
+action fuzz_numbers()
+    let nums = [
+        0, 1, -1, 2, -2, 10, -10, 100, -100, 1000, -1000,
+        2147483647, -2147483648, 999999999, -999999999,
+        7, 13, 42, 99, 255, 256, 65535, 65536
+    ]
+    return nums
+end
+
+# String Boundary & Injection Vectors
+action fuzz_strings()
+    let strs = [
+        "",
+        " ",
+        "   ",
+        "\t",
+        "\n",
+        "\r\n",
+        "a",
+        "AAYU Silicon",
+        "Special: !@#$%^&*()_+{}[]:;\"'<>?,./",
+        "SQL: ' OR '1'='1",
+        "HTML: <script>alert('aayu')</script>",
+        "Path: ../../etc/passwd",
+        "LongString: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "Digits: 0123456789",
+        "Whitespace: \t  \r  \n  "
+    ]
+    return strs
+end
+
+# Array Boundary Vectors
+action fuzz_arrays()
+    let a1 = []
+    let a2 = [0]
+    let a3 = [1, 2, 3]
+    let a4 = [-10, -20, -30]
+    let a5 = [99, 12, 45, 1, 77, 23, 8]
+    let a6 = [1000000, 2000000, 3000000]
+    let arrs = [a1, a2, a3, a4, a5, a6]
+    return arrs
+end
+
+# Mutation generator: concatenates, inverts, and multiplies test inputs
+action mutate_number(n, seed)
+    if seed % 4 == 0
+        return 0 - n
+    end
+    if seed % 4 == 1
+        return n + 1
+    end
+    if seed % 4 == 2
+        return n * 2
+    end
+    return n - 1
+end
+
+action mutate_string(s, seed)
+    if seed % 3 == 0
+        return s + "_mutated"
+    end
+    if seed % 3 == 1
+        return "prefix_" + s
+    end
+    return s + s
+end

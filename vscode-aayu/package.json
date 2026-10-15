@@ -2,7 +2,7 @@
   "name": "aayu",
   "displayName": "AAYU",
   "description": "AAYU syntax highlighting and run command for the Rust VM",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "publisher": "AyushGhritKaushik",
   "author": "Ayush Ghrit Kaushik <https://github.com/Minato95-ayu>",
   "engines": {
@@ -26,6 +26,10 @@
     "onCommand:aayu.runFile",
     "onCommand:aayu.runTest",
     "onCommand:aayu.formatFile",
+    "onCommand:aayu.lintFile",
+    "onCommand:aayu.lockFile",
+    "onCommand:aayu.profileFile",
+    "onCommand:aayu.fuzzFile",
     "onCommand:aayu.disasmFile",
     "onCommand:aayu.packFile",
     "onCommand:aayu.benchFile"
@@ -35,6 +39,10 @@
       { "command": "aayu.runFile", "title": "AAYU: Run Current File" },
       { "command": "aayu.runTest", "title": "AAYU: Run Test Suite (aayu test)" },
       { "command": "aayu.formatFile", "title": "AAYU: Format Document (aayu fmt)" },
+      { "command": "aayu.lintFile", "title": "AAYU: Lint & Detect Dead Code (aayu lint)" },
+      { "command": "aayu.lockFile", "title": "AAYU: Cryptographic Lockfile (aayu lock --verify)" },
+      { "command": "aayu.profileFile", "title": "AAYU: Profile Silicon Latency & Memory (aayu profile)" },
+      { "command": "aayu.fuzzFile", "title": "AAYU: Run Native Fuzz Testing (aayu fuzz)" },
       { "command": "aayu.disasmFile", "title": "AAYU: Disassemble Bytecode (aayu disasm)" },
       { "command": "aayu.packFile", "title": "AAYU: Pack Standalone Package (aayu pack)" },
       { "command": "aayu.benchFile", "title": "AAYU: Run Silicon Benchmark (aayu bench)" }

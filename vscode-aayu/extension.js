@@ -53,7 +53,30 @@ function activate(context) {
         if (editor) runAayuCommand(['fmt', editor.document.fileName], 'Format Document');
     }));
 
-    // 4. Disassemble Bytecode
+    // 4. Lint Current File
+    context.subscriptions.push(vscode.commands.registerCommand('aayu.lintFile', () => {
+        const editor = vscode.window.activeTextEditor;
+        if (editor) runAayuCommand(['lint', editor.document.fileName], 'Lint Document');
+    }));
+
+    // 5. Cryptographic Lockfile Verification
+    context.subscriptions.push(vscode.commands.registerCommand('aayu.lockFile', () => {
+        runAayuCommand(['lock', '--verify'], 'Lockfile Verification');
+    }));
+
+    // 6. Microsecond Execution & Memory Profiler
+    context.subscriptions.push(vscode.commands.registerCommand('aayu.profileFile', () => {
+        const editor = vscode.window.activeTextEditor;
+        if (editor) runAayuCommand(['profile', editor.document.fileName], 'Profile Execution');
+        else runAayuCommand(['profile'], 'Profile Execution');
+    }));
+
+    // 7. Native Fuzz Testing
+    context.subscriptions.push(vscode.commands.registerCommand('aayu.fuzzFile', () => {
+        runAayuCommand(['fuzz'], 'Fuzz Testing');
+    }));
+
+    // 8. Disassemble Bytecode
     context.subscriptions.push(vscode.commands.registerCommand('aayu.disasmFile', () => {
         const editor = vscode.window.activeTextEditor;
         if (editor) runAayuCommand(['disasm', editor.document.fileName], 'Disassemble Bytecode');

@@ -797,6 +797,59 @@ impl AayuVM {
                             let ok = std::fs::write(&path, &content).is_ok();
                             self.stack[self.sp] = NanVal::bool(ok);
                             self.sp += 1;
+                        } else if func_name == "time_micros" || func_name == "time_us" {
+                            self.sp -= argc + 1;
+                            let micros = std::time::SystemTime::now()
+                                .duration_since(std::time::UNIX_EPOCH)
+                                .map(|d| d.as_micros() as i64)
+                                .unwrap_or(0);
+                            self.stack[self.sp] = NanVal::int(micros);
+                            self.sp += 1;
+                        } else if func_name == "time_ms" {
+                            self.sp -= argc + 1;
+                            let millis = std::time::SystemTime::now()
+                                .duration_since(std::time::UNIX_EPOCH)
+                                .map(|d| d.as_millis() as i64)
+                                .unwrap_or(0);
+                            self.stack[self.sp] = NanVal::int(millis);
+                            self.sp += 1;
+                        } else if func_name == "file_mtime" {
+                            let path = if argc > 0 {
+                                let p = self.stack[self.sp - 1];
+                                if p.is_string() && p.as_string_idx() < self.string_heap.len() {
+                                    self.string_heap[p.as_string_idx()].clone()
+                                } else { String::new() }
+                            } else { String::new() };
+                            self.sp -= argc + 1;
+                            let mtime = std::fs::metadata(&path)
+                                .and_then(|m| m.modified())
+                                .and_then(|t| t.duration_since(std::time::UNIX_EPOCH).map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e)))
+                                .map(|d| d.as_secs() as i64)
+                                .unwrap_or(0);
+                            self.stack[self.sp] = NanVal::int(mtime);
+                            self.sp += 1;
+                        } else if func_name == "file_size" {
+                            let path = if argc > 0 {
+                                let p = self.stack[self.sp - 1];
+                                if p.is_string() && p.as_string_idx() < self.string_heap.len() {
+                                    self.string_heap[p.as_string_idx()].clone()
+                                } else { String::new() }
+                            } else { String::new() };
+                            self.sp -= argc + 1;
+                            let size = std::fs::metadata(&path)
+                                .map(|m| m.len() as i64)
+                                .unwrap_or(0);
+                            self.stack[self.sp] = NanVal::int(size);
+                            self.sp += 1;
+                        } else if func_name == "sleep_ms" {
+                            let ms = if argc > 0 {
+                                let m = self.stack[self.sp - 1];
+                                if m.is_int() { m.as_int() as u64 } else { 0 }
+                            } else { 0 };
+                            self.sp -= argc + 1;
+                            std::thread::sleep(std::time::Duration::from_millis(ms));
+                            self.stack[self.sp] = NanVal::null();
+                            self.sp += 1;
                         } else {
                             return Err(format!("Unknown built-in function '{}'", func_name));
                         }

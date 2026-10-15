@@ -120,7 +120,7 @@ fn validate_supported(statements: &[parser::Statement]) -> Result<(), String> {
             Expr::Call { callee, args } => {
                 if callee == "len" {
                     if args.len() != 1 { return Err("len() expects exactly one argument".into()); }
-                } else if callee != "print" && callee != "type" && callee != "typeof" && callee != "platform" && callee != "arch" && callee != "env_get" && callee != "read_file" && callee != "write_file" && callee != "append" && callee != "push" {
+                } else if callee != "print" && callee != "type" && callee != "typeof" && callee != "platform" && callee != "arch" && callee != "env_get" && callee != "read_file" && callee != "write_file" && callee != "time_micros" && callee != "time_us" && callee != "time_ms" && callee != "file_mtime" && callee != "file_size" && callee != "sleep_ms" && callee != "append" && callee != "push" {
                     let expected = functions.get(callee).ok_or_else(|| format!("unknown function '{}'", callee))?;
                     if args.len() != *expected {
                         return Err(format!("function '{}' expects {} arguments, got {}", callee, expected, args.len()));

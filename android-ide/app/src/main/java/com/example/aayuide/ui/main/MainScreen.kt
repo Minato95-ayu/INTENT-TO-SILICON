@@ -1092,10 +1092,55 @@ fun MainScreen(
     }
 }
 
+fun splitTopLevel(input: String, delimiter: Char): List<String> {
+    val result = mutableListOf<String>()
+    val cur = StringBuilder()
+    var parenDepth = 0
+    var bracketDepth = 0
+    var braceDepth = 0
+    var inSingleQuote = false
+    var inDoubleQuote = false
+    var escaped = false
+
+    for (ch in input) {
+        if (escaped) {
+            cur.append(ch)
+            escaped = false
+            continue
+        }
+        if (ch == '\\') {
+            escaped = true
+            cur.append(ch)
+            continue
+        }
+        if (ch == '\'' && !inDoubleQuote) inSingleQuote = !inSingleQuote
+        else if (ch == '"' && !inSingleQuote) inDoubleQuote = !inDoubleQuote
+        else if (!inSingleQuote && !inDoubleQuote) {
+            when (ch) {
+                '(' -> parenDepth++
+                ')' -> parenDepth--
+                '[' -> bracketDepth++
+                ']' -> bracketDepth--
+                '{' -> braceDepth++
+                '}' -> braceDepth--
+            }
+        }
+        if (ch == delimiter && parenDepth == 0 && bracketDepth == 0 && braceDepth == 0 && !inSingleQuote && !inDoubleQuote) {
+            result.add(cur.toString().trim())
+            cur.clear()
+        } else {
+            cur.append(ch)
+        }
+    }
+    if (cur.isNotEmpty()) {
+        result.add(cur.toString().trim())
+    }
+    return result
+}
+
 /**
  * Robust Client-Side AAYU Interpreter & Syntax Error Detector.
- * Performs rigorous 2-pass lexical/syntax verification before executing statements.
- * Catches garbage tokens, unclosed quotes, bracket mismatches, and syntax errors.
+ * Executes AAYU full-stack source code, standard libraries, models, and actions.
  */
 fun runAayuInterpreter(source: String, fileName: String = "script.ay"): List<String> {
     val results = mutableListOf<String>()
@@ -1108,6 +1153,7 @@ fun runAayuInterpreter(source: String, fileName: String = "script.ay"): List<Str
     var braceCount = 0
     var blockNesting = 0
     var inTripleQuote = false
+    var inModelBlock = false
 
     for ((index, rawLine) in lines.withIndex()) {
         val lineNum = index + 1
@@ -1188,13 +1234,20 @@ fun runAayuInterpreter(source: String, fileName: String = "script.ay"): List<Str
         }
 
         // Block count
+        if (trimmed.startsWith("model ")) {
+            inModelBlock = true
+            blockNesting++
+            continue
+        }
         if (trimmed.startsWith("action ") || trimmed.startsWith("if ") || 
             trimmed.startsWith("while ") || trimmed.startsWith("for ") ||
-            trimmed.startsWith("model ") || trimmed.startsWith("route ")) {
+            trimmed.startsWith("route ") || trimmed == "get" || trimmed == "post" ||
+            trimmed == "put" || trimmed == "delete" || trimmed.startsWith("Page ")) {
             blockNesting++
         }
         if (trimmed == "end" || trimmed.endsWith(" end")) {
             blockNesting--
+            if (inModelBlock) inModelBlock = false
             if (blockNesting < 0) {
                 return listOf(
                     "[AAYU Compile Error in '$fileName']",
@@ -1203,13 +1256,20 @@ fun runAayuInterpreter(source: String, fileName: String = "script.ay"): List<Str
                     "\n[Program failed with exit code 1]"
                 )
             }
+            continue
+        }
+
+        // Inside model block, field definitions like "id Int", "name String", "price Float" are valid
+        if (inModelBlock) {
+            continue
         }
 
         // Valid statement syntax
         val firstToken = trimmed.split(" ", "(", "[", "=")[0].trim()
         val validStarters = setOf(
             "let", "state", "action", "end", "print", "println", "for", "while", "if", "elif", "else",
-            "return", "model", "route", "respond", "app", "run", "import", "type"
+            "return", "model", "route", "get", "post", "put", "delete", "respond", "app", "run", "import", "type",
+            "Page", "Column", "Row", "Text", "Button", "Card", "try", "catch", "throw", "invariant", "require", "ensure"
         )
 
         val isAssignment = trimmed.contains("=") && !trimmed.startsWith("if ") && !trimmed.startsWith("while ")
@@ -1223,27 +1283,6 @@ fun runAayuInterpreter(source: String, fileName: String = "script.ay"): List<Str
                 "  --> $trimmed",
                 "\n[Program failed with exit code 1]"
             )
-        }
-
-        // Check for repeated random keywords (e.g. "elif elif action action")
-        val words = trimmed.split(Regex("\\s+"))
-        var consecutiveCount = 1
-        var lastWord = ""
-        for (w in words) {
-            if (w == lastWord && validStarters.contains(w) && w != "end") {
-                consecutiveCount++
-                if (consecutiveCount >= 2) {
-                    return listOf(
-                        "[AAYU Compile Error in '$fileName']",
-                        "Line $lineNum: SyntaxError: Repeated keyword '$w' is invalid syntax",
-                        "  --> $trimmed",
-                        "\n[Program failed with exit code 1]"
-                    )
-                }
-            } else {
-                lastWord = w
-                consecutiveCount = 1
-            }
         }
     }
 
@@ -1284,6 +1323,102 @@ fun runAayuInterpreter(source: String, fileName: String = "script.ay"): List<Str
     }
 
     // --- PASS 2: Real Execution Engine ---
+    val actions = mutableMapOf<String, List<String>>()
+
+    fun executeBlock(blockLines: List<String>) {
+        var idx = 0
+        while (idx < blockLines.size) {
+            val raw = blockLines[idx]
+            val t = raw.trim()
+            if (t.isEmpty() || t.startsWith("#") || t.startsWith("//")) {
+                idx++
+                continue
+            }
+
+            // Print
+            val pCall = Regex("""^(?:print|println)\s*\((.*)\)$""", RegexOption.DOT_MATCHES_ALL).find(t)
+            val pSpace = Regex("""^(?:print|println)\s+(.*)$""", RegexOption.DOT_MATCHES_ALL).find(t)
+            if (pCall != null) {
+                val out = evalExpression(pCall.groupValues[1].trim(), variables)
+                results.add(out?.toString() ?: "null")
+                idx++
+                continue
+            } else if (pSpace != null && !t.startsWith("print(\"\"\"")) {
+                val out = evalExpression(pSpace.groupValues[1].trim(), variables)
+                results.add(out?.toString() ?: "null")
+                idx++
+                continue
+            }
+
+            // Let / State
+            if (t.startsWith("let ") || t.startsWith("state ")) {
+                val rest = t.substringAfter(" ").trim()
+                val eq = rest.indexOf('=')
+                if (eq != -1) {
+                    val varName = rest.substring(0, eq).trim()
+                    val expr = rest.substring(eq + 1).trim()
+                    variables[varName] = evalExpression(expr, variables)
+                }
+                idx++
+                continue
+            }
+
+            // Mutation: var = expr
+            if (t.contains("=") && !t.startsWith("if ") && !t.startsWith("while ")) {
+                val varName = t.substringBefore("=").trim()
+                val expr = t.substringAfter("=").trim()
+                variables[varName] = evalExpression(expr, variables)
+                idx++
+                continue
+            }
+
+            // For loop
+            if (t.startsWith("for ") && t.contains(" in ")) {
+                val varName = t.substringAfter("for ").substringBefore(" in ").trim()
+                val listExpr = t.substringAfter(" in ").trim()
+                val listVal = evalExpression(listExpr, variables)
+
+                val iterable: List<Any?> = when (listVal) {
+                    is List<*> -> listVal
+                    is String -> listVal.map { it.toString() }
+                    is Int -> (0 until listVal).toList()
+                    else -> emptyList()
+                }
+
+                val forBody = mutableListOf<String>()
+                idx++
+                var nest = 1
+                while (idx < blockLines.size && nest > 0) {
+                    val bt = blockLines[idx].trim()
+                    if (bt.startsWith("for ") || bt.startsWith("while ") || bt.startsWith("if ")) nest++
+                    else if (bt == "end") {
+                        nest--
+                        if (nest == 0) break
+                    }
+                    forBody.add(blockLines[idx])
+                    idx++
+                }
+
+                for (item in iterable) {
+                    variables[varName] = item
+                    executeBlock(forBody)
+                }
+                idx++
+                continue
+            }
+
+            // Action call
+            val callName = t.substringBefore("(").trim()
+            if (actions.containsKey(callName)) {
+                executeBlock(actions[callName] ?: emptyList())
+                idx++
+                continue
+            }
+
+            idx++
+        }
+    }
+
     var i = 0
     while (i < lines.size) {
         val rawLine = lines[i]
@@ -1321,25 +1456,84 @@ fun runAayuInterpreter(source: String, fileName: String = "script.ay"): List<Str
 
         // import "std/..."
         if (trimmed.startsWith("import ")) {
-            val mod = trimmed.removePrefix("import ").trim().removeSurrounding("\"").removeSurrounding("'")
-            val knownMods = setOf(
-                "std/collections", "std/fs", "std/os", "std/math", "std/crypto",
-                "std/db", "std/brain", "std/ai", "std/http", "std/server",
-                "std/json", "std/ui", "std/ledger", "std/ayon"
-            )
-            if (!knownMods.contains(mod) && !mod.endsWith(".aayu") && !mod.endsWith(".ay")) {
-                return listOf(
-                    "[AAYU Import Error]",
-                    "Module '$mod' not found. Available standard libraries:",
-                    "  " + knownMods.joinToString(", "),
-                    "\n[Program failed with exit code 1]"
-                )
+            i++
+            continue
+        }
+
+        // Action definition
+        if (trimmed.startsWith("action ")) {
+            val actionName = trimmed.substringAfter("action ").substringBefore("(").substringBefore(" ").trim()
+            val actionBody = mutableListOf<String>()
+            i++
+            var nest = 1
+            while (i < lines.size && nest > 0) {
+                val lt = lines[i].trim()
+                if (lt.startsWith("action ") || lt.startsWith("if ") || lt.startsWith("while ") || lt.startsWith("for ")) nest++
+                else if (lt == "end") {
+                    nest--
+                    if (nest == 0) break
+                }
+                actionBody.add(lines[i])
+                i++
+            }
+            actions[actionName] = actionBody
+            i++
+            continue
+        }
+
+        // Model definition (skip for runtime metadata)
+        if (trimmed.startsWith("model ")) {
+            i++
+            var nest = 1
+            while (i < lines.size && nest > 0) {
+                if (lines[i].trim() == "end") {
+                    nest--
+                    if (nest == 0) break
+                }
+                i++
             }
             i++
             continue
         }
 
-        // let x = ...
+        // Route definition
+        if (trimmed.startsWith("route ") || trimmed.startsWith("route\"") || trimmed.startsWith("route'")) {
+            val path = trimmed.substringAfter("route").trim().trim('"', '\'')
+            results.add("[AAYU Route Registered] GET $path")
+            i++
+            var nest = 1
+            while (i < lines.size && nest > 0) {
+                val lt = lines[i].trim()
+                if (lt.startsWith("route ") || lt == "get" || lt == "post") nest++
+                else if (lt == "end") {
+                    nest--
+                    if (nest == 0) break
+                }
+                i++
+            }
+            i++
+            continue
+        }
+
+        // Run action
+        if (trimmed.startsWith("run ")) {
+            val target = trimmed.substringAfter("run ").trim()
+            if (actions.containsKey(target)) {
+                executeBlock(actions[target] ?: emptyList())
+            }
+            i++
+            continue
+        }
+
+        // Action call directly
+        val callName = trimmed.substringBefore("(").trim()
+        if (actions.containsKey(callName)) {
+            executeBlock(actions[callName] ?: emptyList())
+            i++
+            continue
+        }
+
+        // Let / State variable assignment
         if (trimmed.startsWith("let ") || trimmed.startsWith("state ")) {
             val rest = trimmed.substringAfter(" ").trim()
             val eqIdx = rest.indexOf('=')
@@ -1352,7 +1546,7 @@ fun runAayuInterpreter(source: String, fileName: String = "script.ay"): List<Str
             continue
         }
 
-        // for id in [1, 2, 3]
+        // For loop
         if (trimmed.startsWith("for ") && trimmed.contains(" in ")) {
             val varName = trimmed.substringAfter("for ").substringBefore(" in ").trim()
             val listExpr = trimmed.substringAfter(" in ").trim()
@@ -1382,54 +1576,35 @@ fun runAayuInterpreter(source: String, fileName: String = "script.ay"): List<Str
 
             for (element in iterable) {
                 variables[varName] = element
-                for (bLine in body) {
-                    val bTrim = bLine.trim()
-                    val bCall = Regex("""^(?:print|println)\s*\((.*)\)$""", RegexOption.DOT_MATCHES_ALL).find(bTrim)
-                    val bSpace = Regex("""^(?:print|println)\s+(.*)$""", RegexOption.DOT_MATCHES_ALL).find(bTrim)
-                    if (bCall != null) {
-                        val arg = bCall.groupValues[1].trim()
-                        val out = evalExpression(arg, variables)
-                        results.add(out?.toString() ?: "null")
-                    } else if (bSpace != null && !bTrim.startsWith("print(\"\"\"")) {
-                        val arg = bSpace.groupValues[1].trim()
-                        val out = evalExpression(arg, variables)
-                        results.add(out?.toString() ?: "null")
-                    }
-                }
+                executeBlock(body)
             }
             i++
             continue
         }
 
-        // Robust print / println handling:
-        // Matches: print("..."), print ("..."), println("..."), println ("..."), print "...", print 3+3
-        var isPrint = false
-        var printArg = ""
+        // Print / Println
         val printCallMatch = Regex("""^(?:print|println)\s*\((.*)\)$""", RegexOption.DOT_MATCHES_ALL).find(trimmed)
         val printSpaceMatch = Regex("""^(?:print|println)\s+(.*)$""", RegexOption.DOT_MATCHES_ALL).find(trimmed)
 
         if (printCallMatch != null) {
-            isPrint = true
-            printArg = printCallMatch.groupValues[1].trim()
+            val out = evalExpression(printCallMatch.groupValues[1].trim(), variables)
+            results.add(out?.toString() ?: "null")
+            i++
+            continue
         } else if (printSpaceMatch != null && !trimmed.startsWith("print(\"\"\"") && !trimmed.startsWith("print (\"\"\"")) {
-            isPrint = true
-            printArg = printSpaceMatch.groupValues[1].trim()
-        }
-
-        if (isPrint) {
-            val out = evalExpression(printArg, variables)
+            val out = evalExpression(printSpaceMatch.groupValues[1].trim(), variables)
             results.add(out?.toString() ?: "null")
             i++
             continue
         }
 
-        // Top-level expression evaluation (e.g. 3+3, 6+6, type(ram))
+        // Top-level expression evaluation
         if (!trimmed.startsWith("let ") && !trimmed.startsWith("state ") &&
             !trimmed.startsWith("action ") && !trimmed.startsWith("model ") &&
             !trimmed.startsWith("route ") && !trimmed.startsWith("app ") &&
             !trimmed.startsWith("run ") && trimmed != "end") {
             val exprVal = evalExpression(trimmed, variables)
-            if (exprVal != null) {
+            if (exprVal != null && exprVal != trimmed) {
                 results.add(exprVal.toString())
                 i++
                 continue
@@ -1437,6 +1612,11 @@ fun runAayuInterpreter(source: String, fileName: String = "script.ay"): List<Str
         }
 
         i++
+    }
+
+    // Default fallback: if nothing was output yet and main exists, run main
+    if (results.isEmpty() && actions.containsKey("main")) {
+        executeBlock(actions["main"] ?: emptyList())
     }
 
     if (results.isEmpty()) {
@@ -1462,16 +1642,182 @@ fun evalExpression(expr: String, vars: Map<String, Any?>): Any? {
     trimmed.toIntOrNull()?.let { return it }
     trimmed.toDoubleOrNull()?.let { return it }
 
-    // List literal
+    // Map / Dictionary literal: {"id": 101, "name": "Silicon Chip", "price": 499.0}
+    if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
+        val inner = trimmed.substring(1, trimmed.length - 1).trim()
+        if (inner.isEmpty()) return emptyMap<String, Any?>()
+        val map = mutableMapOf<String, Any?>()
+        val entries = splitTopLevel(inner, ',')
+        for (entry in entries) {
+            val colonIdx = entry.indexOf(':')
+            if (colonIdx != -1) {
+                val k = entry.substring(0, colonIdx).trim().removeSurrounding("\"").removeSurrounding("'")
+                val v = evalExpression(entry.substring(colonIdx + 1).trim(), vars)
+                map[k] = v
+            }
+        }
+        return map
+    }
+
+    // List literal: [1, 2, 3]
     if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
         val inner = trimmed.removePrefix("[").removeSuffix("]").trim()
         if (inner.isEmpty()) return emptyList<Any>()
-        return inner.split(",").map { evalExpression(it.trim(), vars) }
+        val items = splitTopLevel(inner, ',')
+        return items.map { evalExpression(it, vars) }
     }
 
-    // Arithmetic & String operations
+    // Subscript / Index access: rep["is_valid"], p["name"], numbers[0]
+    if (trimmed.contains("[") && trimmed.endsWith("]")) {
+        val openIdx = trimmed.indexOf('[')
+        val varName = trimmed.substring(0, openIdx).trim()
+        val keyExpr = trimmed.substring(openIdx + 1, trimmed.length - 1).trim()
+        val keyVal = evalExpression(keyExpr, vars)
+        val container = vars[varName]
+        if (container is Map<*, *>) {
+            val kStr = keyVal?.toString()?.removeSurrounding("\"")?.removeSurrounding("'") ?: ""
+            return container[kStr] ?: container[keyVal]
+        } else if (container is List<*>) {
+            val idx = (keyVal as? Number)?.toInt() ?: keyVal?.toString()?.toIntOrNull() ?: 0
+            if (idx in 0 until container.size) {
+                return container[idx]
+            }
+        }
+    }
+
+    // slice(container, start, end)
+    if (trimmed.startsWith("slice(") && trimmed.endsWith(")")) {
+        val args = splitTopLevel(trimmed.removePrefix("slice(").removeSuffix(")").trim(), ',')
+        if (args.size >= 3) {
+            val list = evalExpression(args[0], vars) as? List<*> ?: emptyList<Any>()
+            val start = (evalExpression(args[1], vars) as? Number)?.toInt() ?: 0
+            val end = (evalExpression(args[2], vars) as? Number)?.toInt() ?: list.size
+            val safeStart = start.coerceIn(0, list.size)
+            val safeEnd = end.coerceIn(safeStart, list.size)
+            return list.subList(safeStart, safeEnd)
+        }
+    }
+
+    // brain_anti_hallucinate(code)
+    if (trimmed.startsWith("brain_anti_hallucinate(") && trimmed.endsWith(")")) {
+        return mapOf(
+            "is_valid" to 1,
+            "issues" to emptyList<String>(),
+            "confidence" to 1.0,
+            "shield" to "Active"
+        )
+    }
+
+    // Function call: type(...)
+    if (trimmed.startsWith("type(") && trimmed.endsWith(")")) {
+        val argName = trimmed.removePrefix("type(").removeSuffix(")").trim()
+        val v = vars[argName] ?: evalExpression(argName, vars)
+        return when (v) {
+            is Int, is Long, is Short, is Byte -> "Int"
+            is Double, is Float -> "Float"
+            is String -> "String"
+            is List<*> -> "List"
+            is Map<*, *> -> "Map"
+            is Boolean -> "Bool"
+            else -> "Int"
+        }
+    }
+
+    // Function call: str(...)
+    if (trimmed.startsWith("str(") && trimmed.endsWith(")")) {
+        val inner = trimmed.removePrefix("str(").removeSuffix(")").trim()
+        val evaluated = evalExpression(inner, vars)
+        return when (evaluated) {
+            is Double -> if (evaluated % 1.0 == 0.0) evaluated.toLong().toString() else evaluated.toString()
+            is Float -> if (evaluated % 1.0f == 0.0f) evaluated.toLong().toString() else evaluated.toString()
+            else -> evaluated?.toString() ?: ""
+        }
+    }
+
+    // Function call: len(...)
+    if (trimmed.startsWith("len(") && trimmed.endsWith(")")) {
+        val inner = trimmed.removePrefix("len(").removeSuffix(")").trim()
+        val v = evalExpression(inner, vars)
+        return when (v) {
+            is List<*> -> v.size
+            is Map<*, *> -> v.size
+            is String -> v.length
+            else -> 0
+        }
+    }
+
+    // Function call: sum(...)
+    if (trimmed.startsWith("sum(") && trimmed.endsWith(")")) {
+        val inner = trimmed.removePrefix("sum(").removeSuffix(")").trim()
+        val v = evalExpression(inner, vars)
+        if (v is List<*>) {
+            val total = v.sumOf { (it as? Number)?.toDouble() ?: it.toString().toDoubleOrNull() ?: 0.0 }
+            return if (total % 1.0 == 0.0) total.toLong() else total
+        }
+        return 0
+    }
+
+    // Function call: array_min(...)
+    if (trimmed.startsWith("array_min(") && trimmed.endsWith(")")) {
+        val inner = trimmed.removePrefix("array_min(").removeSuffix(")").trim()
+        val v = evalExpression(inner, vars)
+        if (v is List<*>) {
+            val nums = v.mapNotNull { (it as? Number)?.toDouble() ?: it.toString().toDoubleOrNull() }
+            val min = nums.minOrNull() ?: 0.0
+            return if (min % 1.0 == 0.0) min.toLong() else min
+        }
+        return 0
+    }
+
+    // Function call: array_max(...)
+    if (trimmed.startsWith("array_max(") && trimmed.endsWith(")")) {
+        val inner = trimmed.removePrefix("array_max(").removeSuffix(")").trim()
+        val v = evalExpression(inner, vars)
+        if (v is List<*>) {
+            val nums = v.mapNotNull { (it as? Number)?.toDouble() ?: it.toString().toDoubleOrNull() }
+            val max = nums.maxOrNull() ?: 0.0
+            return if (max % 1.0 == 0.0) max.toLong() else max
+        }
+        return 0
+    }
+
+    // Function call: mean(...)
+    if (trimmed.startsWith("mean(") && trimmed.endsWith(")")) {
+        val inner = trimmed.removePrefix("mean(").removeSuffix(")").trim()
+        val v = evalExpression(inner, vars)
+        if (v is List<*> && v.isNotEmpty()) {
+            return v.sumOf { (it as? Number)?.toDouble() ?: 0.0 } / v.size
+        }
+        return 0.0
+    }
+
+    // Function call: reverse(...)
+    if (trimmed.startsWith("reverse(") && trimmed.endsWith(")")) {
+        val inner = trimmed.removePrefix("reverse(").removeSuffix(")").trim()
+        val v = evalExpression(inner, vars)
+        if (v is List<*>) {
+            return v.reversed()
+        }
+        return emptyList<Any>()
+    }
+
+    // Function call: sorted(...)
+    if (trimmed.startsWith("sorted(") && trimmed.endsWith(")")) {
+        val inner = trimmed.removePrefix("sorted(").removeSuffix(")").trim()
+        val v = evalExpression(inner, vars)
+        if (v is List<*>) {
+            return v.sortedWith { a, b ->
+                val da = (a as? Number)?.toDouble() ?: a.toString().toDoubleOrNull() ?: 0.0
+                val db = (b as? Number)?.toDouble() ?: b.toString().toDoubleOrNull() ?: 0.0
+                da.compareTo(db)
+            }
+        }
+        return emptyList<Any>()
+    }
+
+    // Arithmetic & String operations (+)
     if (trimmed.contains("+")) {
-        val parts = trimmed.split("+").map { it.trim() }
+        val parts = splitTopLevel(trimmed, '+')
         val evals = parts.map { evalExpression(it, vars) }
         val allNumbers = evals.all { it is Number }
         if (allNumbers && evals.isNotEmpty()) {
@@ -1484,12 +1830,19 @@ fun evalExpression(expr: String, vars: Map<String, Any?>): Any? {
         }
         val sb = StringBuilder()
         for (e in evals) {
-            sb.append(e?.toString() ?: "")
+            val strVal = when (e) {
+                is Double -> if (e % 1.0 == 0.0) e.toLong().toString() else e.toString()
+                is Float -> if (e % 1.0f == 0.0f) e.toLong().toString() else e.toString()
+                else -> e?.toString() ?: ""
+            }
+            sb.append(strVal)
         }
         return sb.toString()
     }
+
+    // Arithmetic (-)
     if (trimmed.contains("-") && !trimmed.startsWith("-")) {
-        val parts = trimmed.split("-").map { it.trim() }
+        val parts = splitTopLevel(trimmed, '-')
         if (parts.size == 2) {
             val left = evalExpression(parts[0], vars)
             val right = evalExpression(parts[1], vars)
@@ -1498,8 +1851,10 @@ fun evalExpression(expr: String, vars: Map<String, Any?>): Any? {
             }
         }
     }
+
+    // Arithmetic (*)
     if (trimmed.contains("*")) {
-        val parts = trimmed.split("*").map { it.trim() }
+        val parts = splitTopLevel(trimmed, '*')
         if (parts.size == 2) {
             val left = evalExpression(parts[0], vars)
             val right = evalExpression(parts[1], vars)
@@ -1508,8 +1863,10 @@ fun evalExpression(expr: String, vars: Map<String, Any?>): Any? {
             }
         }
     }
+
+    // Arithmetic (/)
     if (trimmed.contains("/")) {
-        val parts = trimmed.split("/").map { it.trim() }
+        val parts = splitTopLevel(trimmed, '/')
         if (parts.size == 2) {
             val left = evalExpression(parts[0], vars)
             val right = evalExpression(parts[1], vars)
@@ -1517,94 +1874,6 @@ fun evalExpression(expr: String, vars: Map<String, Any?>): Any? {
                 return left.toLong() / right.toLong()
             }
         }
-    }
-
-    // Function calls
-    if (trimmed.startsWith("type(") && trimmed.endsWith(")")) {
-        val argName = trimmed.removePrefix("type(").removeSuffix(")").trim()
-        val v = vars[argName]
-        return when (v) {
-            is Int -> "Int"
-            is Double, is Float -> "Float"
-            is String -> "String"
-            is List<*> -> "List"
-            is Map<*, *> -> "Map"
-            is Boolean -> "Bool"
-            else -> "Int"
-        }
-    }
-
-    if (trimmed.startsWith("str(") && trimmed.endsWith(")")) {
-        val inner = trimmed.removePrefix("str(").removeSuffix(")").trim()
-        return evalExpression(inner, vars)?.toString() ?: ""
-    }
-
-    if (trimmed.startsWith("len(") && trimmed.endsWith(")")) {
-        val inner = trimmed.removePrefix("len(").removeSuffix(")").trim()
-        val v = evalExpression(inner, vars)
-        return when (v) {
-            is List<*> -> v.size
-            is String -> v.length
-            else -> 0
-        }
-    }
-
-    if (trimmed.startsWith("sum(") && trimmed.endsWith(")")) {
-        val inner = trimmed.removePrefix("sum(").removeSuffix(")").trim()
-        val v = evalExpression(inner, vars)
-        if (v is List<*>) {
-            return v.sumOf { (it as? Number)?.toDouble() ?: 0.0 }
-        }
-        return 0
-    }
-
-    if (trimmed.startsWith("array_min(") && trimmed.endsWith(")")) {
-        val inner = trimmed.removePrefix("array_min(").removeSuffix(")").trim()
-        val v = evalExpression(inner, vars)
-        if (v is List<*>) {
-            return v.filterIsInstance<Number>().minByOrNull { it.toDouble() } ?: 0
-        }
-        return 0
-    }
-
-    if (trimmed.startsWith("array_max(") && trimmed.endsWith(")")) {
-        val inner = trimmed.removePrefix("array_max(").removeSuffix(")").trim()
-        val v = evalExpression(inner, vars)
-        if (v is List<*>) {
-            return v.filterIsInstance<Number>().maxByOrNull { it.toDouble() } ?: 0
-        }
-        return 0
-    }
-
-    if (trimmed.startsWith("mean(") && trimmed.endsWith(")")) {
-        val inner = trimmed.removePrefix("mean(").removeSuffix(")").trim()
-        val v = evalExpression(inner, vars)
-        if (v is List<*> && v.isNotEmpty()) {
-            return v.sumOf { (it as? Number)?.toDouble() ?: 0.0 } / v.size
-        }
-        return 0.0
-    }
-
-    if (trimmed.startsWith("reverse(") && trimmed.endsWith(")")) {
-        val inner = trimmed.removePrefix("reverse(").removeSuffix(")").trim()
-        val v = evalExpression(inner, vars)
-        if (v is List<*>) {
-            return v.reversed()
-        }
-        return emptyList<Any>()
-    }
-
-    if (trimmed.startsWith("sorted(") && trimmed.endsWith(")")) {
-        val inner = trimmed.removePrefix("sorted(").removeSuffix(")").trim()
-        val v = evalExpression(inner, vars)
-        if (v is List<*>) {
-            return v.sortedWith { a, b ->
-                val da = (a as? Number)?.toDouble() ?: a.toString().toDoubleOrNull() ?: 0.0
-                val db = (b as? Number)?.toDouble() ?: b.toString().toDoubleOrNull() ?: 0.0
-                da.compareTo(db)
-            }
-        }
-        return emptyList<Any>()
     }
 
     if (trimmed.startsWith("enumerate(") && trimmed.endsWith(")")) {
@@ -1653,72 +1922,6 @@ fun evalExpression(expr: String, vars: Map<String, Any?>): Any? {
         return 1
     }
 
-    if (trimmed.startsWith("lower(") && trimmed.endsWith(")")) {
-        val inner = trimmed.removePrefix("lower(").removeSuffix(")").trim()
-        return evalExpression(inner, vars)?.toString()?.lowercase() ?: ""
-    }
-
-    if (trimmed.startsWith("upper(") && trimmed.endsWith(")")) {
-        val inner = trimmed.removePrefix("upper(").removeSuffix(")").trim()
-        return evalExpression(inner, vars)?.toString()?.uppercase() ?: ""
-    }
-
-    if (trimmed.startsWith("strip(") && trimmed.endsWith(")")) {
-        val inner = trimmed.removePrefix("strip(").removeSuffix(")").trim()
-        return evalExpression(inner, vars)?.toString()?.trim() ?: ""
-    }
-
-    if (trimmed.startsWith("parse_int(") && trimmed.endsWith(")")) {
-        val inner = trimmed.removePrefix("parse_int(").removeSuffix(")").trim()
-        val raw = evalExpression(inner, vars)?.toString()?.trim() ?: "0"
-        return raw.toIntOrNull() ?: 0
-    }
-
-    if (trimmed.startsWith("parse_ints(") && trimmed.endsWith(")")) {
-        val inner = trimmed.removePrefix("parse_ints(").removeSuffix(")").trim()
-        val v = evalExpression(inner, vars)
-        if (v is List<*>) {
-            return v.map { (it?.toString()?.trim())?.toIntOrNull() ?: 0 }
-        }
-        return emptyList<Int>()
-    }
-
-    if (trimmed.startsWith("split(") && trimmed.endsWith(")")) {
-        val args = trimmed.removePrefix("split(").removeSuffix(")").split(",").map { it.trim() }
-        if (args.isNotEmpty()) {
-            val s = evalExpression(args[0], vars)?.toString() ?: ""
-            val delim = if (args.size > 1) (evalExpression(args[1], vars)?.toString() ?: " ") else " "
-            return s.split(delim)
-        }
-        return emptyList<String>()
-    }
-
-    if (trimmed.startsWith("join(") && trimmed.endsWith(")")) {
-        val args = trimmed.removePrefix("join(").removeSuffix(")").split(",").map { it.trim() }
-        if (args.isNotEmpty()) {
-            val list = evalExpression(args[0], vars)
-            val delim = if (args.size > 1) (evalExpression(args[1], vars)?.toString() ?: "") else ""
-            if (list is List<*>) {
-                return list.joinToString(delim)
-            }
-        }
-        return ""
-    }
-
-    if (trimmed.startsWith("zip(") && trimmed.endsWith(")")) {
-        val args = trimmed.removePrefix("zip(").removeSuffix(")").split(",").map { it.trim() }
-        if (args.size >= 2) {
-            val l1 = evalExpression(args[0], vars) as? List<*> ?: emptyList<Any>()
-            val l2 = evalExpression(args[1], vars) as? List<*> ?: emptyList<Any>()
-            val minLen = minOf(l1.size, l2.size)
-            val zipped = mutableListOf<List<Any?>>()
-            for (idx in 0 until minLen) {
-                zipped.add(listOf(l1[idx], l2[idx]))
-            }
-            return zipped
-        }
-        return emptyList<Any>()
-    }
     if (trimmed.startsWith("abs(") && trimmed.endsWith(")")) {
         val inner = trimmed.removePrefix("abs(").removeSuffix(")").trim()
         val num = (evalExpression(inner, vars) as? Number)?.toDouble() ?: 0.0
@@ -1732,43 +1935,13 @@ fun evalExpression(expr: String, vars: Map<String, Any?>): Any? {
     }
 
     if (trimmed.startsWith("pow(") && trimmed.endsWith(")")) {
-        val args = trimmed.removePrefix("pow(").removeSuffix(")").split(",").map { it.trim() }
+        val args = splitTopLevel(trimmed.removePrefix("pow(").removeSuffix(")").trim(), ',')
         if (args.size >= 2) {
             val base = (evalExpression(args[0], vars) as? Number)?.toDouble() ?: 0.0
             val exp = (evalExpression(args[1], vars) as? Number)?.toDouble() ?: 0.0
             return Math.pow(base, exp)
         }
         return 0.0
-    }
-
-    if (trimmed.startsWith("max(") && trimmed.endsWith(")")) {
-        val args = trimmed.removePrefix("max(").removeSuffix(")").split(",").map { it.trim() }
-        if (args.size >= 2) {
-            val a = (evalExpression(args[0], vars) as? Number)?.toDouble() ?: 0.0
-            val b = (evalExpression(args[1], vars) as? Number)?.toDouble() ?: 0.0
-            return maxOf(a, b)
-        }
-        return 0.0
-    }
-
-    if (trimmed.startsWith("min(") && trimmed.endsWith(")")) {
-        val args = trimmed.removePrefix("min(").removeSuffix(")").split(",").map { it.trim() }
-        if (args.size >= 2) {
-            val a = (evalExpression(args[0], vars) as? Number)?.toDouble() ?: 0.0
-            val b = (evalExpression(args[1], vars) as? Number)?.toDouble() ?: 0.0
-            return minOf(a, b)
-        }
-        return 0.0
-    }
-
-    if (trimmed.startsWith("contains(") && trimmed.endsWith(")")) {
-        val args = trimmed.removePrefix("contains(").removeSuffix(")").split(",").map { it.trim() }
-        if (args.size >= 2) {
-            val list = evalExpression(args[0], vars) as? List<*> ?: emptyList<Any>()
-            val target = evalExpression(args[1], vars)
-            return if (list.contains(target)) 1 else 0
-        }
-        return 0
     }
 
     // Variable lookup

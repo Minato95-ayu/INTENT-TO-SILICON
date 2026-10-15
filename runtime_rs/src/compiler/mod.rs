@@ -99,6 +99,34 @@ fn expand_file(path: &Path, visiting: &mut HashSet<PathBuf>, loaded: &mut HashSe
                 }
                 if let Some(f) = found {
                     resolved = f;
+                } else {
+                    let mut global_dirs: Vec<PathBuf> = Vec::new();
+                    if let Ok(home) = std::env::var("AAYU_HOME") {
+                        global_dirs.push(PathBuf::from(home));
+                    }
+                    if let Ok(userprofile) = std::env::var("USERPROFILE") {
+                        global_dirs.push(PathBuf::from(userprofile).join(".aayu"));
+                    }
+                    if let Ok(home) = std::env::var("HOME") {
+                        global_dirs.push(PathBuf::from(home).join(".aayu"));
+                    }
+                    for gdir in &global_dirs {
+                        let mut cand1 = gdir.join(requested);
+                        if cand1.extension().is_none() { cand1.set_extension("aayu"); }
+                        if cand1.exists() { resolved = cand1; break; }
+
+                        let mut cand2 = gdir.join("std").join(requested);
+                        if cand2.extension().is_none() { cand2.set_extension("aayu"); }
+                        if cand2.exists() { resolved = cand2; break; }
+
+                        if requested.starts_with("std") {
+                            if let Ok(stripped) = requested.strip_prefix("std") {
+                                let mut cand3 = gdir.join("std").join(stripped);
+                                if cand3.extension().is_none() { cand3.set_extension("aayu"); }
+                                if cand3.exists() { resolved = cand3; break; }
+                            }
+                        }
+                    }
                 }
             }
             expanded.extend(expand_file(&resolved, visiting, loaded)?);

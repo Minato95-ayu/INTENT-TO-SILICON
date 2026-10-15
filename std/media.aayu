@@ -1,0 +1,129 @@
+# ==============================================================================
+# AAYU Standard Library: Media, Visuals & 3D Math (std/media.aayu)
+# 100% Pure Self-Hosted AAYU (.aayu)
+# Procedural Image Synthesis (PPM/SVG), 3D Wireframe Math & Visual Computing
+# ==============================================================================
+import "std/math.aayu"
+import "std/collections.aayu"
+
+# Creates a rasterized 2D canvas buffer
+action create_canvas(width, height)
+    let total_pixels = width * height
+    let pixels = []
+    let i = 0
+    # Background color: Black (0, 0, 0)
+    while i < total_pixels
+        pixels = pixels + [0] # Flattened R,G,B packed (grayscale or intensity)
+        i = i + 1
+    end
+    return {
+        "width": width,
+        "height": height,
+        "pixels": pixels
+    }
+end
+
+# Sets pixel intensity at (x, y)
+action canvas_set_pixel(canvas, x, y, intensity)
+    let w = canvas["width"]
+    let h = canvas["height"]
+    let pix = canvas["pixels"]
+    if x >= 0
+        if x < w
+            if y >= 0
+                if y < h
+                    let idx = (y * w) + x
+                    pix = set_at(pix, idx, intensity)
+                end
+            end
+        end
+    end
+    return {
+        "width": w,
+        "height": h,
+        "pixels": pix
+    }
+end
+
+# Draws a rasterized circle on the canvas
+action canvas_draw_circle(canvas, cx, cy, radius, intensity)
+    let w = canvas["width"]
+    let h = canvas["height"]
+    let r2 = radius * radius
+    let y = 0
+    while y < h
+        let dy = y - cy
+        let dy2 = dy * dy
+        let x = 0
+        while x < w
+            let dx = x - cx
+            let dist2 = (dx * dx) + dy2
+            if dist2 <= r2
+                canvas = canvas_set_pixel(canvas, x, y, intensity)
+            end
+            x = x + 1
+        end
+        y = y + 1
+    end
+    return canvas
+end
+
+# Exports canvas to standard Netpbm P2 (ASCII Grayscale) or P3 (RGB) Image Format
+action export_ppm_p2(canvas)
+    let w = canvas["width"]
+    let h = canvas["height"]
+    let out = "P2\n" + w + " " + h + "\n255\n"
+    let pixels = canvas["pixels"]
+    let i = 0
+    let total = len(pixels)
+    while i < total
+        out = out + pixels[i] + " "
+        if (i + 1) % w == 0
+            out = out + "\n"
+        end
+        i = i + 1
+    end
+    return out
+end
+
+# 3D Point Projection to 2D Screen: High-Dimensional Linear Geometry Math
+# Rotates 3D vertex (x, y, z) around Yaw and Pitch angles, then performs perspective projection
+action project_3d_to_2d(x, y, z, yaw, pitch, fov, screen_w, screen_h)
+    # Rotation around Y axis (Yaw)
+    let cos_y = cos(yaw)
+    let sin_y = sin(yaw)
+    let x1 = (x * cos_y) - (z * sin_y)
+    let z1 = (x * sin_y) + (z * cos_y)
+
+    # Rotation around X axis (Pitch)
+    let cos_p = cos(pitch)
+    let sin_p = sin(pitch)
+    let y2 = (y * cos_p) - (z1 * sin_p)
+    let z2 = (y * sin_p) + (z1 * cos_p)
+
+    # Perspective division with camera offset
+    let camera_dist = 5.0
+    let z_depth = z2 + camera_dist
+    if z_depth <= 0.1
+        z_depth = 0.1
+    end
+
+    let scale = fov / z_depth
+    let u = (x1 * scale) + (screen_w / 2.0)
+    let v = (y2 * scale) + (screen_h / 2.0)
+
+    return {
+        "u": u,
+        "v": v,
+        "depth": z_depth
+    }
+end
+
+# Generates clean, responsive SVG vector graphics by pure code
+action generate_svg_circle(cx, cy, r, color)
+    return "<circle cx=\"" + cx + "\" cy=\"" + cy + "\" r=\"" + r + "\" fill=\"" + color + "\" />"
+end
+
+action generate_svg_rect(x, y, w, h, color)
+    return "<rect x=\"" + x + "\" y=\"" + y + "\" width=\"" + w + "\" height=\"" + h + "\" fill=\"" + color + "\" />"
+end

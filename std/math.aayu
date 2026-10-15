@@ -93,3 +93,34 @@ action dot_product(v1, v2)
     end
     return sum
 end
+
+action math_pi()
+    return 3.14159265
+end
+
+# High-precision sine using Taylor series with range reduction
+action sin(x)
+    let pi_val = 3.14159265
+    let two_pi = 6.28318530
+    
+    while x > pi_val
+        x = x - two_pi
+    end
+    while x < (0.0 - pi_val)
+        x = x + two_pi
+    end
+    
+    let x2 = x * x
+    let x3 = x * x2
+    let x5 = x3 * x2
+    let x7 = x5 * x2
+    
+    let res = x - (x3 / 6.0) + (x5 / 120.0) - (x7 / 5040.0)
+    return clamp(res, -1.0, 1.0)
+end
+
+# High-precision cosine derived from phase-shifted sine
+action cos(x)
+    let half_pi = 1.57079632
+    return sin(x + half_pi)
+end

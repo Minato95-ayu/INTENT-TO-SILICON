@@ -1,0 +1,122 @@
+# ==============================================================================
+# AAYU Standard Library: Audio, Music & Human Voice Synthesis (std/audio.aayu)
+# 100% Pure Self-Hosted AAYU (.aayu)
+# Procedural Audio DSP, Musical Oscillators & Human Formant Vocal Synthesis
+# ==============================================================================
+import "std/math.aayu"
+
+# Standard note frequencies in Hertz (Hz)
+action get_note_frequency(note_name)
+    if note_name == "C4"
+        return 261.63
+    end
+    if note_name == "D4"
+        return 293.66
+    end
+    if note_name == "E4"
+        return 329.63
+    end
+    if note_name == "F4"
+        return 349.23
+    end
+    if note_name == "G4"
+        return 392.00
+    end
+    if note_name == "A4"
+        return 440.00
+    end
+    if note_name == "B4"
+        return 493.88
+    end
+    if note_name == "C5"
+        return 523.25
+    end
+    return 440.00 # Default A4 pitch
+end
+
+# Sine wave audio sample at time t (seconds)
+action osc_sine(frequency, time_sec)
+    let two_pi = 6.28318530
+    let phase = two_pi * frequency * time_sec
+    return sin(phase)
+end
+
+# Square wave audio sample with hard harmonic edge
+action osc_square(frequency, time_sec)
+    let s = osc_sine(frequency, time_sec)
+    if s >= 0.0
+        return 0.8
+    end
+    return -0.8
+end
+
+# Triangle wave audio sample (smooth warm tone)
+action osc_triangle(frequency, time_sec)
+    let two_pi = 6.28318530
+    let s = sin(two_pi * frequency * time_sec)
+    # Approximation via sine shaper
+    return (2.0 / math_pi()) * s
+end
+
+# Acoustic Formant Vocal Synthesis (Human Vowel Modeling)
+# The human vocal tract shapes sound via resonance formant frequencies (F1, F2):
+# - Vowel 'A' (ah): F1 = 800 Hz,  F2 = 1200 Hz
+# - Vowel 'O' (oh): F1 = 500 Hz,  F2 = 850 Hz
+# - Vowel 'E' (ee): F1 = 280 Hz,  F2 = 2250 Hz
+action synthesize_human_vowel_sample(vowel, base_pitch, time_sec)
+    let f1 = 800.0
+    let f2 = 1200.0
+    
+    if vowel == "O"
+        f1 = 500.0
+        f2 = 850.0
+    end
+    if vowel == "E"
+        f1 = 280.0
+        f2 = 2250.0
+    end
+
+    # Fundamental glottal pulse from vocal cords
+    let fundamental = osc_triangle(base_pitch, time_sec) * 0.4
+    
+    # Formant resonances (vocal tract mouth/throat acoustic amplification)
+    let formant1 = osc_sine(f1, time_sec) * 0.35
+    let formant2 = osc_sine(f2, time_sec) * 0.25
+
+    # Human-like composite acoustic wave
+    let voice_sample = fundamental + formant1 + formant2
+    return clamp(voice_sample, -1.0, 1.0)
+end
+
+# ADSR Envelope Generator (Attack, Decay, Sustain, Release)
+action apply_adsr(time_sec, total_duration, attack_t, decay_t, sustain_lvl, release_t)
+    if time_sec < attack_t
+        return time_sec / attack_t
+    end
+    if time_sec < (attack_t + decay_t)
+        let decay_progress = (time_sec - attack_t) / decay_t
+        return 1.0 - (decay_progress * (1.0 - sustain_lvl))
+    end
+    let release_start = total_duration - release_t
+    if time_sec < release_start
+        return sustain_lvl
+    end
+    let release_progress = (time_sec - release_start) / release_t
+    return clamp(sustain_lvl * (1.0 - release_progress), 0.0, 1.0)
+end
+
+# Synthesizes a discrete sequence of PCM audio samples for a musical note
+action render_audio_tone(frequency, duration_ms, sample_rate)
+    let total_samples = (duration_ms * sample_rate) / 1000
+    let samples = []
+    let i = 0
+    while i < total_samples
+        let t = (i * 1.0) / sample_rate
+        let s = osc_sine(frequency, t)
+        let env = apply_adsr(t, (duration_ms / 1000.0), 0.02, 0.05, 0.7, 0.05)
+        let final_val = s * env
+        samples = samples + [final_val]
+        i = i + 1
+    end
+    return samples
+end

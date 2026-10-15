@@ -630,3 +630,16 @@ action upper(str_val)
     return res
 end
 
+# Sets element at index in array using immutable functional slicing
+action set_at(arr, idx, val)
+    let n = len(arr)
+    if idx < 0
+        return arr
+    end
+    if idx >= n
+        return arr
+    end
+    return slice(arr, 0, idx) + [val] + slice(arr, idx + 1, n)
+end
+
+

@@ -1,0 +1,57 @@
+# ==============================================================================
+# AAYU Native Test Suite: Blockchain, 3D Geometry, Media & Voice Synthesis
+# File: tests/test_creative_silicon.aayu
+# 100% Pure Self-Hosted AAYU (.aayu) on Native Silicon VM
+# ==============================================================================
+import "std/test.aayu"
+import "std/math.aayu"
+import "std/chain.aayu"
+import "std/media.aayu"
+import "std/audio.aayu"
+
+test_begin_suite("Silicon Creative & Blockchain Invariant Suite")
+
+# 1. Math: Trigonometry & Pi
+let pi_val = math_pi()
+assert_true(pi_val > 3.14, "Pi is greater than 3.14")
+assert_true(pi_val < 3.15, "Pi is less than 3.15")
+
+let sin_0 = sin(0.0)
+assert_true(sin_0 > -0.01, "sin(0) approx >= 0")
+assert_true(sin_0 < 0.01, "sin(0) approx <= 0")
+
+let cos_0 = cos(0.0)
+assert_true(cos_0 > 0.99, "cos(0) approx 1.0")
+
+# 2. Blockchain Invariants
+let contract = create_contract_state("TestCoin", 1000, { "0xAlice": 500, "0xBob": 200 })
+let new_contract = execute_safe_transfer(contract, "0xAlice", "0xBob", 150)
+let b_alice = new_contract["balances"]["0xAlice"]
+let b_bob = new_contract["balances"]["0xBob"]
+assert_eq(b_alice, 350, "Alice balance after transfer is 350")
+assert_eq(b_bob, 350, "Bob balance after transfer is 350")
+assert_eq(b_alice + b_bob, 700, "Conservation of value preserved (350 + 350 = 700)")
+
+# 3. Media & 3D Geometry
+let canvas = create_canvas(8, 8)
+canvas = canvas_set_pixel(canvas, 4, 4, 255)
+let ppm_str = export_ppm_p2(canvas)
+assert_true(len(ppm_str) > 10, "PPM output generated with content")
+
+let pt = project_3d_to_2d(1.0, 1.0, 1.0, 0.0, 0.0, 100.0, 400.0, 300.0)
+assert_true(pt["u"] > 0.0, "Projected screen U is positive")
+assert_true(pt["v"] > 0.0, "Projected screen V is positive")
+assert_true(pt["depth"] > 5.0, "Z-depth calculated with camera offset")
+
+# 4. Audio & Formant Vocal Synthesis
+let freq_c = get_note_frequency("C4")
+assert_eq(freq_c, 261.63, "C4 frequency matches 261.63 Hz")
+
+let vowel_sample = synthesize_human_vowel_sample("A", 120.0, 0.005)
+assert_true(vowel_sample >= -1.0, "Vocal sample within dynamic range [-1.0, 1.0]")
+assert_true(vowel_sample <= 1.0, "Vocal sample within dynamic range [-1.0, 1.0]")
+
+let env = apply_adsr(0.01, 1.0, 0.02, 0.05, 0.8, 0.1)
+assert_true(env > 0.0, "Attack phase envelope is positive")
+
+test_end_suite()

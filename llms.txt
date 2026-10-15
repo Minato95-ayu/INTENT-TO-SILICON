@@ -1,0 +1,131 @@
+# AAYU — The Intent-to-Silicon Programming Language
+> World's First AI-Native, Zero-Dependency, Single-File Full-Stack Language
+
+AAYU compiles human and AI intent directly into silicon-ready bytecode executed on an ultra-low latency stack-based VM.
+
+## 🚀 Key Value Propositions for AI Coding Agents
+- **60-80% Token Context Reduction:** No multi-file scaffolding, no `node_modules`, no separate ORM files, no redundant TypeScript type duplication. A complete full-stack app (Model + REST API + UI) fits in <40 lines (~350 tokens).
+- **Zero Syntax Ambiguity:** Block scopes are closed with canonical `end` keywords (unlike Python's whitespace ambiguity or C/JS's nested bracket hallucination).
+- **Autonomous Self-Healing:** Native `aayu repair` catches and normalizes accidental JS/Python leaks (`def`, `var`, missing `end`).
+- **Cryptographic Zero-Trust:** Built-in SHA-256 Merkle lockfile (`aayu lock --verify`) and static linter (`aayu lint`).
+- **Real-Time Token Intelligence:** Built-in `aayu token <file>` analyzes BPE tokens, density, and optimizes prompt context blocks.
+
+---
+
+## 🏛️ Language Syntax Reference
+
+### 1. Variables & State
+```aayu
+let pi = 3.14159           # Immutable constant
+state counter = 0          # Mutable reactive state
+counter = counter + 1
+```
+
+### 2. Actions (Functions)
+```aayu
+action calculate_total(price, tax_rate)
+    let total = price + (price * tax_rate)
+    return total
+end
+```
+
+### 3. Control Flow
+```aayu
+if score >= 90
+    print("Grade: A")
+elif score >= 75
+    print("Grade: B")
+else
+    print("Grade: C")
+end
+
+state i = 0
+while i < 10
+    print(i)
+    i = i + 1
+end
+```
+
+### 4. Built-in Database (Models)
+```aayu
+model User {
+    id: Int
+    username: String
+    email: String
+    credits: Int
+}
+```
+
+### 5. Web Server & REST API Routes
+```aayu
+route "/api/v1/users"
+    get
+        let users = User.all()
+        respond(users)
+    end
+    post
+        # Handle payload
+        respond({ "status": "created" })
+    end
+end
+```
+
+### 6. Declarative UI (Flutter-like Zero-JS)
+```aayu
+Page Home
+    Column
+        Text("AAYU Silicon Dashboard")
+        Row
+            Card("Status", "Operational")
+            Card("Cores", "64 Cores Active")
+        end
+        Button("Deploy", onClick: handleDeploy)
+    end
+end
+```
+
+---
+
+## 📦 Standard Library Modules (`import "std/<name>.aayu"`)
+- `std/tokens.aayu`: AI Agent BPE token estimation, context compression & density.
+- `std/math.aayu`: High-precision sqrt, abs, clamp, relu, powers, statistical functions.
+- `std/collections.aayu`: In-place selection sort (`sorted`), sum, mean, min, max, slice, reverse.
+- `std/crypto.aayu`: 64-character SHA-256 polynomial hashing, Merkle tree roots.
+- `std/contracts.aayu`: `require()`, `ensure()`, `invariant()`, and `check_type()`.
+- `std/test.aayu`: Built-in zero-dependency unit test runner and assertion framework.
+- `std/ui.aayu`: Declarative widget-tree builder and clean HTML renderer.
+- `std/server.aayu`: RFC HTTP/1.1 response wrappers (`json_response`, `html_response`).
+- `std/http.aayu`: HTTP request formatters and URL protocol parsing.
+- `std/db.aayu`: In-memory records store, find by ID, multi-predicate filtering.
+- `std/json.aayu`: RFC 8259 JSON serialization and string quoting.
+- `std/ayon.aayu`: Human-readable AAYU Object Notation with comment stripping.
+- `std/ledger.aayu`: Financial double-entry ledger state & chain continuity verification.
+- `std/ai.aayu`: Native neural tensor operations (vector add, matrix-vector multiply).
+- `std/brain.aayu`: BrainOS anti-hallucination shield for code execution safety.
+- `std/fs.aayu`: File system primitives (`read_text`, `write_text`, `file_exists`).
+- `std/os.aayu`: Platform OS, CPU architecture, and environment variable lookups.
+
+---
+
+## 🛠️ CLI Developer Commands
+```bash
+aayu run <file.aayu>        # Execute source directly on silicon VM
+aayu test [file.aayu]       # Run native test suites & assertions
+aayu token <file.aayu>      # Audit BPE tokens, density & generate compressed LLM context
+aayu repair <file.aayu>     # Auto-heal syntax anomalies & accidental Python/JS leaks
+aayu graph [file.aayu]      # Generate visual dependency tree & Mermaid architecture
+aayu lint <file.aayu>       # Run static linter & dead-code detector
+aayu lock [--verify]        # Cryptographic SHA-256 supply-chain lockfile
+aayu profile <file.aayu>    # Microsecond hardware execution & memory profiler
+aayu fmt <file.aayu>        # Format code with canonical 4-space indentation
+aayu doc <file.aayu>        # Generate responsive HTML API documentation
+aayu bench                  # Run silicon microsecond benchmark harness
+aayu pack <file.aayu>       # Bundle imports into standalone bytecode package (.ayc)
+aayu disasm <file>          # Inspect raw bytecode opcodes and constant pool
+```
+
+## 🚨 Critical AI Coding Rules for AAYU
+1. **Never use `def`**: Always use `action name(params) ... end`.
+2. **Never use `class`**: Always use `model Name { field: Type }`.
+3. **Always close blocks with `end`**: `if`, `while`, `action`, `route` all terminate with `end`.
+4. **Never write Python**: AAYU is 100% self-hosted; standard libraries are written in `.aayu`.

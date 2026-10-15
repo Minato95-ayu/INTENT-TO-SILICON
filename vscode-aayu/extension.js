@@ -47,6 +47,24 @@ function activate(context) {
         if (editor) runAayuCommand(['test', editor.document.fileName], 'Run Test Suite');
     }));
 
+    // 2a. AI Agent Tokenizer & Context Optimizer
+    context.subscriptions.push(vscode.commands.registerCommand('aayu.tokenAudit', () => {
+        const editor = vscode.window.activeTextEditor;
+        if (editor) runAayuCommand(['token', editor.document.fileName], 'Audit BPE Tokens & Compress Context');
+    }));
+
+    // 2b. Autonomous Code Repair
+    context.subscriptions.push(vscode.commands.registerCommand('aayu.repairFile', () => {
+        const editor = vscode.window.activeTextEditor;
+        if (editor) runAayuCommand(['repair', editor.document.fileName], 'Auto-Heal Syntax Anomalies');
+    }));
+
+    // 2c. Architecture Graph Visualizer
+    context.subscriptions.push(vscode.commands.registerCommand('aayu.graphFile', () => {
+        const editor = vscode.window.activeTextEditor;
+        if (editor) runAayuCommand(['graph', editor.document.fileName], 'Visualize Architecture Graph');
+    }));
+
     // 3. Format Document
     context.subscriptions.push(vscode.commands.registerCommand('aayu.formatFile', () => {
         const editor = vscode.window.activeTextEditor;

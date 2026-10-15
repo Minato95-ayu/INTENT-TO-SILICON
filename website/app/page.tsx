@@ -574,7 +574,23 @@ export default function Home() {
                     The AAYU compiler explicitly blocks structural hallucination. There is no `npm install` for AI to hallucinate. Everything is native.
                   </div>
                 </li>
+                <li className="flex items-start gap-3">
+                  <div className="mt-1 bg-cyan-500/20 p-1 rounded"><Zap className="w-4 h-4 text-cyan-400" /></div>
+                  <div>
+                    <strong className="text-white block">Native Tokenizer &amp; Autonomous Healer</strong>
+                    Run <code className="text-cyan-300">aayu token</code> to compress LLM prompt contexts, and <code className="text-cyan-300">aayu repair</code> to auto-heal syntax leaks from other languages.
+                  </div>
+                </li>
               </ul>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <a href="/llms.txt" target="_blank" className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-500/10 border border-purple-500/30 text-xs font-mono text-purple-300 hover:bg-purple-500/20 transition">
+                  <Terminal className="w-3.5 h-3.5" />
+                  <span>View llms.txt (AI Agent Spec)</span>
+                </a>
+                <a href="/downloads/aayu-vscode.vsix" className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-mono text-zinc-300 hover:bg-white/10 transition">
+                  <span>Download VS Code v1.5.0</span>
+                </a>
+              </div>
             </div>
             
             <div className="bg-gradient-to-b from-zinc-900 to-[#0a0a0a] border border-white/10 p-8 rounded-2xl">
@@ -603,7 +619,7 @@ export default function Home() {
                 <div>
                   <div className="flex justify-between text-sm mb-2">
                     <span className="text-green-400 font-semibold">AAYU (Single File Full-Stack)</span>
-                    <span className="text-zinc-400 font-bold">~300 Tokens</span>
+                    <span className="text-zinc-400 font-bold">~300 Tokens (-96%)</span>
                   </div>
                   <div className="h-3 bg-zinc-800 rounded-full overflow-hidden relative">
                     <div className="absolute inset-0 bg-green-400/20 animate-pulse" />

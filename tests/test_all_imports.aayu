@@ -1,35 +1,23 @@
-import "std/math"
-import "std/crypto"
-import "std/ai"
-import "std/ledger"
-import "std/ui"
-import "std/fs"
-import "std/http"
-import "std/server"
-import "std/db"
-import "std/json"
-import "std/ayon"
-import "std/collections"
+import "std/test.aayu"
+import "std/contracts.aayu"
+import "std/math.aayu"
+import "std/collections.aayu"
+import "std/crypto.aayu"
+import "std/ui.aayu"
+import "std/server.aayu"
+import "std/http.aayu"
+import "std/db.aayu"
+import "std/ai.aayu"
+import "std/ledger.aayu"
+import "std/fuzz.aayu"
+import "std/brain.aayu"
+import "std/json.aayu"
+import "std/ayon.aayu"
+import "std/fs.aayu"
+import "std/os.aayu"
 
-let s = sqrt(16.0)
-print("Math Sqrt 16:")
-print(s)
-let p = pow(2.0, 4)
-print("Math Pow 2^4:")
-print(p)
-let h = hash_string("AAYU")
-print("Crypto Hash:")
-print(h)
-let ext = get_extension("index.aayu")
-print("File Extension:")
-print(ext)
-let j_sample = json_format_pair("protocol", "\"AAYU\"")
-print("JSON Sample:")
-print(j_sample)
-let a_sample = ayon_format_pair("version", "1.2")
-print("AYON Sample:")
-print(a_sample)
-let c_sum = sum([10, 20, 30])
-print("Collections Sum:")
-print(c_sum)
-print("ALL 12 STDLIB MODULES IMPORTED AND RUNNING CLEANLY!")
+action main()
+    print("All 17 stdlib modules imported successfully!")
+end
+
+main()

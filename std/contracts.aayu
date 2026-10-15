@@ -38,6 +38,31 @@ action check_type(value, expected_type, param_name)
     if actual_type == expected_type
         return 1
     end
+    if expected_type == "Dict"
+        if actual_type == "Dictionary"
+            return 1
+        end
+    end
+    if expected_type == "List"
+        if actual_type == "Array"
+            return 1
+        end
+    end
+    if expected_type == "Integer"
+        if actual_type == "Int"
+            return 1
+        end
+    end
+    if expected_type == "Str"
+        if actual_type == "String"
+            return 1
+        end
+    end
+    if expected_type == "Boolean"
+        if actual_type == "Bool"
+            return 1
+        end
+    end
     print("[TYPE CONTRACT VIOLATION] Parameter '" + param_name + "' expected type: " + expected_type + ", received: " + actual_type)
     return 0
 end

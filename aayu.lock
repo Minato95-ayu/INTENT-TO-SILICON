@@ -27,8 +27,8 @@ status = "VERIFIED"
 
 [[module]]
 name = "std/contracts.aayu"
-size = 1422
-sha256 = "bdbde48c1b5b422a79f9a0c8d7970e6635356c0493d3caa2f17128405f1f86ee"
+size = 1960
+sha256 = "53538a22b1f1e8c01f9f466e7d3da40cdbdb02aa397960489717cee6f5b52c84"
 status = "VERIFIED"
 
 [[module]]

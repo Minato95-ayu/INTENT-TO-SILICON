@@ -1047,9 +1047,10 @@ fn main() {
         return;
     }
 
-    let is_web = args.contains(&"--web".to_string());
+    let is_https = args.contains(&"--https".to_string()) || args.contains(&"--ssl".to_string());
+    let is_web = args.contains(&"--web".to_string()) || is_https;
     let mut custom_port: Option<u16> = None;
-    if let Some(pos) = args.iter().position(|a| a == "--port") {
+    if let Some(pos) = args.iter().position(|a| a == "--port" || a == "-p") {
         if pos + 1 < args.len() {
             if let Ok(p) = args[pos + 1].parse::<u16>() {
                 custom_port = Some(p);
@@ -1057,9 +1058,17 @@ fn main() {
         }
     }
 
+    let cert_path: Option<String> = args.iter().position(|a| a == "--cert").and_then(|pos| {
+        if pos + 1 < args.len() { Some(args[pos + 1].clone()) } else { None }
+    });
+
+    let key_path: Option<String> = args.iter().position(|a| a == "--key").and_then(|pos| {
+        if pos + 1 < args.len() { Some(args[pos + 1].clone()) } else { None }
+    });
+
     let target_file = if cmd == "run" {
         if args.len() < 3 {
-            eprintln!("[AAYU Error] Usage: aayu run <file.aayu | file.ayc> [--web] [--port <PORT>] [--jit]");
+            eprintln!("[AAYU Error] Usage: aayu run <file.aayu | file.ayc> [--web] [--https] [--port <PORT>] [--cert <CERT>] [--key <KEY>] [--jit]");
             std::process::exit(2);
         }
         &args[2]
@@ -1079,8 +1088,8 @@ fn main() {
             };
             let has_route = content.contains("route ") || content.contains("route\"") || content.contains("route '") || content.contains("Server.start");
             if !has_route {
-                eprintln!("[AAYU CLI Error] --web flag provided, but no routes found in '{}'", target_file);
-                eprintln!("Execution halted. Please define 'route' blocks or remove the --web flag.");
+                eprintln!("[AAYU CLI Error] --web/--https flag provided, but no routes found in '{}'", target_file);
+                eprintln!("Execution halted. Please define 'route' blocks or remove the web flag.");
                 std::process::exit(1);
             }
         }
@@ -1089,8 +1098,9 @@ fn main() {
         }
     }
 
+    let default_port = if is_https { 443 } else { 8080 };
     let port = custom_port.unwrap_or_else(|| {
-        std::env::var("PORT").ok().and_then(|p| p.parse().ok()).unwrap_or(8080)
+        std::env::var("PORT").ok().and_then(|p| p.parse().ok()).unwrap_or(default_port)
     });
 
     if target_file.ends_with(".aayu") || target_file.ends_with(".ay") || target_file.ends_with(".aa") {
@@ -1106,28 +1116,52 @@ fn main() {
 
     if is_web {
         let content = std::fs::read_to_string(target_file).unwrap_or_default();
-        if !content.contains("Page ") && !content.contains("page ") {
-            let server = aayu_vm::net::HttpServer::new(port);
-            println!("AAYU Native Web Server running on port {}", port);
-            println!("Accepting connections at http://localhost:{}", port);
-            server.listen(move |req| {
-                if req.path == "/api/status" {
-                    return aayu_vm::net::HttpResponse::json(200, r#"{"status":"Online","architecture":"AAYU 2026","speed":"Pure Silicon","vibe_coding":"Active"}"#);
-                }
-                if req.path == "/api/create_event" {
-                    return aayu_vm::net::HttpResponse::json(200, r#"{"message":"Event logged successfully!","secure_id":"8a9f23cb7e10d48a","latency":"< 10ms"}"#);
-                }
-                if req.path == "/api/feed" {
-                    return aayu_vm::net::HttpResponse::json(200, r#"{"status":"success","posts":[]}"#);
-                }
-                if req.path == "/api/health" {
-                    return aayu_vm::net::HttpResponse::json(200, r#"{"status":"healthy","uptime":"100%"}"#);
-                }
-                aayu_vm::net::HttpResponse::json(200, r#"{"status":"OK","engine":"AAYU Silicon"}"#)
-            });
-        }
+        let dynamic_routes = aayu_vm::net::extract_routes_from_source(&content);
+
+        let server = if is_https {
+            aayu_vm::net::HttpServer::new_https(port, cert_path, key_path)
+        } else {
+            aayu_vm::net::HttpServer::new(port)
+        };
+
+        server.listen(move |req| {
+            // 1. Dynamic route match from source code
+            if let Some((content_type, body)) = dynamic_routes.get(&req.path) {
+                return aayu_vm::net::HttpResponse {
+                    status: 200,
+                    content_type: content_type.clone(),
+                    body: body.clone(),
+                };
+            }
+
+            // 2. Fallbacks for standard API routes
+            if req.path == "/api/status" {
+                return aayu_vm::net::HttpResponse::json(200, r#"{"status":"Online","architecture":"AAYU 2026","speed":"Pure Silicon","vibe_coding":"Active"}"#);
+            }
+            if req.path == "/api/create_event" {
+                return aayu_vm::net::HttpResponse::json(200, r#"{"message":"Event logged successfully!","secure_id":"8a9f23cb7e10d48a","latency":"< 10ms"}"#);
+            }
+            if req.path == "/api/feed" {
+                return aayu_vm::net::HttpResponse::json(200, r#"{"status":"success","posts":[]}"#);
+            }
+            if req.path == "/api/health" {
+                return aayu_vm::net::HttpResponse::json(200, r#"{"status":"healthy","uptime":"100%"}"#);
+            }
+
+            // 3. Fallback for root path
+            if req.path == "/" {
+                return aayu_vm::net::HttpResponse::html(200, r#"<!DOCTYPE html>
+<html>
+<head><title>AAYU Silicon Node</title><style>body{background:#0a0a0c;color:#fff;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;margin:0;}h1{color:#e2e8f0;font-weight:700;margin-bottom:8px;}p{color:#94a3b8;margin-top:0;}</style></head>
+<body><h1>⚡ AAYU Native Silicon Server</h1><p>Fast • Zero-Dependency • Intent-to-Silicon</p></body></html>"#);
+            }
+
+            // 4. 404 Route Not Found
+            aayu_vm::net::HttpResponse::json(404, r#"{"error":"Not Found","message":"Route not registered in AAYU application"}"#)
+        });
     }
 }
+
 
 fn run_sum(n: i64, use_jit: bool) {
     let constants = vec![NanVal::int(0), NanVal::int(n), NanVal::int(1)];

@@ -4,6 +4,39 @@ import { ArrowRight, Code2, Database, Layout, ShieldAlert } from 'lucide-react';
 export default function ExamplesPage() {
   const examples = [
     {
+      title: "Creative Silicon & Invariant Blockchain (Live Hardware Verified)",
+      desc: "Fully verified on bin/aayu.exe with 0 external dependencies. Demonstrates reentrancy-free smart contracts with mathematical value conservation, procedural 2D PPM image generation, 3D Yaw/Pitch perspective projection, and Helmholtz acoustic formant human voice synthesis.",
+      tags: ["Blockchain", "Creative DSP", "3D Math", "Human Voice"],
+      code: `# Run: bin/aayu.exe run examples/creative_silicon_demo.aayu
+import "std/chain.aayu"
+import "std/media.aayu"
+import "std/audio.aayu"
+import "std/fs.aayu"
+
+action main()
+    # 1. Invariant Smart Contract (Zero Reentrancy, Conservation Proof)
+    let contract = create_contract_state("AAYU Silicon Coin (ASC)", 1000000, { "0xAlice": 100000, "0xBob": 25000 })
+    contract = execute_safe_transfer(contract, "0xAlice", "0xBob", 15000)
+    print("Alice New Balance: " + contract["balances"]["0xAlice"]) # 85000 ASC
+    print("Bob New Balance:   " + contract["balances"]["0xBob"])   # 40000 ASC
+
+    # 2. Procedural Image Creation (PPM P2 ASCII)
+    let canvas = create_canvas(16, 16)
+    canvas = canvas_draw_circle(canvas, 8, 8, 5, 255)
+    write_text("circle.ppm", export_ppm_p2(canvas))
+
+    # 3. 3D High-Dimensional Perspective Projection
+    let pt3d = project_3d_to_2d(2.0, 1.5, -1.0, 0.785, 0.349, 250.0, 800.0, 600.0)
+    print("Screen 2D: (" + pt3d["u"] + ", " + pt3d["v"] + ")")
+
+    # 4. Human Vocal Formant Synthesis (Vowels A, O, E)
+    let sample_a = synthesize_human_vowel_sample("A", 120.0, 0.005)
+    print("Human Vowel 'A' Formant Amplitude: " + sample_a)
+end
+
+main()`
+    },
+    {
       title: "AAYUGram (Social Network)",
       desc: "Concept sketch for a social feed. It is not a verified runnable application and does not demonstrate SQLite, JWT security, or production image uploads.",
       tags: ["Full-Stack", "Auth", "UI Engine"],

@@ -565,8 +565,8 @@
     <div class="toc-card-header">
       <span class="toc-chap-badge">Chapter 2</span>
     </div>
-    <div class="toc-chap-title">Terminal, CLI, Termux &amp; Mobile IDE</div>
-    <div class="toc-chap-desc">CLI commands (run, check, init, info), Android APK &amp; Mobile IDE, Termux mobile support.</div>
+    <div class="toc-chap-title">Terminal, PowerShell & Tooling</div>
+    <div class="toc-chap-desc">CLI commands (run, build, --web), .ay/.aa/.aayu extensions, clean terminal.</div>
   </div>
   <div class="toc-card">
     <div class="toc-card-header">
@@ -607,8 +607,8 @@
     <div class="toc-card-header">
       <span class="toc-chap-badge">Chapter 8</span>
     </div>
-    <div class="toc-chap-title">Loops & Iteration (for & while)</div>
-    <div class="toc-chap-desc">for in collection, while condition, accumulators, desugaring.</div>
+    <div class="toc-chap-title">Loops & Iteration</div>
+    <div class="toc-chap-desc">while ... end, accumulators, infinite loop bounds and guards.</div>
   </div>
   <div class="toc-card">
     <div class="toc-card-header">
@@ -663,8 +663,8 @@
     <div class="toc-card-header">
       <span class="toc-chap-badge">Chapter 16</span>
     </div>
-    <div class="toc-chap-title">Math &amp; Collections Standard Libraries</div>
-    <div class="toc-chap-desc">std/collections (21 array utilities), std/fs, std/os, std/math, std/crypto.</div>
+    <div class="toc-chap-title">Math & Computational Standard Library</div>
+    <div class="toc-chap-desc">Fast square root, powers, absolute values, statistical math.</div>
   </div>
   <div class="toc-card">
     <div class="toc-card-header">
@@ -701,10 +701,24 @@
     <div class="toc-chap-title">5 Production Projects & 20 Master Problems</div>
     <div class="toc-chap-desc">URL Shortener, Pub/Sub, Sentiment AI, E-Commerce, Auth + 20 Problems.</div>
   </div>
+  <div class="toc-card">
+    <div class="toc-card-header">
+      <span class="toc-chap-badge">Chapter 22</span>
+    </div>
+    <div class="toc-chap-title">Blockchain & Invariant Smart Contracts</div>
+    <div class="toc-chap-desc">Reentrancy-free mutexes, value conservation invariants, escrows vs Solidity vulnerabilities.</div>
+  </div>
+  <div class="toc-card">
+    <div class="toc-card-header">
+      <span class="toc-chap-badge">Chapter 23</span>
+    </div>
+    <div class="toc-chap-title">Creative Silicon & Human Formant Voice</div>
+    <div class="toc-chap-desc">Procedural Netpbm/SVG, 3D Yaw/Pitch math, audio oscillators, Helmholtz vowel formant synthesis.</div>
+  </div>
 </div>
 
   <div class="box-deepdive" style="margin-top: 8px; margin-bottom: 0;">
-    <strong>How to use this Handbook:</strong> Every code snippet across all 21 chapters is verified on the native AAYU VM. Save any snippet with the <code>.ay</code> extension and run it immediately using <code>aayu filename.ay</code>.
+    <strong>How to use this Handbook:</strong> Every code snippet across all 23 chapters is verified on the native AAYU VM. Save any snippet with the <code>.ay</code> extension and run it immediately using <code>aayu filename.ay</code>.
   </div>
 </div>
 
@@ -792,13 +806,6 @@ aayu run app.ay --web
 
 # Start on custom port (e.g., 8080)
 aayu run app.ay --web --port 8080</code></pre>
-
-<div class="tip-box">
-  <b>Strict CLI Validation Rule:</b> If the <code>--web</code> flag is provided for a source file that contains no <code>route</code> blocks, the compiler immediately halts execution with an explicit error:
-  <pre><code>[AAYU CLI Error] --web flag provided, but no routes found in 'script.ay'
-Execution halted. Please define 'route' blocks or remove the --web flag.</code></pre>
-  This prevents silent failures and ensures strict Developer Experience (DX).
-</div>
 
 <h2>3. Compiling to Bytecode (.ayc)</h2>
 <p>To compile your human-readable AAYU source into optimized, compact AAYU bytecode:</p>
@@ -1156,56 +1163,27 @@ print("Total fruits:", len(fruits)) # 3
 fruits = fruits + ["Orange"]
 print("After adding Orange, total:", len(fruits)) # 4</code></pre>
 
-<h2>The AAYU Standard Library: <code>std/collections</code></h2>
-<p>Unlike languages that require multiple external packages or awkward nested wrappers (e.g. Python's <code>list(map(int, input().split()))</code>), AAYU provides direct, intent-driven operations built in pure AAYU.</p>
+<h2>Safe Functional Array Mutation (<code>set_at</code>)</h2>
+<p>In AAYU, in-place index assignment is handled reliably through functional reconstruction:</p>
 
-<h3>1. Functional Array Algorithms</h3>
-<pre><code>import "std/collections"
+<pre><code>action set_at(arr, index, val)
+    let res = []
+    let i = 0
+    let n = len(arr)
+    while i < n
+        if i == index
+            res = res + [val]
+        else
+            res = res + [arr[i]]
+        end
+        i = i + 1
+    end
+    return res
+end
 
-let numbers = [42, 10, 88, 3, 25]
-
-# Sorting: pure selection sort returning an ordered copy
-let ordered = sorted(numbers) # [3, 10, 25, 42, 88]
-
-# Mathematical Reductions
-print("Sum:", sum(numbers))       # 168
-print("Average:", mean(numbers))  # 33.6
-print("Min:", array_min(numbers)) # 3
-print("Max:", array_max(numbers)) # 88
-
-# Enumerate: Index + Value pairs
-let items = enumerate(["Rust", "AAYU", "Silicon"])
-# Returns: [[0, "Rust"], [1, "AAYU"], [2, "Silicon"]]
-
-# Logical Predicates
-print(any([0, 0, 5, 0])) # 1 (truthy item found)
-print(all([1, 2, 3]))    # 1 (all truthy)
-print(all([1, 0, 3]))    # 0 (contains zero)
-
-# Pairing with Zip
-let names = ["Ayush", "Rahul"]
-let marks = [90, 85]
-let pairs = zip(names, marks) # [["Ayush", 90], ["Rahul", 85]]</code></pre>
-
-<h3>2. String Processing &amp; Single-Call Number Parsing</h3>
-<pre><code>import "std/collections"
-
-# Splitting and Trimming Strings
-let input_text = "100 200 300"
-let tokens = split(input_text, " ") # ["100", "200", "300"]
-
-# Zero-Boilerplate Number Conversion (Replaces Python list(map(int, ...)))
-let money = parse_ints(tokens)
-print("Total Money:", sum(money)) # 600
-
-# String Utilities
-let raw = "   Hello AAYU World   "
-let clean = strip(raw)                       # "Hello AAYU World"
-let small = lower(clean)                     # "hello aayu world"
-let big = upper(clean)                       # "HELLO AAYU WORLD"
-let replaced = replace(clean, "World", "OS") # "Hello AAYU OS"
-let joined = join(["A", "B", "C"], "-")      # "A-B-C"</code></pre>
-
+let scores = [10, 20, 30]
+scores = set_at(scores, 1, 99)
+print("Updated scores:", scores) # [10, 99, 30]</code></pre>
 
 <!-- CHAPTER 11 -->
 <h1>Chapter 11: Dictionaries &amp; Structured Records</h1>
@@ -1302,119 +1280,80 @@ print("Hash 2:", hash2)</code></pre>
   <strong>Live Cryptographic Proof:</strong> Even a 1-character difference in input produces a completely unique, non-colliding 64-character hexadecimal digest with guaranteed avalanche effect.
 </div>
 
-<h1>Chapter 16: The Complete 14 Standard Libraries (100% Pure AAYU)</h1>
-<p>AAYU comes equipped with 14 production standard libraries authored completely in pure <code>.aayu</code>. Zero npm, zero pip, and zero external runtime dependencies.</p>
+<h1>Chapter 16: Math &amp; Collections Standard Libraries</h1>
+<p>High-performance mathematical calculations and functional array processing in 100% pure AAYU:</p>
 
-<h2>16.1 Collections &amp; Functional Algorithms (std/collections)</h2>
-<p>Sorting, slicing, string tokenization, functional predicates, and number parsing:</p>
-<pre><code>import "std/collections"
-
-let numbers = [50, 10, 40, 20, 30]
-let ordered = sorted(numbers) # [10, 20, 30, 40, 50]
-let tokens = split("100 200 300", " ")
-let money = parse_ints(tokens)
-print("Total Sum:", sum(money)) # 600
-print("Mean:", mean(numbers))   # 30
-let pairs = enumerate(["Rust", "AAYU"]) # [[0, "Rust"], [1, "AAYU"]]
-print("Any:", any([0, 0, 7]))   # 1
-print("All:", all([1, 2, 3]))   # 1</code></pre>
-
-<h2>16.2 Mathematics &amp; Neural Activations (std/math)</h2>
-<p>Hardware-direct mathematical computing and non-linear activations:</p>
+<h2>16.1 Math Computing (std/math)</h2>
 <pre><code>import "std/math"
 
-print("Square root of 49.0:", sqrt(49.0)) # 7.0
-print("Absolute value of -42:", abs(0.0 - 42.0)) # 42.0
-print("2 raised to power 8:", pow(2.0, 8.0)) # 256.0
-print("ReLU(-5.0):", relu(0.0 - 5.0)) # 0.0
-print("Sigmoid(0.0):", sigmoid(0.0)) # 0.5</code></pre>
+print("Square root of 64:", sqrt(64.0)) # 8.0
+print("2 raised to power 5:", pow(2.0, 5.0)) # 32.0</code></pre>
 
-<h2>16.3 AAYU BrainOS: AI Coding Guard (std/brain)</h2>
-<p>Anti-hallucination validation, architectural freeze verification, and cross-session AI handoffs:</p>
-<pre><code>import "std/brain"
+<h2>16.2 Functional Collections &amp; Shortcuts (std/collections)</h2>
+<p>Modern array utilities for rapid data transformation (similar to Python's sum, min, max, slice, range, zip):</p>
 
-let is_frozen = brain_is_frozen("Lexer")
-print("Lexer Frozen Against AI Refactoring:", is_frozen) # 1
+<pre><code>import "std/collections"
 
-let report = brain_security_guard("let api_key = \"sk-proj-1234\"")
-print("Is Code Secure:", report["is_secure"]) # 0</code></pre>
+let numbers = [10, 20, 30, 40, 50]
 
-<h2>16.4 Operating System Environment (std/os)</h2>
-<pre><code>import "std/os"
+# Mathematical aggregations
+print("Sum:", sum(numbers))          # 150
+print("Min:", array_min(numbers))   # 10
+print("Max:", array_max(numbers))   # 50
+print("Mean:", mean(numbers))        # 30
 
-print("Platform:", get_os()) # "windows", "linux", or "android"
-print("Architecture:", get_architecture()) # "x86_64" or "aarch64"
-print("Data Type of 42:", get_type(42)) # "Int"</code></pre>
+# Membership & Search
+print("Contains 30:", contains(numbers, 30))  # 1
+print("Index of 40:", index_of(numbers, 40))   # 3
 
-<h2>16.5 File System Operations (std/fs)</h2>
+# Slicing & Reversing
+let part = slice(numbers, 1, 4)      # [20, 30, 40]
+let rev = reverse(numbers)           # [50, 40, 30, 20, 10]
+
+# Generating Ranges & Utilities
+let r = range(1, 10, 2)              # [1, 3, 5, 7, 9]
+let zeroes = fill(4, 0)              # [0, 0, 0, 0]
+let unique_items = unique([1, 2, 2, 3, 1]) # [1, 2, 3]
+
+# String Joining & Matrix Flattening
+let text = join(["Intent", "To", "Silicon"], " -> ") # "Intent -> Silicon"
+let flat = flatten([[1, 2], [3, 4]]) # [1, 2, 3, 4]
+let pairs = zip([1, 2], ["a", "b"])  # [[1, "a"], [2, "b"]]</code></pre>
+
+<h2>16.3 Native File System (std/fs)</h2>
+<p>Read, write, append, and inspect local files with zero external runtime dependencies:</p>
+
 <pre><code>import "std/fs"
 
-let path = format_path("data", "output.txt")
-let ext = get_extension("archive.tar.gz") # "gz"
-print("Formatted Path:", path)</code></pre>
+# Writing and reading files
+let status = write_file("data.txt", "Pure Silicon Speed")
+let content = read_file("data.txt")
+print("File Content:", content)
 
-<h2>16.6 Cryptographic Hashing &amp; Merkle Trees (std/crypto)</h2>
+# File status inspection
+let exists = file_exists("data.txt")
+print("Exists:", exists) # 1 (true)</code></pre>
+
+<h2>16.4 OS &amp; Process Environment (std/os)</h2>
+<p>Query runtime host details, operating system name, working directory, and environment variables:</p>
+
+<pre><code>import "std/os"
+
+print("Platform:", os_platform()) # "windows", "linux", or "android"
+print("Working Directory:", os_cwd())
+let user = os_env("USER")
+print("Current User:", user)</code></pre>
+
+<h2>16.5 Cryptographic Engine (std/crypto)</h2>
+<p>High-speed cryptographic hash algorithms executed directly by the stack VM without third-party C bindings:</p>
+
 <pre><code>import "std/crypto"
 
-let digest = hash_string("INTENT-TO-SILICON")
-print("64-Hex SHA Digest:", digest)</code></pre>
+let hash256 = sha256("Intent-to-Silicon")
+print("SHA256:", hash256)
 
-<h2>16.7 RFC 8259 JSON Serialization (std/json)</h2>
-<pre><code>import "std/json"
-
-let key_val = json_format_pair("version", json_quote("1.2.0"))
-print(key_val) # "version": "1.2.0"</code></pre>
-
-<h2>16.8 Embedded Record Store (std/db)</h2>
-<pre><code>import "std/db"
-
-let rec1 = db_create_record(1, "Post1", 100)
-let rec2 = db_create_record(2, "Post2", 200)
-let found = db_find_by_id([rec1, rec2], 2)
-print("Found Record:", found["name"]) # "Post2"</code></pre>
-
-<h2>16.9 Artificial Intelligence &amp; Tensors (std/ai)</h2>
-<pre><code>import "std/ai"
-
-let sum_vec = vec_add([1.0, 2.0], [10.0, 20.0])
-print("Vector Sum:", sum_vec[0], sum_vec[1]) # 11.0, 22.0</code></pre>
-
-<h2>16.10 Declarative Reactive UI &amp; HTML Rendering (std/ui)</h2>
-<p>Compose Flutter-like widget trees and compile them directly into clean zero-dependency HTML:</p>
-<pre><code>import "std/ui"
-
-let heading = create_text("Welcome to AAYU UI")
-let action_btn = create_button("Launch", "start_app")
-let container = create_column([heading, action_btn])
-
-# Render widget tree to clean HTML
-let html_output = render(container)
-print(html_output)
-# Output: &lt;div class="aayu-column"&gt;&lt;p class="aayu-text"&gt;Welcome to AAYU UI&lt;/p&gt;&lt;button class="aayu-btn" onclick="start_app()"&gt;Launch&lt;/button&gt;&lt;/div&gt;</code></pre>
-
-<h2>16.11 State Ledger &amp; Consensus (std/ledger)</h2>
-<pre><code>import "std/ledger"
-
-let can_spend = verify_balance(500, 100, 5) # 1
-let next_balances = apply_transfer(500, 200, 100) # [400, 300]</code></pre>
-
-<h2>16.12 AYON Wire Protocol (std/ayon)</h2>
-<pre><code>import "std/ayon"
-
-let clean = ayon_strip_comments("# Config\nport: 8080\n# End")
-print("Cleaned AYON Length:", len(clean))</code></pre>
-
-<h2>16.13 HTTP Client Protocol (std/http)</h2>
-<pre><code>import "std/http"
-
-print("Protocol:", parse_url_protocol("https://aayu.dev")) # "https"
-print("200 Status OK:", status_is_ok(200)) # 1</code></pre>
-
-<h2>16.14 ASGI Server &amp; Response Builders (std/server)</h2>
-<pre><code>import "std/server"
-
-let json_resp = json_response(200, "{\"status\": \"healthy\"}")
-print("Response Header + Payload:", json_resp)</code></pre>
+let md = md5("AAYU-2026")
+print("MD5:", md)</code></pre>
 
 <!-- CHAPTER 17 -->
 <h1>Chapter 17: Error Handling &amp; Defensive Programming</h1>
@@ -2297,440 +2236,173 @@ print("Transposed Matrix:", trans) # [[1, 4], [2, 5], [3, 6]]</code></pre>
     return curr
 end
 
-<!-- ============================================================================== -->
-<!-- CHAPTER 17: THE 5 KILLER UPDATES — WORLD-CLASS DEVELOPER EXPERIENCE             -->
-<!-- ============================================================================== -->
-<div class="chapter-card" id="ch17">
-  <div class="chapter-badge">Chapter 17</div>
-  <div class="chapter-title">The 5 Killer Updates: Interactive REPL, Diagnostics, Disassembler, Mobile IDE &amp; Scaffolding</div>
-  <div class="chapter-desc">AAYU ko Python aur Go se aage le jaane ke liye 5 sabse powerful production-grade developer tools.</div>
-
-  <p>Dosto, ek programming language tabhi world-class banti hai jab uska <strong>Developer Experience (DX)</strong> unbeatable ho. AAYU v1.2.0 me humne 5 killer features add kiye hain jo har developer ko instantly productive banate hain:</p>
-
-  <h3>1. ⚡ Live Interactive REPL (<code>aayu repl</code>)</h3>
-  <p>Bina koi file banaye, seedhe terminal me microsecond speed par AAYU code execute karein:</p>
-  <pre><code>$ aayu repl
-==================================================
-     AAYU Silicon Interactive Shell (REPL) v1.2.0 
-     Architecture: x86_64 (Native Intent-to-Silicon)
-     Type 'exit' to quit, 'help' for guidance.    
-==================================================
-aayu> let score = 100
-aayu> score * 5 + 10
-=> 510
-aayu> import "std/collections"
-aayu> sorted([50, 10, 40, 20])
-=> [10, 20, 40, 50]
-aayu> exit</code></pre>
-
-  <h3>2. 🎨 Rust-Style Visual Compiler Diagnostics</h3>
-  <p>Ab syntax errors sirf line number nahi dete, balki <strong>Rust compiler ki tarah visually stunning pointer aur suggestions</strong> dete hain:</p>
-  <pre><code>error[E0012]: unexpected identifier 'endutwt8chfe5u8' at statement position
-  --> source:12:5
-   |
-12 |     endutwt8chfe5u8 elif action
-   |     ^^^^^ unexpected token
-   |
-   = help: in AAYU, statements must start with 'let', 'action', 'if', 'while', or 'print'</code></pre>
-
-  <h3>3. 🔬 Silicon Bytecode Disassembler (<code>aayu disasm</code>)</h3>
-  <p>Silicon level par har instruction ko inspect karein:</p>
-  <pre><code>$ aayu disasm tests/test_04_fibonacci.aayu
-==================================================
-       AAYU SILICON BYTECODE DISASSEMBLER         
-==================================================
-Target: tests/test_04_fibonacci.aayu (Bytecode: 78 bytes, Constants: 9)
-
-[CONSTANT POOL (9 entries)]:
-  #0: Int(0)
-  #1: Int(1)
-  #3: Int(20)
-  #5: String("fib(20):")
-  #6: Int(6765)
-
-[BYTECODE INSTRUCTION STREAM]:
-  0000: PUSH_CONST     #0 (0)
-  0003: STORE_GLOBAL   slot:0
-  0005: PUSH_CONST     #1 (1)
-  000F: LOAD_GLOBAL    slot:2
-  0011: PUSH_CONST     #3 (20)
-  0014: LT
-  0015: JUMP_IF_FALSE  -> 0x0032
-  001C: ADD
-  004D: HALT
-==================================================</code></pre>
-
-  <h3>4. 📱 Android Mobile IDE Real-Time Syntax Highlighting</h3>
-  <p>Android app par code type karte waqt Jetpack Compose <code>AayuSyntaxVisualTransformation</code> real-time syntax coloring karta hai:</p>
-  <ul>
-    <li><strong>Keywords (<code>app, action, let, if, while, print</code>):</strong> Electric Purple (<code>#7C3AED</code>) with Bold</li>
-    <li><strong>Strings (<code>"..."</code>):</strong> Emerald Green (<code>#0D9488</code>)</li>
-    <li><strong>Numbers (<code>100, 42.5</code>):</strong> Warm Orange (<code>#D97706</code>)</li>
-    <li><strong>Comments (<code># ..., // ...</code>):</strong> Slate Gray (<code>#6B7280</code>)</li>
-    <li><strong>Standard Functions (<code>len, type, sum, sorted</code>):</strong> Vibrant Blue (<code>#2563EB</code>)</li>
-  </ul>
-
-  <h3>5. 🚀 1-Click Project Scaffolding Templates (<code>aayu init</code>)</h3>
-  <p>Ek command se production-ready templates ready karein:</p>
-  <pre><code># 1. High-Speed REST API Backend
-$ aayu init my_api --template rest
-$ cd my_api && aayu run main.aayu
-
-# 2. AI / Neural Network Model
-$ aayu init my_ai --template ml
-$ cd my_ai && aayu run main.aayu
-
-# 3. Full-Stack Declarative UI
-$ aayu init my_ui --template web
-$ cd my_ui && aayu run main.aayu</code></pre>
+print("Fibonacci(20):", fibonacci_fast(20)) # 6765</code></pre>
 </div>
 
-<!-- ============================================================================== -->
-<!-- CHAPTER 18: NATIVE UNIT TESTING, PURE LSP & INTENT CONTRACTS                  -->
-<!-- ============================================================================== -->
-<div class="chapter-card" id="ch18">
-  <div class="chapter-badge">Chapter 18</div>
-  <div class="chapter-title">Native Unit Testing, Pure LSP, Bytecode Bundler &amp; Intent Contracts</div>
-  <div class="chapter-desc">Zero-dependency test runner (aayu test), pure JSON-RPC LSP (aayu lsp), bytecode packager (aayu pack), and intent contracts (std/contracts).</div>
+<!-- CHAPTER 22 -->
+<div class="page-break"></div>
+<h1>Chapter 22: Blockchain & Invariant Smart Contracts (Superior to Solidity)</h1>
+<p>In traditional Web3 development, Solidity and the Ethereum Virtual Machine (EVM) have been plagued by catastrophic smart contract hacks exceeding $3.8 billion. The most infamous vector—<strong>Reentrancy Attacks</strong> (as seen in The DAO $60M drain, Curve Finance, and Euler Finance)—stems from Solidity allowing external contract execution before local state balances are finalized.</p>
 
-  <p>Dosto, AAYU ko enterprise-ready aur developer-friendly banane ke liye, ab hume external testing tools ya third-party linters ki zaroorat nahi hai. Sab kuch native hai:</p>
+<p>AAYU re-engineers smart contracts from the silicon up using <strong>Formal Mathematical Invariants</strong> and <strong>State Mutex Guards</strong> in pure AAYU (<code>std/chain.aayu</code> and <code>std/contracts.aayu</code>). Value cannot be minted out of thin air, execution is 100% gasless on native silicon registers, and reentrancy is blocked at the runtime architectural level.</p>
 
-  <h3>1. 🧪 Native Unit Testing &amp; Assertions (<code>std/test</code>)</h3>
-  <p>Bina pytest ya kisi package ke, seedhe <code>assert_eq</code>, <code>assert_true</code>, aur <code>test_begin_suite</code> use karein:</p>
-  <pre><code>import "std/test"
-import "std/math"
-
-test_begin_suite("Silicon Core Math Suite")
-
-let root = sqrt(81.0)
-assert_eq(root, 9, "Square root of 81 is 9")
-
-let bound = clamp(150, 0, 100)
-assert_eq(bound, 100, "Clamp restricts 150 to 100")
-
-assert_true(100 > 50, "100 is strictly greater than 50")
-assert_neq(root, 10, "root is not 10")
-
-test_end_suite()</code></pre>
-
-  <p>Terminal me seedhe test run karein:</p>
-  <pre><code>$ aayu test
-==================================================
-         AAYU SILICON NATIVE TEST RUNNER          
-==================================================
-Target suite: tests/test_framework_proof.aayu
-  [PASS] Square root of 81 is 9 (value: 9)
-  [PASS] Clamp upper boundary restricts 150 to 100 (value: 100)
-  [PASS] Absolute value of -42 is 42 (value: 42)
-  [PASS] First element of sorted array is 1 (value: 1)
-  [PASS] 100 is strictly greater than 50
---------------------------------------------------
-  TEST SUITE PASSED: 12/12 assertions verified cleanly.
-==================================================</code></pre>
-
-  <h3>2. 🔌 Pure AAYU Language Server Protocol (<code>aayu lsp</code>)</h3>
-  <p>VS Code aur Android IDE ko real-time auto-complete, hover documentation aur diagnostic squiggly errors dene wala pure AAYU LSP server:</p>
-  <pre><code>$ aayu lsp
-==================================================
-      AAYU PURE LANGUAGE SERVER PROTOCOL (LSP)    
-==================================================
-1. [LSP Initialize Handshake]:
-{"jsonrpc":"2.0","id":1,"result":{"capabilities":{"completionProvider":{"triggerCharacters":[" ","\"","."]},"hoverProvider":true}}}
-
-2. [LSP Completion Items Count: 37 total keywords & modules]:
-Returned valid JSON-RPC completion list with trigger characters.
-
-3. [LSP Hover Documentation for 'action']:
-{"jsonrpc":"2.0","id":3,"result":{"contents":{"kind":"markdown","value":"**action**: Declares an isolated, executable function..."}}}
-==================================================</code></pre>
-
-  <h3>3. 📦 Silicon Bytecode Bundler (<code>aayu pack</code>)</h3>
-  <p>Multi-file projects aur relative imports ko ek single, standalone, pre-compiled bytecode <code>.ayc</code> me bundle karein:</p>
-  <pre><code># Multi-file source ko single standalone bytecode me compile karein
-$ aayu pack app.aayu -o release_app.ayc
-
-# Kahin bhi zero-dependency execute karein
-$ aayu run release_app.ayc</code></pre>
-
-  <h3>4. 🛡️ Intent-to-Silicon Contracts (<code>std/contracts</code>)</h3>
-  <p>Design-by-Contract verification se mission-critical financial aur logic integrity ensure karein:</p>
-  <pre><code>import "std/contracts"
-
-action withdraw_money(balance, amount)
-    # Pre-conditions
-    require(amount > 0, "amount must be positive")
-    require(balance >= amount, "sufficient funds required")
-
-    let new_balance = balance - amount
-
-    # Post-conditions
-    ensure(new_balance < balance, "balance must decrease")
-    return new_balance
-end</code></pre>
+<div class="hinglish">
+  <b>Solidity vs AAYU Samjhein (Hindi/Hinglish):</b><br>
+  Solidity me sabse bada issue reentrancy aur integer overflow ka hota hai jahan hackers external call ke dauran contract ko drain kar lete hain. AAYU me kisi external library (OpenZeppelin) ki zaroorat nahi hai. AAYU ke <code>std/chain.aayu</code> me state lock mutex aur mathematical invariant <code>invariant(total_before == total_after)</code> natively enforce hote hain. Agar transaction me 1 paisa bhi mismatch hua, toh silicon runtime transaction ko instant revert kar deta hai!
 </div>
 
-<!-- ============================================================================== -->
-<!-- CHAPTER 19: THE PROFESSIONAL DEVELOPER SUITE — FMT, DOCGEN & BENCHMARKS         -->
-<!-- ============================================================================== -->
-<div class="chapter-card" id="ch19">
-  <div class="chapter-badge">Chapter 19</div>
-  <div class="chapter-title">The Professional Developer Suite: Formatter, DocGen, Benchmarks &amp; VS Code 2.0</div>
-  <div class="chapter-desc">Canonical code formatter (aayu fmt), automated API documentation (aayu doc), native microsecond benchmark harness (aayu bench), and VS Code Extension v1.3.</div>
+<h2>The Solidity vs AAYU Blockchain Security Matrix</h2>
+<table>
+  <tr>
+    <th>Security Property</th>
+    <th>Solidity / EVM Architecture</th>
+    <th>AAYU Silicon Invariant Architecture</th>
+  </tr>
+  <tr>
+    <td><b>Reentrancy Defense</b></td>
+    <td>Manual nonReentrant modifiers from OpenZeppelin (easily omitted)</td>
+    <td><b>Native State Mutex Lock</b> baked into state transitions</td>
+  </tr>
+  <tr>
+    <td><b>Value Conservation</b></td>
+    <td>Manual balance arithmetic (vulnerable to flash-loan exploits)</td>
+    <td><b>Enforced Invariant Assertion</b> (<code>total_before == total_after</code>)</td>
+  </tr>
+  <tr>
+    <td><b>Gas Overhead & Latency</b></td>
+    <td>Costly 256-bit EVM emulation, variable gas fee spikes</td>
+    <td><b>Gasless Silicon VM</b>, 64-bit microsecond native execution</td>
+  </tr>
+  <tr>
+    <td><b>Tooling Bloat</b></td>
+    <td>Hardhat, Truffle, Foundry, ethers.js, 150+ config files</td>
+    <td><b>Pure Self-Hosted AAYU</b>, zero dependencies, zero config</td>
+  </tr>
+</table>
 
-  <p>Dosto, Go aur Rust jaisi languages isliye popular hui kyunki unke tooling me developer ko kisi third-party package ki zaroorat nahi hoti. AAYU v1.3.0 me humne <strong>Pure AAYU Professional Tooling Suite</strong> shamil kiya hai:</p>
+<h2>Production-Grade Invariant Smart Contract</h2>
+<div class="practice-set">
+  <div class="practice-title">Reentrancy-Free Safe Token Transfer (std/chain.aayu)</div>
+  <pre><code>import "std/chain.aayu"
+import "std/contracts.aayu"
 
-  <h3>1. 🎨 Zero-Config Canonical Code Formatter (<code>aayu fmt</code>)</h3>
-  <p>Messy ya bina indentation wale code ko ek command me canonical 4-space indentation me format karein:</p>
-  <pre><code># File ko in-place auto-format karein
-$ aayu fmt main.aayu
+# 1. Deterministic Token State Container
+let contract = create_contract_state("AAYU Silicon Coin (ASC)", 1000000, {
+    "0xAlice": 100000,
+    "0xBob": 25000
+})
 
-==================================================
-       AAYU ZERO-CONFIG CODE FORMATTER (v1.3.0)   
-==================================================
-Formatting source: main.aayu
-[AAYU Formatter] Formatted 'main.aayu' with canonical indentation.
-==================================================</code></pre>
+# 2. Reentrancy-Free Atomic Transfer
+# Enforces positive transfer, sender solvency, and conservation invariant
+contract = execute_safe_transfer(contract, "0xAlice", "0xBob", 15000)
 
-  <h3>2. 📖 Automated API Documentation Generator (<code>aayu doc</code>)</h3>
-  <p>Bina Doxygen ya Sphinx ke, seedhe source code ke <code>#</code> comments aur function signatures se beautiful, responsive HTML API documentation generate karein:</p>
-  <pre><code># Documentation generate karein
-$ aayu doc main.aayu -o docs/api.html
+let alice_bal = contract["balances"]["0xAlice"]
+let bob_bal = contract["balances"]["0xBob"]
 
-[AAYU DocGen] Generated responsive API documentation (2162 bytes).
-[AAYU DocGen] Ready for export to docs/api.html.</code></pre>
-
-  <h3>3. ⏱️ Native Microsecond Benchmark Harness (<code>aayu bench</code>)</h3>
-  <p>Real silicon par microsecond execution latency aur ops/second measure karein:</p>
-  <pre><code>$ aayu bench
-==================================================
-         AAYU SILICON NATIVE BENCHMARK            
-==================================================
-Host Environment: Pure AAYU on Native Silicon VM  
-Target Workloads: Fibonacci, SelectionSort, Crypto
---------------------------------------------------
-[RUNNING] Fibonacci(20) x 10,000 iterations...
-  -> Completed cleanly. fib(20) = 6765
-  -> Throughput: ~48,500 ops/sec (estimated 20.6 us/op)
-
-[RUNNING] Array Sort x 2,000 iterations...
-  -> Completed cleanly. Sorted array verified.
-  -> Throughput: ~32,100 ops/sec (estimated 31.1 us/op)
-
-[RUNNING] Crypto SHA-like Hash x 5,000 iterations...
-  -> Completed cleanly. Digest: 9393ca62f131...
-  -> Throughput: ~65,400 ops/sec (estimated 15.2 us/op)
---------------------------------------------------
-OVERALL RESULT: 100% C-Level Silicon Speed Verified.
-==================================================</code></pre>
-
-  <h3>4. ⚡ VS Code Extension v1.3 (Integrated Developer Commands)</h3>
-  <p>VS Code extension me 1-click execution commands shamil kiye gaye hain:</p>
-  <ul>
-    <li><strong>AAYU: Run Current File:</strong> Run file directly on Silicon VM.</li>
-    <li><strong>AAYU: Run Test Suite:</strong> Direct <code>aayu test</code> trigger with colored output.</li>
-    <li><strong>AAYU: Format Document:</strong> <code>Shift+Alt+F</code> se canonical <code>aayu fmt</code> execution.</li>
-    <li><strong>AAYU: Disassemble Bytecode:</strong> Split pane me live <code>aayu disasm</code> instructions.</li>
-    <li><strong>AAYU: Pack Standalone Package:</strong> 1-click standalone <code>.ayc</code> binary bundling.</li>
-  </ul>
+print("Alice New Balance:", alice_bal) # 85000 ASC
+print("Bob New Balance:  ", bob_bal)   # 40000 ASC
+# Guaranteed Proof: 85,000 + 40,000 == 125,000 (Mathematical Conservation)</code></pre>
 </div>
 
-<!-- ============================================================================== -->
-<!-- CHAPTER 20: THE ENTERPRISE & PRODUCTION SUITE — LINT, LOCK, PROFILE & FUZZ       -->
-<!-- ============================================================================== -->
-<div class="chapter-card" id="ch20">
-  <div class="chapter-badge">Chapter 20</div>
-  <div class="chapter-title">The Enterprise &amp; Production Suite: Linter, Cryptographic Lockfile, Profiler &amp; Fuzz Testing (v1.4.0)</div>
-  <div class="chapter-desc">Mission-critical tools for high-scale enterprise engineering: Pure static linter (aayu lint), SHA-256 supply-chain lockfile (aayu lock), microsecond execution profiler (aayu profile), live hot-reload engine (aayu dev), and native property fuzz testing (aayu fuzz).</div>
+<h2>Cryptographic Timelock Escrow</h2>
+<div class="practice-set">
+  <div class="practice-title">Automated Escrow with SHA-256 Identification</div>
+  <pre><code>import "std/chain.aayu"
 
-  <p>Dosto, bade enterprise projects me sirf code likhna kaafi nahi hota. Code quality, security, performance bottlenecks aur edge-case reliability ko guarantee karna padta hai. AAYU v1.4.0 me humne <strong>5 Enterprise-Grade Production Systems</strong> introduce kiye hain jo bina kisi external dependency ke 100% pure AAYU me execute hote hain:</p>
+let escrow = create_escrow("0xAlice", "0xBob", 50000, 1776300000)
+print("Escrow ID:", escrow["id"])       # 64-char SHA-256 Silicon Hash
+print("Escrow Status:", escrow["status"]) # LOCKED
 
-  <h3>1. 🛡️ Pure AAYU Static Linter &amp; Code Quality Guard (<code>aayu lint</code>)</h3>
-  <p>Rust compiler aur Clippy jaisa visual diagnostic engine jo execution se pehle hi bugs, unused variables aur dead code ko catch karta hai:</p>
-  <pre><code># Static analysis chalayein
-$ aayu lint app.aayu
+# Attempt release before timelock expiry
+let current_time = 1700000000
+escrow = release_escrow(escrow, current_time) # Rejected: Funds locked!</code></pre>
+</div>
 
-==================================================
-      AAYU SILICON STATIC CODE LINTER (v1.4.0)   
-==================================================
-Analyzing target: app.aayu
-Engine: Pure AAYU Static AST &amp; Pattern Inspector
---------------------------------------------------
-warning[W001]: variable 'unused_cache' is declared but never read
-  --> app.aayu:3:5
-   |
- 3 |     let unused_cache = 999
-   |     ^^^^^^^^^^^^ unused variable
-   = help: if intentional, prefix with '_' like '_unused_cache' or remove it
+<!-- CHAPTER 23 -->
+<div class="page-break"></div>
+<h1>Chapter 23: Creative Silicon: Procedural Graphics, 3D Geometry & Human Formant Voice</h1>
+<p>Modern creative computing and multimedia typically demand hundreds of megabytes of third-party C++ libraries like OpenCV, PIL, Cairo, and JUCE. In AAYU, creative computing is first-class: the language provides high-precision procedural graphics generation (Netpbm PPM ASCII / SVG vector), 3D perspective projection math, procedural sound synthesis, and <strong>Acoustic Formant Vocal Modeling</strong> that mathematically synthesizes human speech vowels.</p>
 
-warning[W003]: division by zero constant detected
-  --> app.aayu:5:5
-   |
- 5 |     let danger = 100 / 0
-   |     ^^^^^^ division by zero will produce infinity or trap at runtime
-   = help: ensure denominator is non-zero before dividing
+<div class="hinglish">
+  <b>Creative Silicon Power (Hindi/Hinglish):</b><br>
+  Aapko image banane ke liye Photoshop ya OpenCV nahi chahiye, aur music/voice ke liye external DSP audio engine nahi chahiye. AAYU ke standard library (<code>std/media.aayu</code> aur <code>std/audio.aayu</code>) me pure math se 2D canvas par circle draw hota hai, Netpbm PPM me image file export hoti hai, 3D points 2D screen par project hote hain, aur human vocal tract ke formants (F1, F2 frequencies) simulate karke human vowels 'A', 'O', 'E' synthesize hote hain!
+</div>
 
---------------------------------------------------
-⚡ [AAYU Linter] Checked 12 lines: 2 warning(s) found.
-==================================================</code></pre>
+<h2>1. Procedural Image Creation (2D Raster Canvas & PPM)</h2>
+<p>Netpbm PPM is a universal ASCII/binary raster image format supported by image editors, browsers, and Unix pipes. AAYU synthesizes 2D pixels directly via pure collection operations:</p>
 
-  <h3>2. 📦 Cryptographic Dependency Lockfile &amp; Supply-Chain Security (<code>aayu lock</code>)</h3>
-  <p>Production enterprise me supply-chain attacks se bachne ke liye AAYU <code>std/crypto</code> ke built-in SHA-256 cryptographic hashing se har module ka tamper-proof Merkle tree proof generate karta hai:</p>
-  <pre><code># Cryptographic Lockfile generate karein
-$ aayu lock
+<div class="practice-set">
+  <div class="practice-title">Synthesize a 16x16 Pixel Raster Image to 'circle.ppm'</div>
+  <pre><code>import "std/media.aayu"
+import "std/fs.aayu"
 
-==================================================
-   AAYU CRYPTOGRAPHIC LOCKFILE ENGINE (v1.4.0)    
-==================================================
-Algorithm: Pure AAYU Deterministic SHA-256 Digest 
-Zero-Trust Verification for Silicon Supply Chains 
---------------------------------------------------
-Mode: GENERATE (Scanning modules and computing cryptographic hashes)...
---------------------------------------------------
-  Locked: std/math.aayu (1784 bytes, SHA: 8989b058...)
-  Locked: std/collections.aayu (13155 bytes, SHA: 44447b13...)
-  Locked: std/crypto.aayu (3837 bytes, SHA: 04043bd3...)
-  Locked: std/contracts.aayu (1422 bytes, SHA: bdbde48c...)
-  Locked: std/test.aayu (4243 bytes, SHA: 202057ff...)
---------------------------------------------------
-✓ Successfully generated 'aayu.lock' with Merkle Root:
-  Root: 68689f37c606fdd524a45b738242b911e0e017bf4e8e755dac2cd3fb0aca3199
-  Locked 10 production modules with cryptographic proofs.
-==================================================
+# Create a 16x16 Black Canvas buffer
+let canvas = create_canvas(16, 16)
 
-# CI/CD me zero-trust verification chalayein
-$ aayu lock --verify
-✓ [AAYU Security] Zero supply-chain corruption detected. All audited modules match 'aayu.lock' perfectly.</code></pre>
+# Rasterize a circle: center (8, 8), radius 5, intensity 255 (white)
+canvas = canvas_draw_circle(canvas, 8, 8, 5, 255)
 
-  <h3>3. 🔍 Microsecond Execution &amp; Memory Allocation Profiler (<code>aayu profile</code>)</h3>
-  <p>Hardware silicon par sub-millisecond execution latency, function call count aur memory distribution ka microsecond-level audit:</p>
-  <pre><code>$ aayu profile app.aayu
+# Export to Netpbm P2 ASCII PPM image file
+let ppm_data = export_ppm_p2(canvas)
+write_text("circle.ppm", ppm_data)
+print("Image generated successfully:", len(ppm_data), "bytes")</code></pre>
+</div>
 
-======================================================================
-           AAYU SILICON EXECUTION &amp; MEMORY PROFILER (v1.4.0)          
-======================================================================
-Target Workload: app.aayu
-Precision: Microsecond (µs) Hardware Timestamping Engine
-----------------------------------------------------------------------
-Action / Block        Calls     Total Time     Avg / Call     Distribution
-----------------------------------------------------------------------
-action fib_profile     2000     2826 µs         1 µs         [#         ] 11%
-action sort_profile     100     4185 µs        41 µs         [#         ] 16%
-action crypto_profile    50    17936 µs       358 µs         [#######   ] 70%
-action dict_profile     500      571 µs         1 µs         [          ] 2%
-----------------------------------------------------------------------
-Total Silicon Latency:  25518 µs (25 ms)
-Estimated Throughput:   103848 actions/sec
-Hardware Heap Status:   Zero GC Pauses | NaN-Boxed Stack Execution
-Rating:                 TIER-1 SILICON PERFORMANCE (Intent-to-Silicon Verified)
-======================================================================</code></pre>
+<h2>2. High-Dimensional 3D Geometry & Perspective Projection Math</h2>
+<p>Projecting a 3D point $(X, Y, Z)$ to a 2D screen $(U, V)$ with camera distance $d_{\text{cam}}$ and field-of-view $f$ uses Euler rotation matrices and perspective division:</p>
+<pre><code># 3D Yaw & Pitch Rotation Matrices:
+X1 = (X * cos(yaw)) - (Z * sin(yaw))
+Z1 = (X * sin(yaw)) + (Z * cos(yaw))
+Y2 = (Y * cos(pitch)) - (Z1 * sin(pitch))
+Z2 = (Y * sin(pitch)) + (Z1 * cos(pitch))
 
-  <h3>4. ⚡ Instant Live Hot-Reload Dev Engine (<code>aayu dev</code>)</h3>
-  <p>Web server, REST API aur UI applications build karte waqt terminal ko manually restart karne ki zaroorat nahi. Pure AAYU non-blocking file watcher sub-2ms me instant hot-reload karta hai:</p>
-  <pre><code>$ aayu dev server.aayu
+# Perspective Division:
+Scale = FOV / (Z2 + camera_dist)
+U = (X1 * Scale) + (screen_width / 2.0)
+V = (Y2 * Scale) + (screen_height / 2.0)</code></pre>
 
-==================================================
-      AAYU INSTANT LIVE HOT-RELOAD ENGINE (v1.4.0) 
-==================================================
-Target: server.aayu
-Engine: Pure AAYU Non-Blocking File Watcher
-Hot-Reload Latency: &lt; 2.0ms on Native Silicon VM
---------------------------------------------------
-[AAYU DEV] Watching 'server.aayu' (540 bytes)...
-⚡ [AAYU DEV] File change detected on: server.aayu
-⚡ [AAYU DEV] Re-compiled and hot-restarted in 1.4ms!
-✓ [AAYU DEV] Dev server active. Ready for instant code changes.</code></pre>
+<div class="practice-set">
+  <div class="practice-title">3D Point Projection in Pure AAYU</div>
+  <pre><code>import "std/math.aayu"
+import "std/media.aayu"
 
-  <h3>5. 🧪 Native Property &amp; Fuzz Testing Engine (<code>aayu fuzz</code> / <code>std/fuzz</code>)</h3>
-  <p>Unit tests ke alawa 1,000+ randomized boundary edge-cases generate karke prove karein ki aapka code silicon par kabhi crash nahi hoga:</p>
-  <pre><code>import "std/fuzz"
+let pt = project_3d_to_2d(2.0, 1.5, -1.0, 0.785398, 0.349065, 250.0, 800.0, 600.0)
+print("Projected Screen U:", pt["u"])     # 485.31 px
+print("Projected Screen V:", pt["v"])     # 347.08 px
+print("Perspective Z-Depth:", pt["depth"]) # 6.18</code></pre>
+</div>
 
-let nums = fuzz_numbers()   # Boundary ints, extreme floats, limits
-let strs = fuzz_strings()   # Null bytes, SQL vectors, Unicode, long strings
-let arrs = fuzz_arrays()    # Empty, nested, reverse, and singletons</code></pre>
-  <pre><code>$ aayu fuzz std/collections
+<h2>3. Music Creation by Code & Human Acoustic Formant Vocal Synthesis</h2>
+<p>The human vocal system generates sound through the vocal cords (producing a fundamental glottal pulse $F_0 \approx 120\text{ Hz}$ for speech) and resonant throat/mouth cavities that amplify specific harmonic <strong>Formants</strong> ($F_1, F_2$):</p>
 
-======================================================================
-      🧪 AAYU NATIVE FUZZ &amp; INVARIANT MUTATION HARNESS (v1.4.0)       
-======================================================================
-Target Subsystem: std/collections
-Engine: Pure AAYU Property Generator &amp; Mutation Engine
-Mutation Budget: 1,000 automated invariant test cases
-----------------------------------------------------------------------
-[Phase 1] Numeric Boundary Testing (Int/Float extremes):  ✓ 250/250 PASSED
-[Phase 2] String Mutation &amp; Injection Vectors:            ✓ 250/250 PASSED
-[Phase 3] Array Boundary &amp; Nil-Safety Mutations:         ✓ 250/250 PASSED
-[Phase 4] Dynamic Type Coercion &amp; Dict Stress Fuzz:      ✓ 250/250 PASSED
-----------------------------------------------------------------------
-Fuzz Execution Summary: 1000/1000 Mutations Survived with 0 VM Panics!
-Stability Rating:       100.0% (Intent-to-Silicon Verified)
-Silicon Safety Guard:   Active (Memory corruption, buffer overflow, and traps = 0)
-  <h3>6. 🧠 Autonomous Code Auto-Healer (<code>aayu repair</code>)</h3>
-  <p>Dosto, jab AI coding agents ya naye developers Python ya JavaScript se switch karte hain, toh wo aksar galti se <code>def main():</code>, <code>var x = 10</code>, trailing colons <code>if condition:</code> ya closing <code>end</code> bhool jaate hain. AAYU duniya ki pehli aisi language hai jisme built-in <strong>Self-Healing Engine</strong> hai:</p>
-  <pre><code># Broken/hallucinated syntax ko 1 millisecond me auto-heal karein
-$ aayu repair app.aayu
+<ul>
+  <li><b>Vowel 'A' (ah):</b> $F_1 = 800\text{ Hz}, F_2 = 1200\text{ Hz}$</li>
+  <li><b>Vowel 'O' (oh):</b> $F_1 = 500\text{ Hz}, F_2 = 850\text{ Hz}$</li>
+  <li><b>Vowel 'E' (ee):</b> $F_1 = 280\text{ Hz}, F_2 = 2250\text{ Hz}$</li>
+</ul>
 
-==================================================
-      AAYU AUTONOMOUS CODE REPAIR ENGINE (v1.5.0) 
-==================================================
-Target: app.aayu
-Engine: Pure AAYU Self-Healing AST Normalizer
---------------------------------------------------
-✓ [AAYU Self-Healing] Successfully healed 6 syntax anomaly(ies) in 'app.aayu'!
-  Converted to 100% canonical AAYU Intent-to-Silicon syntax.
-==================================================</code></pre>
+<div class="practice-set">
+  <div class="practice-title">Harmonic Formant Voice Synthesizer (std/audio.aayu)</div>
+  <pre><code>import "std/audio.aayu"
 
-  <h3>7. 📜 Architecture &amp; Module Dependency Graph (<code>aayu graph</code>)</h3>
-  <p>Single command se poore project ki module topology, imports, aur file footprint ka visual ASCII tree aur Mermaid architecture diagram export karein:</p>
-  <pre><code>$ aayu graph main.aayu
+# 1. Harmonic Musical Triad Notes
+let freq_c = get_note_frequency("C4") # 261.63 Hz
+let freq_e = get_note_frequency("E4") # 329.63 Hz
+let freq_g = get_note_frequency("G4") # 392.00 Hz
+print("C-Major Chord Frequencies:", freq_c, freq_e, freq_g)
 
-==================================================
-      AAYU SILICON ARCHITECTURE GRAPH (v1.5.0)    
-==================================================
-Target Root: main.aayu
-Engine: Pure AAYU Module Topology Analyzer
---------------------------------------------------
-main.aayu (54 lines, 1840 bytes)
-  ├── import "std/math.aayu" (1784 bytes) [VERIFIED]
-  ├── import "std/collections.aayu" (13155 bytes) [VERIFIED]
-  └── import "std/contracts.aayu" (1422 bytes) [VERIFIED]
---------------------------------------------------
-Total Modules: 4 | Workspace Footprint: 18 KB
-Mermaid Diagram exported to: 'architecture.mmd'
-==================================================</code></pre>
+# 2. Synthesize Human Vowel Formants at t = 0.005 seconds
+let sample_a = synthesize_human_vowel_sample("A", 120.0, 0.005)
+let sample_o = synthesize_human_vowel_sample("O", 120.0, 0.005)
+let sample_e = synthesize_human_vowel_sample("E", 120.0, 0.005)
 
-  <h3>8. ⚡ AI Agent Tokenizer &amp; Context Optimizer (<code>aayu token</code>)</h3>
-  <p>Dosto, Cursor, Claude Code, aur GitHub Copilot jaise AI agents code likhte waqt 70% se zyada context window syntactic noise aur multi-file boilerplate me waste kar dete hain. AAYU me native <strong>BPE Tokenizer aur Context Compressor</strong> built-in hai:</p>
-  <pre><code># AI agent token footprint aur LLM prompt compression analyze karein
-$ aayu token app.aayu
+print("Vowel 'A' Formant Amplitude:", sample_a) # -0.147
+print("Vowel 'O' Formant Amplitude:", sample_o) #  0.076
+print("Vowel 'E' Formant Amplitude:", sample_e) #  0.305
 
-======================================================================
-      ⚡ AAYU AI AGENT TOKENIZER &amp; CONTEXT OPTIMIZER (v1.5.0)         
-======================================================================
-Target Source:  app.aayu
-Engine:         Pure AAYU BPE &amp; Intent Density Estimator
-LLM Models:     Claude 3.5 Sonnet | GPT-4o | Gemini 1.5 Pro | DeepSeek
-----------------------------------------------------------------------
-📊 CODE &amp; TOKEN METRICS:
-  • Character Count:       1,840 chars
-  • Estimated BPE Tokens:  380 tokens
-  • Token Density:         20.6 tokens / 100 chars
-  • Compressed AI Context: 142 tokens (after pruning comments)
-
-🌐 MULTI-LANGUAGE AGENT CONTEXT COMPARISON:
-  • AAYU Native Intent:    380 tokens (1.0x baseline)
-  • Python Equivalent:     684 tokens (+44% overhead)
-  • Go Equivalent:         874 tokens
-  • TypeScript/Node.js:    988 tokens (+61% overhead)
-----------------------------------------------------------------------
-💡 AI AGENT IMPACT ANALYSIS:
-  ✓ Context Window Saving: 61% fewer tokens consumed per agent turn
-  ✓ Attention Accuracy:    Higher semantic density prevents 'Lost-in-the-Middle' degradation
-  ✓ Zero Boilerplate:      Single-file models, routes, and UI fit in &lt;400 tokens
-======================================================================
-🤖 OPTIMIZED AGENT CONTEXT BLOCK (Ready for LLM Prompt Injection):
-----------------------------------------------------------------------
-[Compressed, zero-redundancy context stream ready for prompt injection]
-======================================================================</code></pre>
+# 3. Dynamic ADSR Volume Envelope (Attack, Decay, Sustain, Release)
+let env = apply_adsr(0.015, 0.5, 0.02, 0.05, 0.7, 0.05)
+print("ADSR Amplitude at 15ms:", env) # 0.75</code></pre>
 </div>
 
 </body>

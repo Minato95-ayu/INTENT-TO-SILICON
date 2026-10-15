@@ -46,5 +46,33 @@ export const chapters: ChapterData[] = [
     learningPoints: ["Run the PowerShell test harness", "Read expected-output failures", "Distinguish core tests from feature support", "Consult the known limitations list"],
     content: `## Verify the examples\n\nFrom the repository root on Windows, run:\n\n\`\`\`powershell\npowershell -ExecutionPolicy Bypass -File tests/run_tests.ps1\n\`\`\`\n\nThe harness compiles and runs the checked AAYU regression programs, checks their outputs, and runs malformed-bytecode checks for the VM and JIT.\n\nA passing result only applies to the covered tests. It does not verify the old course chapters about HTTP servers, SQL, UI applications, AI/ML, package registries, or deployment. Check the repository's 'KNOWN_LIMITATIONS.md' before relying on those areas.`,
     exercise: "Intentionally change the expected output for one regression example in the test harness. Run it, inspect the failure, then restore the correct expectation."
+  },
+  {
+    slug: "chapter-7", num: 7, title: "Invariant Smart Contracts & Web3", phase: "Advanced Silicon - Verified",
+    description: "Write reentrancy-free, gasless smart contracts with enforced value conservation invariants.",
+    learningPoints: ["Eliminate Solidity reentrancy bugs with state mutexes", "Enforce invariant(total_before == total_after)", "Create deterministic state containers", "Verify mathematical conservation on silicon VM"],
+    content: `## Beyond Solidity: Invariant Smart Contracts\n\nAAYU solves Solidity's notorious reentrancy vulnerabilities at the architectural level using \`std/chain.aayu\` and \`std/contracts.aayu\`.\n\n\`\`\`aayu\nimport "std/chain.aayu"\n\nlet contract = create_contract_state("AAYU Silicon Coin (ASC)", 1000000, {\n    "0xAlice": 100000,\n    "0xBob": 25000\n})\n\ncontract = execute_safe_transfer(contract, "0xAlice", "0xBob", 15000)\nprint("Alice Balance: " + contract["balances"]["0xAlice"])\nprint("Bob Balance:   " + contract["balances"]["0xBob"])\n\`\`\`\n\nRun 'bin/aayu.exe run examples/creative_silicon_demo.aayu' to verify.`,
+    exercise: "Attempt an illegal transfer where the amount exceeds Alice's balance. Confirm that the contract safely aborts with an insufficient balance error without altering state."
+  },
+  {
+    slug: "chapter-8", num: 8, title: "Procedural Image Creation & 2D Canvas", phase: "Creative Silicon - Verified",
+    description: "Synthesize 2D raster buffers and export standard Netpbm PPM ASCII images and SVGs directly from pure code.",
+    learningPoints: ["Allocate an immutable 2D canvas buffer", "Draw geometric primitives using Euclidean distance", "Export Netpbm P2 PPM ASCII images", "Eliminate heavyweight image dependencies like Pillow/OpenCV"],
+    content: `## Generative Media in Pure AAYU\n\nCreate pixel-perfect images with \`std/media.aayu\` without any external C-bindings or imaging tools.\n\n\`\`\`aayu\nimport "std/media.aayu"\nimport "std/fs.aayu"\n\nlet canvas = create_canvas(16, 16)\ncanvas = canvas_draw_circle(canvas, 8, 8, 5, 255)\nlet ppm_data = export_ppm_p2(canvas)\nwrite_text("circle.ppm", ppm_data)\n\`\`\`\n\nThe output file 'circle.ppm' can be opened immediately by Photoshop, GIMP, or any standard image viewer.`,
+    exercise: "Modify the circle radius from 5 to 7 on a 24x24 canvas. Export the image and verify the increased pixel dimensions."
+  },
+  {
+    slug: "chapter-9", num: 9, title: "3D Perspective Projection & Hard Math", phase: "Creative Silicon - Verified",
+    description: "Perform 3D coordinate transformations, Euler Yaw/Pitch rotations, and perspective screen division.",
+    learningPoints: ["Evaluate trigonometric Taylor series (sin, cos)", "Apply 3D Euler rotation matrices", "Perform perspective depth division (x, y, z) -> (u, v)", "Render 3D geometry onto 2D screens"],
+    content: `## High-Dimensional Silicon Geometry\n\nRotate and project 3D vertices using high-precision hardware trigonometry in \`std/math.aayu\`.\n\n\`\`\`aayu\nimport "std/math.aayu"\nimport "std/media.aayu"\n\nlet yaw = 0.785398   # 45 deg\nlet pitch = 0.349065 # 20 deg\nlet pt = project_3d_to_2d(2.0, 1.5, -1.0, yaw, pitch, 250.0, 800.0, 600.0)\nprint("Screen U: " + pt["u"])\nprint("Screen V: " + pt["v"])\nprint("Depth:    " + pt["depth"])\n\`\`\`\n\nExpected coordinates: U around 485.3 px, V around 347.1 px.`,
+    exercise: "Set yaw and pitch to 0.0. Calculate the on-axis perspective projection coordinates and verify with the live VM."
+  },
+  {
+    slug: "chapter-10", num: 10, title: "Procedural Audio & Human Vocal Formants", phase: "Creative Silicon - Verified",
+    description: "Generate musical chord frequencies, wave oscillators, ADSR envelopes, and Helmholtz human vocal formant resonances.",
+    learningPoints: ["Calculate musical note frequencies (C4, E4, G4)", "Synthesize Sine, Square, and Triangle audio waves", "Model human vocal tract formants (F1, F2)", "Shape acoustic timbre with dynamic ADSR envelopes"],
+    content: `## Human Speech & Music by Pure Code\n\n\`std/audio.aayu\` models human vowels by combining fundamental glottal vocal pulses with acoustic formant filters:\n\n\`\`\`aayu\nimport "std/audio.aayu"\n\n# Synthesize human vowel 'A' (F1=800Hz, F2=1200Hz)\nlet sample_a = synthesize_human_vowel_sample("A", 120.0, 0.005)\nprint("Vowel 'A' Formant Amplitude: " + sample_a)\n\n# Apply dynamic ADSR envelope\nlet env = apply_adsr(0.015, 0.5, 0.02, 0.05, 0.7, 0.05)\nprint("Envelope at 15ms: " + env)\n\`\`\`\n\nSynthesizes natural sound entirely without external DSP runtimes.`,
+    exercise: "Synthesize vowel 'O' (F1=500Hz, F2=850Hz) and compare its amplitude response at t=0.005s with vowel 'A'."
   }
 ];

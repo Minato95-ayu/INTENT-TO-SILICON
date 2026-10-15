@@ -277,12 +277,97 @@ print("Type of items:", type(items)) // "Array"`}</code>
           </div>
         </div>
 
+        {/* 10. Invariant Smart Contracts */}
+        <div className="mb-20">
+          <h2 className="text-2xl font-bold mb-6 border-b border-white/10 pb-4">10. Invariant Smart Contracts (Superior to Solidity)</h2>
+          <p className="text-zinc-400 mb-6 leading-relaxed">
+            AAYU replaces Solidity&apos;s vulnerability-prone EVM architecture with reentrancy-free state mutexes and mathematical conservation invariants (<code className="text-purple-300">std/chain.aayu</code> and <code className="text-purple-300">std/contracts.aayu</code>). Execution is 100% gasless on native silicon registers.
+          </p>
+          <div className="bg-[#0a0a0a] border border-white/10 rounded-xl overflow-hidden">
+            <div className="bg-[#111] px-4 py-2 border-b border-white/5 text-xs text-zinc-500 font-mono">std/chain.aayu</div>
+            <pre className="p-6 text-sm text-zinc-300 overflow-x-auto">
+              <code>{`import "std/chain.aayu"
+import "std/contracts.aayu"
+
+// 1. Deterministic Token State Container
+let contract = create_contract_state("AAYU Silicon Coin (ASC)", 1000000, {
+    "0xAlice": 100000,
+    "0xBob": 25000
+})
+
+// 2. Reentrancy-Free Atomic Transfer with Enforced Value Conservation
+contract = execute_safe_transfer(contract, "0xAlice", "0xBob", 15000)
+
+print("Alice Balance:", contract["balances"]["0xAlice"]) // 85,000 ASC
+print("Bob Balance:  ", contract["balances"]["0xBob"])   // 40,000 ASC
+// Invariant: 85,000 + 40,000 == 125,000 (Conservation of Value Guaranteed!)`}</code>
+            </pre>
+          </div>
+        </div>
+
+        {/* 11. Creative Silicon */}
+        <div className="mb-20">
+          <h2 className="text-2xl font-bold mb-6 border-b border-white/10 pb-4">11. Creative Silicon: Procedural Graphics, 3D Geometry &amp; Human Voice</h2>
+          <p className="text-zinc-400 mb-6 leading-relaxed">
+            High-precision multimedia computing without 500MB C-bindings (OpenCV, JUCE). Pure AAYU handles 2D raster canvas synthesis (Netpbm PPM / SVG), 3D Yaw/Pitch perspective projection math, audio oscillators, and Helmholtz human vocal formant modeling.
+          </p>
+          <div className="bg-[#0a0a0a] border border-white/10 rounded-xl overflow-hidden">
+            <div className="bg-[#111] px-4 py-2 border-b border-white/5 text-xs text-zinc-500 font-mono">std/media.aayu &amp; std/audio.aayu</div>
+            <pre className="p-6 text-sm text-zinc-300 overflow-x-auto">
+              <code>{`import "std/media.aayu"
+import "std/audio.aayu"
+import "std/fs.aayu"
+
+// 1. Procedural 2D Raster Circle to Netpbm PPM Image
+let canvas = create_canvas(16, 16)
+canvas = canvas_draw_circle(canvas, 8, 8, 5, 255)
+write_text("circle.ppm", export_ppm_p2(canvas))
+
+// 2. High-Dimensional 3D Yaw/Pitch Perspective Projection
+let pt = project_3d_to_2d(2.0, 1.5, -1.0, 0.785, 0.349, 250.0, 800.0, 600.0)
+print("Screen U:", pt["u"], "Screen V:", pt["v"])
+
+// 3. Human Vowel Formant Acoustic Synthesis (Vowels A, O, E)
+let sample_a = synthesize_human_vowel_sample("A", 120.0, 0.005)
+let sample_o = synthesize_human_vowel_sample("O", 120.0, 0.005)
+print("Vowel 'A' Formant Amplitude:", sample_a)
+print("Vowel 'O' Formant Amplitude:", sample_o)`}</code>
+            </pre>
+          </div>
+        </div>
+
+        {/* 12. Developer CLI Suite */}
+        <div className="mb-20">
+          <h2 className="text-2xl font-bold mb-6 border-b border-white/10 pb-4">12. Silicon Developer CLI &amp; Verification Suite</h2>
+          <p className="text-zinc-400 mb-6 leading-relaxed">
+            Zero-config enterprise tooling built directly into the native binary for testing, BPE token budgeting, security linting, cryptographic lockfiles, and profiling.
+          </p>
+          <div className="grid md:grid-cols-2 gap-4 font-mono text-xs">
+            <div className="p-4 bg-zinc-900/60 border border-white/10 rounded-xl">
+              <span className="text-cyan-400 font-bold block mb-1">aayu test [file]</span>
+              <span className="text-zinc-400">Native assertion test runner (std/test.aayu)</span>
+            </div>
+            <div className="p-4 bg-zinc-900/60 border border-white/10 rounded-xl">
+              <span className="text-purple-400 font-bold block mb-1">aayu token &lt;file&gt;</span>
+              <span className="text-zinc-400">BPE token density audit &amp; AI prompt compression</span>
+            </div>
+            <div className="p-4 bg-zinc-900/60 border border-white/10 rounded-xl">
+              <span className="text-emerald-400 font-bold block mb-1">aayu lint &lt;file&gt;</span>
+              <span className="text-zinc-400">Static AST linter &amp; dead code detection</span>
+            </div>
+            <div className="p-4 bg-zinc-900/60 border border-white/10 rounded-xl">
+              <span className="text-amber-400 font-bold block mb-1">aayu lock [--verify]</span>
+              <span className="text-zinc-400">Tamper-proof SHA-256 supply-chain lockfile</span>
+            </div>
+          </div>
+        </div>
+
         {/* Download Master Handbook Banner */}
         <div className="p-8 rounded-2xl bg-gradient-to-r from-purple-900/30 via-indigo-900/20 to-black border border-purple-500/40 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <h3 className="text-xl font-bold text-white mb-2">The Ultimate AAYU Master Handbook (21 Chapters)</h3>
+            <h3 className="text-xl font-bold text-white mb-2">The Ultimate AAYU Master Handbook (23 Chapters)</h3>
             <p className="text-zinc-400 text-sm max-w-xl">
-              Complete engineering manual by Ayush Ghrit Kaushik. Includes all 21 chapters, memory architecture, 20 master interview problems, and full source code.
+              Complete engineering manual by Ayush Ghrit Kaushik. Includes all 23 chapters, memory architecture, 20 master interview problems, smart contracts, creative DSP, and full source code.
             </p>
           </div>
           <a

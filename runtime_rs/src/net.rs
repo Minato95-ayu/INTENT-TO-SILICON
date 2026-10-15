@@ -143,24 +143,54 @@ impl HttpServer {
             .expect("Failed to initialize safe TLS protocol versions");
 
         if let (Some(cert_path), Some(key_path)) = (&self.tls_cert, &self.tls_key) {
-            let cert_file = std::fs::File::open(cert_path)
-                .unwrap_or_else(|e| panic!("Cannot open TLS certificate file '{}': {}", cert_path, e));
+            let cert_file = match std::fs::File::open(cert_path) {
+                Ok(f) => f,
+                Err(e) => {
+                    eprintln!("\n[AAYU TLS Error] Cannot open TLS certificate file '{}': {}", cert_path, e);
+                    eprintln!("  -> Tip: Omit '--cert' and '--key' to let AAYU auto-generate an in-memory dev certificate.\n");
+                    std::process::exit(1);
+                }
+            };
             let mut cert_reader = BufReader::new(cert_file);
-            let certs: Vec<CertificateDer<'static>> = rustls_pemfile::certs(&mut cert_reader)
-                .collect::<Result<Vec<_>, _>>()
-                .unwrap_or_else(|e| panic!("Failed to parse TLS certificate '{}': {}", cert_path, e));
+            let certs: Vec<CertificateDer<'static>> = match rustls_pemfile::certs(&mut cert_reader).collect::<Result<Vec<_>, _>>() {
+                Ok(c) if !c.is_empty() => c,
+                Ok(_) => {
+                    eprintln!("\n[AAYU TLS Error] No valid certificates found in '{}'\n", cert_path);
+                    std::process::exit(1);
+                }
+                Err(e) => {
+                    eprintln!("\n[AAYU TLS Error] Failed to parse TLS certificate '{}': {}\n", cert_path, e);
+                    std::process::exit(1);
+                }
+            };
 
-            let key_file = std::fs::File::open(key_path)
-                .unwrap_or_else(|e| panic!("Cannot open TLS private key file '{}': {}", key_path, e));
+            let key_file = match std::fs::File::open(key_path) {
+                Ok(f) => f,
+                Err(e) => {
+                    eprintln!("\n[AAYU TLS Error] Cannot open TLS private key file '{}': {}", key_path, e);
+                    std::process::exit(1);
+                }
+            };
             let mut key_reader = BufReader::new(key_file);
-            let key: PrivateKeyDer<'static> = rustls_pemfile::private_key(&mut key_reader)
-                .unwrap_or_else(|e| panic!("Failed to read private key from '{}': {}", key_path, e))
-                .unwrap_or_else(|| panic!("No valid private key found in '{}'", key_path));
+            let key: PrivateKeyDer<'static> = match rustls_pemfile::private_key(&mut key_reader) {
+                Ok(Some(k)) => k,
+                Ok(None) => {
+                    eprintln!("\n[AAYU TLS Error] No valid private key found in '{}'\n", key_path);
+                    std::process::exit(1);
+                }
+                Err(e) => {
+                    eprintln!("\n[AAYU TLS Error] Failed to parse TLS private key in '{}': {}\n", key_path, e);
+                    std::process::exit(1);
+                }
+            };
 
             builder
                 .with_no_client_auth()
                 .with_single_cert(certs, key)
-                .expect("Failed to configure custom TLS certificate")
+                .unwrap_or_else(|e| {
+                    eprintln!("\n[AAYU TLS Error] Failed to configure TLS certificates: {}\n", e);
+                    std::process::exit(1);
+                })
         } else {
             let subject_alt_names = vec!["localhost".to_string(), "127.0.0.1".to_string()];
             let certified_key = rcgen::generate_simple_self_signed(subject_alt_names)

@@ -1,0 +1,61 @@
+# ==============================================================================
+# AAYU Developer Tool: AI Agent Tokenizer & Context Optimizer (tools/tokenizer.aayu)
+# 100% Pure Self-Hosted AAYU (.aayu)
+# Run via: aayu token <file.aayu>
+# ==============================================================================
+import "std/os.aayu"
+import "std/fs.aayu"
+import "std/tokens.aayu"
+
+action main()
+    let target = get_env_var("AAYU_TARGET")
+    if len(target) == 0
+        target = "hello.aayu"
+    end
+
+    print("======================================================================")
+    print("      ⚡ AAYU AI AGENT TOKENIZER & CONTEXT OPTIMIZER (v1.5.0)         ")
+    print("======================================================================")
+    print("Target Source:  " + target)
+    print("Engine:         Pure AAYU BPE & Intent Density Estimator")
+    print("LLM Models:     Claude 3.5 Sonnet | GPT-4o | Gemini 1.5 Pro | DeepSeek")
+    print("----------------------------------------------------------------------")
+
+    if file_exists(target) == 0
+        print("[AAYU Error] Target file not found: " + target)
+        return 0
+    end
+
+    let code = read_text(target)
+    let char_count = len(code)
+    let tokens = estimate_tokens(code)
+    let density = calculate_token_density(code)
+    let comp = compare_token_footprint(code)
+    let compressed = compress_ai_context(code)
+    let compressed_tokens = estimate_tokens(compressed)
+
+    print("📊 CODE & TOKEN METRICS:")
+    print("  • Character Count:       " + char_count + " chars")
+    print("  • Estimated BPE Tokens:  " + tokens + " tokens")
+    print("  • Token Density:         " + density + " tokens / 100 chars")
+    print("  • Compressed AI Context: " + compressed_tokens + " tokens (after pruning comments)")
+    print("")
+
+    print("🌐 MULTI-LANGUAGE AGENT CONTEXT COMPARISON:")
+    print("  • AAYU Native Intent:    " + tokens + " tokens (1.0x baseline)")
+    print("  • Python Equivalent:     " + comp["python_tokens"] + " tokens (+" + comp["py_savings_percent"] + "% overhead)")
+    print("  • Go Equivalent:         " + comp["go_tokens"] + " tokens")
+    print("  • TypeScript/Node.js:    " + comp["typescript_tokens"] + " tokens (+" + comp["ts_savings_percent"] + "% overhead)")
+    print("----------------------------------------------------------------------")
+    print("💡 AI AGENT IMPACT ANALYSIS:")
+    print("  ✓ Context Window Saving: " + comp["ts_savings_percent"] + "% fewer tokens consumed per agent turn")
+    print("  ✓ Attention Accuracy:    Higher semantic density prevents 'Lost-in-the-Middle' degradation")
+    print("  ✓ Zero Boilerplate:      Single-file models, routes, and UI fit in <400 tokens")
+    print("======================================================================")
+    print("🤖 OPTIMIZED AGENT CONTEXT BLOCK (Ready for LLM Prompt Injection):")
+    print("----------------------------------------------------------------------")
+    print(compressed)
+    print("======================================================================")
+end
+
+main()

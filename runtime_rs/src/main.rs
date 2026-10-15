@@ -28,6 +28,7 @@ fn print_help() {
     println!("  fuzz [target]              Run native property-based fuzz & mutation test harness");
     println!("  repair <file.aayu>         Autonomous code healer (fixes AI/JS/Python syntax leaks)");
     println!("  graph [file.aayu]          Visualize module dependency topology and architecture");
+    println!("  token [file.aayu]          AI agent tokenizer, token density & context optimizer");
     println!("  lsp                        Start pure Language Server Protocol engine");
     println!("  pack <file.aayu> [-o out]  Bundle imports and compile standalone package");
     println!("  fmt <file.aayu> [--check]  Format AAYU source code with canonical 4-space indentation");
@@ -1004,6 +1005,20 @@ fn main() {
             run_source_file(graph_tool, false);
         } else {
             eprintln!("[AAYU Graph Error] Pure graph tool not found at {}", graph_tool);
+            std::process::exit(1);
+        }
+        return;
+    }
+
+    if cmd == "token" || cmd == "tokenizer" || cmd == "context" {
+        if args.len() >= 3 {
+            std::env::set_var("AAYU_TARGET", &args[2]);
+        }
+        let token_tool = "tools/tokenizer.aayu";
+        if Path::new(token_tool).exists() {
+            run_source_file(token_tool, false);
+        } else {
+            eprintln!("[AAYU Tokenizer Error] Pure tokenizer tool not found at {}", token_tool);
             std::process::exit(1);
         }
         return;

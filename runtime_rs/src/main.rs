@@ -1184,8 +1184,8 @@ fn hash_str(input: &str) -> String {
             start_time: std::time::Instant,
         }
 
-        let app_state = std::sync::Arc::new(std::sync::Mutex::new(LiveAppState {
-            users: vec![
+        fn load_wal_users() -> (Vec<LiveUser>, usize) {
+            let mut users = vec![
                 LiveUser {
                     id: 1,
                     username: "ayush_kaushik".to_string(),
@@ -1202,7 +1202,71 @@ fn hash_str(input: &str) -> String {
                     password_hash: "7b3c99014a2f8d6e5c4b3a2109876543210fedcba9876543210abcdef1234567".to_string(),
                     created_at: "Today 18:32".to_string(),
                 },
-            ],
+            ];
+            let mut max_id = 2;
+            if let Ok(content) = std::fs::read_to_string("aayudb_wal.json") {
+                let mut parser = aayu_vm::db::JsonParser::new(&content);
+                if let Some(aayu_vm::db::JsonValue::Array(arr)) = parser.parse_value() {
+                    for item in arr {
+                        if let aayu_vm::db::JsonValue::Object(map) = item {
+                            let id = match map.get("id") {
+                                Some(aayu_vm::db::JsonValue::Number(n)) => *n as usize,
+                                _ => max_id + 1,
+                            };
+                            let username = match map.get("username") {
+                                Some(aayu_vm::db::JsonValue::String(s)) => s.clone(),
+                                _ => continue,
+                            };
+                            let email = match map.get("email") {
+                                Some(aayu_vm::db::JsonValue::String(s)) => s.clone(),
+                                _ => "".to_string(),
+                            };
+                            let role = match map.get("role") {
+                                Some(aayu_vm::db::JsonValue::String(s)) => s.clone(),
+                                _ => "Engineer".to_string(),
+                            };
+                            let password_hash = match map.get("password_hash") {
+                                Some(aayu_vm::db::JsonValue::String(s)) => s.clone(),
+                                _ => "".to_string(),
+                            };
+                            let created_at = match map.get("created_at") {
+                                Some(aayu_vm::db::JsonValue::String(s)) => s.clone(),
+                                _ => "Restored from WAL".to_string(),
+                            };
+                            if !users.iter().any(|u| u.username == username) {
+                                users.push(LiveUser {
+                                    id,
+                                    username,
+                                    email,
+                                    role,
+                                    password_hash,
+                                    created_at,
+                                });
+                            }
+                            if id > max_id { max_id = id; }
+                        }
+                    }
+                }
+            }
+            (users, max_id + 1)
+        }
+
+        fn save_wal_users(users: &[LiveUser]) {
+            let mut json = String::from("[\n");
+            for (idx, u) in users.iter().enumerate() {
+                if idx > 0 { json.push_str(",\n"); }
+                json.push_str(&format!(
+                    r#"  {{"id":{},"username":"{}","email":"{}","role":"{}","password_hash":"{}","created_at":"{}"}}"#,
+                    u.id, u.username, u.email, u.role, u.password_hash, u.created_at
+                ));
+            }
+            json.push_str("\n]");
+            let _ = std::fs::write("aayudb_wal.json", json);
+        }
+
+        let (initial_users, next_uid) = load_wal_users();
+        let app_state = std::sync::Arc::new(std::sync::Mutex::new(LiveAppState {
+            users: initial_users,
             events: vec![
                 LiveEvent {
                     id: 1,
@@ -1217,7 +1281,7 @@ fn hash_str(input: &str) -> String {
                     timestamp: "18:32:04".to_string(),
                 },
             ],
-            next_user_id: 3,
+            next_user_id: next_uid,
             next_event_id: 3,
             start_time: std::time::Instant::now(),
         }));
@@ -1247,6 +1311,7 @@ fn hash_str(input: &str) -> String {
                     created_at: "Just now".to_string(),
                 };
                 st.users.push(new_user);
+                save_wal_users(&st.users);
                 let resp = format!(
                     r#"{{"status":"success","message":"User registered into AayuDB with SHA-256 hash","storage":"In-Memory WAL Synced","user":{{"id":{},"username":"{}","email":"{}","role":"{}","password_hash":"{}","created_at":"Just now"}},"token":"aayu_jwt_sec_{:08x}"}}"#,
                     id, final_user, final_email, final_role, hash, id * 12345
@@ -1339,6 +1404,7 @@ fn hash_str(input: &str) -> String {
                 let username = req_map.get("username").cloned().unwrap_or_default();
                 let before = st.users.len();
                 st.users.retain(|u| u.username != username);
+                save_wal_users(&st.users);
                 let deleted = before - st.users.len();
                 let resp = format!(r#"{{"status":"success","message":"GDPR Right to Be Forgotten: {} record(s) permanently erased","username":"{}"}}"#, deleted, username);
                 return aayu_vm::net::HttpResponse::json(200, &resp);

@@ -1160,6 +1160,7 @@ fn hash_str(input: &str) -> String {
             aayu_vm::net::HttpServer::new(port)
         };
 
+        #[derive(Clone)]
         struct LiveUser {
             id: usize,
             username: String,
@@ -1180,12 +1181,18 @@ fn hash_str(input: &str) -> String {
             timestamp: String,
         }
 
+        struct LiveOtp {
+            code: String,
+            created_at: std::time::Instant,
+        }
+
         struct LiveAppState {
             users: Vec<LiveUser>,
             events: Vec<LiveEvent>,
             next_user_id: usize,
             next_event_id: usize,
             start_time: std::time::Instant,
+            otps: std::collections::HashMap<String, LiveOtp>,
         }
 
         fn load_wal_users() -> (Vec<LiveUser>, usize) {
@@ -1345,6 +1352,7 @@ fn hash_str(input: &str) -> String {
             next_user_id: next_uid,
             next_event_id: 3,
             start_time: std::time::Instant::now(),
+            otps: std::collections::HashMap::new(),
         }));
 
         let state_clone = app_state.clone();
@@ -1407,20 +1415,69 @@ fn hash_str(input: &str) -> String {
             }
 
             if req.path == "/api/login" && req.method == "POST" {
-                let st = state_clone.lock().unwrap();
+                let mut st = state_clone.lock().unwrap();
                 let req_map = extract_json_map(&req.body);
                 let username = req_map.get("username").cloned().unwrap_or_default();
                 let password = req_map.get("password").cloned().unwrap_or_default();
+                let is_2fa = req_map.get("is_2fa").map(|v| v == "true" || v == "1").unwrap_or(false);
                 let hash = hash_str(&password);
-                if let Some(u) = st.users.iter().find(|u| u.username == username && (u.password_hash == hash || password == "admin" || password == "demo" || !password.is_empty())) {
-                    let resp = format!(
-                        r#"{{"status":"success","message":"Authentication successful","user":{{"id":{},"username":"{}","email":"{}","role":"{}","location":"{}","id_proof":"{}","bio":"{}","avatar_svg":"{}"}},"token":"aayu_jwt_sec_{:08x}"}}"#,
-                        u.id, u.username, u.email, u.role, u.location, u.id_proof, u.bio, u.avatar_svg, u.id * 54321
-                    );
-                    return aayu_vm::net::HttpResponse::json(200, &resp);
+                if let Some(u) = st.users.iter().find(|u| u.username == username && (u.password_hash == hash || password == "admin" || password == "demo" || !password.is_empty())).cloned() {
+                    if is_2fa {
+                        let seed = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap_or_default().as_millis() as u64;
+                        let code = format!("{:06}", (seed % 900000) + 100000);
+                        st.otps.insert(username.clone(), LiveOtp {
+                            code: code.clone(),
+                            created_at: std::time::Instant::now(),
+                        });
+                        let resp = format!(
+                            r#"{{"status":"2fa_required","message":"Credentials verified. 2-Step OTP Dispatched.","username":"{}","otp":"{}","expires_in":60,"channel":"Zero-Trust Hardware / Simulated Handshake"}}"#,
+                            username, code
+                        );
+                        return aayu_vm::net::HttpResponse::json(200, &resp);
+                    } else {
+                        let resp = format!(
+                            r#"{{"status":"success","message":"Authentication successful","user":{{"id":{},"username":"{}","email":"{}","role":"{}","location":"{}","id_proof":"{}","bio":"{}","avatar_svg":"{}"}},"token":"aayu_jwt_sec_{:08x}"}}"#,
+                            u.id, u.username, u.email, u.role, u.location, u.id_proof, u.bio, u.avatar_svg, u.id * 54321
+                        );
+                        return aayu_vm::net::HttpResponse::json(200, &resp);
+                    }
                 } else {
                     return aayu_vm::net::HttpResponse::json(401, r#"{"status":"error","message":"Invalid credentials. Use existing user or register new."}"#);
                 }
+            }
+
+            if req.path == "/api/verify_otp" && req.method == "POST" {
+                let mut st = state_clone.lock().unwrap();
+                let req_map = extract_json_map(&req.body);
+                let username = req_map.get("username").cloned().unwrap_or_default();
+                let entered_otp = req_map.get("otp").cloned().unwrap_or_default();
+
+                let mut valid = false;
+                let mut expired = false;
+                if let Some(live_otp) = st.otps.get(&username) {
+                    if live_otp.created_at.elapsed().as_secs() > 60 {
+                        expired = true;
+                    } else if live_otp.code == entered_otp {
+                        valid = true;
+                    }
+                }
+
+                if expired {
+                    st.otps.remove(&username);
+                    return aayu_vm::net::HttpResponse::json(401, r#"{"status":"error","message":"OTP Expired! 60-second security window elapsed. Please re-login."}"#);
+                }
+
+                if valid {
+                    st.otps.remove(&username);
+                    if let Some(u) = st.users.iter().find(|u| u.username == username) {
+                        let resp = format!(
+                            r#"{{"status":"success","message":"2FA Verification Complete. Zero-Trust Handshake Validated.","user":{{"id":{},"username":"{}","email":"{}","role":"{}","location":"{}","id_proof":"{}","bio":"{}","avatar_svg":"{}"}},"token":"aayu_jwt_2fa_{:08x}"}}"#,
+                            u.id, u.username, u.email, u.role, u.location, u.id_proof, u.bio, u.avatar_svg, u.id * 98765
+                        );
+                        return aayu_vm::net::HttpResponse::json(200, &resp);
+                    }
+                }
+                return aayu_vm::net::HttpResponse::json(401, r#"{"status":"error","message":"Invalid 6-digit OTP code. Security verification failed."}"#);
             }
 
             if req.path.starts_with("/api/user/profile") {

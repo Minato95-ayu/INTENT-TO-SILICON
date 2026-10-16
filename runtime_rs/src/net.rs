@@ -336,13 +336,20 @@ pub fn extract_routes_from_source(source: &str) -> HashMap<String, (String, Stri
             let mut block_lines: Vec<String> = Vec::new();
             i += 1;
             let mut depth = 1;
+            let mut in_triple = false;
             while i < lines.len() && depth > 0 {
                 let l = lines[i].trim();
-                if l == "end" {
-                    depth -= 1;
-                    if depth == 0 { break; }
-                } else if l.starts_with("route ") || l == "get" || l == "post" || l == "put" || l == "delete" || l.starts_with("action ") {
-                    depth += 1;
+                let triple_count = l.matches("\"\"\"").count() + l.matches("'''").count();
+                if triple_count % 2 == 1 {
+                    in_triple = !in_triple;
+                }
+                if !in_triple {
+                    if l == "end" {
+                        depth -= 1;
+                        if depth == 0 { break; }
+                    } else if l.starts_with("route ") || l == "get" || l == "post" || l == "put" || l == "delete" || l.starts_with("action ") {
+                        depth += 1;
+                    }
                 }
                 block_lines.push(lines[i].to_string());
                 i += 1;
@@ -368,51 +375,84 @@ pub fn extract_routes_from_source(source: &str) -> HashMap<String, (String, Stri
 
             if let Some(pos) = block_str.find("respond(") {
                 let after = &block_str[pos + 8..];
-                let mut paren_depth = 1;
-                let mut end_pos = None;
-                let mut in_str = false;
-                let mut str_char = '"';
-                let mut escaped = false;
+                let trimmed = after.trim_start();
+                if trimmed.starts_with("\"\"\"") {
+                    let content = &trimmed[3..];
+                    if let Some(end_triple) = content.rfind("\"\"\"") {
+                        respond_arg = content[..end_triple].to_string();
+                    } else {
+                        respond_arg = content.to_string();
+                    }
+                } else if trimmed.starts_with("'''") {
+                    let content = &trimmed[3..];
+                    if let Some(end_triple) = content.rfind("'''") {
+                        respond_arg = content[..end_triple].to_string();
+                    } else {
+                        respond_arg = content.to_string();
+                    }
+                } else {
+                    let mut paren_depth = 1;
+                    let mut end_pos = None;
+                    let mut in_str = false;
+                    let mut str_char = '"';
+                    let mut escaped = false;
 
-                for (idx, ch) in after.char_indices() {
-                    if escaped {
-                        escaped = false;
-                        continue;
-                    }
-                    if ch == '\\' {
-                        escaped = true;
-                        continue;
-                    }
-                    if in_str {
-                        if ch == str_char {
-                            in_str = false;
+                    for (idx, ch) in after.char_indices() {
+                        if escaped {
+                            escaped = false;
+                            continue;
                         }
-                        continue;
-                    }
-                    if ch == '"' || ch == '\'' {
-                        in_str = true;
-                        str_char = ch;
-                        continue;
-                    }
-                    if ch == '(' {
-                        paren_depth += 1;
-                    } else if ch == ')' {
-                        paren_depth -= 1;
-                        if paren_depth == 0 {
-                            end_pos = Some(idx);
-                            break;
+                        if ch == '\\' {
+                            escaped = true;
+                            continue;
+                        }
+                        if in_str {
+                            if ch == str_char {
+                                in_str = false;
+                            }
+                            continue;
+                        }
+                        if ch == '"' || ch == '\'' {
+                            in_str = true;
+                            str_char = ch;
+                            continue;
+                        }
+                        if ch == '(' {
+                            paren_depth += 1;
+                        } else if ch == ')' {
+                            paren_depth -= 1;
+                            if paren_depth == 0 {
+                                end_pos = Some(idx);
+                                break;
+                            }
                         }
                     }
-                }
 
-                if let Some(ep) = end_pos {
-                    respond_arg = after[..ep].trim().to_string();
+                    if let Some(ep) = end_pos {
+                        respond_arg = after[..ep].trim().to_string();
+                    }
                 }
             } else if let Some(pos) = block_str.find("respond ") {
                 let after = &block_str[pos + 8..];
-                respond_arg = after.lines().next().unwrap_or("").trim().to_string();
+                let trimmed = after.trim_start();
+                if trimmed.starts_with("\"\"\"") {
+                    let content = &trimmed[3..];
+                    if let Some(end_triple) = content.rfind("\"\"\"") {
+                        respond_arg = content[..end_triple].to_string();
+                    } else {
+                        respond_arg = content.to_string();
+                    }
+                } else if trimmed.starts_with("'''") {
+                    let content = &trimmed[3..];
+                    if let Some(end_triple) = content.rfind("'''") {
+                        respond_arg = content[..end_triple].to_string();
+                    } else {
+                        respond_arg = content.to_string();
+                    }
+                } else {
+                    respond_arg = after.lines().next().unwrap_or("").trim().to_string();
+                }
             }
-
 
             let mut final_body = if let Some(resolved) = vars.get(&respond_arg) {
                 resolved.clone()

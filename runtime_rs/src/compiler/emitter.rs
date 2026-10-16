@@ -115,6 +115,14 @@ impl Emitter {
         const_idx
     }
 
+    fn add_constant_bool(&mut self, b: bool) -> usize {
+        let const_idx = self.num_constants as usize;
+        self.constants.push(4); // Bool tag
+        self.constants.push(if b { 1 } else { 0 });
+        self.num_constants += 1;
+        const_idx
+    }
+
     fn get_var_slot(&mut self, name: &str) -> usize {
         if let Some(&slot) = self.var_map.get(name) {
             slot
@@ -351,6 +359,18 @@ impl Emitter {
                 self.bytecode.push((const_idx >> 8) as u8);
                 self.bytecode.push((const_idx & 0xFF) as u8);
             }
+            Expr::Bool(b) => {
+                let const_idx = self.add_constant_bool(*b);
+                self.bytecode.push(1); // PUSH_CONST
+                self.bytecode.push((const_idx >> 8) as u8);
+                self.bytecode.push((const_idx & 0xFF) as u8);
+            }
+            Expr::Null => {
+                let const_idx = self.add_constant_null();
+                self.bytecode.push(1); // PUSH_CONST
+                self.bytecode.push((const_idx >> 8) as u8);
+                self.bytecode.push((const_idx & 0xFF) as u8);
+            }
             Expr::StringLiteral(s) => {
                 let (const_idx, _) = self.add_constant_str(s.clone());
                 self.bytecode.push(1); // PUSH_CONST
@@ -358,6 +378,27 @@ impl Emitter {
                 self.bytecode.push((const_idx & 0xFF) as u8);
             }
             Expr::Variable(name) => {
+                if name == "true" {
+                    let const_idx = self.add_constant_bool(true);
+                    self.bytecode.push(1);
+                    self.bytecode.push((const_idx >> 8) as u8);
+                    self.bytecode.push((const_idx & 0xFF) as u8);
+                    return;
+                }
+                if name == "false" {
+                    let const_idx = self.add_constant_bool(false);
+                    self.bytecode.push(1);
+                    self.bytecode.push((const_idx >> 8) as u8);
+                    self.bytecode.push((const_idx & 0xFF) as u8);
+                    return;
+                }
+                if name == "null" {
+                    let const_idx = self.add_constant_null();
+                    self.bytecode.push(1);
+                    self.bytecode.push((const_idx >> 8) as u8);
+                    self.bytecode.push((const_idx & 0xFF) as u8);
+                    return;
+                }
                 let (slot, is_global) = self.variable_slot(name);
                 self.bytecode.push(if is_global { 7 } else { 5 }); // LOAD_GLOBAL / LOAD_VAR
                 self.bytecode.push((slot % 256) as u8);

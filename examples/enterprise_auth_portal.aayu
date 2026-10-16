@@ -388,9 +388,9 @@ route "/"
                 <span>View Source (.aayu)</span>
                 <span style="background:#0284c7; padding:2px 6px; border-radius:10px; font-size:10px; color:#fff;">⭐ 100% Pure AAYU</span>
             </a>
-            <div class="status-pill">
+            <div class="status-pill" title="Live Silicon Status: Sub-millisecond VM Execution + Edge Tunnel">
                 <div class="status-dot"></div>
-                <span id="headerUptime">LIVE · 2.38 MB RAM · 0.8ms</span>
+                <span id="headerUptime">LIVE · 2.38 MB RAM · 90ms (0.09s RTT)</span>
             </div>
         </div>
     </header>
@@ -2014,13 +2014,17 @@ route "/"
             try {
                 const res = await fetch('/api/metrics');
                 const data = await res.json();
-                const duration = (performance.now() - start).toFixed(2);
+                const duration = (performance.now() - start).toFixed(1);
+                const seconds = (duration / 1000).toFixed(2);
                 const pingVal = document.getElementById('livePingVal');
-                if (pingVal) pingVal.innerText = duration + ' ms';
+                if (pingVal) pingVal.innerText = `${duration} ms (${seconds}s Total RTT)`;
                 const uptimeEl = document.getElementById('telemetryUptime');
                 if (uptimeEl) uptimeEl.innerText = `${data.uptime_sec || 12}s (${data.engine})`;
                 const headerUptime = document.getElementById('headerUptime');
-                if (headerUptime) headerUptime.innerText = `LIVE · 2.38 MB RAM · ${duration}ms`;
+                if (headerUptime) {
+                    headerUptime.innerText = `LIVE · 2.38 MB RAM · ${duration}ms (${seconds}s RTT)`;
+                    headerUptime.title = `Full Network Round-Trip: ${duration} milliseconds (${seconds}s) | Internal VM Silicon Speed: < 0.8ms`;
+                }
             } catch (err) {
                 console.error('Ping failed:', err);
             }

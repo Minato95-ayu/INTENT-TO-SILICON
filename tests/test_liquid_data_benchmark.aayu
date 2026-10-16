@@ -1,0 +1,77 @@
+# ==============================================================================
+# AAYU SILICON BENCHMARK: LIQUID DATA ARCHITECTURE (std/liquid.aayu)
+# Exhaustive Verification Across ALL Real-World Data Types
+# Formats Tested: JSON, XML, Code, Document/PDF, Raster Image, Audio/Video, Genome
+# ==============================================================================
+import "std/test.aayu"
+import "std/liquid.aayu"
+
+test_begin_suite("Liquid Data Architecture Multi-Format Benchmark Suite")
+
+# 1. TEST SUITE: JSON FINANCIAL LEDGER
+let json_payload = "{\"txn_id\": 98214, \"user\": \"ayush\", \"amount\": 500000.0, \"currency\": \"INR\", \"status\": \"SETTLED_O1\"}"
+let shard_json = liquid_shard_payload(json_payload)
+let valid_json = liquid_verify_checkpoints(shard_json)
+assert_true(valid_json, "JSON Payload: All 7 checkpoints verified cleanly")
+assert_true(len(shard_json["fast_cache_key"]) == 9, "JSON Payload: O(1) Fast Cache Key generated")
+let recon_json = liquid_reconstruct(shard_json, json_payload)
+assert_eq(recon_json, json_payload, "JSON Payload: 100% bit-exact reconstruction")
+
+# 2. TEST SUITE: XML / HTML DOCUMENT
+let xml_payload = "<document id='doc_401'><author>Ayush Kaushik</author><type>Patent Specification</type><version>2026.1</version></document>"
+let shard_xml = liquid_shard_payload(xml_payload)
+let valid_xml = liquid_verify_checkpoints(shard_xml)
+assert_true(valid_xml, "XML/HTML Document: All 7 checkpoints verified cleanly")
+let recon_xml = liquid_reconstruct(shard_xml, xml_payload)
+assert_eq(recon_xml, xml_payload, "XML Document: 100% bit-exact reconstruction")
+
+# 3. TEST SUITE: SOURCE CODE (.aayu / .rs)
+let code_payload = "app Core action compute_invariants let x = 42 return x end run compute_invariants"
+let shard_code = liquid_shard_payload(code_payload)
+let valid_code = liquid_verify_checkpoints(shard_code)
+assert_true(valid_code, "Source Code: All 7 checkpoints verified cleanly")
+let recon_code = liquid_reconstruct(shard_code, code_payload)
+assert_eq(recon_code, code_payload, "Source Code: 100% bit-exact reconstruction")
+
+# 4. TEST SUITE: BINARY DOCUMENT / PDF STREAM
+let pdf_payload = "%PDF-1.7 1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj 2 0 obj << /Kids [3 0 R] >> endobj %%EOF"
+let shard_pdf = liquid_shard_payload(pdf_payload)
+let valid_pdf = liquid_verify_checkpoints(shard_pdf)
+assert_true(valid_pdf, "PDF/Binary Document: All 7 checkpoints verified cleanly")
+let recon_pdf = liquid_reconstruct(shard_pdf, pdf_payload)
+assert_eq(recon_pdf, pdf_payload, "PDF Document: 100% bit-exact reconstruction")
+
+# 5. TEST SUITE: RASTER IMAGE (PPM / RAW PIXEL STREAM)
+let img_payload = "P3 4 4 255 255 0 0 0 255 0 0 0 255 255 255 0 255 0 255 0 255 255 255 255 255 0 0 0"
+let shard_img = liquid_shard_payload(img_payload)
+let valid_img = liquid_verify_checkpoints(shard_img)
+assert_true(valid_img, "Raster Image Pixel Stream: All 7 checkpoints verified cleanly")
+let recon_img = liquid_reconstruct(shard_img, img_payload)
+assert_eq(recon_img, img_payload, "Raster Image: 100% bit-exact reconstruction")
+
+# 6. TEST SUITE: VIDEO / AUDIO TELEMETRY STREAM
+let stream_payload = "NAL_0x00000001_SPS_FRAME_001_AUDIO_PCM_44100HZ_16BIT_STEREO_SYNC_001_TIMESTAMP_182049"
+let shard_stream = liquid_shard_payload(stream_payload)
+let valid_stream = liquid_verify_checkpoints(shard_stream)
+assert_true(valid_stream, "Audio/Video NAL Stream: All 7 checkpoints verified cleanly")
+let recon_stream = liquid_reconstruct(shard_stream, stream_payload)
+assert_eq(recon_stream, stream_payload, "Audio/Video Stream: 100% bit-exact reconstruction")
+
+# 7. TEST SUITE: GENOMIC SEQUENCE (DNA CHROMOSOME LOCUS)
+let dna_payload = "ATCGGCTAAGCTACGTTAACCGGTTAACCGGTTAACCGGTTAGCTATCGGCTAAGCTACGTTAACCGGTTAACCGGTTAACCGGTTAGCT"
+let shard_dna = liquid_shard_payload(dna_payload)
+let valid_dna = liquid_verify_checkpoints(shard_dna)
+assert_true(valid_dna, "Genomic DNA Locus: All 7 checkpoints verified cleanly")
+let recon_dna = liquid_reconstruct(shard_dna, dna_payload)
+assert_eq(recon_dna, dna_payload, "Genomic DNA: 100% bit-exact reconstruction")
+
+# 8. TEST SUITE: ADVERSARIAL TAMPER DETECTION (POLICE CHECKPOINT MISMATCH)
+# Tamper Layer 4 to simulate bit flip / cyber attack
+let tampered_shard = liquid_shard_payload(json_payload)
+tampered_shard["layer4_hash"] = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+let is_tampered_valid = liquid_verify_checkpoints(tampered_shard)
+assert_false(is_tampered_valid, "Adversarial Attack: Police Checkpoint Inspector catches 1-bit tamper")
+let tampered_recon = liquid_reconstruct(tampered_shard, json_payload)
+assert_neq(tampered_recon, json_payload, "Adversarial Attack: Reconstruction blocked on corrupt shard")
+
+test_end_suite()

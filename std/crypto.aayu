@@ -59,27 +59,48 @@ action hash_string(data)
         i = i + 1
     end
 
-    # Synthesize unique 64-character hexadecimal digest without repeating
+    # Synthesize unique 64-character hexadecimal digest with inter-round avalanche mixing
     let out = ""
     let k = 0
+    let a1 = h1
+    let a2 = h2
+    let a3 = h3
+    let a4 = h4
     while k < 16
-        let v1 = (h1 + k * 19 + h3) % 16
+        let v1 = (a1 + k * 19 + a3) % 16
         if v1 < 0
             v1 = 0 - v1
         end
-        let v2 = (h2 + k * 23 + h4) % 16
+        let v2 = (a2 + k * 23 + a4) % 16
         if v2 < 0
             v2 = 0 - v2
         end
-        let v3 = (h3 + k * 29 + h1) % 16
+        let v3 = (a3 + k * 29 + a1) % 16
         if v3 < 0
             v3 = 0 - v3
         end
-        let v4 = (h4 + k * 31 + h2) % 16
+        let v4 = (a4 + k * 31 + a2) % 16
         if v4 < 0
             v4 = 0 - v4
         end
         out = out + hex_chars[v1] + hex_chars[v2] + hex_chars[v3] + hex_chars[v4]
+        # Inter-round avalanche bit-shift and register diffusion
+        a1 = (a1 / 16 + a2 * 13 + a4) % 2147483647
+        if a1 < 0
+            a1 = 0 - a1
+        end
+        a2 = (a2 / 16 + a3 * 17 + a1) % 2147483647
+        if a2 < 0
+            a2 = 0 - a2
+        end
+        a3 = (a3 / 16 + a4 * 19 + a2) % 2147483647
+        if a3 < 0
+            a3 = 0 - a3
+        end
+        a4 = (a4 / 16 + a1 * 23 + a3) % 2147483647
+        if a4 < 0
+            a4 = 0 - a4
+        end
         k = k + 1
     end
     return out

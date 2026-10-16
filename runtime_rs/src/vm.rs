@@ -53,7 +53,21 @@ impl NanVal {
         (((self.0 & 0x0000_FFFF_FFFF_FFFF) << 16) as i64) >> 16
     }
     #[inline(always)] pub fn as_float(self) -> f64 { f64::from_bits(self.0) }
-    #[inline(always)] pub fn as_bool(self) -> bool { (self.0 & 1) == 1 }
+    #[inline(always)]
+    pub fn as_bool(self) -> bool {
+        if self.is_bool() {
+            (self.0 & 1) == 1
+        } else if self.is_null() {
+            false
+        } else if self.is_int() {
+            self.as_int() != 0
+        } else if self.is_float() {
+            let f = self.as_float();
+            f != 0.0 && !f.is_nan()
+        } else {
+            true
+        }
+    }
     #[inline(always)] pub fn as_string_idx(self) -> usize { (self.0 & 0x0000_FFFF_FFFF_FFFF) as usize }
     #[inline(always)] pub fn as_array_idx(self) -> usize { (self.0 & 0x0000_FFFF_FFFF_FFFF) as usize }
     #[inline(always)] pub fn as_dict_idx(self) -> usize { (self.0 & 0x0000_FFFF_FFFF_FFFF) as usize }
@@ -160,6 +174,10 @@ impl AayuVM {
             self.string_heap.get(a.as_string_idx()) == self.string_heap.get(b.as_string_idx())
         } else if a.is_bool() && b.is_bool() {
             a.as_bool() == b.as_bool()
+        } else if a.is_bool() && b.is_int() {
+            (if a.as_bool() { 1 } else { 0 }) == b.as_int()
+        } else if a.is_int() && b.is_bool() {
+            a.as_int() == (if b.as_bool() { 1 } else { 0 })
         } else {
             a.0 == b.0
         }

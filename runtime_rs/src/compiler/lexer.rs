@@ -32,6 +32,9 @@ pub enum Token {
     Delete,
     Respond,
     Model,
+    True,
+    False,
+    Null,
     StringLiteral(String),
     Identifier(String),
     Integer(i64),
@@ -205,6 +208,9 @@ impl<'a> Lexer<'a> {
                     "delete" | "DELETE" => tokens.push(Token::Delete),
                     "respond" => tokens.push(Token::Respond),
                     "model" => tokens.push(Token::Model),
+                    "true" => tokens.push(Token::True),
+                    "false" => tokens.push(Token::False),
+                    "null" => tokens.push(Token::Null),
                     _ => tokens.push(Token::Identifier(word.to_string())),
                 }
             } else if ch.is_ascii_digit() {

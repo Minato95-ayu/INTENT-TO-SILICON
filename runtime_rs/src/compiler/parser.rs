@@ -22,6 +22,8 @@ pub enum UnaryOp { Negate }
 pub enum Expr {
     Integer(i64),
     Float(f64),
+    Bool(bool),
+    Null,
     StringLiteral(String),
     Variable(String),
     Binary {
@@ -618,6 +620,9 @@ impl Parser {
         let mut expr = match self.current() {
             Token::Integer(n) => { let val = *n; self.pos += 1; Expr::Integer(val) }
             Token::Float(f) => { let val = *f; self.pos += 1; Expr::Float(val) }
+            Token::True => { self.pos += 1; Expr::Bool(true) }
+            Token::False => { self.pos += 1; Expr::Bool(false) }
+            Token::Null => { self.pos += 1; Expr::Null }
             Token::StringLiteral(s) => { let val = s.clone(); self.pos += 1; Expr::StringLiteral(val) }
             Token::Identifier(name) => {
                 let id = name.clone();

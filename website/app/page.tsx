@@ -166,13 +166,13 @@ export default function Home() {
                 </span>
               </h2>
               <p className="text-zinc-400 text-base sm:text-lg mt-2 max-w-3xl">
-                The world&apos;s first single-file full-stack enterprise platform built in pure AAYU (.aayu) with zero external packages. Experience real 2FA auth, live in-memory WAL database persistence, Ant-Man vector media compression (99.85% storage savings), and 7-layer liquid data molecular sharding.
+                The world&apos;s first single-file full-stack enterprise platform built in pure AAYU (.aayu) with zero external packages. Experience real 2FA auth, live in-memory WAL database persistence, Ant-Man vector media compression (99.85% storage savings), and <strong>Liquid Data 2.0</strong> with Git-style Content-Addressable Storage (CAS), Columnar Frame-of-Reference (FoR) deltas, and <strong>91.1% verified compaction</strong>.
               </p>
             </div>
 
             <div className="flex flex-wrap items-center gap-3 shrink-0">
               <a
-                href="https://trailers-keeping-column-diagnosis.trycloudflare.com/"
+                href="https://palestinian-privileges-leads-anonymous.trycloudflare.com/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-black font-extrabold text-sm shadow-xl shadow-emerald-500/20 hover:scale-105 transition-transform"
@@ -180,6 +180,16 @@ export default function Home() {
                 <Play className="w-4 h-4 fill-black" />
                 <span>Launch Live Web Portal</span>
                 <ExternalLink className="w-4 h-4" />
+              </a>
+
+              <a
+                href="/AAYU_OFFICIAL_HANDBOOK.pdf"
+                download="The_Official_AAYU_Handbook_Ayush_Ghrit_Kaushik.pdf"
+                className="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl bg-purple-600 hover:bg-purple-500 border border-purple-400/40 text-white font-bold text-sm shadow-xl shadow-purple-600/20 transition hover:scale-105"
+              >
+                <BookOpen className="w-4 h-4 text-purple-200" />
+                <span>Download Handbook (PDF)</span>
+                <span className="text-[10px] font-mono bg-black/30 px-2 py-0.5 rounded text-purple-200">2.58 MB</span>
               </a>
 
               <a
@@ -202,9 +212,9 @@ export default function Home() {
                 <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mb-3 font-bold">
                   01
                 </div>
-                <h3 className="text-white font-bold text-base mb-1">🌊 7-Layer Liquid Data</h3>
+                <h3 className="text-white font-bold text-base mb-1">🌊 Liquid Data 2.0 Molecular DAG</h3>
                 <p className="text-zinc-400 text-xs leading-relaxed">
-                  Molecular sharding into 7 sequential layers with deterministic SHA-256 checkpoints and O(1) prefix-suffix phone-number routing (<code className="text-cyan-300 font-mono">std/liquid.aayu</code>). Flipping any bit in Layer 4 freezes execution with zero data leak.
+                  Git-style Content-Addressable Storage (CAS) interning, Columnar Frame-of-Reference (FoR) integer deltas, and 7-layer Merkle-DAG integrity checks (<code className="text-cyan-300 font-mono">std/liquid2.aayu</code>). Condenses 13 KB JSON to 1.1 KB (<strong>91.1% measured reduction</strong>) with O(1) sub-microsecond random access!
                 </p>
               </div>
 
@@ -254,12 +264,12 @@ export default function Home() {
                   <div className="p-3 bg-black/60 rounded-xl border border-white/5">
                     <span className="text-zinc-500 block mb-1"># Live Public URL:</span>
                     <a
-                      href="https://trailers-keeping-column-diagnosis.trycloudflare.com/"
+                      href="https://palestinian-privileges-leads-anonymous.trycloudflare.com/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-cyan-300 hover:text-cyan-200 underline break-all flex items-center gap-1.5"
                     >
-                      <span>https://trailers-keeping-column-diagnosis.trycloudflare.com/</span>
+                      <span>https://palestinian-privileges-leads-anonymous.trycloudflare.com/</span>
                       <ExternalLink className="w-3.5 h-3.5 shrink-0" />
                     </a>
                   </div>
@@ -282,6 +292,19 @@ export default function Home() {
                     <code className="text-emerald-300 block select-all">
                       aayu run examples/enterprise_auth_portal.aayu --web --port 8080
                     </code>
+                  </div>
+
+                  <div className="p-3 bg-black/60 rounded-xl border border-white/5">
+                    <span className="text-zinc-500 block mb-1"># Scientific Technical Specification:</span>
+                    <a
+                      href="/AAYU_LIQUID_DATA_2.0_SPECIFICATION.md"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-amber-300 hover:text-amber-200 underline break-all flex items-center gap-1.5"
+                    >
+                      <span>AAYU_LIQUID_DATA_2.0_SPECIFICATION.md (91.1% Compaction)</span>
+                      <ExternalLink className="w-3.5 h-3.5 shrink-0" />
+                    </a>
                   </div>
                 </div>
 
@@ -529,13 +552,13 @@ export default function Home() {
                   </a>
 
                   <a
-                    href="/aayu-handbook.pdf"
-                    download="The_Ultimate_AAYU_Handbook_Ayush_Ghrit_Kaushik.pdf"
+                    href="/AAYU_OFFICIAL_HANDBOOK.pdf"
+                    download="The_Official_AAYU_Handbook_Ayush_Ghrit_Kaushik.pdf"
                     className="inline-flex items-center gap-2 rounded-xl bg-purple-600 hover:bg-purple-500 border border-purple-400/30 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-purple-600/20 transition hover:scale-105"
                   >
                     <BookOpen className="w-4 h-4 text-purple-200" />
-                    <span>Download Handbook (21 Ch PDF)</span>
-                    <span className="rounded bg-black/30 px-2 py-0.5 text-xs text-purple-200 font-mono">1.8 MB</span>
+                    <span>Download Handbook (26 Ch PDF)</span>
+                    <span className="rounded bg-black/30 px-2 py-0.5 text-xs text-purple-200 font-mono">2.58 MB</span>
                   </a>
 
                   <a

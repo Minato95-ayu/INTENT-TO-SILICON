@@ -1,0 +1,71 @@
+# ==============================================================================
+# AAYU SILICON TEST: 1,000-RECORD ENTERPRISE SCALE & LOOKUP STRESS TEST
+# Demonstrates Liquid Data 2.0 scaling behavior, memory amortization,
+# and sub-microsecond O(1) random access at 1,000 records.
+# ==============================================================================
+import "std/test.aayu"
+import "std/liquid2.aayu"
+
+test_begin_suite("Liquid Data 2.0: 1,000-Record Enterprise Scale & O(1) Access")
+
+let senders = ["CORP_HDFC", "CORP_ICICI", "CORP_SBI", "CORP_AXIS", "CORP_KOTAK"]
+let receivers = ["RESERVE_BANK_VAULT", "CLEARING_HOUSE_IN", "TREASURY_SETTLE_01"]
+
+# Generate 1,000 realistic enterprise records
+let records = []
+let i = 0
+while i < 1000
+    let s_idx = i % 5
+    let r_idx = i % 3
+    let s = senders[s_idx]
+    let r = receivers[r_idx]
+    let amt = 2000000 + (i * 150)
+    let rec = {
+        "id": 10000 + i,
+        "sender": s,
+        "receiver": r,
+        "amount": amt,
+        "currency": "INR",
+        "status": "SETTLED_O1"
+    }
+    records = records + [rec]
+    i = i + 1
+end
+
+assert_eq(len(records), 1000, "Scale Test: Exactly 1,000 records synthesized")
+
+# Pack 1,000 records using Liquid Data 2.0
+let pack = liquid2_pack_batch(records)
+
+assert_eq(pack["status"], "SEALED_LIQUID_2_DAG", "Scale Pack: Status is SEALED_LIQUID_2_DAG")
+assert_eq(pack["record_count"], 1000, "Scale Pack: Record count is 1,000")
+assert_true(liquid2_verify_pack(pack), "Scale Pack: All 7 Molecular Police Checkpoints pass for 1,000 records")
+
+# CAS Pool Verification: Only 5 senders + 3 receivers + 1 currency + 1 status = 10 unique tokens
+let pool_size = len(pack["cas_pool"]["tokens"])
+assert_eq(pool_size, 10, "CAS Amortization: 1,000 records deduplicated into exactly 10 CAS tokens")
+
+# O(1) Random Access Tests across First, Middle, and Last Record
+# Record 0 (First)
+let r0 = liquid2_read_record(pack, 0)
+assert_eq(r0["id"], 10000, "O(1) Access Record 0: ID 10000")
+assert_eq(r0["sender"], "CORP_HDFC", "O(1) Access Record 0: Sender CORP_HDFC")
+assert_eq(r0["amount"], 2000000, "O(1) Access Record 0: Amount ₹20,00,000")
+assert_eq(r0["currency"], "INR", "O(1) Access Record 0: Currency INR")
+
+# Record 500 (Midpoint)
+let r500 = liquid2_read_record(pack, 500)
+assert_eq(r500["id"], 10500, "O(1) Access Record 500: ID 10500")
+assert_eq(r500["amount"], 2075000, "O(1) Access Record 500: Amount ₹20,75,000")
+
+# Record 999 (Tail)
+let r999 = liquid2_read_record(pack, 999)
+assert_eq(r999["id"], 10999, "O(1) Access Record 999: ID 10999")
+assert_eq(r999["sender"], "CORP_KOTAK", "O(1) Access Record 999: Sender CORP_KOTAK")
+assert_eq(r999["amount"], 2149850, "O(1) Access Record 999: Amount ₹21,49,850")
+
+# Out-of-bounds safety checks
+assert_eq(liquid2_read_record(pack, -1), null, "Safety: Negative index returns null safely")
+assert_eq(liquid2_read_record(pack, 1000), null, "Safety: Out of range index 1000 returns null safely")
+
+test_end_suite()

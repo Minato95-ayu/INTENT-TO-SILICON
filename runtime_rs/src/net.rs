@@ -20,6 +20,7 @@ pub struct HttpResponse {
     pub status: u16,
     pub content_type: String,
     pub body: String,
+    pub raw_bytes: Option<Vec<u8>>,
 }
 
 impl HttpResponse {
@@ -28,6 +29,7 @@ impl HttpResponse {
             status,
             content_type: "application/json; charset=utf-8".to_string(),
             body: body.to_string(),
+            raw_bytes: None,
         }
     }
 
@@ -36,6 +38,7 @@ impl HttpResponse {
             status,
             content_type: "text/html; charset=utf-8".to_string(),
             body: body.to_string(),
+            raw_bytes: None,
         }
     }
 
@@ -44,6 +47,16 @@ impl HttpResponse {
             status,
             content_type: "text/plain; charset=utf-8".to_string(),
             body: body.to_string(),
+            raw_bytes: None,
+        }
+    }
+
+    pub fn binary(status: u16, content_type: &str, data: Vec<u8>) -> Self {
+        Self {
+            status,
+            content_type: content_type.to_string(),
+            body: String::new(),
+            raw_bytes: Some(data),
         }
     }
 }
@@ -261,6 +274,7 @@ impl HttpServer {
                 status: 204,
                 content_type: "text/plain".to_string(),
                 body: String::new(),
+                raw_bytes: None,
             }
         } else {
             handler(req)
@@ -278,17 +292,20 @@ impl HttpServer {
             _ => "Unknown",
         };
 
-        let body_bytes = res.body.as_bytes();
-        let response = format!(
-            "HTTP/1.1 {} {}\r\nContent-Type: {}\r\nContent-Length: {}\r\nAccess-Control-Allow-Origin: *\r\nAccess-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS\r\nAccess-Control-Allow-Headers: *\r\nConnection: close\r\n\r\n{}",
+        let body_bytes = match &res.raw_bytes {
+            Some(bytes) => bytes.as_slice(),
+            None => res.body.as_bytes(),
+        };
+        let response_header = format!(
+            "HTTP/1.1 {} {}\r\nContent-Type: {}\r\nContent-Length: {}\r\nAccess-Control-Allow-Origin: *\r\nAccess-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS\r\nAccess-Control-Allow-Headers: *\r\nConnection: close\r\n\r\n",
             res.status,
             status_text,
             res.content_type,
-            body_bytes.len(),
-            res.body
+            body_bytes.len()
         );
 
-        let _ = stream.write_all(response.as_bytes());
+        let _ = stream.write_all(response_header.as_bytes());
+        let _ = stream.write_all(body_bytes);
         let _ = stream.flush();
     }
 

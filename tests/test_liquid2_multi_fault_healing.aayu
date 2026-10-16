@@ -1,0 +1,109 @@
+# ==============================================================================
+# AAYU SILICON TEST: MULTI-FAULT CATASTROPHIC DISASTER RECOVERY
+# Proves that Liquid Data 2.0 can withstand concurrent, multi-column corruption:
+# Simultaneous ID delta mutation + Amount delta fraud + CAS pool token drop.
+# ==============================================================================
+import "std/test.aayu"
+import "std/liquid2.aayu"
+
+test_begin_suite("Liquid Data 2.0: Multi-Fault Concurrent Disaster Recovery")
+
+# 1. Setup Ground-Truth High-Throughput Corporate Banking Ledger
+let records = [
+    { "id": 1001, "sender": "HDFC_BANK_MUMBAI", "receiver": "SBI_SETTLEMENT_DELHI", "amount": 10000000, "currency": "INR", "status": "SETTLED" },
+    { "id": 1002, "sender": "ICICI_CORPORATE", "receiver": "SBI_SETTLEMENT_DELHI", "amount": 15000000, "currency": "INR", "status": "SETTLED" },
+    { "id": 1003, "sender": "AXIS_TREASURY", "receiver": "RESERVE_BANK_CENTRAL", "amount": 25000000, "currency": "INR", "status": "SETTLED" },
+    { "id": 1004, "sender": "KOTAK_MAHINDRA", "receiver": "RESERVE_BANK_CENTRAL", "amount": 30000000, "currency": "INR", "status": "SETTLED" },
+    { "id": 1005, "sender": "BARCLAYS_GLOBAL", "receiver": "HDFC_BANK_MUMBAI", "amount": 40000000, "currency": "USD", "status": "PROCESSING" },
+    { "id": 1006, "sender": "CITIBANK_NA", "receiver": "ICICI_CORPORATE", "amount": 55000000, "currency": "USD", "status": "PROCESSING" },
+    { "id": 1007, "sender": "STANDARD_CHARTERED", "receiver": "AXIS_TREASURY", "amount": 70000000, "currency": "EUR", "status": "SETTLED" },
+    { "id": 1008, "sender": "DEUTSCHE_BANK", "receiver": "RESERVE_BANK_CENTRAL", "amount": 85000000, "currency": "EUR", "status": "SETTLED" }
+]
+
+# 2. Pack dataset into Liquid 2.0 Molecular DAG
+let pristine_pack = liquid2_pack_batch(records)
+assert_true(liquid2_verify_pack(pristine_pack), "Pristine Baseline: All 7 Molecular Police Checkpoints pass cleanly")
+
+# 3. Generate Autonomous Parity Matrix Seal
+let parity_seal = liquid2_create_parity_matrix(pristine_pack)
+assert_eq(parity_seal["status"], "PARITY_SEAL_ACTIVE", "Parity Matrix: Successfully active")
+assert_eq(parity_seal["record_count"], 8, "Parity Matrix: Exactly 8 records monitored")
+
+# 4. Create Dual-Hearth WAL Backup Snapshot (independent copies)
+let wal_amounts = []
+let wal_ids = []
+let i = 0
+while i < 8
+    wal_amounts = wal_amounts + [pristine_pack["packed_amount"]["deltas"][i]]
+    wal_ids = wal_ids + [pristine_pack["packed_id"]["deltas"][i]]
+    i = i + 1
+end
+
+let wal_cas_tokens = []
+let ci = 0
+let orig_tokens = pristine_pack["cas_pool"]["tokens"]
+while ci < len(orig_tokens)
+    wal_cas_tokens = wal_cas_tokens + [orig_tokens[ci]]
+    ci = ci + 1
+end
+
+let wal_journal = {
+    "block_id": "WAL_SECURE_BLK_9918",
+    "amount_deltas": wal_amounts,
+    "id_deltas": wal_ids,
+    "cas_pool": {
+        "tokens": wal_cas_tokens,
+        "count": len(wal_cas_tokens)
+    }
+}
+
+# ------------------------------------------------------------------------------
+# INJECT SIMULTANEOUS TRIPLE-FAULT ATTACK / STORAGE DAMAGE
+# ------------------------------------------------------------------------------
+let corrupted_pack = pristine_pack
+
+# Fault 1: Amount delta corruption at Record 3 (₹3,00,00,000 -> ₹99,99,99,999)
+corrupted_pack["packed_amount"]["deltas"][3] = 999999999
+
+# Fault 2: ID delta corruption at Record 6 (ID 1007 -> ID 9999)
+corrupted_pack["packed_id"]["deltas"][6] = 8998
+
+# Fault 3: Truncate CAS dictionary pool (drop last token to simulate dictionary truncation)
+let truncated_tokens = []
+let tki = 0
+while tki < (len(wal_cas_tokens) - 1)
+    truncated_tokens = truncated_tokens + [wal_cas_tokens[tki]]
+    tki = tki + 1
+end
+corrupted_pack["cas_pool"]["tokens"] = truncated_tokens
+
+# Verify that Police Checkpoints halt access immediately
+assert_false(liquid2_verify_pack(corrupted_pack), "Tamper Detection: Layer 2, Layer 3 & Layer 6 caught simultaneous corruptions")
+let blocked_row3 = liquid2_read_record(corrupted_pack, 3)
+assert_eq(blocked_row3, "ACCESS_DENIED: Tampered Liquid 2.0 Shard Pack", "Security: Row 3 locked with ACCESS_DENIED")
+let blocked_row6 = liquid2_read_record(corrupted_pack, 6)
+assert_eq(blocked_row6, "ACCESS_DENIED: Tampered Liquid 2.0 Shard Pack", "Security: Row 6 locked with ACCESS_DENIED")
+
+# ------------------------------------------------------------------------------
+# AUTONOMOUS MULTI-FAULT RECOVERY
+# ------------------------------------------------------------------------------
+let recovery_result = liquid2_detect_and_heal(corrupted_pack, parity_seal, wal_journal)
+
+assert_eq(recovery_result["status"], "RECOVERED_100_PERCENT", "Self-Healing: Triple-fault recovered 100%")
+assert_true(recovery_result["healed"] >= 3, "Self-Healing: Successfully healed all 3 concurrent faults (healed: " + l2_int_to_str(recovery_result["healed"]) + ")")
+
+let healed_pack = recovery_result["pack"]
+assert_true(liquid2_verify_pack(healed_pack), "Police Verification: Healed pack passes all 7 molecular police checkpoints")
+
+# Ground-truth verification across damaged and undamaged records
+let r3 = liquid2_read_record(healed_pack, 3)
+assert_eq(r3["id"], 1004, "Ground-Truth: Row 3 ID is exactly 1004")
+assert_eq(r3["amount"], 30000000, "Ground-Truth: Row 3 Amount restored from ₹99,99,99,999 to ₹3,00,00,000")
+assert_eq(r3["sender"], "KOTAK_MAHINDRA", "Ground-Truth: Row 3 Sender intact")
+
+let r6 = liquid2_read_record(healed_pack, 6)
+assert_eq(r6["id"], 1007, "Ground-Truth: Row 6 ID restored from 9999 to 1007")
+assert_eq(r6["amount"], 70000000, "Ground-Truth: Row 6 Amount is exactly ₹7,00,00,000")
+assert_eq(r6["sender"], "STANDARD_CHARTERED", "Ground-Truth: Row 6 Sender intact")
+
+test_end_suite()

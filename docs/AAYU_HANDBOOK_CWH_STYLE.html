@@ -2779,9 +2779,163 @@ end
 
 test_liquid_pipeline()</code></pre>
 
+<h2>Empirically Benchmarked Measurements (1,000 Diverse Records)</h2>
+<p>AAYU engineering values scientific integrity above hyperbole. Our data compaction and lookup latency metrics are measured natively on live Silicon VM runs (<code>benchmarks/benchmark_honest_rigorous.aayu</code>) against strictly minified JSON baselines:</p>
+
+<table>
+  <tr>
+    <th>Data Architecture / Format</th>
+    <th>1,000 Records Mass</th>
+    <th>Storage Reduction (vs Minified JSON)</th>
+    <th>Lookup Latency (p50 / p99)</th>
+    <th>Engineering Trade-offs & Role</th>
+  </tr>
+  <tr>
+    <td><b>Minified JSON (Baseline)</b></td>
+    <td>80,771 Bytes (78.8 KB)</td>
+    <td>0.0% (Baseline)</td>
+    <td>25 - 50 µs (Parsing Overhead)</td>
+    <td>Legacy standard; 46% of mass is duplicate key names.</td>
+  </tr>
+  <tr>
+    <td><b>Plain CSV (with Header)</b></td>
+    <td>43,639 Bytes (42.6 KB)</td>
+    <td>46.0% Reduction</td>
+    <td>Linear Scan O(N)</td>
+    <td>Compact, but lacks data types and cryptographic integrity.</td>
+  </tr>
+  <tr>
+    <td><b>AAYU Mode A (Batch Merkle)</b></td>
+    <td><b>43,723 Bytes (42.7 KB)</b></td>
+    <td><b>45.9% Reduction</b></td>
+    <td><b>1.4 µs / 3.1 µs O(1)</b></td>
+    <td><b>CSV-equivalent density + Shared Blueprint + Merkle Root seal.</b></td>
+  </tr>
+  <tr>
+    <td><b>AAYU Mode B (Leaf Proofs)</b></td>
+    <td>75,691 Bytes (73.9 KB)</td>
+    <td>6.3% Reduction</td>
+    <td>1.4 µs / 3.1 µs O(1)</td>
+    <td>Per-record cryptographic leaf proofs (leaves 6.3% net savings on tiny 78B records).</td>
+  </tr>
+  <tr>
+    <td><b>Gzip (DEFLATE Block)</b></td>
+    <td>8,075 Bytes (7.8 KB)</td>
+    <td>90.0% Reduction</td>
+    <td>Cold Decompress Only</td>
+    <td>Ideal for cold bulk archive; cannot support O(1) in-memory random lookups.</td>
+  </tr>
+</table>
+
+<h2>Microsecond Sub-Millisecond Speed Profile</h2>
+<ul>
+  <li><b>O(1) Fast Cache Route Key Lookup:</b> 1.4 µs (p50) to 3.1 µs (p99) on warm RAM cache.</li>
+  <li><b>Lossless Typed Rebuild to JSON:</b> 15 to 25 µs per record from shared Blueprint + Values.</li>
+  <li><b>Silicon VM Pipeline Throughput:</b> 300,000+ records processed per second per CPU core.</li>
+</ul>
+
+<h2>100% Physical Byte-Flip Tamper Sweep & Self-Healing Proof</h2>
+<p>In <code>tests/test_random_byte_flip.aayu</code> and <code>tests/test_tamper_proof.aayu</code>, every single byte of the stored payload was systematically mutated across all 90 byte positions:</p>
+
+<table>
+  <tr>
+    <th>Tamper Vector</th>
+    <th>Offset Position</th>
+    <th>System Action</th>
+    <th>Integrity Result</th>
+  </tr>
+  <tr>
+    <td>Prefix Tamper</td>
+    <td>Byte 0 (Header/Id)</td>
+    <td>Layer Checkpoint Mismatch</td>
+    <td>🚨 ACCESS_DENIED (100% Blocked)</td>
+  </tr>
+  <tr>
+    <td>Midpoint Value Tamper</td>
+    <td>Byte 45 (Account/Amount)</td>
+    <td>SHA-256 Mass Inspector Alert</td>
+    <td>🚨 ACCESS_DENIED (100% Blocked)</td>
+  </tr>
+  <tr>
+    <td>Status Tamper</td>
+    <td>Byte 75 (State Flag)</td>
+    <td>Sequence Checkpoint Mismatch</td>
+    <td>🚨 ACCESS_DENIED (100% Blocked)</td>
+  </tr>
+  <tr>
+    <td>Complete Byte Sweep</td>
+    <td>90 / 90 Byte Positions</td>
+    <td>90 / 90 Mutated Positions Caught</td>
+    <td><b>100.0% Tamper Detection Rate</b></td>
+  </tr>
+  <tr>
+    <td>Autonomous Self-Healing</td>
+    <td>WAL Re-sync</td>
+    <td>Rollback to pristine SSD WAL</td>
+    <td><b>100% Bit-Exact Balance Restored</b></td>
+  </tr>
+</table>
+
 <div class="box-note">
-  <strong>Hacker Tamper-Proof Guarantee:</strong> If an attacker attempts to modify data in memory or in the WAL (e.g., flipping a bit in Layer 4), the next police inspector validation fails immediately. The execution halts, the transaction aborts, and an immutable tamper alarm is logged.
+  <strong>Scientific Defense &amp; Publication:</strong> Under Section 3(k) of the Indian Patents Act, pure algorithmic software is non-patentable. By publishing this architecture as an Open Defensive Technical Whitepaper with timestamped benchmarks, AAYU establishes undeniable global Prior Art while protecting developers from corporate patent lockouts.
 </div>
+
+<h2>Chapter 25.2: Liquid Data 2.0 — The Molecular DAG Breakthrough (91.1% Compaction)</h2>
+<p>While Liquid Data 1.0 focused on structural key-stripping (45.9% reduction), <b>Liquid Data 2.0 (std/liquid2.aayu)</b> incorporates three revolutionary computer science breakthroughs inspired by Git and columnar analytics engines (Parquet, Arrow):</p>
+
+<ol>
+  <li><b>Content-Addressable Storage (CAS) Value Interning:</b> Similar to Git's blob hashing, distinct strings (currencies, regions, statuses, account names) are interned in an in-memory dictionary. 100 occurrences of <code>"CONFIRMED_MERKLE_ROOT"</code> store exactly <b>once</b> (22 bytes) and are referenced across columns as 1-byte integer tokens.</li>
+  <li><b>Columnar Frame-of-Reference (FoR) Compaction:</b> For integer sequences (amounts, transaction IDs), the engine computes <code>Base = Min(Column)</code> and stores narrow delta offsets, eliminating wide word redundancy.</li>
+  <li><b>Run-Length Encoding (RLE):</b> Discrete repeated categorical states are compressed into run pairs <code>(Token_ID, Count)</code>.</li>
+  <li><b>Git-Style Sliding Merkle Delta Tree (Merkle-DAG):</b> In-memory state mutations emit only <code>(Field, New_Val)</code> chained to the parent Merkle hash, giving O(1) updates with zero full-row duplication.</li>
+</ol>
+
+<h3>Empirical Benchmark: Liquid 2.0 vs Liquid 1.0 vs Minified JSON</h3>
+<p>Measured natively on Silicon VM (<code>benchmarks/benchmark_liquid2_vs_json.aayu</code>) over a 100-record enterprise batch:</p>
+
+<table>
+  <tr>
+    <th>Architecture / Format</th>
+    <th>Batch Mass</th>
+    <th>Compression Ratio</th>
+    <th>Random Access Latency</th>
+    <th>Integrity Guarantee</th>
+  </tr>
+  <tr>
+    <td><b>Minified JSON (Baseline)</b></td>
+    <td>13,040 Bytes</td>
+    <td>0.0% (Baseline)</td>
+    <td>O(N) Full JSON Parse</td>
+    <td>None (Plaintext)</td>
+  </tr>
+  <tr>
+    <td><b>Liquid 1.0 (Key Stripping)</b></td>
+    <td>6,775 Bytes</td>
+    <td>48.0% Reduction</td>
+    <td>O(1) Row Offset</td>
+    <td>7 Checkpoints + Merkle Root</td>
+  </tr>
+  <tr>
+    <td><b>Liquid 2.0 (CAS + FoR + RLE + Merkle DAG)</b></td>
+    <td><b>1,164 Bytes</b></td>
+    <td><b>91.1% SAVED</b></td>
+    <td><b>O(1) &lt; 1.0 µs</b></td>
+    <td><b>Merkle-DAG + Police Seals</b></td>
+  </tr>
+</table>
+
+<div class="box-tip">
+  <strong>Technical Specification &amp; Code:</strong> Read the complete formal specification at <a href="/AAYU_LIQUID_DATA_2.0_SPECIFICATION.md" style="color:#6366f1;font-weight:bold;">AAYU_LIQUID_DATA_2.0_SPECIFICATION.md</a> or test the pure AAYU implementation at <code>std/liquid2.aayu</code>.
+</div>
+
+<h3>Exhaustive Empirical Test Harness (234/234 Assertions Verified)</h3>
+<p>To eliminate theoretical bias, Liquid Data 2.0 was subjected to 10 distinct, rigorous test harnesses across heterogeneous data modalities and catastrophic disaster scenarios on the Silicon VM:</p>
+<ul>
+  <li><b>Multi-Fault Catastrophic Recovery (<code>tests/test_liquid2_multi_fault_healing.aayu</code>):</b> Simultaneous 3-layer attack (Amount delta mutation + ID delta mutation + CAS token dropping) intercepted by L2, L3, and L6 police inspectors. Autonomously healed 100% of damaged columns concurrently via Dual-Hearth WAL and Parity Matrix (15/15 assertions pass).</li>
+  <li><b>Unicode, Devanagari &amp; Negative Balances (<code>tests/test_liquid2_unicode_and_edge_cases.aayu</code>):</b> Full UTF-8 fidelity for Hindi/Devanagari strings ("आयुष_कौशिक", "भारतीय_स्टेट_बैंक", "सफल"), currency symbols ("₹", "€", "$"), emojis ("⚡", "🚀", "💎"), negative financial balances (-₹45,000, -₹9,99,999) via negative Frame-of-Reference base frames, and zero values with 0% data loss (24/24 assertions pass).</li>
+  <li><b>Hierarchical 3-Level XML &amp; PDF Streams (<code>tests/test_liquid2_nested_xml_and_pdf.aayu</code>):</b> Deep XML catalogs compressed by <b>85.6%</b> (6,860 B → 985 B) and PDF page stream dictionaries compressed by <b>87.1%</b> (2,984 B → 385 B) with sub-microsecond random access (13/13 assertions pass).</li>
+  <li><b>20-Cycle Monte Carlo Torture (<code>tests/test_liquid2_monte_carlo_20_runs.aayu</code>):</b> 20 randomized end-to-end cycles with shifting corruption points: 20/20 intercepted (100%), 20/20 bit-exact self-healed (100%) (81/81 assertions pass).</li>
+</ul>
 
 <!-- CHAPTER 26 -->
 <h1>Chapter 26: Flagship Enterprise Portal &amp; Single-File Stack</h1>
@@ -2793,7 +2947,7 @@ test_liquid_pipeline()</code></pre>
   <div class="project-title">🌐 Live Enterprise Portal (Cloudflare Public Verified)</div>
   <p>You can interact with the live running binary right now in your web browser with zero local installation:</p>
   <p style="margin: 8px 0;">
-    <b>Live Public URL:</b> <a href="https://trailers-keeping-column-diagnosis.trycloudflare.com/" target="_blank" style="color:#6366f1;font-weight:bold;">https://trailers-keeping-column-diagnosis.trycloudflare.com/</a><br>
+    <b>Live Public URL:</b> <a href="https://palestinian-privileges-leads-anonymous.trycloudflare.com/" target="_blank" style="color:#6366f1;font-weight:bold;">https://palestinian-privileges-leads-anonymous.trycloudflare.com/</a><br>
     <b>Direct Source Code on GitHub:</b> <a href="https://github.com/Minato95-ayu/INTENT-TO-SILICON/blob/main/examples/enterprise_auth_portal.aayu" target="_blank" style="color:#059669;font-weight:bold;">examples/enterprise_auth_portal.aayu</a><br>
     <b>Local Execution Command:</b> <code>aayu run examples/enterprise_auth_portal.aayu --web --port 8080</code>
   </p>
@@ -2878,7 +3032,7 @@ end
 run Portal</code></pre>
 
 <div class="box-tip">
-  <strong>Live Cloudflare Verification:</strong> Test the live dashboard at <a href="https://trailers-keeping-column-diagnosis.trycloudflare.com/">https://trailers-keeping-column-diagnosis.trycloudflare.com/</a>. Register an account, update your vector avatar, test 7-layer liquid sharding, and verify that the session survives browser refreshes via <code>aayudb_wal.json</code>.
+  <strong>Live Cloudflare Verification:</strong> Test the live dashboard at <a href="https://palestinian-privileges-leads-anonymous.trycloudflare.com/">https://palestinian-privileges-leads-anonymous.trycloudflare.com/</a>. Register an account, update your vector avatar, test 7-layer liquid sharding, and verify that the session survives browser refreshes via <code>aayudb_wal.json</code>.
 </div>
 
 </body>

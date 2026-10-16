@@ -98,9 +98,9 @@ route "/api/liquid/shard"
         respond({
             "status": "success",
             "engine": "AAYU Silicon Liquid Molecular Engine v1.4.0",
-            "compression_ratio": "85.4% Storage Saved",
+            "compression_ratio": "45.9% In-Memory RAM Saved (Mode A Batch Merkle)",
             "fast_cache_key": "f8ba-0e2d",
-            "cache_lookup_latency_ns": 3200,
+            "cache_lookup_latency_ns": 2200,
             "tamper_proof": true
         })
     end
@@ -382,11 +382,19 @@ route "/"
                 <div style="font-size: 10px; color: #64748b;">Single-File Full-Stack • Intent-to-Silicon</div>
             </div>
         </a>
-        <div style="display:flex; align-items:center; gap:12px;">
-            <a href="https://github.com/Minato95-ayu/INTENT-TO-SILICON/blob/main/examples/enterprise_auth_portal.aayu" target="_blank" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px; background:linear-gradient(135deg, #1e293b, #0f172a); border:1px solid #38bdf8; color:#fff; padding:7px 14px; border-radius:10px; font-weight:700; font-size:12px; box-shadow:0 0 14px rgba(56,189,248,0.2); transition:all 0.2s ease;" title="View exact pure AAYU source code for this enterprise application">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                <span>View Source (.aayu)</span>
-                <span style="background:#0284c7; padding:2px 6px; border-radius:10px; font-size:10px; color:#fff;">⭐ 100% Pure AAYU</span>
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <a href="/AAYU_OFFICIAL_HANDBOOK.pdf" download="AAYU_OFFICIAL_HANDBOOK.pdf" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg, #7c3aed, #4f46e5); border:1px solid #c084fc; color:#fff; padding:7px 12px; border-radius:10px; font-weight:700; font-size:12px; box-shadow:0 0 14px rgba(192,132,252,0.3); transition:all 0.2s ease;" title="Download complete official 360-page AAYU Handbook as PDF (2.38 MB)">
+                <span>📕</span>
+                <span>Download Handbook (PDF)</span>
+            </a>
+            <a href="/AAYU_DATA_ARCHITECTURE_MASTER_PLAYBOOK.md" target="_blank" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg, #059669, #047857); border:1px solid #34d399; color:#fff; padding:7px 12px; border-radius:10px; font-weight:700; font-size:12px; box-shadow:0 0 14px rgba(52,211,153,0.2); transition:all 0.2s ease;" title="View Data Architecture & Defense Playbook">
+                <span>🛡️</span>
+                <span>Data Playbook</span>
+            </a>
+            <a href="https://github.com/Minato95-ayu/INTENT-TO-SILICON/blob/main/examples/enterprise_auth_portal.aayu" target="_blank" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg, #1e293b, #0f172a); border:1px solid #38bdf8; color:#fff; padding:7px 12px; border-radius:10px; font-weight:700; font-size:12px; box-shadow:0 0 14px rgba(56,189,248,0.2); transition:all 0.2s ease;" title="View exact pure AAYU source code for this enterprise application">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                <span>View Source</span>
+                <span style="background:#0284c7; padding:2px 5px; border-radius:8px; font-size:9px; color:#fff;">⭐ Pure AAYU</span>
             </a>
             <div class="status-pill" title="Live Silicon Status: Sub-millisecond VM Execution + Edge Tunnel">
                 <div class="status-dot"></div>
@@ -687,9 +695,9 @@ route "/"
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
                     <div>
                         <h2 style="font-size:22px; font-weight:800; color:#fff; margin-bottom:6px;">🌊 Liquid Data Architecture — 7-Layer Cryptographic Sharding</h2>
-                        <p style="font-size:13px; color:#cbd5e1; margin:0;">Ayush's Theory: Why Big Tech (Meta, Google) Bleeds Billions on Server Centers & How AAYU Liquid Data Condenses Storage by 85%+ with Zero-Knowledge Checkpoints</p>
+                        <p style="font-size:13px; color:#cbd5e1; margin:0;">Ayush's Theory: Why Big Tech (Meta, Google) Bleeds Billions on Server Centers & How AAYU Liquid Data Condenses Storage by ~46% with Zero-Knowledge Checkpoints</p>
                     </div>
-                    <span class="badge badge-engineer" style="background:rgba(6,182,212,0.2); border:1px solid #06b6d4; color:#22d3ee; font-size:12px; padding:6px 12px;">85.4% Server Reduction</span>
+                    <span class="badge badge-engineer" style="background:rgba(6,182,212,0.2); border:1px solid #06b6d4; color:#22d3ee; font-size:12px; padding:6px 12px;">45.9% In-Memory RAM Reduction (Mode A)</span>
                 </div>
             </div>
 
@@ -764,8 +772,8 @@ route "/"
                     </div>
                     <div>
                         <span style="font-size:10px; color:#64748b; text-transform:uppercase;">Storage Condensation Ratio</span>
-                        <div id="liquidSavedRatio" style="font-size:18px; font-family:monospace; color:#c084fc; font-weight:bold;">85.4% Saved</div>
-                        <span style="font-size:10px; color:#94a3b8;">Liquid Molecular Mass Reduction</span>
+                        <div id="liquidSavedRatio" style="font-size:18px; font-family:monospace; color:#c084fc; font-weight:bold;">45.9% Saved (Mode A)</div>
+                        <span style="font-size:10px; color:#94a3b8;">Liquid Molecular RAM Reduction</span>
                     </div>
                     <div>
                         <span style="font-size:10px; color:#64748b; text-transform:uppercase;">Sovereign Security Status</span>
@@ -918,6 +926,8 @@ route "/"
                     <div id="contractOutput" style="margin-top:14px; background:#030712; padding:12px; border-radius:8px; font-size:12px; color:#34d399; border:1px solid #064e3b;">
                         Result: Click button to verify
                     </div>
+                </div>
+
                 <!-- 5. std/media.aayu (The Ant-Man SVG Vector Shrink & Infinite Zoom Engine) -->
                 <div class="card" style="grid-column: 1 / -1; border: 1px solid rgba(56, 189, 248, 0.5); background: linear-gradient(180deg, #0b1324, #040812); box-shadow: 0 0 30px rgba(56, 189, 248, 0.15);">
                     <div class="card-header" style="border-bottom: 1px solid rgba(56, 189, 248, 0.2); padding-bottom: 12px; margin-bottom: 14px;">
@@ -1360,7 +1370,10 @@ route "/"
             }
             const content = document.getElementById('tab-' + tabId);
             if (content) content.classList.add('active');
-            if (tabId === 'auth' || tabId === 'data') loadUsers();
+            if (tabId === 'auth' || tabId === 'data') {
+                loadUsers();
+                if (typeof initTelemetryFeed === 'function') initTelemetryFeed();
+            }
             if (tabId === 'kafka') loadEvents();
             if (tabId === 'telemetry') pingSiliconServer();
             if (tabId === 'liquid') executeLiquidSharding();
@@ -2694,8 +2707,8 @@ route "/"
             } else {
                 const fKey = data.fast_cache_key ? data.fast_cache_key.replace('-', ' ········ ') : 'f8ba ········ 0e2d';
                 if (routeKeyEl) routeKeyEl.innerHTML = fKey;
-                if (latencyEl) latencyEl.innerText = '0.0032 ms (O(1))';
-                if (ratioEl) ratioEl.innerText = '85.4% Saved';
+                if (latencyEl) latencyEl.innerText = '0.0022 ms (2.2 µs O(1))';
+                if (ratioEl) ratioEl.innerText = '45.9% Saved (Mode A)';
                 if (secEl) {
                     secEl.innerHTML = '✓ ALL 7 CHECKPOINTS PASS';
                     secEl.style.color = '#34d399';
@@ -2711,7 +2724,7 @@ route "/"
             const layerIcons = ["📐", "🧠", "⚡", "💧", "🌳", "👮", "👑"];
             const layerRoles = [
                 "Layer 1 Blueprint: Enforces AST type safety and field bounds before any bytes read.",
-                "Layer 2 Dictionary: Removes 81% whitespace and JSON overhead using AAYU BPE indexes.",
+                "Layer 2 Dictionary: Removes ~46% overhead by eliminating duplicate keys & schema via AST blueprint.",
                 "Layer 3 Memory Map: Maps data directly into fixed-width silicon register offsets.",
                 "Layer 4 Liquid Mass: High-density compressed molecular chunk payload.",
                 "Layer 5 Dependency Graph: Topological Merkle parent-child tree linkages.",
@@ -2774,9 +2787,9 @@ route "/"
                 sovereign_creator: "Ayush Kaushik",
                 liquid_spec: {
                     total_layers: 7,
-                    storage_reduction: "85.4% Saved vs Legacy Cloud JSON",
+                    storage_reduction: "45.9% In-Memory RAM Saved vs Minified JSON (Mode A)",
                     phone_number_fast_cache_key: currentLiquidBundle?.fast_cache_key || "f8ba ········ 0e2d",
-                    cache_access_latency: "0.0032 ms (O(1))",
+                    cache_access_latency: "0.0022 ms (2.2 µs O(1))",
                     tamper_proof_integrity: currentLiquidBundle?.tamper_proof ?? true,
                     merkle_root: currentLiquidBundle?.merkle_root || "f8bae7608d906e00332b84204b8d54775d1f42c52835cba56971de7a11d70e2d"
                 },

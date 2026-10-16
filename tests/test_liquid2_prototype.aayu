@@ -1,0 +1,128 @@
+# ==============================================================================
+# AAYU Native Test Suite: Liquid Data 2.0 Prototype Verification
+# Tests CAS, Columnar FoR, RLE, Git-Style Merkle DAG & O(1) Lossless Recovery
+# ==============================================================================
+import "std/test.aayu"
+import "std/liquid2.aayu"
+
+action run_liquid2_suite()
+    test_begin_suite("Liquid Data 2.0: CAS + Columnar + Git-Style Merkle DAG")
+
+    # --------------------------------------------------------------------------
+    # TEST 1: Content-Addressable Storage (CAS) Value Interning
+    # --------------------------------------------------------------------------
+    let pool = cas_create_pool()
+    let r1 = cas_intern(pool, "INR")
+    pool = r1["pool"]
+    assert_eq(r1["token_id"], 0, "CAS: First string 'INR' interned at token 0")
+
+    let r2 = cas_intern(pool, "USD")
+    pool = r2["pool"]
+    assert_eq(r2["token_id"], 1, "CAS: Second string 'USD' interned at token 1")
+
+    # Re-interning "INR" must return token 0 without increasing pool count!
+    let r3 = cas_intern(pool, "INR")
+    pool = r3["pool"]
+    assert_eq(r3["token_id"], 0, "CAS: Duplicate string 'INR' reuses token 0")
+    assert_eq(pool["count"], 2, "CAS: Pool size strictly 2 (zero duplicate memory)")
+    assert_eq(cas_resolve(pool, 0), "INR", "CAS: Token 0 resolves to 'INR'")
+    assert_eq(cas_resolve(pool, 1), "USD", "CAS: Token 1 resolves to 'USD'")
+
+    # --------------------------------------------------------------------------
+    # TEST 2: Columnar Frame-of-Reference (FoR) Numeric Compression
+    # --------------------------------------------------------------------------
+    let raw_amounts = [4500000, 4500150, 4500020, 4500500]
+    let packed_amt = for_compress_column(raw_amounts)
+    assert_eq(packed_amt["base"], 4500000, "FoR: Base frame correctly identified as 4500000")
+    assert_eq(packed_amt["deltas"][0], 0, "FoR: Delta 0 is 0")
+    assert_eq(packed_amt["deltas"][1], 150, "FoR: Delta 1 is 150")
+    assert_eq(packed_amt["deltas"][2], 20, "FoR: Delta 2 is 20")
+    assert_eq(packed_amt["deltas"][3], 500, "FoR: Delta 3 is 500")
+
+    let decompressed_amt = for_decompress_column(packed_amt)
+    assert_eq(decompressed_amt[0], 4500000, "FoR: Exact recovery of amount 0")
+    assert_eq(decompressed_amt[1], 4500150, "FoR: Exact recovery of amount 1")
+    assert_eq(decompressed_amt[2], 4500020, "FoR: Exact recovery of amount 2")
+    assert_eq(decompressed_amt[3], 4500500, "FoR: Exact recovery of amount 3")
+
+    # --------------------------------------------------------------------------
+    # TEST 3: Run-Length Encoding (RLE)
+    # --------------------------------------------------------------------------
+    let sample_tokens = [0, 0, 0, 1, 1, 0]
+    let rle = rle_encode(sample_tokens)
+    assert_eq(len(rle), 3, "RLE: 6 tokens compressed into 3 run pairs")
+    assert_eq(rle[0][0], 0, "RLE Run 0: token 0")
+    assert_eq(rle[0][1], 3, "RLE Run 0: count 3")
+    assert_eq(rle[1][0], 1, "RLE Run 1: token 1")
+    assert_eq(rle[1][1], 2, "RLE Run 1: count 2")
+
+    let decoded_tokens = rle_decode(rle)
+    assert_eq(len(decoded_tokens), 6, "RLE: Decoded length matches original 6")
+    assert_eq(decoded_tokens[0], 0, "RLE Decoded: item 0")
+    assert_eq(decoded_tokens[3], 1, "RLE Decoded: item 3")
+    assert_eq(decoded_tokens[5], 0, "RLE Decoded: item 5")
+
+    # --------------------------------------------------------------------------
+    # TEST 4: Git-Style Sliding Merkle Delta DAG
+    # --------------------------------------------------------------------------
+    let base_rec = {
+        "id": 101,
+        "sender": "ayush",
+        "receiver": "rbi_node",
+        "amount": 4500000,
+        "currency": "INR",
+        "status": "SETTLED"
+    }
+    let base_node = git_create_base_node(base_rec)
+    assert_true(len(base_node["base_hash"]) == 64, "Git Base: 64-char Merkle blob hash computed")
+
+    # Mutation 1: Amount updated to 4500500
+    let delta1 = git_emit_delta_mutation(base_node, "amount", 4500500, 1)
+    assert_eq(delta1["parent_hash"], base_node["base_hash"], "Git Delta 1: Parent pointer linked to base")
+
+    # Mutation 2: Status updated to AUDITED_O1
+    let delta2 = git_emit_delta_mutation(delta1, "status", "AUDITED_O1", 2)
+    assert_eq(delta2["parent_hash"], delta1["base_hash"], "Git Delta 2: Parent pointer linked to Delta 1")
+
+    # Reconstruct final state through DAG
+    let final_state = git_reconstruct_state(base_node, [delta1, delta2])
+    assert_eq(final_state["amount"], 4500500, "Git DAG: Amount correctly reflects mutation 1")
+    assert_eq(final_state["status"], "AUDITED_O1", "Git DAG: Status correctly reflects mutation 2")
+    assert_eq(final_state["sender"], "ayush", "Git DAG: Unchanged sender field preserved")
+
+    # --------------------------------------------------------------------------
+    # TEST 5: Full Dataset Batch Pack & O(1) Reconstruct
+    # --------------------------------------------------------------------------
+    let batch = [
+        {"id": 1001, "sender": "ayush", "receiver": "merchant_1", "amount": 5000, "currency": "INR", "status": "CONFIRMED"},
+        {"id": 1002, "sender": "ayush", "receiver": "merchant_2", "amount": 7500, "currency": "INR", "status": "CONFIRMED"},
+        {"id": 1003, "sender": "rahul", "receiver": "merchant_1", "amount": 12000, "currency": "INR", "status": "CONFIRMED"}
+    ]
+
+    let pack = liquid2_pack_batch(batch)
+    assert_eq(pack["status"], "SEALED_LIQUID_2_DAG", "Batch Pack: Status SEALED_LIQUID_2_DAG")
+    assert_true(len(pack["merkle_root"]) == 64, "Batch Pack: Sovereign Merkle Root is 64 hex chars")
+    assert_true(len(pack["fast_cache_key"]) == 9, "Batch Pack: O(1) Phone-Route Key is 9 chars (XXXX-XXXX)")
+
+    let is_valid = liquid2_verify_pack(pack)
+    assert_true(is_valid, "Batch Pack: All 7 Molecular Police Checkpoints Pass")
+
+    # Read record 1 in O(1)
+    let rec1 = liquid2_read_record(pack, 1)
+    assert_eq(rec1["id"], 1002, "O(1) Read: Record 1 id is 1002")
+    assert_eq(rec1["sender"], "ayush", "O(1) Read: Record 1 sender resolved from CAS")
+    assert_eq(rec1["amount"], 7500, "O(1) Read: Record 1 amount decompressed from FoR")
+    assert_eq(rec1["currency"], "INR", "O(1) Read: Record 1 currency decompressed from RLE")
+
+    # --------------------------------------------------------------------------
+    # TEST 6: Tamper-Proof Integrity Guard
+    # --------------------------------------------------------------------------
+    # Mutate amount delta in packed structure (simulate hacker memory corruption)
+    pack["packed_amount"]["deltas"][1] = 999999
+    let tampered_read = liquid2_read_record(pack, 1)
+    assert_eq(tampered_read, "ACCESS_DENIED: Tampered Liquid 2.0 Shard Pack", "Tamper Guard: Memory mutation caught & access denied")
+
+    test_end_suite()
+end
+
+run_liquid2_suite()

@@ -1,0 +1,73 @@
+# ==============================================================================
+# AAYU SILICON TEST: DISASTER RECOVERY & SELF-HEALING ENGINE (LIQUID 2.0)
+# Proves that corrupted/failed data can be autonomously detected and recovered
+# using Parity Matrix Redundancy and Dual-Hearth WAL Journal rehydration.
+# ==============================================================================
+import "std/test.aayu"
+import "std/liquid2.aayu"
+
+test_begin_suite("Liquid Data 2.0: Disaster Recovery & Autonomous Self-Healing")
+
+# 1. Setup Ground-Truth Enterprise Dataset (5 Core High-Value Banking Transactions)
+let records = [
+    { "id": 5001, "sender": "HDFC_BANK_NODE", "receiver": "SBI_CENTRAL_CLEARING", "amount": 1000000, "currency": "INR", "status": "SETTLED" },
+    { "id": 5002, "sender": "ICICI_CORP_GATE", "receiver": "SBI_CENTRAL_CLEARING", "amount": 2500000, "currency": "INR", "status": "SETTLED" },
+    { "id": 5003, "sender": "AXIS_TREASURY", "receiver": "RESERVE_BANK_VAULT", "amount": 5000000, "currency": "INR", "status": "SETTLED" },
+    { "id": 5004, "sender": "HDFC_BANK_NODE", "receiver": "RESERVE_BANK_VAULT", "amount": 1500000, "currency": "INR", "status": "SETTLED" },
+    { "id": 5005, "sender": "KOTAK_PRIME", "receiver": "SBI_CENTRAL_CLEARING", "amount": 7500000, "currency": "INR", "status": "SETTLED" }
+]
+
+# 2. Pack dataset into Liquid 2.0 Molecular Shard Pack
+let pristine_pack = liquid2_pack_batch(records)
+assert_true(liquid2_verify_pack(pristine_pack), "Pristine Baseline: All 7 Molecular Police Checkpoints pass cleanly")
+
+# 3. Generate Autonomous Parity Matrix Seal (~80 bytes auxiliary metadata)
+let parity_seal = liquid2_create_parity_matrix(pristine_pack)
+assert_eq(parity_seal["status"], "PARITY_SEAL_ACTIVE", "Parity Matrix: Successfully generated active recovery seal")
+assert_eq(parity_seal["record_count"], 5, "Parity Matrix: Monitors exact 5-record block")
+assert_eq(parity_seal["base_amount"], 1000000, "Parity Matrix: FoR base frame captured (₹10,00,000)")
+
+# 4. Create Simulated WAL Journal Snapshot (Dual-Hearth Memory Log)
+let wal_journal = {
+    "block_id": "WAL_BLK_00592",
+    "amount_deltas": [0, 1500000, 4000000, 500000, 6500000]
+}
+
+# ------------------------------------------------------------------------------
+# SIMULATE DISASTER / MALICIOUS ATTACK / HARDWARE STORAGE CORRUPTION
+# ------------------------------------------------------------------------------
+# Hacker or bad disk sector mutates record 2 amount delta:
+# Original amount: ₹50,00,000 (delta: 4000000) -> Tampered: ₹99,99,999 (delta: 8999999)
+let corrupted_pack = pristine_pack
+corrupted_pack["packed_amount"]["deltas"][2] = 8999999
+
+# Verify that Police Checkpoint halts access immediately
+assert_false(liquid2_verify_pack(corrupted_pack), "Tamper Detection: Layer 3 & Layer 6 Police caught altered balance")
+let blocked_read = liquid2_read_record(corrupted_pack, 2)
+assert_eq(blocked_read, "ACCESS_DENIED: Tampered Liquid 2.0 Shard Pack", "Security: Corrupted row immediately locked with ACCESS_DENIED")
+
+# ------------------------------------------------------------------------------
+# AUTONOMOUS DISASTER RECOVERY: GAIN BACK FAILED DATA
+# ------------------------------------------------------------------------------
+let recovery_result = liquid2_detect_and_heal(corrupted_pack, parity_seal, wal_journal)
+
+assert_eq(recovery_result["status"], "RECOVERED_100_PERCENT", "Self-Healing: Engine successfully healed 100% of damage")
+assert_eq(recovery_result["healed"], 1, "Self-Healing: Reconstructed corrupted column delta")
+
+let healed_pack = recovery_result["pack"]
+assert_true(liquid2_verify_pack(healed_pack), "Self-Healing: Healed pack passes all 7 molecular police checkpoints")
+
+# ------------------------------------------------------------------------------
+# LOSSLESS DATA REGAIN VERIFICATION (BIT-FOR-BIT ACCURACY)
+# ------------------------------------------------------------------------------
+let restored_rec_0 = liquid2_read_record(healed_pack, 0)
+let restored_rec_2 = liquid2_read_record(healed_pack, 2)
+let restored_rec_4 = liquid2_read_record(healed_pack, 4)
+
+assert_eq(restored_rec_0["amount"], 1000000, "Restored Record 0: Amount ₹10,00,000 exactly intact")
+assert_eq(restored_rec_2["amount"], 5000000, "Restored Record 2: Corrupted amount ₹99,99,999 restored to true ₹50,00,000")
+assert_eq(restored_rec_2["sender"], "AXIS_TREASURY", "Restored Record 2: Sender intact")
+assert_eq(restored_rec_2["receiver"], "RESERVE_BANK_VAULT", "Restored Record 2: Receiver intact")
+assert_eq(restored_rec_4["amount"], 7500000, "Restored Record 4: Amount ₹75,00,000 exactly intact")
+
+test_end_suite()

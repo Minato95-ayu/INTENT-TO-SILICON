@@ -1,0 +1,114 @@
+# ==============================================================================
+# AAYU SILICON TEST: UNICODE, NEGATIVE NUMBERS & EXTREME BOUNDARY CONDITIONS
+# Tests Devanagari (Hindi), Emojis, Currency Symbols, Negative Balances,
+# Zero-Length Strings, and Extreme 64-Bit Boundaries on Liquid Data 2.0 Engine.
+# ==============================================================================
+import "std/test.aayu"
+import "std/liquid2.aayu"
+
+test_begin_suite("Liquid Data 2.0: Unicode, Negatives & Boundary Conditions")
+
+# 1. Dataset featuring Devanagari, Emojis, Negative Integers, Zero, and Boundary Values
+let edge_records = [
+    {
+        "id": 1,
+        "sender": "आयुष_कौशिक",
+        "receiver": "भारतीय_स्टेट_बैंक",
+        "amount": -45000,
+        "currency": "₹",
+        "status": "सफल"
+    },
+    {
+        "id": 2,
+        "sender": "भारतीय_रिजर्व_बैंक",
+        "receiver": "आयुष_कौशिक",
+        "amount": -1500,
+        "currency": "₹",
+        "status": "सत्यापित"
+    },
+    {
+        "id": 3,
+        "sender": "GLOBAL_FOREX_DESK",
+        "receiver": "SWISS_VAULT_GENEVA",
+        "amount": 0,
+        "currency": "€",
+        "status": "PENDING_ZERO"
+    },
+    {
+        "id": 4,
+        "sender": "SILICON_FOUNDRY_TOKYO",
+        "receiver": "QUANTUM_LABS_USA",
+        "amount": 987654321,
+        "currency": "$",
+        "status": "SETTLED"
+    },
+    {
+        "id": 5,
+        "sender": "⚡_SPEED_NODE",
+        "receiver": "🚀_VIP_CLEARING",
+        "amount": 500000,
+        "currency": "💎",
+        "status": "🛡️_SECURE"
+    },
+    {
+        "id": 6,
+        "sender": "",
+        "receiver": "ANONYMOUS_ESCROW",
+        "amount": -999999,
+        "currency": "₹",
+        "status": ""
+    }
+]
+
+# 2. Molecular Packing with Negative Base Frame-of-Reference (FoR)
+let pack = liquid2_pack_batch(edge_records)
+
+# Verify pristine 7-layer verification
+assert_true(liquid2_verify_pack(pack), "Police Checkpoints: All 7 layers pass with Unicode & Negatives")
+
+# Verify that FoR correctly picked the minimum negative number as base frame
+# Minimum amount in dataset is -999999
+assert_eq(pack["packed_amount"]["base"], -999999, "FoR Baseline: Correctly identified negative minimum baseline (-999999)")
+
+# Check deltas: all deltas must be non-negative offsets
+let deltas = pack["packed_amount"]["deltas"]
+assert_eq(deltas[0], -45000 - (-999999), "FoR Delta 0: Offset from negative base is exact")
+assert_eq(deltas[1], -1500 - (-999999), "FoR Delta 1: Offset from negative base is exact")
+assert_eq(deltas[2], 0 - (-999999), "FoR Delta 2: Offset for zero balance is exact")
+assert_eq(deltas[5], 0, "FoR Delta 5: Minimum value has delta 0")
+
+# 3. Verify Devanagari & Unicode String Resolution in O(1)
+let r0 = liquid2_read_record(pack, 0)
+assert_eq(r0["sender"], "आयुष_कौशिक", "Devanagari Sender: Preserved bit-for-bit intact")
+assert_eq(r0["receiver"], "भारतीय_स्टेट_बैंक", "Devanagari Receiver: Preserved bit-for-bit intact")
+assert_eq(r0["amount"], -45000, "Negative Amount: Reconstructed exact -45000")
+assert_eq(r0["currency"], "₹", "Currency Symbol: Rupee symbol preserved intact")
+assert_eq(r0["status"], "सफल", "Devanagari Status: Hindi word 'सफल' preserved intact")
+
+# 4. Verify Zero Amount and Extreme 64-Bit Boundaries
+let r2 = liquid2_read_record(pack, 2)
+assert_eq(r2["amount"], 0, "Zero Value: Exact 0 amount preserved")
+assert_eq(r2["currency"], "€", "Currency Symbol: Euro symbol preserved")
+
+let r3 = liquid2_read_record(pack, 3)
+assert_eq(r3["amount"], 987654321, "Large Value: 987,654,321 preserved with zero truncation")
+assert_eq(r3["currency"], "$", "Currency Symbol: Dollar symbol preserved")
+
+# 5. Verify Emojis and Zero-Length String Edge Cases
+let r4 = liquid2_read_record(pack, 4)
+assert_eq(r4["sender"], "⚡_SPEED_NODE", "Emoji Support: Lightning emoji preserved")
+assert_eq(r4["receiver"], "🚀_VIP_CLEARING", "Emoji Support: Rocket emoji preserved")
+assert_eq(r4["currency"], "💎", "Emoji Support: Gem emoji preserved")
+assert_eq(r4["status"], "🛡️_SECURE", "Emoji Support: Shield emoji preserved")
+
+let r5 = liquid2_read_record(pack, 5)
+assert_eq(r5["sender"], "", "Zero-Length String: Empty sender string handled safely")
+assert_eq(r5["amount"], -999999, "Deep Negative: Negative 999,999 preserved")
+assert_eq(r5["status"], "", "Zero-Length String: Empty status string handled safely")
+
+# 6. Parity Matrix under Negative Delta Arithmetic
+let parity = liquid2_create_parity_matrix(pack)
+assert_eq(parity["base_amount"], -999999, "Parity Matrix: Negative base captured in seal")
+assert_true(parity["amount_sum_parity"] > 0, "Parity Matrix: Sum of non-negative deltas calculated correctly")
+
+test_end_suite()

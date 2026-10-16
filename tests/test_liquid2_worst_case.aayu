@@ -1,0 +1,57 @@
+# ==============================================================================
+# AAYU SILICON TEST: HIGH-ENTROPY WORST-CASE DATASET (ADVERSARIAL STRESS)
+# Tests Liquid Data 2.0 against random UUIDs, unique non-repeating strings,
+# and high-variance numbers. Proves zero-corruption and mathematical integrity.
+# ==============================================================================
+import "std/test.aayu"
+import "std/liquid2.aayu"
+
+test_begin_suite("Liquid Data 2.0: High-Entropy Worst-Case Robustness")
+
+# Generate 20 high-entropy records where strings and amounts do NOT repeat
+let worst_case_records = [
+    { "id": 91823, "sender": "UUID_7a9f_1001", "receiver": "UUID_8b2c_9001", "amount": 184920, "currency": "USD", "status": "PENDING" },
+    { "id": 12894, "sender": "UUID_4c1e_1002", "receiver": "UUID_9d3a_9002", "amount": 982140, "currency": "EUR", "status": "FAILED" },
+    { "id": 78129, "sender": "UUID_6e7a_1003", "receiver": "UUID_1f4b_9003", "amount": 34910, "currency": "GBP", "status": "SETTLED" },
+    { "id": 34901, "sender": "UUID_2b8d_1004", "receiver": "UUID_7c5e_9004", "amount": 7812000, "currency": "JPY", "status": "DISPUTED" },
+    { "id": 65123, "sender": "UUID_9a3c_1005", "receiver": "UUID_3e8f_9005", "amount": 51200, "currency": "CHF", "status": "REVERSED" },
+    { "id": 82341, "sender": "UUID_1d4e_1006", "receiver": "UUID_5a9b_9006", "amount": 4209100, "currency": "CAD", "status": "REFUNDED" },
+    { "id": 23419, "sender": "UUID_8f2b_1007", "receiver": "UUID_2c7d_9007", "amount": 190240, "currency": "AUD", "status": "AUTHORIZED" },
+    { "id": 98712, "sender": "UUID_3c6a_1008", "receiver": "UUID_8e1f_9008", "amount": 643090, "currency": "SGD", "status": "PROCESSING" },
+    { "id": 45129, "sender": "UUID_7b9d_1009", "receiver": "UUID_4a2c_9009", "amount": 8920100, "currency": "AED", "status": "HELD" },
+    { "id": 19823, "sender": "UUID_5e1f_1010", "receiver": "UUID_6b8d_9010", "amount": 76540, "currency": "HKD", "status": "CANCELLED" }
+]
+
+let pack = liquid2_pack_batch(worst_case_records)
+
+# Assert that even under worst-case entropy, pack is sealed cleanly
+assert_eq(pack["status"], "SEALED_LIQUID_2_DAG", "Worst-Case: Pack status is SEALED_LIQUID_2_DAG")
+assert_true(liquid2_verify_pack(pack), "Worst-Case: All 7 Molecular Police Checkpoints pass 100%")
+
+# Verify CAS pool size reflects high entropy (10 senders + 10 receivers + 10 currencies + 10 statuses = 40 unique tokens)
+let pool_size = len(pack["cas_pool"]["tokens"])
+assert_eq(pool_size, 40, "Worst-Case CAS: Handled 40 distinct non-repeating tokens without crash")
+
+# Verify Bit-Exact Lossless Extraction for Arbitrary Rows
+let r0 = liquid2_read_record(pack, 0)
+let r3 = liquid2_read_record(pack, 3)
+let r7 = liquid2_read_record(pack, 7)
+let r9 = liquid2_read_record(pack, 9)
+
+assert_eq(r0["id"], 91823, "Record 0: ID 91823 exact")
+assert_eq(r0["sender"], "UUID_7a9f_1001", "Record 0: Sender exact")
+assert_eq(r0["amount"], 184920, "Record 0: Amount ₹1,84,920 exact")
+
+assert_eq(r3["currency"], "JPY", "Record 3: Currency JPY exact")
+assert_eq(r3["status"], "DISPUTED", "Record 3: Status DISPUTED exact")
+assert_eq(r3["amount"], 7812000, "Record 3: Amount 7812000 exact")
+
+assert_eq(r7["sender"], "UUID_3c6a_1008", "Record 7: Sender exact")
+assert_eq(r7["receiver"], "UUID_8e1f_9008", "Record 7: Receiver exact")
+assert_eq(r7["amount"], 643090, "Record 7: Amount 643090 exact")
+
+assert_eq(r9["id"], 19823, "Record 9: ID 19823 exact")
+assert_eq(r9["status"], "CANCELLED", "Record 9: Status CANCELLED exact")
+assert_eq(r9["amount"], 76540, "Record 9: Amount 76540 exact")
+
+test_end_suite()

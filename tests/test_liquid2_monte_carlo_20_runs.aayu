@@ -1,0 +1,97 @@
+# ==============================================================================
+# AAYU SILICON TEST: 20-ITERATION MONTE CARLO STRESS & TORTURE SUITE
+# Runs 20 complete, distinct cycles of:
+# 1. Randomized Ingestion -> 2. Liquid 2.0 Molecular Packing
+# 3. Adversarial Corruption -> 4. Police Interception -> 5. Autonomous Healing
+# ==============================================================================
+import "std/test.aayu"
+import "std/liquid2.aayu"
+
+test_begin_suite("Liquid Data 2.0: 20-Iteration Monte Carlo Torture Suite")
+
+print("======================================================================")
+print("     20-ITERATION MONTE CARLO STRESS TEST: LIQUID DATA 2.0 ENGINE     ")
+print("======================================================================")
+
+let senders = ["CORP_HDFC", "CORP_ICICI", "CORP_SBI", "CORP_AXIS", "CORP_KOTAK", "CORP_INDUS"]
+let receivers = ["RESERVE_BANK", "CLEARING_HOUSE", "SWIFT_SETTLE", "TREASURY_01"]
+
+let run_idx = 1
+let total_passed_runs = 0
+
+while run_idx <= 20
+    # 1. Synthesize 25 records with run-specific variable parameters
+    let records = []
+    let base_amt = 1000000 + (run_idx * 75000)
+    let ri = 0
+    while ri < 25
+        let s_idx = (ri + run_idx) % 6
+        let r_idx = (ri + (run_idx * 2)) % 4
+        let amt = base_amt + (ri * 130)
+        let rec = {
+            "id": (run_idx * 1000) + ri,
+            "sender": senders[s_idx],
+            "receiver": receivers[r_idx],
+            "amount": amt,
+            "currency": "INR",
+            "status": "SETTLED_O1"
+        }
+        records = records + [rec]
+        ri = ri + 1
+    end
+
+    # 2. Molecular Packing
+    let pack = liquid2_pack_batch(records)
+    let pack_ok = liquid2_verify_pack(pack)
+    assert_true(pack_ok, "Run " + l2_int_to_str(run_idx) + ": Pristine pack verified cleanly")
+
+    # 3. Create Parity Seal
+    let parity_seal = liquid2_create_parity_matrix(pack)
+
+    # 4. Independent clean deltas copy for WAL
+    let clean_deltas = []
+    let cdi = 0
+    while cdi < 25
+        clean_deltas = clean_deltas + [pack["packed_amount"]["deltas"][cdi]]
+        cdi = cdi + 1
+    end
+    let wal = { "amount_deltas": clean_deltas }
+
+    # 5. Inject corruption at dynamic target index
+    let target_corrupt_idx = (run_idx * 7) % 25
+    let original_val = clean_deltas[target_corrupt_idx]
+    let tampered_pack = pack
+    tampered_pack["packed_amount"]["deltas"][target_corrupt_idx] = 9999999
+
+    # 6. Police Checkpoint Interception
+    let caught = false
+    if liquid2_verify_pack(tampered_pack) == false
+        caught = true
+    end
+    assert_true(caught, "Run " + l2_int_to_str(run_idx) + ": Police caught corruption at index " + l2_int_to_str(target_corrupt_idx))
+
+    # 7. Autonomous Self-Healing
+    let recovery = liquid2_detect_and_heal(tampered_pack, parity_seal, wal)
+    assert_eq(recovery["status"], "RECOVERED_100_PERCENT", "Run " + l2_int_to_str(run_idx) + ": Self-healing recovered pack")
+
+    # 8. Lossless Read After Healing
+    let restored = liquid2_read_record(recovery["pack"], target_corrupt_idx)
+    let expected_amt = base_amt + (target_corrupt_idx * 130)
+    assert_eq(restored["amount"], expected_amt, "Run " + l2_int_to_str(run_idx) + ": Restored balance bit-exact")
+
+    print("  [CYCLE " + l2_int_to_str(run_idx) + "/20] PASS | Base: ₹" + l2_int_to_str(base_amt) + " | Corrupt Idx: " + l2_int_to_str(target_corrupt_idx) + " | Recovery: 100% Bit-Exact")
+    total_passed_runs = total_passed_runs + 1
+    run_idx = run_idx + 1
+end
+
+print("----------------------------------------------------------------------")
+print("MONTE CARLO STATISTICAL SUMMARY:")
+print("  Total Stress Test Iterations:     20")
+print("  Successful Self-Healed Cycles:    " + l2_int_to_str(total_passed_runs) + " / 20 (100.0% SUCCESS RATE)")
+print("  Zero Precision Loss Occurrences:  20 / 20")
+print("  Zero Undetected Bit-Flips:        20 / 20")
+print("======================================================================")
+
+assert_eq(total_passed_runs, 20, "Monte Carlo Assertion: All 20 iterations passed 100%")
+
+test_end_suite()

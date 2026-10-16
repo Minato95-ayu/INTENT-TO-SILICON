@@ -46,7 +46,7 @@ fn replace_file(temp: &Path, target: &Path) -> std::io::Result<()> {
     if ok == 0 { Err(io::Error::last_os_error()) } else { Ok(()) }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum JsonValue {
     Null,
     Bool(bool),
@@ -88,18 +88,18 @@ impl std::fmt::Display for JsonValue {
 }
 
 // Recursive descent JSON parser for zero-dependency persistence
-struct JsonParser<'a> {
-    chars: std::iter::Peekable<std::str::Chars<'a>>,
+pub struct JsonParser<'a> {
+    pub chars: std::iter::Peekable<std::str::Chars<'a>>,
 }
 
 impl<'a> JsonParser<'a> {
-    fn new(input: &'a str) -> Self {
+    pub fn new(input: &'a str) -> Self {
         Self {
             chars: input.chars().peekable(),
         }
     }
 
-    fn skip_whitespace(&mut self) {
+    pub fn skip_whitespace(&mut self) {
         while let Some(&c) = self.chars.peek() {
             if c.is_whitespace() {
                 self.chars.next();
@@ -109,7 +109,7 @@ impl<'a> JsonParser<'a> {
         }
     }
 
-    fn parse_value(&mut self) -> Option<JsonValue> {
+    pub fn parse_value(&mut self) -> Option<JsonValue> {
         self.skip_whitespace();
         let c = *self.chars.peek()?;
         match c {
@@ -388,5 +388,19 @@ mod tests {
         }
 
         let _ = std::fs::remove_file(temp_path);
+    }
+
+    #[test]
+    fn test_json_object_parsing() {
+        let input = r#"{"username":"quantum_architect","email":"dev@quantum.ai","password":"secret123"}"#;
+        let mut parser = JsonParser::new(input);
+        let val = parser.parse_value();
+        assert!(val.is_some(), "Failed to parse json value");
+        if let Some(JsonValue::Object(map)) = val {
+            assert_eq!(map.get("username"), Some(&JsonValue::String("quantum_architect".into())));
+            assert_eq!(map.get("email"), Some(&JsonValue::String("dev@quantum.ai".into())));
+        } else {
+            panic!("Expected JsonValue::Object");
+        }
     }
 }

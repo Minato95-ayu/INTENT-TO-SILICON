@@ -210,70 +210,107 @@ impl HttpServer {
     }
 
     fn handle_connection<S: Read + Write>(stream: &mut S, handler: &Arc<impl Fn(HttpRequest) -> HttpResponse>) {
-        let mut buffer = [0u8; 8192];
-        if let Ok(bytes_read) = stream.read(&mut buffer) {
-            if bytes_read == 0 { return; }
-            let raw_request = String::from_utf8_lossy(&buffer[..bytes_read]);
+        let mut buffer = Vec::with_capacity(8192);
+        let mut temp = [0u8; 4096];
+        let mut content_length: Option<usize> = None;
+        let mut header_end: Option<usize> = None;
 
-            let req = Self::parse_request(&raw_request);
+        loop {
+            match stream.read(&mut temp) {
+                Ok(0) => break,
+                Ok(n) => {
+                    buffer.extend_from_slice(&temp[..n]);
 
-            let res = if req.method == "OPTIONS" {
-                HttpResponse {
-                    status: 204,
-                    content_type: "text/plain".to_string(),
-                    body: String::new(),
+                    if header_end.is_none() {
+                        if let Some(pos) = buffer.windows(4).position(|w| w == b"\r\n\r\n") {
+                            header_end = Some(pos + 4);
+                            let header_str = String::from_utf8_lossy(&buffer[..pos]);
+                            for line in header_str.lines() {
+                                if line.to_ascii_lowercase().starts_with("content-length:") {
+                                    if let Some(val_str) = line.split(':').nth(1) {
+                                        if let Ok(cl) = val_str.trim().parse::<usize>() {
+                                            content_length = Some(cl);
+                                        }
+                                    }
+                                }
+                            }
+                        } else if let Some(pos) = buffer.windows(2).position(|w| w == b"\n\n") {
+                            header_end = Some(pos + 2);
+                        }
+                    }
+
+                    if let Some(hend) = header_end {
+                        let current_body_len = buffer.len() - hend;
+                        let required_len = content_length.unwrap_or(0);
+                        if current_body_len >= required_len {
+                            break;
+                        }
+                    }
                 }
-            } else {
-                handler(req)
-            };
-
-            let status_text = match res.status {
-                200 => "OK",
-                201 => "Created",
-                204 => "No Content",
-                400 => "Bad Request",
-                404 => "Not Found",
-                500 => "Internal Server Error",
-                _ => "Unknown",
-            };
-
-            let body_bytes = res.body.as_bytes();
-            let response = format!(
-                "HTTP/1.1 {} {}\r\nContent-Type: {}\r\nContent-Length: {}\r\nAccess-Control-Allow-Origin: *\r\nAccess-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS\r\nAccess-Control-Allow-Headers: *\r\nConnection: close\r\n\r\n{}",
-                res.status,
-                status_text,
-                res.content_type,
-                body_bytes.len(),
-                res.body
-            );
-
-            let _ = stream.write_all(response.as_bytes());
-            let _ = stream.flush();
+                Err(_) => break,
+            }
         }
+
+        if buffer.is_empty() { return; }
+        let raw_request = String::from_utf8_lossy(&buffer);
+
+        let req = Self::parse_request(&raw_request);
+
+        let res = if req.method == "OPTIONS" {
+            HttpResponse {
+                status: 204,
+                content_type: "text/plain".to_string(),
+                body: String::new(),
+            }
+        } else {
+            handler(req)
+        };
+
+        let status_text = match res.status {
+            200 => "OK",
+            201 => "Created",
+            204 => "No Content",
+            400 => "Bad Request",
+            401 => "Unauthorized",
+            403 => "Forbidden",
+            404 => "Not Found",
+            500 => "Internal Server Error",
+            _ => "Unknown",
+        };
+
+        let body_bytes = res.body.as_bytes();
+        let response = format!(
+            "HTTP/1.1 {} {}\r\nContent-Type: {}\r\nContent-Length: {}\r\nAccess-Control-Allow-Origin: *\r\nAccess-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS\r\nAccess-Control-Allow-Headers: *\r\nConnection: close\r\n\r\n{}",
+            res.status,
+            status_text,
+            res.content_type,
+            body_bytes.len(),
+            res.body
+        );
+
+        let _ = stream.write_all(response.as_bytes());
+        let _ = stream.flush();
     }
 
     fn parse_request(raw: &str) -> HttpRequest {
-        let mut lines = raw.lines();
+        let (headers_part, body_part) = if let Some(pos) = raw.find("\r\n\r\n") {
+            (&raw[..pos], &raw[pos + 4..])
+        } else if let Some(pos) = raw.find("\n\n") {
+            (&raw[..pos], &raw[pos + 2..])
+        } else {
+            (raw, "")
+        };
+
+        let mut lines = headers_part.lines();
         let first_line = lines.next().unwrap_or("GET / HTTP/1.1");
         let mut parts = first_line.split_whitespace();
         let method = parts.next().unwrap_or("GET").to_string();
         let path = parts.next().unwrap_or("/").to_string();
 
-        let mut body = String::new();
-        let mut in_body = false;
-        for line in lines {
-            if in_body {
-                body.push_str(line);
-                body.push('\n');
-            } else if line.trim().is_empty() {
-                in_body = true;
-            }
-        }
-
         HttpRequest { 
             method, 
             path, 
-            body: body.trim_end().to_string() 
+            body: body_part.to_string() 
         }
     }
 }
@@ -379,14 +416,17 @@ pub fn extract_routes_from_source(source: &str) -> HashMap<String, (String, Stri
 
             let mut final_body = if let Some(resolved) = vars.get(&respond_arg) {
                 resolved.clone()
-            } else if (respond_arg.starts_with('"') && respond_arg.ends_with('"')) ||
-                      (respond_arg.starts_with('\'') && respond_arg.ends_with('\'')) {
-                respond_arg[1..respond_arg.len()-1].to_string()
             } else if !respond_arg.is_empty() {
                 respond_arg.clone()
             } else {
                 r#"{"status":"OK","engine":"AAYU Silicon"}"#.to_string()
             };
+
+            while (final_body.starts_with('"') && final_body.ends_with('"')) ||
+                  (final_body.starts_with('\'') && final_body.ends_with('\'')) {
+                if final_body.len() < 2 { break; }
+                final_body = final_body[1..final_body.len()-1].to_string();
+            }
 
             // Fix Python-dict style syntax if dictionary was used in respond({ ... })
             if final_body.starts_with('{') && final_body.ends_with('}') {

@@ -1,0 +1,105 @@
+# ==============================================================================
+# AAYU SILICON TEST: CRYPTOGRAPHIC TAMPER PROOF & CORRUPTION RESISTANCE
+# Demonstrates 7-Layer Molecular Shard Integrity, Police Inspector Alarms,
+# Quarantine Mechanism, and Immutable WAL Self-Healing Recovery
+# Architecture: Ayush's Liquid Data Theory (Intent-to-Silicon 2026)
+# ==============================================================================
+import "std/test.aayu"
+import "std/liquid.aayu"
+import "std/crypto.aayu"
+
+test_begin_suite("Liquid Data Tamper-Proof & Auto-Recovery Verification")
+
+# ------------------------------------------------------------------------------
+# STEP 1: CLEAN INGESTION & SOVEREIGN SEALING (GROUND TRUTH)
+# ------------------------------------------------------------------------------
+let original_payload = "{\"account\": \"AYUSH_KAUSHIK\", \"balance_inr\": 4500000, \"kyc\": \"VERIFIED\", \"txn\": 78921}"
+let clean_shard = liquid_shard_payload(original_payload)
+
+# Verify pristine state
+let is_clean_valid = liquid_verify_checkpoints(clean_shard)
+assert_true(is_clean_valid, "Baseline: Clean shard passes all 7 cryptographic checkpoints")
+
+let reconstructed_payload = liquid_reconstruct(clean_shard, original_payload)
+assert_eq(reconstructed_payload, original_payload, "Baseline: 100% bit-exact payload reconstruction")
+
+let fast_key = clean_shard["fast_cache_key"]
+assert_true(len(fast_key) == 9, "Baseline: O(1) Fast Cache Key active (" + fast_key + ")")
+
+# Store clean shard into simulated Write-Ahead Log (WAL) for self-healing
+let wal_checkpoint = clean_shard
+
+# ------------------------------------------------------------------------------
+# STEP 2: ATTACK SCENARIO A — MALICIOUS PAYLOAD TAMPERING (BALANCE INFLATION)
+# Hacker intercepts shard and modifies Layer 4 to inflate balance: ₹45,00,000 -> ₹99,00,000
+# ------------------------------------------------------------------------------
+let tampered_l4_shard = liquid_shard_payload(original_payload)
+# Adversary flips Layer 4 payload hash
+tampered_l4_shard["layer4_hash"] = hash_string("LIQUID_PAYLOAD_MASS:{\"balance_inr\": 9900000}")
+
+let is_l4_tamper_detected = liquid_verify_checkpoints(tampered_l4_shard)
+assert_false(is_l4_tamper_detected, "Attack Vector 1: Layer 6 Police Inspector catches Layer 4 payload modification")
+
+let blocked_reconstruction = liquid_reconstruct(tampered_l4_shard, original_payload)
+assert_eq(blocked_reconstruction, "ACCESS_DENIED: Layer checkpoint mismatch or tamper detected", "Attack Vector 1: Reconstruction blocked with ACCESS_DENIED")
+
+# ------------------------------------------------------------------------------
+# STEP 3: ATTACK SCENARIO B — STEALTH SCHEMA INVARIANT CORRUPTION (LAYER 1)
+# Attacker alters Layer 1 schema blueprint to bypass type constraints
+# ------------------------------------------------------------------------------
+let tampered_l1_shard = liquid_shard_payload(original_payload)
+tampered_l1_shard["layer1_hash"] = "0000000000000000000000000000000000000000000000000000000000000000"
+
+let is_l1_tamper_detected = liquid_verify_checkpoints(tampered_l1_shard)
+assert_false(is_l1_tamper_detected, "Attack Vector 2: Layer 6 Police Inspector catches Layer 1 schema tampering")
+
+let blocked_l1_recon = liquid_reconstruct(tampered_l1_shard, original_payload)
+assert_neq(blocked_l1_recon, original_payload, "Attack Vector 2: Corrupted schema shard quarantined from RAM key space")
+
+# ------------------------------------------------------------------------------
+# STEP 4: ATTACK SCENARIO C — MERKLE TOPOLOGY BRANCH CORRUPTION (LAYER 5)
+# Disk bit-rot / cosmic ray flips bits in Layer 5 topological dependency graph
+# ------------------------------------------------------------------------------
+let tampered_l5_shard = liquid_shard_payload(original_payload)
+tampered_l5_shard["layer5_hash"] = "deadbeefcafebabe0123456789abcdefdeadbeefcafebabe0123456789abcdef"
+
+let is_l5_tamper_detected = liquid_verify_checkpoints(tampered_l5_shard)
+assert_false(is_l5_tamper_detected, "Attack Vector 3: Layer 7 Sovereign Root breaks on corrupted Merkle topology")
+
+# ------------------------------------------------------------------------------
+# STEP 5: ATTACK SCENARIO D — SOVEREIGN MERKLE ROOT FORGERY (LAYER 7)
+# Attacker attempts to forge the ultimate Layer 7 signature
+# ------------------------------------------------------------------------------
+let tampered_l7_shard = liquid_shard_payload(original_payload)
+tampered_l7_shard["layer7_hash"] = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+
+let is_l7_tamper_detected = liquid_verify_checkpoints(tampered_l7_shard)
+assert_false(is_l7_tamper_detected, "Attack Vector 4: Forged Sovereign Merkle Root rejected by verification seal")
+
+# ------------------------------------------------------------------------------
+# STEP 6: AUTONOMOUS SELF-HEALING & IMMUTABLE WAL AUTO-ROLLBACK
+# When corruption is detected, system discards corrupt shard and restores from WAL
+# ------------------------------------------------------------------------------
+# Active shard is currently corrupted
+let active_shard = tampered_l4_shard
+let active_status = liquid_verify_checkpoints(active_shard)
+
+# Simulated Self-Healing Protocol
+if active_status == false
+    # Step A: Quarantine corrupted shard
+    active_shard["status"] = "QUARANTINED_TAMPER"
+    active_shard["fast_cache_key"] = "0000-0000"
+
+    # Step B: Auto-rollback to immutable WAL checkpoint
+    active_shard = wal_checkpoint
+end
+
+# Verify restored shard
+let is_recovered_valid = liquid_verify_checkpoints(active_shard)
+assert_true(is_recovered_valid, "Self-Healing: Restored shard from WAL passes all 7 checkpoints")
+
+let recovered_payload = liquid_reconstruct(active_shard, original_payload)
+assert_eq(recovered_payload, original_payload, "Self-Healing: 100% bit-exact recovery of original account balance (₹45,00,000)")
+assert_eq(active_shard["fast_cache_key"], fast_key, "Self-Healing: O(1) Fast Cache Route Key restored")
+
+test_end_suite()

@@ -444,6 +444,7 @@ route "/"
 
                         <div id="avatarStatusLabel" style="font-size:11px; color:#10b981; font-weight:bold; margin-top:8px; text-align:center;">✓ HD Crystal Vector DP</div>
                         <div id="avatarSizeLabel" style="font-size:10px; color:#64748b; text-align:center;">Zero Distortion • Infinite Zoom</div>
+                        <div id="avatarShapeAnalysisBadge" style="display:none; margin-top:6px; background:#082f49; border:1px solid #0284c7; border-radius:6px; padding:4px 8px; font-size:10px; color:#38bdf8; text-align:center; line-height:1.4; width:100%; box-sizing:border-box;"></div>
 
                         <!-- Action Buttons -->
                         <button type="button" onclick="document.getElementById('directAvatarFileInput').click()"
@@ -451,10 +452,17 @@ route "/"
                             <span>📷</span> Upload Photo / DP
                         </button>
 
-                        <button type="button" onclick="toggleEditProfile()"
-                                style="margin-top:6px; width:100%; background:#1e293b; color:#38bdf8; border:1px solid #38bdf8; padding:5px 6px; border-radius:6px; font-size:11px; cursor:pointer; font-weight:bold;">
-                            ✏️ Edit Details & Presets
-                        </button>
+                        <div style="display:flex; gap:4px; width:100%; margin-top:6px;">
+                            <button type="button" onclick="toggleEditProfile()"
+                                    style="flex:1; background:#1e293b; color:#38bdf8; border:1px solid #38bdf8; padding:5px 6px; border-radius:6px; font-size:11px; cursor:pointer; font-weight:bold;">
+                                ✏️ Edit
+                            </button>
+                            <button type="button" onclick="resetAvatarToDefault()"
+                                    title="Reset to official Cyber SVG preset"
+                                    style="background:#1e293b; color:#94a3b8; border:1px solid #334155; padding:5px 8px; border-radius:6px; font-size:11px; cursor:pointer;">
+                                🔄 Reset
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Right: Identity Details & Actions -->
@@ -1438,6 +1446,25 @@ route "/"
             }
         }
 
+        function isStaleMosaicSvg(svgStr) {
+            if (!svgStr || typeof svgStr !== 'string') return false;
+            const circleCount = (svgStr.match(/<circle /g) || []).length;
+            return circleCount > 10 && !svgStr.includes('<image ');
+        }
+
+        function resetAvatarToDefault() {
+            if (!currentUser) return;
+            localStorage.removeItem('aayu_custom_dp_' + currentUser.username);
+            delete vectorPresets['custom'];
+            currentUser.avatar_svg = 'cyber';
+            syncCustomAvatarToBackend(currentUser.username, 'cyber');
+            renderActiveProfile(currentUser);
+            const badge = document.getElementById('avatarShapeAnalysisBadge');
+            if (badge) badge.style.display = 'none';
+            const sizeLabel = document.getElementById('avatarSizeLabel');
+            if (sizeLabel) sizeLabel.innerText = 'Zero Distortion • Infinite Zoom';
+        }
+
         function processAvatarFile(file) {
             if (!file || !file.type.startsWith('image/')) {
                 alert('Please select a valid image file (PNG, JPG, WebP, SVG).');
@@ -1452,48 +1479,97 @@ route "/"
                 const originalMb = (originalBytes / (1024 * 1024)).toFixed(2);
 
                 const statusLabel = document.getElementById('avatarStatusLabel');
-                if (statusLabel) statusLabel.innerText = '⚡ Vectorizing & Optimizing...';
+                if (statusLabel) statusLabel.innerText = '⚡ Auto-Analyzing Shape & Dimensions...';
 
                 const img = new Image();
                 img.onload = function() {
+                    const srcW = img.naturalWidth || img.width;
+                    const srcH = img.naturalHeight || img.height;
+                    const aspect = srcW / srcH;
+
+                    let shapeName = '';
+                    let cropMode = '';
+                    let sx = 0, sy = 0, sWidth = srcW, sHeight = srcH;
+
+                    // Intelligent Shape & Aspect Ratio Classification
+                    if (aspect >= 0.95 && aspect <= 1.05) {
+                        shapeName = 'Square (1:1)';
+                        cropMode = 'Full Sensor Center';
+                        sx = 0;
+                        sy = 0;
+                        sWidth = srcW;
+                        sHeight = srcH;
+                    } else if (aspect < 0.95) {
+                        // Portrait / Tall (Mobile Selfie / Camera)
+                        if (aspect <= 0.6) {
+                            shapeName = '9:16 Vertical Story';
+                        } else if (aspect <= 0.8) {
+                            shapeName = '3:4 Portrait Photo';
+                        } else {
+                            shapeName = '4:5 Vertical Portrait';
+                        }
+                        cropMode = 'Smart Face / Top-Bias Center';
+                        sWidth = srcW;
+                        sHeight = srcW;
+                        sx = 0;
+                        // Bias 18% from top so head/hair is preserved without cutting off forehead
+                        const extraH = srcH - sHeight;
+                        sy = Math.round(extraH * 0.18);
+                        if (sy + sHeight > srcH) sy = extraH;
+                    } else {
+                        // Landscape / Wide (Horizontal Photo)
+                        if (aspect >= 1.7) {
+                            shapeName = '16:9 Widescreen';
+                        } else if (aspect >= 1.3) {
+                            shapeName = '4:3 Standard Landscape';
+                        } else {
+                            shapeName = '3:2 Horizontal Camera';
+                        }
+                        cropMode = 'Balanced Horizontal Center';
+                        sHeight = srcH;
+                        sWidth = srcH;
+                        sy = 0;
+                        const extraW = srcW - sWidth;
+                        sx = Math.round(extraW / 2);
+                        if (sx + sWidth > srcW) sx = extraW;
+                    }
+
+                    // High-DPI Master Supersampling (512x512 Canvas)
+                    const targetDim = 512;
                     const canvas = document.createElement('canvas');
+                    canvas.width = targetDim;
+                    canvas.height = targetDim;
                     const ctx = canvas.getContext('2d');
-                    const maxDim = 400;
-                    canvas.width = maxDim;
-                    canvas.height = maxDim;
 
                     ctx.imageSmoothingEnabled = true;
                     ctx.imageSmoothingQuality = 'high';
 
-                    const minSide = Math.min(img.width, img.height);
-                    const sx = (img.width - minSide) / 2;
-                    const sy = (img.height - minSide) / 2;
-
-                    ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, maxDim, maxDim);
+                    ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, targetDim, targetDim);
 
                     let optimizedDataUrl = '';
                     try {
-                        optimizedDataUrl = canvas.toDataURL('image/webp', 0.90);
+                        optimizedDataUrl = canvas.toDataURL('image/webp', 0.92);
                     } catch (err) {
-                        optimizedDataUrl = canvas.toDataURL('image/jpeg', 0.88);
+                        optimizedDataUrl = canvas.toDataURL('image/jpeg', 0.90);
                     }
 
-                    const customSvg = `<svg id="currentVectorSvg" width="220" height="220" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    const uid = 'dp_' + Math.random().toString(36).substring(2, 9);
+                    const customSvg = `<svg id="currentVectorSvg" width="100%" height="100%" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
     <defs>
-        <clipPath id="avatarCircleClip">
+        <clipPath id="circleClip_${uid}">
             <circle cx="100" cy="100" r="92"/>
         </clipPath>
-        <linearGradient id="cyberRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <linearGradient id="cyberRingGrad_${uid}" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stop-color="#38bdf8"/>
             <stop offset="50%" stop-color="#a855f7"/>
             <stop offset="100%" stop-color="#10b981"/>
         </linearGradient>
     </defs>
     <!-- Mathematical Outer Vector Rings (No blur, Infinite Zoom) -->
-    <circle cx="100" cy="100" r="97" fill="none" stroke="url(#cyberRingGrad)" stroke-width="2.5" stroke-dasharray="6 4"/>
+    <circle cx="100" cy="100" r="97" fill="none" stroke="url(#cyberRingGrad_${uid})" stroke-width="2.5" stroke-dasharray="6 4"/>
     <circle cx="100" cy="100" r="93" fill="#030712"/>
-    <!-- Crystal Clear Embedded Raster with Zero-Distortion Vector Clip -->
-    <image href="${optimizedDataUrl}" x="8" y="8" width="184" height="184" preserveAspectRatio="xMidYMid slice" clip-path="url(#avatarCircleClip)"/>
+    <!-- Crystal Clear Embedded 512px High-DPI Raster with Sub-pixel Vector Clip -->
+    <image href="${optimizedDataUrl}" x="8" y="8" width="184" height="184" preserveAspectRatio="xMidYMid slice" clip-path="url(#circleClip_${uid})"/>
     <!-- Vector Orbit Boundary -->
     <circle cx="100" cy="100" r="92" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.45"/>
     <!-- Holographic Verified User Badge -->
@@ -1512,14 +1588,20 @@ route "/"
 
                     const vp = document.getElementById('profileAvatarViewport');
                     if (vp) {
-                        vp.innerHTML = customSvg.replace(/width="220"/, 'width="95"').replace(/height="220"/, 'height="95"');
+                        vp.innerHTML = customSvg;
                         vp.style.borderColor = '#10b981';
                         setTimeout(() => { vp.style.borderColor = '#38bdf8'; }, 1500);
                     }
 
-                    if (statusLabel) statusLabel.innerText = '✓ HD Crystal Vector DP Active';
+                    if (statusLabel) statusLabel.innerText = '✓ HD Crystal Adaptive DP Active';
                     const sizeLabel = document.getElementById('avatarSizeLabel');
-                    if (sizeLabel) sizeLabel.innerText = `${vectorKb} KB (Saved ${savedPct}% vs RAW)`;
+                    if (sizeLabel) sizeLabel.innerText = `${vectorKb} KB (Auto-Fitted • Saved ${savedPct}% vs RAW)`;
+
+                    const shapeBadge = document.getElementById('avatarShapeAnalysisBadge');
+                    if (shapeBadge) {
+                        shapeBadge.style.display = 'block';
+                        shapeBadge.innerHTML = `📐 <strong>${shapeName}</strong> (${srcW}×${srcH}px)<br/><span style="color:#34d399;">✓ Auto-Fitted: 512×512 HD</span> • ${cropMode}`;
+                    }
 
                     const stdlibVp = document.getElementById('vectorViewport');
                     if (stdlibVp) stdlibVp.innerHTML = customSvg;
@@ -1531,7 +1613,7 @@ route "/"
                     const ts = document.getElementById('telemetrySavings');
                     if (ts) ts.innerText = `${savedPct}% Storage Saved (Ant-Man Shrink)`;
                     const tc = document.getElementById('telemetryCurves');
-                    if (tc) tc.innerText = 'Bézier Orbit & Clip Rings';
+                    if (tc) tc.innerText = `${shapeName} Adaptive Master Framing`;
                     const th = document.getElementById('telemetryHash');
                     if (th) th.innerText = '9a7c3b88f12a0e4...crystal';
 
@@ -1569,7 +1651,7 @@ route "/"
                     const alertBox = document.getElementById('authAlert');
                     if (alertBox) {
                         alertBox.style.display = 'block';
-                        alertBox.innerHTML = `✅ <strong>Custom DP Updated!</strong> Saved into AayuDB & flushed to SSD WAL for <strong>${username}</strong>. Zero distortion • Infinite zoom ready!`;
+                        alertBox.innerHTML = `✅ <strong>Custom DP Updated!</strong> Saved into AayuDB & flushed to SSD WAL for <strong>${username}</strong>. Auto-fitted & zero distortion!`;
                         setTimeout(() => { alertBox.style.display = 'none'; }, 5000);
                     }
                 }
@@ -1630,28 +1712,38 @@ route "/"
             // Render Vector DP in Avatar Circle
             const avatarViewport = document.getElementById('profileAvatarViewport');
             if (avatarViewport) {
+                // Self-healing: purge legacy pixelated mosaic if present
+                let localCached = localStorage.getItem('aayu_custom_dp_' + u.username);
+                if (isStaleMosaicSvg(localCached)) {
+                    console.warn('[AAYU Anti-Artifact] Purged legacy pixelated mosaic SVG from local cache for', u.username);
+                    localStorage.removeItem('aayu_custom_dp_' + u.username);
+                    localCached = null;
+                }
+                if (isStaleMosaicSvg(u.avatar_svg)) {
+                    console.warn('[AAYU Anti-Artifact] Purged legacy pixelated mosaic SVG from user profile for', u.username);
+                    u.avatar_svg = 'cyber';
+                }
+
                 let svg = '';
                 if (u.avatar_svg && u.avatar_svg.startsWith('<svg')) {
                     svg = u.avatar_svg;
                     vectorPresets['custom'] = u.avatar_svg;
                 } else if (u.avatar_svg && vectorPresets[u.avatar_svg]) {
                     svg = vectorPresets[u.avatar_svg];
+                } else if (localCached && localCached.startsWith('<svg')) {
+                    svg = localCached;
+                    vectorPresets['custom'] = localCached;
                 } else {
-                    const localCached = localStorage.getItem('aayu_custom_dp_' + u.username);
-                    if (localCached && localCached.startsWith('<svg')) {
-                        svg = localCached;
-                        vectorPresets['custom'] = localCached;
-                    } else {
-                        const fallbackPreset = u.avatar_svg === 'custom' ? (vectorPresets['custom'] || 'cyber') : (u.avatar_svg || (u.username === 'ayush' ? 'cyber' : 'neural'));
-                        svg = vectorPresets[fallbackPreset] || vectorPresets['cyber'];
-                    }
+                    const fallbackPreset = u.avatar_svg === 'custom' ? (vectorPresets['custom'] || 'cyber') : (u.avatar_svg || (u.username === 'ayush' ? 'cyber' : 'neural'));
+                    svg = vectorPresets[fallbackPreset] || vectorPresets['cyber'];
                 }
-                avatarViewport.innerHTML = svg.replace(/width="220"/, 'width="95"').replace(/height="220"/, 'height="95"');
+
+                avatarViewport.innerHTML = svg.replace(/width="220"/, 'width="100%"').replace(/height="220"/, 'height="100%"');
 
                 const statusLabel = document.getElementById('avatarStatusLabel');
                 if (statusLabel) {
                     if (svg.includes('image href=') || (u.avatar_svg && u.avatar_svg.startsWith('<svg'))) {
-                        statusLabel.innerText = '✓ HD Crystal Vector DP';
+                        statusLabel.innerText = '✓ HD Crystal Adaptive DP';
                     } else {
                         statusLabel.innerText = '✓ Vector Mathematical DP';
                     }
@@ -1689,7 +1781,7 @@ route "/"
                 if (!svg) {
                     svg = vectorPresets[preset] || vectorPresets['cyber'];
                 }
-                avatarViewport.innerHTML = svg.replace(/width="220"/, 'width="95"').replace(/height="220"/, 'height="95"');
+                avatarViewport.innerHTML = svg.replace(/width="220"/, 'width="100%"').replace(/height="220"/, 'height="100%"');
             }
         }
 

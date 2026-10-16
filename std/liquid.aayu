@@ -150,14 +150,20 @@ action liquid_verify_checkpoints(shard)
     let h6 = shard["layer6_hash"]
     let h7 = shard["layer7_hash"]
 
-    # Recompute Layer 6 Police Inspection Seal
+    # 1. Direct Content Verification: Ensure physical stored payload mass matches Layer 4 Hash Seal
+    let actual_h4 = hash_string(shard["payload_mass"])
+    if h4 != actual_h4
+        return false
+    end
+
+    # 2. Recompute Layer 6 Police Inspection Seal
     let l6_seed = h1[0] + h1[1] + "-" + h2[0] + h2[1] + "-" + h3[0] + h3[1] + "-" + h4[0] + h4[1] + "-" + h5[0] + h5[1]
     let exp_h6 = hash_string("POLICE_INSPECTORS_SEAL:" + l6_seed)
     if h6 != exp_h6
         return false
     end
 
-    # Recompute Layer 7 Sovereign Merkle Root
+    # 3. Recompute Layer 7 Sovereign Merkle Root
     let exp_h7 = hash_string(h5 + ":" + exp_h6)
     if h7 != exp_h7
         return false

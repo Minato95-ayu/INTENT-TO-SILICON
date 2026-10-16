@@ -1,0 +1,116 @@
+# ==============================================================================
+# AAYU SILICON PROFILER BENCHMARK: MULTI-DATASET EMPIRICAL WORKLOAD
+# Datasets:
+#   1. Small Flat JSON: Single User Auth / Financial Event (~250 bytes)
+#   2. Medium Nested JSON: Microservice API Trace (~1,200 bytes)
+#   3. Large Nested JSON: Multi-Record IoT Sensor Batch (~3,800 bytes)
+# Measures:
+#   - Raw Bytes vs Condensed Bytes
+#   - Encode Microseconds (µs)
+#   - Decode Microseconds (µs)
+#   - Warm Cache O(1) Prefix-Suffix Route Lookup (µs)
+# ==============================================================================
+import "std/liquid.aayu"
+
+# DATASET 1: Small Flat JSON (Single Ledger Transaction)
+let d1_small_json = "{\n  \"txn_id\": 98214,\n  \"user\": \"ayush_kaushik\",\n  \"amount\": 4500000.00,\n  \"currency\": \"INR\",\n  \"status\": \"SETTLED_O1\",\n  \"timestamp\": 1739712000,\n  \"gateway\": \"silicon_direct\"\n}"
+
+# DATASET 2: Medium Nested JSON (Microservice Telemetry Span)
+let d2_medium_json = "{\n  \"trace_id\": \"4bf92f3577b34da6a3ce929d0e0e4736\",\n  \"span_id\": \"00f067aa0ba902b7\",\n  \"service\": \"payment-settlement-engine\",\n  \"node\": \"edge-ap-south-mumbai-01\",\n  \"http\": {\n    \"method\": \"POST\",\n    \"path\": \"/api/v1/settle\",\n    \"status_code\": 200,\n    \"latency_ms\": 0.084\n  },\n  \"actor\": {\n    \"username\": \"ayush\",\n    \"role\": \"Lead Data Engineer\",\n    \"kyc_verified\": true,\n    \"limits\": {\n      \"daily_max\": 10000000,\n      \"single_txn\": 5000000\n    }\n  },\n  \"attributes\": {\n    \"datacenter\": \"bom1\",\n    \"merkle_verified\": true,\n    \"protocol\": \"AAYU_INTENT_2026\"\n  }\n}"
+
+# DATASET 3: Large Nested JSON (Multi-Sensor Fleet Batch)
+let d3_large_json = "{\n  \"batch_id\": \"batch_990142_mumbai\",\n  \"device_type\": \"automotive_telemetry\",\n  \"firmware\": \"v2.4.0-silicon\",\n  \"sensor_readings\": [\n    {\"sensor\": \"temp_engine\", \"val\": 88.4, \"unit\": \"C\", \"ok\": true},\n    {\"sensor\": \"pressure_oil\", \"val\": 3.42, \"unit\": \"bar\", \"ok\": true},\n    {\"sensor\": \"rpm_crank\", \"val\": 3400, \"unit\": \"rpm\", \"ok\": true},\n    {\"sensor\": \"volts_bus\", \"val\": 13.8, \"unit\": \"V\", \"ok\": true},\n    {\"sensor\": \"vibe_x\", \"val\": 0.04, \"unit\": \"g\", \"ok\": true},\n    {\"sensor\": \"vibe_y\", \"val\": 0.06, \"unit\": \"g\", \"ok\": true},\n    {\"sensor\": \"vibe_z\", \"val\": 0.02, \"unit\": \"g\", \"ok\": true},\n    {\"sensor\": \"fuel_flow\", \"val\": 1.82, \"unit\": \"lph\", \"ok\": true}\n  ],\n  \"system_state\": {\n    \"gps\": {\"lat\": 28.6139, \"lon\": 77.2090, \"alt_m\": 216},\n    \"network\": {\"signal_dbm\": -68, \"carrier\": \"Airtel 5G\", \"latency_ms\": 12}\n  }\n}"
+
+# Measure real byte sizes
+let d1_raw_len = len(d1_small_json)
+let d1_shard = liquid_shard_payload(d1_small_json)
+let d1_cond_len = d1_shard["condensed_bytes"]
+let d1_savings = d1_shard["savings_percent"]
+
+let d2_raw_len = len(d2_medium_json)
+let d2_shard = liquid_shard_payload(d2_medium_json)
+let d2_cond_len = d2_shard["condensed_bytes"]
+let d2_savings = d2_shard["savings_percent"]
+
+let d3_raw_len = len(d3_large_json)
+let d3_shard = liquid_shard_payload(d3_large_json)
+let d3_cond_len = d3_shard["condensed_bytes"]
+let d3_savings = d3_shard["savings_percent"]
+
+print("======================================================================")
+print("             EMPIRICAL MEASURED DATASET COMPACTION TABLE              ")
+print("======================================================================")
+print("Dataset Name         Raw JSON (B)   Condensed (B)   Exact Reduction %")
+print("----------------------------------------------------------------------")
+print("1. Small Flat JSON    " + d1_raw_len + " B          " + d1_cond_len + " B           " + d1_savings + "%")
+print("2. Medium Nested JSON " + d2_raw_len + " B          " + d2_cond_len + " B           " + d2_savings + "%")
+print("3. Large Sensor Batch " + d3_raw_len + " B          " + d3_cond_len + " B           " + d3_savings + "%")
+print("======================================================================")
+
+# Benchmarking actions for Hardware Profiler
+action bench_small_encode_workload(count)
+    let i = 0
+    while i < count
+        let s = liquid_shard_payload(d1_small_json)
+        i = i + 1
+    end
+end
+
+action bench_small_decode_workload(count)
+    let i = 0
+    while i < count
+        let r = liquid_reconstruct(d1_shard, d1_small_json)
+        i = i + 1
+    end
+end
+
+action bench_medium_encode_workload(count)
+    let i = 0
+    while i < count
+        let s = liquid_shard_payload(d2_medium_json)
+        i = i + 1
+    end
+end
+
+action bench_medium_decode_workload(count)
+    let i = 0
+    while i < count
+        let r = liquid_reconstruct(d2_shard, d2_medium_json)
+        i = i + 1
+    end
+end
+
+action bench_large_encode_workload(count)
+    let i = 0
+    while i < count
+        let s = liquid_shard_payload(d3_large_json)
+        i = i + 1
+    end
+end
+
+action bench_large_decode_workload(count)
+    let i = 0
+    while i < count
+        let r = liquid_reconstruct(d3_shard, d3_large_json)
+        i = i + 1
+    end
+end
+
+# Fast Cache O(1) Prefix-Suffix Lookups (Warm Cache)
+action bench_fast_cache_lookups(count)
+    let root = d1_shard["merkle_root"]
+    let i = 0
+    while i < count
+        let key = liquid_fast_cache_key(root)
+        i = i + 1
+    end
+end
+
+# Run batches
+bench_small_encode_workload(100)
+bench_small_decode_workload(200)
+bench_medium_encode_workload(100)
+bench_medium_decode_workload(200)
+bench_large_encode_workload(50)
+bench_large_decode_workload(100)
+bench_fast_cache_lookups(5000)

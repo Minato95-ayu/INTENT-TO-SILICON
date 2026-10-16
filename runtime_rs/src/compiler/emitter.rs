@@ -173,6 +173,60 @@ impl Emitter {
         match stmt {
             Statement::Import(_) => {}
             Statement::Let { name, value } | Statement::Assignment { name, value } => {
+                if let Expr::Binary { left, op, right } = value {
+                    let (slot, is_global) = self.variable_slot(name);
+                    if *op == BinaryOp::Add {
+                        if let Expr::Variable(vname) = &**left {
+                            if vname == name {
+                                if let Expr::Integer(1) = &**right {
+                                    self.bytecode.push(if is_global { 25 } else { 23 }); // IncGlobalBy1 / IncLocalBy1
+                                    self.bytecode.push((slot % 256) as u8);
+                                    return;
+                                } else if let Expr::Integer(n) = &**right {
+                                    let const_idx = self.add_constant_int(*n);
+                                    self.bytecode.push(if is_global { 28 } else { 27 }); // AddGlobalConst / AddLocalConst
+                                    self.bytecode.push((slot % 256) as u8);
+                                    self.bytecode.push((const_idx >> 8) as u8);
+                                    self.bytecode.push((const_idx & 0xFF) as u8);
+                                    return;
+                                }
+                            }
+                        } else if let Expr::Variable(vname) = &**right {
+                            if vname == name {
+                                if let Expr::Integer(1) = &**left {
+                                    self.bytecode.push(if is_global { 25 } else { 23 }); // IncGlobalBy1 / IncLocalBy1
+                                    self.bytecode.push((slot % 256) as u8);
+                                    return;
+                                } else if let Expr::Integer(n) = &**left {
+                                    let const_idx = self.add_constant_int(*n);
+                                    self.bytecode.push(if is_global { 28 } else { 27 }); // AddGlobalConst / AddLocalConst
+                                    self.bytecode.push((slot % 256) as u8);
+                                    self.bytecode.push((const_idx >> 8) as u8);
+                                    self.bytecode.push((const_idx & 0xFF) as u8);
+                                    return;
+                                }
+                            }
+                        }
+                    } else if *op == BinaryOp::Sub {
+                        if let Expr::Variable(vname) = &**left {
+                            if vname == name {
+                                if let Expr::Integer(1) = &**right {
+                                    self.bytecode.push(if is_global { 26 } else { 24 }); // DecGlobalBy1 / DecLocalBy1
+                                    self.bytecode.push((slot % 256) as u8);
+                                    return;
+                                } else if let Expr::Integer(n) = &**right {
+                                    let const_idx = self.add_constant_int(*n);
+                                    self.bytecode.push(if is_global { 30 } else { 29 }); // SubGlobalConst / SubLocalConst
+                                    self.bytecode.push((slot % 256) as u8);
+                                    self.bytecode.push((const_idx >> 8) as u8);
+                                    self.bytecode.push((const_idx & 0xFF) as u8);
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+
                 self.emit_expression(value);
                 let (slot, is_global) = self.variable_slot(name);
                 self.bytecode.push(if is_global { 8 } else { 6 }); // STORE_GLOBAL / STORE_VAR
@@ -191,6 +245,34 @@ impl Emitter {
             }
             Statement::While { cond, body } => {
                 let loop_start = self.bytecode.len();
+                if let Expr::Binary { left, op: BinaryOp::Lt, right } = cond {
+                    if let (Expr::Variable(var_name), Expr::Integer(limit)) = (&**left, &**right) {
+                        let (slot, is_global) = self.variable_slot(var_name);
+                        let const_idx = self.add_constant_int(*limit);
+                        let op = if is_global { 31 } else { 37 }; // JmpIfGlobalGteConst / JmpIfLocalGteConst
+                        self.bytecode.push(op);
+                        self.bytecode.push((slot % 256) as u8);
+                        self.bytecode.push((const_idx >> 8) as u8);
+                        self.bytecode.push((const_idx & 0xFF) as u8);
+                        let exit_patch_idx = self.bytecode.len();
+                        self.bytecode.push(0);
+                        self.bytecode.push(0);
+
+                        for s in body {
+                            self.emit_statement(s);
+                        }
+
+                        self.bytecode.push(32); // OP_JMP (0x20)
+                        self.bytecode.push((loop_start >> 8) as u8);
+                        self.bytecode.push((loop_start & 0xFF) as u8);
+
+                        let exit_target = self.bytecode.len();
+                        self.bytecode[exit_patch_idx] = (exit_target >> 8) as u8;
+                        self.bytecode[exit_patch_idx + 1] = (exit_target & 0xFF) as u8;
+                        return;
+                    }
+                }
+
                 self.emit_expression(cond);
                 self.bytecode.push(33); // OP_JMP_IF_FALSE (0x21)
                 let jmp_false_idx = self.bytecode.len();

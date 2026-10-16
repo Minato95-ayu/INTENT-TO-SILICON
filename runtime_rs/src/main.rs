@@ -352,6 +352,71 @@ fn run_disasm(input_file: &str) {
             0x13 => { println!("  {:04X}: DIV", op_pc); }
             0x14 => { println!("  {:04X}: MOD", op_pc); }
             0x15 => { println!("  {:04X}: NEG", op_pc); }
+            23 => {
+                if pc < len {
+                    let slot = bytecode[pc]; pc += 1;
+                    println!("  {:04X}: INC_LOCAL_1    slot:{}", op_pc, slot);
+                }
+            }
+            24 => {
+                if pc < len {
+                    let slot = bytecode[pc]; pc += 1;
+                    println!("  {:04X}: DEC_LOCAL_1    slot:{}", op_pc, slot);
+                }
+            }
+            25 => {
+                if pc < len {
+                    let slot = bytecode[pc]; pc += 1;
+                    println!("  {:04X}: INC_GLOBAL_1   slot:{}", op_pc, slot);
+                }
+            }
+            26 => {
+                if pc < len {
+                    let slot = bytecode[pc]; pc += 1;
+                    println!("  {:04X}: DEC_GLOBAL_1   slot:{}", op_pc, slot);
+                }
+            }
+            27 => {
+                if pc + 3 <= len {
+                    let slot = bytecode[pc];
+                    let const_idx = ((bytecode[pc + 1] as usize) << 8) | bytecode[pc + 2] as usize;
+                    pc += 3;
+                    println!("  {:04X}: ADD_LOCAL_C    slot:{} #{}", op_pc, slot, const_idx);
+                }
+            }
+            28 => {
+                if pc + 3 <= len {
+                    let slot = bytecode[pc];
+                    let const_idx = ((bytecode[pc + 1] as usize) << 8) | bytecode[pc + 2] as usize;
+                    pc += 3;
+                    println!("  {:04X}: ADD_GLOBAL_C   slot:{} #{}", op_pc, slot, const_idx);
+                }
+            }
+            29 => {
+                if pc + 3 <= len {
+                    let slot = bytecode[pc];
+                    let const_idx = ((bytecode[pc + 1] as usize) << 8) | bytecode[pc + 2] as usize;
+                    pc += 3;
+                    println!("  {:04X}: SUB_LOCAL_C    slot:{} #{}", op_pc, slot, const_idx);
+                }
+            }
+            30 => {
+                if pc + 3 <= len {
+                    let slot = bytecode[pc];
+                    let const_idx = ((bytecode[pc + 1] as usize) << 8) | bytecode[pc + 2] as usize;
+                    pc += 3;
+                    println!("  {:04X}: SUB_GLOBAL_C   slot:{} #{}", op_pc, slot, const_idx);
+                }
+            }
+            31 => {
+                if pc + 5 <= len {
+                    let slot = bytecode[pc];
+                    let const_idx = ((bytecode[pc + 1] as usize) << 8) | bytecode[pc + 2] as usize;
+                    let target = ((bytecode[pc + 3] as usize) << 8) | bytecode[pc + 4] as usize;
+                    pc += 5;
+                    println!("  {:04X}: JMP_G_GTE_C    slot:{} #{} -> 0x{:04X}", op_pc, slot, const_idx, target);
+                }
+            }
             0x20 => {
                 if pc + 2 <= len {
                     let target = ((bytecode[pc] as usize) << 8) | bytecode[pc + 1] as usize;
@@ -380,6 +445,15 @@ fn run_disasm(input_file: &str) {
                     let target = ((bytecode[pc + 2] as usize) << 8) | bytecode[pc + 3] as usize;
                     pc += 4;
                     println!("  {:04X}: CALL_LOCAL     argc:{} -> 0x{:04X}", op_pc, argc, target);
+                }
+            }
+            37 => {
+                if pc + 5 <= len {
+                    let slot = bytecode[pc];
+                    let const_idx = ((bytecode[pc + 1] as usize) << 8) | bytecode[pc + 2] as usize;
+                    let target = ((bytecode[pc + 3] as usize) << 8) | bytecode[pc + 4] as usize;
+                    pc += 5;
+                    println!("  {:04X}: JMP_L_GTE_C    slot:{} #{} -> 0x{:04X}", op_pc, slot, const_idx, target);
                 }
             }
             38 => { println!("  {:04X}: EQ", op_pc); }

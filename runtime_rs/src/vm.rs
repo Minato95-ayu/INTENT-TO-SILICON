@@ -254,6 +254,31 @@ impl AayuVM {
                     if pc + 1 > len { return Err(format!("Truncated global variable operand at offset {}", op_pc)); }
                     pc += 1;
                 }
+                23 | 24 | 25 | 26 => { // Inc/Dec Local/Global By 1 (1 byte slot)
+                    if pc + 1 > len { return Err(format!("Truncated operand for Inc/Dec at offset {}", op_pc)); }
+                    pc += 1;
+                }
+                27 | 28 | 29 | 30 => { // Add/Sub Local/Global Const (1 byte slot + 2 byte const_idx)
+                    if pc + 3 > len { return Err(format!("Truncated operand for Add/Sub Const at offset {}", op_pc)); }
+                    let const_idx = ((self.bytecode[pc + 1] as usize) << 8) | self.bytecode[pc + 2] as usize;
+                    pc += 3;
+                    if const_idx >= self.constants.len() {
+                        return Err(format!("Constant index {} exceeds constant pool size ({}) at offset {}", const_idx, self.constants.len(), op_pc));
+                    }
+                }
+                31 | 37 => { // JmpIfGlobal/Local Gte Const (1 byte slot + 2 byte const_idx + 2 byte target)
+                    if pc + 5 > len { return Err(format!("Truncated operand for JmpIfGteConst at offset {}", op_pc)); }
+                    let const_idx = ((self.bytecode[pc + 1] as usize) << 8) | self.bytecode[pc + 2] as usize;
+                    let target = ((self.bytecode[pc + 3] as usize) << 8) | self.bytecode[pc + 4] as usize;
+                    pc += 5;
+                    if const_idx >= self.constants.len() {
+                        return Err(format!("Constant index {} exceeds constant pool size ({}) at offset {}", const_idx, self.constants.len(), op_pc));
+                    }
+                    if target > len {
+                        return Err(format!("JmpIfGteConst target offset {} exceeds bytecode bounds ({}) at offset {}", target, len, op_pc));
+                    }
+                    jumps.push((target, op_pc, "JmpIfGteConst"));
+                }
                 0x10..=0x16 => {
                     // Arithmetic & casting opcodes
                 }
@@ -419,6 +444,39 @@ impl AayuVM {
                     }
                     0x07 => { pc += 1; depth += 1; }
                     0x08 => { pc += 1; depth -= 1; }
+                    23..=26 => { // Inc/Dec: 1 byte operand, net stack depth change is 0
+                        pc += 1;
+                    }
+                    27..=30 => { // Add/Sub Const: 3 bytes operand, net stack depth change is 0
+                        pc += 3;
+                    }
+                    31 | 37 => { // JmpIfGteConst: 5 bytes operand, net stack depth change is 0
+                        let target = ((self.bytecode[pc + 3] as usize) << 8) | self.bytecode[pc + 4] as usize;
+                        pc += 5;
+                        // Branch path
+                        if target < len {
+                            if let Some(&existing) = stack_depths.get(&target) {
+                                if existing != depth {
+                                    return Err(format!("Stack height mismatch at jump target offset {}: expected {}, found {}", target, existing, depth));
+                                }
+                            } else {
+                                stack_depths.insert(target, depth);
+                                queue.push_back((target, depth));
+                            }
+                        }
+                        // Fall-through path
+                        if pc < len {
+                            if let Some(&existing) = stack_depths.get(&pc) {
+                                if existing != depth {
+                                    return Err(format!("Stack height mismatch at fallthrough offset {}: expected {}, found {}", pc, existing, depth));
+                                }
+                                break;
+                            } else {
+                                stack_depths.insert(pc, depth);
+                            }
+                        }
+                        continue;
+                    }
                     0x10..=0x16 => { // Binary arithmetic (ADD, SUB, MUL, DIV, MOD, etc.)
                         depth -= 1; // pops 2, pushes 1 -> net -1
                     }
@@ -585,13 +643,142 @@ impl AayuVM {
                     self.globals[idx] = self.stack[self.sp - 1];
                     self.sp -= 1;
                 }
+                23 => { // IncLocalBy1
+                    let idx = self.bytecode[self.ip] as usize;
+                    self.ip += 1;
+                    let v = self.locals[idx];
+                    if v.is_int() {
+                        self.locals[idx] = NanVal::int(v.as_int().wrapping_add(1));
+                    } else if v.is_float() {
+                        self.locals[idx] = NanVal::float(v.as_float() + 1.0);
+                    }
+                }
+                24 => { // DecLocalBy1
+                    let idx = self.bytecode[self.ip] as usize;
+                    self.ip += 1;
+                    let v = self.locals[idx];
+                    if v.is_int() {
+                        self.locals[idx] = NanVal::int(v.as_int().wrapping_sub(1));
+                    } else if v.is_float() {
+                        self.locals[idx] = NanVal::float(v.as_float() - 1.0);
+                    }
+                }
+                25 => { // IncGlobalBy1
+                    let idx = self.bytecode[self.ip] as usize;
+                    self.ip += 1;
+                    let v = self.globals[idx];
+                    if v.is_int() {
+                        self.globals[idx] = NanVal::int(v.as_int().wrapping_add(1));
+                    } else if v.is_float() {
+                        self.globals[idx] = NanVal::float(v.as_float() + 1.0);
+                    }
+                }
+                26 => { // DecGlobalBy1
+                    let idx = self.bytecode[self.ip] as usize;
+                    self.ip += 1;
+                    let v = self.globals[idx];
+                    if v.is_int() {
+                        self.globals[idx] = NanVal::int(v.as_int().wrapping_sub(1));
+                    } else if v.is_float() {
+                        self.globals[idx] = NanVal::float(v.as_float() - 1.0);
+                    }
+                }
+                27 => { // AddLocalConst
+                    let slot = self.bytecode[self.ip] as usize;
+                    let const_idx = ((self.bytecode[self.ip + 1] as usize) << 8) | self.bytecode[self.ip + 2] as usize;
+                    self.ip += 3;
+                    let v = self.locals[slot];
+                    let c = self.constants[const_idx];
+                    if v.is_int() && c.is_int() {
+                        self.locals[slot] = NanVal::int(v.as_int().wrapping_add(c.as_int()));
+                    } else if v.is_float() || c.is_float() {
+                        let fv = if v.is_float() { v.as_float() } else { v.as_int() as f64 };
+                        let fc = if c.is_float() { c.as_float() } else { c.as_int() as f64 };
+                        self.locals[slot] = NanVal::float(fv + fc);
+                    }
+                }
+                28 => { // AddGlobalConst
+                    let slot = self.bytecode[self.ip] as usize;
+                    let const_idx = ((self.bytecode[self.ip + 1] as usize) << 8) | self.bytecode[self.ip + 2] as usize;
+                    self.ip += 3;
+                    let v = self.globals[slot];
+                    let c = self.constants[const_idx];
+                    if v.is_int() && c.is_int() {
+                        self.globals[slot] = NanVal::int(v.as_int().wrapping_add(c.as_int()));
+                    } else if v.is_float() || c.is_float() {
+                        let fv = if v.is_float() { v.as_float() } else { v.as_int() as f64 };
+                        let fc = if c.is_float() { c.as_float() } else { c.as_int() as f64 };
+                        self.globals[slot] = NanVal::float(fv + fc);
+                    }
+                }
+                29 => { // SubLocalConst
+                    let slot = self.bytecode[self.ip] as usize;
+                    let const_idx = ((self.bytecode[self.ip + 1] as usize) << 8) | self.bytecode[self.ip + 2] as usize;
+                    self.ip += 3;
+                    let v = self.locals[slot];
+                    let c = self.constants[const_idx];
+                    if v.is_int() && c.is_int() {
+                        self.locals[slot] = NanVal::int(v.as_int().wrapping_sub(c.as_int()));
+                    } else if v.is_float() || c.is_float() {
+                        let fv = if v.is_float() { v.as_float() } else { v.as_int() as f64 };
+                        let fc = if c.is_float() { c.as_float() } else { c.as_int() as f64 };
+                        self.locals[slot] = NanVal::float(fv - fc);
+                    }
+                }
+                30 => { // SubGlobalConst
+                    let slot = self.bytecode[self.ip] as usize;
+                    let const_idx = ((self.bytecode[self.ip + 1] as usize) << 8) | self.bytecode[self.ip + 2] as usize;
+                    self.ip += 3;
+                    let v = self.globals[slot];
+                    let c = self.constants[const_idx];
+                    if v.is_int() && c.is_int() {
+                        self.globals[slot] = NanVal::int(v.as_int().wrapping_sub(c.as_int()));
+                    } else if v.is_float() || c.is_float() {
+                        let fv = if v.is_float() { v.as_float() } else { v.as_int() as f64 };
+                        let fc = if c.is_float() { c.as_float() } else { c.as_int() as f64 };
+                        self.globals[slot] = NanVal::float(fv - fc);
+                    }
+                }
+                31 => { // JmpIfGlobalGteConst
+                    let slot = self.bytecode[self.ip] as usize;
+                    let const_idx = ((self.bytecode[self.ip + 1] as usize) << 8) | self.bytecode[self.ip + 2] as usize;
+                    let target = ((self.bytecode[self.ip + 3] as usize) << 8) | self.bytecode[self.ip + 4] as usize;
+                    self.ip += 5;
+                    let v = self.globals[slot];
+                    let c = self.constants[const_idx];
+                    if v.is_int() && c.is_int() {
+                        if v.as_int() >= c.as_int() {
+                            self.ip = target;
+                        }
+                    } else if let Some(ord) = self.cmp_vals(v, c) {
+                        if ord != std::cmp::Ordering::Less {
+                            self.ip = target;
+                        }
+                    }
+                }
+                37 => { // JmpIfLocalGteConst
+                    let slot = self.bytecode[self.ip] as usize;
+                    let const_idx = ((self.bytecode[self.ip + 1] as usize) << 8) | self.bytecode[self.ip + 2] as usize;
+                    let target = ((self.bytecode[self.ip + 3] as usize) << 8) | self.bytecode[self.ip + 4] as usize;
+                    self.ip += 5;
+                    let v = self.locals[slot];
+                    let c = self.constants[const_idx];
+                    if v.is_int() && c.is_int() {
+                        if v.as_int() >= c.as_int() {
+                            self.ip = target;
+                        }
+                    } else if let Some(ord) = self.cmp_vals(v, c) {
+                        if ord != std::cmp::Ordering::Less {
+                            self.ip = target;
+                        }
+                    }
+                }
                 0x10 => { // ADD (Polymorphic: Int, Float, String, Array)
                     let b = self.stack[self.sp - 1];
                     let a = self.stack[self.sp - 2];
                     self.sp -= 1;
                     if a.is_int() && b.is_int() {
-                        self.stack[self.sp - 1] = checked_boxed_int(a.as_int().checked_add(b.as_int())
-                            .ok_or_else(|| "Integer addition overflow".to_string())?)?;
+                        self.stack[self.sp - 1] = NanVal::int(a.as_int().wrapping_add(b.as_int()));
                     } else if a.is_string() || b.is_string() {
                         let sa = if a.is_string() {
                             self.string_heap.get(a.as_string_idx()).cloned().unwrap_or_default()
@@ -646,7 +833,11 @@ impl AayuVM {
                 41 => { // LT
                     let b = self.stack[self.sp - 1];
                     let a = self.stack[self.sp - 2];
-                    self.stack[self.sp - 2] = NanVal::bool(self.cmp_vals(a, b) == Some(std::cmp::Ordering::Less));
+                    if a.is_int() && b.is_int() {
+                        self.stack[self.sp - 2] = NanVal::bool(a.as_int() < b.as_int());
+                    } else {
+                        self.stack[self.sp - 2] = NanVal::bool(self.cmp_vals(a, b) == Some(std::cmp::Ordering::Less));
+                    }
                     self.sp -= 1;
                 }
                 48 => { // STORE_STATE
@@ -1113,7 +1304,9 @@ impl AayuVM {
                 }                17 => { // SUB
                     let b = self.stack[self.sp - 1];
                     let a = self.stack[self.sp - 2];
-                    if a.is_float() || b.is_float() {
+                    if a.is_int() && b.is_int() {
+                        self.stack[self.sp - 2] = NanVal::int(a.as_int().wrapping_sub(b.as_int()));
+                    } else if a.is_float() || b.is_float() {
                         let fa = if a.is_float() { a.as_float() } else { a.as_int() as f64 };
                         let fb = if b.is_float() { b.as_float() } else { b.as_int() as f64 };
                         self.stack[self.sp - 2] = NanVal::float(fa - fb);
@@ -1126,7 +1319,9 @@ impl AayuVM {
                 18 => { // MUL
                     let b = self.stack[self.sp - 1];
                     let a = self.stack[self.sp - 2];
-                    if a.is_float() || b.is_float() {
+                    if a.is_int() && b.is_int() {
+                        self.stack[self.sp - 2] = NanVal::int(a.as_int().wrapping_mul(b.as_int()));
+                    } else if a.is_float() || b.is_float() {
                         let fa = if a.is_float() { a.as_float() } else { a.as_int() as f64 };
                         let fb = if b.is_float() { b.as_float() } else { b.as_int() as f64 };
                         self.stack[self.sp - 2] = NanVal::float(fa * fb);
@@ -1169,7 +1364,11 @@ impl AayuVM {
                 38 => { // CmpEq
                     let b = self.stack[self.sp - 1];
                     let a = self.stack[self.sp - 2];
-                    self.stack[self.sp - 2] = NanVal::bool(self.vals_eq(a, b));
+                    if a.is_int() && b.is_int() {
+                        self.stack[self.sp - 2] = NanVal::bool(a.as_int() == b.as_int());
+                    } else {
+                        self.stack[self.sp - 2] = NanVal::bool(self.vals_eq(a, b));
+                    }
                     self.sp -= 1;
                     continue;
                 }
@@ -1182,7 +1381,11 @@ impl AayuVM {
                 39 => { // CmpNeq
                     let b = self.stack[self.sp - 1];
                     let a = self.stack[self.sp - 2];
-                    self.stack[self.sp - 2] = NanVal::bool(!self.vals_eq(a, b));
+                    if a.is_int() && b.is_int() {
+                        self.stack[self.sp - 2] = NanVal::bool(a.as_int() != b.as_int());
+                    } else {
+                        self.stack[self.sp - 2] = NanVal::bool(!self.vals_eq(a, b));
+                    }
                     self.sp -= 1;
                     continue;
                 }
@@ -1195,7 +1398,11 @@ impl AayuVM {
                 42 => { // CmpGt
                     let b = self.stack[self.sp - 1];
                     let a = self.stack[self.sp - 2];
-                    self.stack[self.sp - 2] = NanVal::bool(self.cmp_vals(a, b) == Some(std::cmp::Ordering::Greater));
+                    if a.is_int() && b.is_int() {
+                        self.stack[self.sp - 2] = NanVal::bool(a.as_int() > b.as_int());
+                    } else {
+                        self.stack[self.sp - 2] = NanVal::bool(self.cmp_vals(a, b) == Some(std::cmp::Ordering::Greater));
+                    }
                     self.sp -= 1;
                     continue;
                 }
@@ -1208,8 +1415,12 @@ impl AayuVM {
                 43 => { // CmpLte
                     let b = self.stack[self.sp - 1];
                     let a = self.stack[self.sp - 2];
-                    let ord = self.cmp_vals(a, b);
-                    self.stack[self.sp - 2] = NanVal::bool(ord == Some(std::cmp::Ordering::Less) || ord == Some(std::cmp::Ordering::Equal));
+                    if a.is_int() && b.is_int() {
+                        self.stack[self.sp - 2] = NanVal::bool(a.as_int() <= b.as_int());
+                    } else {
+                        let ord = self.cmp_vals(a, b);
+                        self.stack[self.sp - 2] = NanVal::bool(ord == Some(std::cmp::Ordering::Less) || ord == Some(std::cmp::Ordering::Equal));
+                    }
                     self.sp -= 1;
                     continue;
                 }
@@ -1222,8 +1433,12 @@ impl AayuVM {
                 44 => { // CmpGte
                     let b = self.stack[self.sp - 1];
                     let a = self.stack[self.sp - 2];
-                    let ord = self.cmp_vals(a, b);
-                    self.stack[self.sp - 2] = NanVal::bool(ord == Some(std::cmp::Ordering::Greater) || ord == Some(std::cmp::Ordering::Equal));
+                    if a.is_int() && b.is_int() {
+                        self.stack[self.sp - 2] = NanVal::bool(a.as_int() >= b.as_int());
+                    } else {
+                        let ord = self.cmp_vals(a, b);
+                        self.stack[self.sp - 2] = NanVal::bool(ord == Some(std::cmp::Ordering::Greater) || ord == Some(std::cmp::Ordering::Equal));
+                    }
                     self.sp -= 1;
                     continue;
                 }

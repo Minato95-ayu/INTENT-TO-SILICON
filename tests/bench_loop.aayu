@@ -1,0 +1,8 @@
+let start = time_micros()
+let count = 0
+while count < 1000000
+    count = count + 1
+end
+let elapsed = time_micros() - start
+print("1,000,000 iterations in microseconds:")
+print(elapsed)

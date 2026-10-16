@@ -26,6 +26,9 @@ FAILED=0
 for file in "$TEST_DIR"/*.aayu; do
     [ -e "$file" ] || continue
     base=$(basename "$file" .aayu)
+    if [ "$base" = "test_lint_target" ]; then
+        continue
+    fi
     ayc="$TEST_DIR/$base.ayc"
     
     printf "[TEST] Running %s... " "$base.aayu"
@@ -48,6 +51,18 @@ for file in "$TEST_DIR"/*.aayu; do
     
     rm -f "$ayc"
 done
+
+# Run Static Linter Verification
+if [ -f "$TEST_DIR/test_lint_target.aayu" ]; then
+    printf "[TEST] Running Static Linter on test_lint_target.aayu... "
+    if "$BIN_VM" lint "$TEST_DIR/test_lint_target.aayu" 2>&1 | grep -q "deprecated keyword 'var'"; then
+        echo "PASS"
+        PASSED=$((PASSED + 1))
+    else
+        echo "FAIL (Linter did not detect deprecated var)"
+        FAILED=$((FAILED + 1))
+    fi
+fi
 
 echo "--------------------------------------------------"
 echo "Results: $PASSED Passed | $FAILED Failed"

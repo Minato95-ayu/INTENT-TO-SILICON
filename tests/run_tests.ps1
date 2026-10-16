@@ -11,7 +11,7 @@ if (-not (Test-Path $binAayuc) -or -not (Test-Path $binVm)) {
     exit 1
 }
 
-$testFiles = Get-ChildItem -Path $PSScriptRoot -Filter "*.aayu"
+$testFiles = Get-ChildItem -Path $PSScriptRoot -Filter "*.aayu" | Where-Object { $_.Name -ne "test_lint_target.aayu" }
 $expectedOutput = @{
     "test_01_vars.aayu" = @("AAYU", "1", "2", "0", "Hello from AAYU")
     "test_02_floats.aayu" = @("Area:", "314.159", "Divided:", "90", "Subtracted:", "150")
@@ -94,6 +94,21 @@ $selfhostScript = "$PSScriptRoot\run_selfhost_probes.ps1"
 if (Test-Path $selfhostScript) {
     & powershell -ExecutionPolicy Bypass -File $selfhostScript
     if ($LASTEXITCODE -ne 0) { $failed++ }
+}
+
+# Run Static Linter Verification
+$lintTarget = "$PSScriptRoot\test_lint_target.aayu"
+$binAayu = "$PSScriptRoot\..\bin\aayu.exe"
+if ((Test-Path $lintTarget) -and (Test-Path $binAayu)) {
+    Write-Host "[TEST] Running Static Linter on test_lint_target.aayu... " -NoNewline
+    $lintOut = & $binAayu lint $lintTarget 2>&1
+    if ($lintOut -match "deprecated keyword 'var'") {
+        Write-Host "PASS" -ForegroundColor Green
+        $passed++
+    } else {
+        Write-Host "FAIL (Linter did not detect deprecated var)" -ForegroundColor Red
+        $failed++
+    }
 }
 
 Write-Host "--------------------------------------------------" -ForegroundColor Cyan

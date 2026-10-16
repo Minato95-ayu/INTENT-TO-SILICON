@@ -33,15 +33,60 @@ action liquid_fast_cache_key(merkle_root)
     return prefix + "-" + suffix
 end
 
+# Strips redundant unquoted whitespace from structured payload for genuine size reduction
+action liquid_condense_payload(raw_str)
+    let l = len(raw_str)
+    let out = ""
+    let i = 0
+    let in_string = 0
+    while i < l
+        let ch = raw_str[i]
+        if ch == "\""
+            if in_string == 1
+                in_string = 0
+            else
+                in_string = 1
+            end
+            out = out + ch
+        else
+            if in_string == 1
+                out = out + ch
+            else
+                if ch != " "
+                    if ch != "\t"
+                        if ch != "\n"
+                            if ch != "\r"
+                                out = out + ch
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        i = i + 1
+    end
+    return out
+end
+
 # Decomposes raw payload into Ayush's 7-Layer Molecular Cryptographic Shard
 action liquid_shard_payload(payload)
     let l = len(payload)
-    let head_sub = payload
-    if l > 24
+    let condensed = liquid_condense_payload(payload)
+    let condensed_len = len(condensed)
+
+    let savings_pct = 0
+    if l > 0
+        if l >= condensed_len
+            savings_pct = ((l - condensed_len) * 100) / l
+        end
+    end
+
+    let head_sub = condensed
+    if condensed_len > 24
         let sub = ""
         let si = 0
         while si < 24
-            sub = sub + payload[si]
+            sub = sub + condensed[si]
             si = si + 1
         end
         head_sub = sub
@@ -51,16 +96,16 @@ action liquid_shard_payload(payload)
     let l1_data = "AAYU_SCHEMA_INVARIANT:" + head_sub
     let h1 = hash_string(l1_data)
 
-    # Layer 2: Token Entropy & Dictionary Elimination (81% Saved)
-    let l2_data = "BPE_COMPRESSION:81.2%:LEN_" + liquid_int_to_str(l)
+    # Layer 2: Token Entropy & Dictionary Elimination (Measured Byte Reduction)
+    let l2_data = "TOKEN_ENTROPY:RAW_" + liquid_int_to_str(l) + "_CONDENSED_" + liquid_int_to_str(condensed_len)
     let h2 = hash_string(l2_data)
 
     # Layer 3: Vectorized In-Memory Key Space (Register Offsets)
-    let l3_data = "VECTOR_KEY_SPACE:OFFSET_0x00_TO_0x" + liquid_int_to_str(l)
+    let l3_data = "VECTOR_KEY_SPACE:OFFSET_0x00_TO_0x" + liquid_int_to_str(condensed_len)
     let h3 = hash_string(l3_data)
 
     # Layer 4: Encrypted Liquid Molecular Payload Mass
-    let l4_data = "LIQUID_PAYLOAD_MASS:" + payload
+    let l4_data = "LIQUID_PAYLOAD_MASS:" + condensed
     let h4 = hash_string(l4_data)
 
     # Layer 5: Topological Merkle Dependency Graph
@@ -79,7 +124,9 @@ action liquid_shard_payload(payload)
     return {
         "status": "SEALED",
         "raw_bytes": l,
-        "compression_ratio": "85.4% Saved vs Legacy Cloud JSON",
+        "condensed_bytes": condensed_len,
+        "savings_percent": savings_pct,
+        "compression_ratio": liquid_int_to_str(savings_pct) + "% Measured Reduction",
         "fast_cache_key": fast_key,
         "merkle_root": h7_merkle_root,
         "layer1_hash": h1,

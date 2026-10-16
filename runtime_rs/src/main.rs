@@ -1083,6 +1083,21 @@ fn hash_str(input: &str) -> String {
     format!("{:016x}{:016x}{:016x}{:016x}", h1, h2, h1 ^ 0xa5a5a5a5a5a5a5a5, h2 ^ 0x5a5a5a5a5a5a5a5a)
 }
 
+fn json_escape(s: &str) -> String {
+    let mut out = String::with_capacity(s.len() + 16);
+    for c in s.chars() {
+        match c {
+            '"' => out.push_str("\\\""),
+            '\\' => out.push_str("\\\\"),
+            '\n' => out.push_str("\\n"),
+            '\r' => out.push_str("\\r"),
+            '\t' => out.push_str("\\t"),
+            _ => out.push(c),
+        }
+    }
+    out
+}
+
     let is_https = args.contains(&"--https".to_string()) || args.contains(&"--ssl".to_string());
     let is_web = args.contains(&"--web".to_string()) || is_https;
     let mut custom_port: Option<u16> = None;
@@ -1317,13 +1332,13 @@ fn hash_str(input: &str) -> String {
                 json.push_str(&format!(
                     r#"  {{"id":{},"username":"{}","email":"{}","role":"{}","location":"{}","id_proof":"{}","bio":"{}","avatar_svg":"{}","password_hash":"{}","created_at":"{}"}}"#,
                     u.id,
-                    u.username.replace('"', "\\\""),
-                    u.email.replace('"', "\\\""),
-                    u.role.replace('"', "\\\""),
-                    u.location.replace('"', "\\\""),
-                    u.id_proof.replace('"', "\\\""),
-                    u.bio.replace('"', "\\\""),
-                    u.avatar_svg.replace('"', "\\\""),
+                    json_escape(&u.username),
+                    json_escape(&u.email),
+                    json_escape(&u.role),
+                    json_escape(&u.location),
+                    json_escape(&u.id_proof),
+                    json_escape(&u.bio),
+                    json_escape(&u.avatar_svg),
                     u.password_hash,
                     u.created_at
                 ));
@@ -1391,7 +1406,16 @@ fn hash_str(input: &str) -> String {
                 save_wal_users(&st.users);
                 let resp = format!(
                     r#"{{"status":"success","message":"User registered into AayuDB with SHA-256 hash","storage":"In-Memory WAL Synced","user":{{"id":{},"username":"{}","email":"{}","role":"{}","location":"{}","id_proof":"{}","bio":"{}","avatar_svg":"{}","password_hash":"{}","created_at":"Just now"}},"token":"aayu_jwt_sec_{:08x}"}}"#,
-                    id, final_user, final_email, final_role, location, id_proof, bio, avatar_svg, hash, id * 12345
+                    id,
+                    json_escape(&final_user),
+                    json_escape(&final_email),
+                    json_escape(&final_role),
+                    json_escape(&location),
+                    json_escape(&id_proof),
+                    json_escape(&bio),
+                    json_escape(&avatar_svg),
+                    hash,
+                    id * 12345
                 );
                 return aayu_vm::net::HttpResponse::json(201, &resp);
             }
@@ -1403,7 +1427,16 @@ fn hash_str(input: &str) -> String {
                     if idx > 0 { users_json.push(','); }
                     users_json.push_str(&format!(
                         r#"{{"id":{},"username":"{}","email":"{}","role":"{}","location":"{}","id_proof":"{}","bio":"{}","avatar_svg":"{}","password_hash":"{}","created_at":"{}"}}"#,
-                        u.id, u.username, u.email, u.role, u.location, u.id_proof, u.bio, u.avatar_svg, u.password_hash, u.created_at
+                        u.id,
+                        json_escape(&u.username),
+                        json_escape(&u.email),
+                        json_escape(&u.role),
+                        json_escape(&u.location),
+                        json_escape(&u.id_proof),
+                        json_escape(&u.bio),
+                        json_escape(&u.avatar_svg),
+                        u.password_hash,
+                        u.created_at
                     ));
                 }
                 users_json.push(']');
@@ -1437,7 +1470,15 @@ fn hash_str(input: &str) -> String {
                     } else {
                         let resp = format!(
                             r#"{{"status":"success","message":"Authentication successful","user":{{"id":{},"username":"{}","email":"{}","role":"{}","location":"{}","id_proof":"{}","bio":"{}","avatar_svg":"{}"}},"token":"aayu_jwt_sec_{:08x}"}}"#,
-                            u.id, u.username, u.email, u.role, u.location, u.id_proof, u.bio, u.avatar_svg, u.id * 54321
+                            u.id,
+                            json_escape(&u.username),
+                            json_escape(&u.email),
+                            json_escape(&u.role),
+                            json_escape(&u.location),
+                            json_escape(&u.id_proof),
+                            json_escape(&u.bio),
+                            json_escape(&u.avatar_svg),
+                            u.id * 54321
                         );
                         return aayu_vm::net::HttpResponse::json(200, &resp);
                     }
@@ -1472,7 +1513,15 @@ fn hash_str(input: &str) -> String {
                     if let Some(u) = st.users.iter().find(|u| u.username == username) {
                         let resp = format!(
                             r#"{{"status":"success","message":"2FA Verification Complete. Zero-Trust Handshake Validated.","user":{{"id":{},"username":"{}","email":"{}","role":"{}","location":"{}","id_proof":"{}","bio":"{}","avatar_svg":"{}"}},"token":"aayu_jwt_2fa_{:08x}"}}"#,
-                            u.id, u.username, u.email, u.role, u.location, u.id_proof, u.bio, u.avatar_svg, u.id * 98765
+                            u.id,
+                            json_escape(&u.username),
+                            json_escape(&u.email),
+                            json_escape(&u.role),
+                            json_escape(&u.location),
+                            json_escape(&u.id_proof),
+                            json_escape(&u.bio),
+                            json_escape(&u.avatar_svg),
+                            u.id * 98765
                         );
                         return aayu_vm::net::HttpResponse::json(200, &resp);
                     }
@@ -1493,7 +1542,15 @@ fn hash_str(input: &str) -> String {
                         if let Some(av) = req_map.get("avatar_svg") { if !av.is_empty() { u.avatar_svg = av.clone(); } }
                         Some(format!(
                             r#"{{"status":"success","message":"Profile updated in AayuDB","user":{{"id":{},"username":"{}","email":"{}","role":"{}","location":"{}","id_proof":"{}","bio":"{}","avatar_svg":"{}","created_at":"{}"}}}}"#,
-                            u.id, u.username, u.email, u.role, u.location, u.id_proof, u.bio, u.avatar_svg, u.created_at
+                            u.id,
+                            json_escape(&u.username),
+                            json_escape(&u.email),
+                            json_escape(&u.role),
+                            json_escape(&u.location),
+                            json_escape(&u.id_proof),
+                            json_escape(&u.bio),
+                            json_escape(&u.avatar_svg),
+                            u.created_at
                         ))
                     } else {
                         None
@@ -1518,7 +1575,16 @@ fn hash_str(input: &str) -> String {
                     if let Some(u) = user_opt {
                         let resp = format!(
                             r#"{{"status":"success","user":{{"id":{},"username":"{}","email":"{}","role":"{}","location":"{}","id_proof":"{}","bio":"{}","avatar_svg":"{}","password_hash":"{}","created_at":"{}"}}}}"#,
-                            u.id, u.username, u.email, u.role, u.location, u.id_proof, u.bio, u.avatar_svg, u.password_hash, u.created_at
+                            u.id,
+                            json_escape(&u.username),
+                            json_escape(&u.email),
+                            json_escape(&u.role),
+                            json_escape(&u.location),
+                            json_escape(&u.id_proof),
+                            json_escape(&u.bio),
+                            json_escape(&u.avatar_svg),
+                            u.password_hash,
+                            u.created_at
                         );
                         return aayu_vm::net::HttpResponse::json(200, &resp);
                     } else {

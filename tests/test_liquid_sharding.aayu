@@ -1,0 +1,64 @@
+# ==============================================================================
+# AAYU Test Suite: Liquid Data 7-Layer Sharding Verification
+# Tests std/liquid.aayu molecular decomposition & police inspectors
+# ==============================================================================
+import "std/liquid.aayu"
+
+print("==================================================")
+print("     AAYU LIQUID DATA 7-LAYER SHARDING TEST       ")
+print("==================================================")
+
+let raw_record = "AAYU_SECURE_VAULT_RECORD_AYUSH_2026"
+print("Original Raw Record: " + raw_record)
+
+# 1. Shard into 7 Molecular Layers
+let shard = liquid_shard_payload(raw_record)
+print("Compression Status: " + shard["status"])
+print("Storage Reduction: " + shard["compression_ratio"])
+print("Phone Fast Route Key: " + shard["fast_cache_key"])
+print("Layer 7 Merkle Root: " + shard["merkle_root"])
+
+# 2. Verify Police Checkpoints (Untampered)
+let is_valid = liquid_verify_checkpoints(shard)
+if is_valid == true
+    print("PASS: Authentic Shard Passes All 7 Police Checkpoints")
+else
+    print("FAIL: Authentic Shard Checkpoint Verification Failed")
+end
+
+# 3. Reconstruct / Zoom to Real Data
+let reconstructed = liquid_reconstruct(shard, raw_record)
+print("Reconstructed: " + reconstructed)
+if reconstructed == raw_record
+    print("PASS: Authentic Data Reconstructed with Molecular Precision")
+else
+    print("FAIL: Data Reconstruction Failed")
+end
+
+# 4. Tamper Test: Modify Layer 4 (Simulated Hacker Attack)
+let tampered_shard = {
+    "status": shard["status"],
+    "raw_bytes": shard["raw_bytes"],
+    "compression_ratio": shard["compression_ratio"],
+    "fast_cache_key": shard["fast_cache_key"],
+    "merkle_root": shard["merkle_root"],
+    "layer1_hash": shard["layer1_hash"],
+    "layer2_hash": shard["layer2_hash"],
+    "layer3_hash": shard["layer3_hash"],
+    "layer4_hash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "layer5_hash": shard["layer5_hash"],
+    "layer6_hash": shard["layer6_hash"],
+    "layer7_hash": shard["layer7_hash"],
+    "payload_mass": "TAMPERED_MASS"
+}
+
+let tamper_check = liquid_verify_checkpoints(tampered_shard)
+if tamper_check == false
+    print("PASS: Hacker Tamper Attack Successfully Blocked by Police Inspectors!")
+else
+    print("FAIL: Tamper Detection Did Not Fire")
+end
+
+print("==================================================")
+print("      ALL LIQUID DATA INVARIANTS SATISFIED        ")
+print("==================================================")

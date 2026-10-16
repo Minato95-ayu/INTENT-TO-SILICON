@@ -33,23 +33,163 @@ action liquid_fast_cache_key(merkle_root)
     return prefix + "-" + suffix
 end
 
-# Strips redundant unquoted whitespace from structured payload for genuine size reduction
+# Strips redundant field keys and syntax from JSON to extract pure molecular values mass
 action liquid_condense_payload(raw_str)
     let l = len(raw_str)
-    let out = ""
+    let out_values = ""
     let i = 0
-    let in_string = 0
-    while i < l
-        let ch = raw_str[i]
-        if ch == "\""
-            if in_string == 1
-                in_string = 0
+    let in_str = 0
+    let after_colon = 0
+    let cur_val = ""
+    let has_colon = 0
+
+    # First pass: check if payload has key-value structure
+    let ki = 0
+    while ki < l
+        if raw_str[ki] == ":"
+            has_colon = 1
+        end
+        ki = ki + 1
+    end
+
+    if has_colon == 1
+        # Extract pure molecular values, eliminating repeated schema key overhead
+        while i < l
+            let ch = raw_str[i]
+            if ch == "\""
+                if in_str == 1
+                    in_str = 0
+                    if after_colon == 1
+                        if len(out_values) > 0
+                            out_values = out_values + "|" + cur_val
+                        else
+                            out_values = cur_val
+                        end
+                        cur_val = ""
+                        after_colon = 0
+                    end
+                else
+                    in_str = 1
+                    cur_val = ""
+                end
+            elif in_str == 1
+                if after_colon == 1
+                    cur_val = cur_val + ch
+                end
             else
-                in_string = 1
+                if ch == ":"
+                    after_colon = 1
+                    cur_val = ""
+                elif ch == ","
+                    if after_colon == 1
+                        let trimmed = ""
+                        let ti = 0
+                        while ti < len(cur_val)
+                            let tc = cur_val[ti]
+                            if tc != " "
+                                if tc != "\t"
+                                    if tc != "\n"
+                                        if tc != "\r"
+                                            trimmed = trimmed + tc
+                                        end
+                                    end
+                                end
+                            end
+                            ti = ti + 1
+                        end
+                        if len(trimmed) > 0
+                            if len(out_values) > 0
+                                out_values = out_values + "|" + trimmed
+                            else
+                                out_values = trimmed
+                            end
+                        end
+                        cur_val = ""
+                        after_colon = 0
+                    end
+                elif ch == "}"
+                    if after_colon == 1
+                        let trimmed = ""
+                        let ti = 0
+                        while ti < len(cur_val)
+                            let tc = cur_val[ti]
+                            if tc != " "
+                                if tc != "\t"
+                                    if tc != "\n"
+                                        if tc != "\r"
+                                            trimmed = trimmed + tc
+                                        end
+                                    end
+                                end
+                            end
+                            ti = ti + 1
+                        end
+                        if len(trimmed) > 0
+                            if len(out_values) > 0
+                                out_values = out_values + "|" + trimmed
+                            else
+                                out_values = trimmed
+                            end
+                        end
+                        cur_val = ""
+                        after_colon = 0
+                    end
+                elif ch == "]"
+                    if after_colon == 1
+                        let trimmed = ""
+                        let ti = 0
+                        while ti < len(cur_val)
+                            let tc = cur_val[ti]
+                            if tc != " "
+                                if tc != "\t"
+                                    if tc != "\n"
+                                        if tc != "\r"
+                                            trimmed = trimmed + tc
+                                        end
+                                    end
+                                end
+                            end
+                            ti = ti + 1
+                        end
+                        if len(trimmed) > 0
+                            if len(out_values) > 0
+                                out_values = out_values + "|" + trimmed
+                            else
+                                out_values = trimmed
+                            end
+                        end
+                        cur_val = ""
+                        after_colon = 0
+                    end
+                else
+                    if after_colon == 1
+                        cur_val = cur_val + ch
+                    end
+                end
+            end
+            i = i + 1
+        end
+
+        if len(out_values) > 0
+            return out_values
+        end
+    end
+
+    # Fallback for plain text, code, or non-key-value streams: strip unquoted whitespace
+    let out = ""
+    let wi = 0
+    let win_string = 0
+    while wi < l
+        let ch = raw_str[wi]
+        if ch == "\""
+            if win_string == 1
+                win_string = 0
+            else
+                win_string = 1
             end
             out = out + ch
         else
-            if in_string == 1
+            if win_string == 1
                 out = out + ch
             else
                 if ch != " "
@@ -63,7 +203,7 @@ action liquid_condense_payload(raw_str)
                 end
             end
         end
-        i = i + 1
+        wi = wi + 1
     end
     return out
 end

@@ -37,37 +37,42 @@ let original_shard = liquid_shard_payload(ground_truth_payload)
 assert_true(liquid_verify_checkpoints(original_shard), "Baseline: Unmodified shard verified cleanly")
 
 # ------------------------------------------------------------------------------
-# MULTI-POSITION BYTE-FLIP TESTS
+# MULTI-POSITION BYTE-FLIP TESTS (DYNAMICALLY INDEXED ACROSS PAYLOAD)
 # ------------------------------------------------------------------------------
-# Test 1: Flip byte at index 2 (inside "LIQUID_PAYLOAD_MASS")
-let tampered_pos2 = liquid_shard_payload(ground_truth_payload)
-tampered_pos2["payload_mass"] = mutate_byte_at(tampered_pos2["payload_mass"], 2)
-assert_false(liquid_verify_checkpoints(tampered_pos2), "Byte-Flip Position 2 (Prefix): Stored byte corruption detected")
-assert_eq(liquid_reconstruct(tampered_pos2, ground_truth_payload), "ACCESS_DENIED: Layer checkpoint mismatch or tamper detected", "Byte-Flip Position 2: Access denied on corrupted byte")
-
-# Test 2: Flip byte at index 25 (inside account key name)
-let tampered_pos25 = liquid_shard_payload(ground_truth_payload)
-tampered_pos25["payload_mass"] = mutate_byte_at(tampered_pos25["payload_mass"], 25)
-assert_false(liquid_verify_checkpoints(tampered_pos25), "Byte-Flip Position 25 (Key): Stored byte corruption detected")
-assert_eq(liquid_reconstruct(tampered_pos25, ground_truth_payload), "ACCESS_DENIED: Layer checkpoint mismatch or tamper detected", "Byte-Flip Position 25: Access denied on corrupted byte")
-
-# Test 3: Flip byte at index 50 (inside numeric balance value: e.g. 4500000)
-let tampered_pos50 = liquid_shard_payload(ground_truth_payload)
-tampered_pos50["payload_mass"] = mutate_byte_at(tampered_pos50["payload_mass"], 50)
-assert_false(liquid_verify_checkpoints(tampered_pos50), "Byte-Flip Position 50 (Value): Stored balance tampering caught")
-assert_eq(liquid_reconstruct(tampered_pos50, ground_truth_payload), "ACCESS_DENIED: Layer checkpoint mismatch or tamper detected", "Byte-Flip Position 50: Access denied on corrupted balance")
-
-# Test 4: Flip byte at index 75 (inside status string)
-let tampered_pos75 = liquid_shard_payload(ground_truth_payload)
-tampered_pos75["payload_mass"] = mutate_byte_at(tampered_pos75["payload_mass"], 75)
-assert_false(liquid_verify_checkpoints(tampered_pos75), "Byte-Flip Position 75 (Status): Stored status tampering caught")
-
-# Test 5: Flip last byte (trailing delimiter)
 let mass_len = len(original_shard["payload_mass"])
-let last_idx = mass_len - 1
-let tampered_pos_last = liquid_shard_payload(ground_truth_payload)
-tampered_pos_last["payload_mass"] = mutate_byte_at(tampered_pos_last["payload_mass"], last_idx)
-assert_false(liquid_verify_checkpoints(tampered_pos_last), "Byte-Flip Position Last (Delimiter): Stored tail corruption detected")
+let idx_p1 = 2
+let idx_p2 = mass_len / 4
+let idx_p3 = mass_len / 2
+let idx_p4 = (mass_len * 3) / 4
+let idx_p5 = mass_len - 1
+
+# Test 1: Flip byte at prefix (idx_p1)
+let tampered_pos1 = liquid_shard_payload(ground_truth_payload)
+tampered_pos1["payload_mass"] = mutate_byte_at(tampered_pos1["payload_mass"], idx_p1)
+assert_false(liquid_verify_checkpoints(tampered_pos1), "Byte-Flip Position P1 (Prefix): Stored byte corruption detected")
+assert_eq(liquid_reconstruct(tampered_pos1, ground_truth_payload), "ACCESS_DENIED: Layer checkpoint mismatch or tamper detected", "Byte-Flip Position P1: Access denied on corrupted byte")
+
+# Test 2: Flip byte at 25% offset (idx_p2)
+let tampered_pos2 = liquid_shard_payload(ground_truth_payload)
+tampered_pos2["payload_mass"] = mutate_byte_at(tampered_pos2["payload_mass"], idx_p2)
+assert_false(liquid_verify_checkpoints(tampered_pos2), "Byte-Flip Position P2 (25% Offset): Stored byte corruption detected")
+assert_eq(liquid_reconstruct(tampered_pos2, ground_truth_payload), "ACCESS_DENIED: Layer checkpoint mismatch or tamper detected", "Byte-Flip Position P2: Access denied on corrupted byte")
+
+# Test 3: Flip byte at midpoint 50% offset (idx_p3)
+let tampered_pos3 = liquid_shard_payload(ground_truth_payload)
+tampered_pos3["payload_mass"] = mutate_byte_at(tampered_pos3["payload_mass"], idx_p3)
+assert_false(liquid_verify_checkpoints(tampered_pos3), "Byte-Flip Position P3 (Midpoint): Stored value tampering caught")
+assert_eq(liquid_reconstruct(tampered_pos3, ground_truth_payload), "ACCESS_DENIED: Layer checkpoint mismatch or tamper detected", "Byte-Flip Position P3: Access denied on corrupted value")
+
+# Test 4: Flip byte at 75% offset (idx_p4)
+let tampered_pos4 = liquid_shard_payload(ground_truth_payload)
+tampered_pos4["payload_mass"] = mutate_byte_at(tampered_pos4["payload_mass"], idx_p4)
+assert_false(liquid_verify_checkpoints(tampered_pos4), "Byte-Flip Position P4 (75% Offset): Stored status tampering caught")
+
+# Test 5: Flip last byte (idx_p5)
+let tampered_pos5 = liquid_shard_payload(ground_truth_payload)
+tampered_pos5["payload_mass"] = mutate_byte_at(tampered_pos5["payload_mass"], idx_p5)
+assert_false(liquid_verify_checkpoints(tampered_pos5), "Byte-Flip Position P5 (Tail): Stored tail corruption detected")
 
 # ------------------------------------------------------------------------------
 # SELF-HEALING FROM WAL CHECK

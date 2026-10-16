@@ -395,6 +395,23 @@ route "/"
         </div>
     </header>
 
+    <!-- Simulated Cellular Out-of-Band Push Notification / SMS Toast -->
+    <div id="simulatedPhoneToast" style="display:none; position:fixed; top:24px; right:24px; z-index:9999; max-width:360px; background:linear-gradient(135deg, #0f172a, #1e293b); border:1px solid #38bdf8; border-radius:14px; padding:14px 18px; box-shadow:0 12px 35px rgba(0,0,0,0.85), 0 0 25px rgba(56,189,248,0.3); font-family:-apple-system, BlinkMacSystemFont, sans-serif;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <div style="display:flex; align-items:center; gap:6px; font-size:11px; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.5px;">
+                <span>📱</span> INCOMING SMS · AAYU-SECURE
+            </div>
+            <button onclick="document.getElementById('simulatedPhoneToast').style.display='none'" style="background:none; border:none; color:#94a3b8; cursor:pointer; font-size:18px; padding:0; line-height:1;">&times;</button>
+        </div>
+        <div style="font-size:12px; color:#f1f5f9; line-height:1.45;">
+            Your AAYU 2-Step Login Code is <strong id="toastOtpCode" style="color:#fbbf24; font-family:monospace; font-size:15px; letter-spacing:3px; background:#030712; padding:2px 6px; border-radius:4px; border:1px solid #334155;"></strong>. Valid for 60s. Never share your OTP with anyone.
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; font-size:10px; color:#64748b; border-top:1px dashed #334155; padding-top:6px;">
+            <span>Encrypted Cellular Dispatch</span>
+            <span onclick="autoFillOtp()" style="color:#10b981; font-weight:bold; cursor:pointer; text-decoration:underline;">Click to Auto-Fill &rarr;</span>
+        </div>
+    </div>
+
     <main>
         <nav class="tabs">
             <button class="tab-btn active" onclick="switchTab('auth', this)">🔐 User Auth & Profile</button>
@@ -611,15 +628,16 @@ route "/"
 
                         <!-- Step 2 OTP Modal (Appears when 2FA triggered) -->
                         <div id="otpSection" style="display:none; background:#0f172a; border:1px solid #38bdf8; border-radius:12px; padding:16px; margin-bottom:14px; box-shadow:0 0 20px rgba(56, 189, 248, 0.2);">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                                <div style="font-size:13px; color:#38bdf8; font-weight:bold;">📲 Step 2: Enter 6-Digit Server OTP</div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                <div style="font-size:13px; color:#38bdf8; font-weight:bold;">📲 Step 2: Two-Factor Authentication</div>
                                 <span id="otpCountdownBadge" style="background:#ef4444; color:#fff; font-size:11px; font-weight:700; padding:2px 8px; border-radius:10px;">⏱️ <span id="otpTimer">60s</span></span>
                             </div>
-                            <div style="font-size:11px; color:#94a3b8; margin-bottom:10px;">
-                                Server Dispatched Code: <strong id="generatedOtpBadge" style="color:#fbbf24; font-size:16px; font-family:monospace; letter-spacing:3px;"></strong>
-                                <span style="display:block; font-size:10px; color:#64748b; margin-top:2px;">(Simulated SMS/Email token generated on Rust VM • Expires in 60s)</span>
+                            <div style="font-size:12px; color:#94a3b8; margin-bottom:12px; line-height:1.5;">
+                                A 6-digit security code was dispatched to your registered channel:
+                                <div id="otpRecipientMasked" style="color:#38bdf8; font-family:monospace; font-weight:bold; margin-top:2px;">ay***1@gmail.com (Device / SMS Gateway)</div>
+                                <div style="font-size:10px; color:#64748b; margin-top:4px;">Check your phone SMS / email notification and enter the code below:</div>
                             </div>
-                            <input type="text" id="enteredOtp" placeholder="Enter 6-digit OTP" maxlength="6" style="text-align:center; font-family:monospace; font-size:20px; letter-spacing:6px; margin-bottom:10px; border:2px solid #38bdf8; background:#030712; color:#fff; font-weight:bold;">
+                            <input type="text" id="enteredOtp" placeholder="______" maxlength="6" autocomplete="one-time-code" style="text-align:center; font-family:monospace; font-size:22px; letter-spacing:8px; margin-bottom:12px; border:2px solid #38bdf8; background:#030712; color:#fff; font-weight:bold; width:100%; box-sizing:border-box;">
                             <div style="display:flex; gap:8px;">
                                 <button type="button" onclick="verifyOtpAndLogin()" class="btn-primary" style="background:#10b981; flex:2;">Confirm OTP & Issue JWT</button>
                                 <button type="button" onclick="cancelOtpLogin()" style="background:#334155; color:#cbd5e1; border:none; padding:10px 14px; border-radius:8px; cursor:pointer; font-size:12px;">Cancel</button>
@@ -1916,11 +1934,37 @@ route "/"
             }, 1000);
         }
 
+        let activeOtpValue = '';
+
+        function showSimulatedSmsToast(username, otp) {
+            activeOtpValue = otp;
+            const toast = document.getElementById('simulatedPhoneToast');
+            const codeEl = document.getElementById('toastOtpCode');
+            if (codeEl) codeEl.innerText = otp;
+            if (toast) {
+                toast.style.display = 'block';
+                toast.style.opacity = '1';
+            }
+            console.log(`%c[Out-of-Band SMS Channel] Security OTP for user '${username}': %c${otp}%c (Do not share with anyone)`, 'color:#38bdf8; font-weight:bold;', 'color:#10b981; font-weight:bold; font-size:14px;', 'color:#64748b;');
+        }
+
+        function autoFillOtp() {
+            if (activeOtpValue) {
+                const input = document.getElementById('enteredOtp');
+                if (input) {
+                    input.value = activeOtpValue;
+                    input.focus();
+                }
+            }
+        }
+
         function cancelOtpLogin() {
             clearInterval(otpTimerInterval);
             document.getElementById('otpSection').style.display = 'none';
             document.getElementById('loginBtn').style.display = 'block';
             document.getElementById('enteredOtp').value = '';
+            const toast = document.getElementById('simulatedPhoneToast');
+            if (toast) toast.style.display = 'none';
             const resBox = document.getElementById('loginResult');
             if (resBox) resBox.innerHTML = '2FA Login Cancelled.';
         }
@@ -1948,13 +1992,23 @@ route "/"
 
                 if (data.status === '2fa_required') {
                     pendingLoginUsername = username;
-                    document.getElementById('generatedOtpBadge').innerText = data.otp;
                     document.getElementById('otpSection').style.display = 'block';
                     document.getElementById('loginBtn').style.display = 'none';
                     document.getElementById('enteredOtp').value = '';
                     document.getElementById('enteredOtp').focus();
                     startOtpCountdown(data.expires_in || 60);
-                    resBox.innerHTML = `🔒 <strong>Step 1 Passed:</strong> ${data.message} Enter the 6-digit server OTP to complete zero-trust login.`;
+
+                    // Mask recipient email
+                    const userRec = allUsers.find(u => u.username === username);
+                    const email = userRec && userRec.email ? userRec.email : 'registered-device';
+                    const masked = email.includes('@') ? email.replace(/(?<=^.{2}).*(?=@)/, '***') : 'SMS (+91-98******04)';
+                    const rcptEl = document.getElementById('otpRecipientMasked');
+                    if (rcptEl) rcptEl.innerText = `${masked} (Cellular SMS Gateway)`;
+
+                    // Dispatch Out-of-Band Simulated Phone Notification
+                    showSimulatedSmsToast(username, data.otp);
+
+                    resBox.innerHTML = `🔒 <strong>Step 1 Passed:</strong> Identity verified. One-time security code sent via Out-of-Band SMS. Enter code below to confirm.`;
                 } else {
                     currentUser = data.user;
                     renderActiveProfile(currentUser);
@@ -1996,6 +2050,8 @@ route "/"
                 resBox.innerHTML = `✅ <strong>2FA Handshake Verified!</strong> Welcome back, <strong>${data.user.username}</strong> (${data.user.role}). Secure JWT: <code>${data.token}</code>`;
                 document.getElementById('otpSection').style.display = 'none';
                 document.getElementById('loginBtn').style.display = 'block';
+                const toast = document.getElementById('simulatedPhoneToast');
+                if (toast) toast.style.display = 'none';
                 document.getElementById('loginForm').reset();
                 const card = document.getElementById('userProfileCard');
                 if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });

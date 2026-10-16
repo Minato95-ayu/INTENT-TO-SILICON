@@ -1165,6 +1165,10 @@ fn hash_str(input: &str) -> String {
             username: String,
             email: String,
             role: String,
+            location: String,
+            id_proof: String,
+            bio: String,
+            avatar_svg: String,
             password_hash: String,
             created_at: String,
         }
@@ -1191,19 +1195,39 @@ fn hash_str(input: &str) -> String {
                     username: "ayush_kaushik".to_string(),
                     email: "minato95.ayu@gmail.com".to_string(),
                     role: "AAYU Language Creator".to_string(),
+                    location: "Varanasi / New Delhi, India".to_string(),
+                    id_proof: "AAYU Genesis Token #001 (Govt ID Verified)".to_string(),
+                    bio: "Creator & Architect of AAYU Intent-to-Silicon Full-Stack Platform".to_string(),
+                    avatar_svg: "neural".to_string(),
                     password_hash: "a4f8e1293b702e1c94d6e8b5a3c2f10948b7d6e5c4a3b2109876543210abcdef".to_string(),
                     created_at: "Today 18:30".to_string(),
                 },
                 LiveUser {
                     id: 2,
+                    username: "ayush".to_string(),
+                    email: "ayushkaushik1441@gmail.com".to_string(),
+                    role: "Lead Data Engineer & Architect".to_string(),
+                    location: "New Delhi, India".to_string(),
+                    id_proof: "KYC Verified (Govt ID: IND-7892-AAYU)".to_string(),
+                    bio: "Data Engineering Pipelines, Kafka Event Streams & In-Memory Vector Optimization".to_string(),
+                    avatar_svg: "cyber".to_string(),
+                    password_hash: "81537a2c89b427c07a57c1566cfc728e833446b5a33cd88b0292b02868ff1128".to_string(),
+                    created_at: "Today 18:45".to_string(),
+                },
+                LiveUser {
+                    id: 3,
                     username: "richa_bhadani".to_string(),
                     email: "richa.bhadani@enterprise.tech".to_string(),
                     role: "Enterprise Mentor & CTO".to_string(),
+                    location: "San Francisco, CA, USA".to_string(),
+                    id_proof: "Enterprise CTO ID: US-TECH-4401".to_string(),
+                    bio: "Global Cloud Architecture, Distributed Kafka & Microservices Mentor".to_string(),
+                    avatar_svg: "shield".to_string(),
                     password_hash: "7b3c99014a2f8d6e5c4b3a2109876543210fedcba9876543210abcdef1234567".to_string(),
                     created_at: "Today 18:32".to_string(),
                 },
             ];
-            let mut max_id = 2;
+            let mut max_id = 3;
             if let Ok(content) = std::fs::read_to_string("aayudb_wal.json") {
                 let mut parser = aayu_vm::db::JsonParser::new(&content);
                 if let Some(aayu_vm::db::JsonValue::Array(arr)) = parser.parse_value() {
@@ -1225,6 +1249,22 @@ fn hash_str(input: &str) -> String {
                                 Some(aayu_vm::db::JsonValue::String(s)) => s.clone(),
                                 _ => "Engineer".to_string(),
                             };
+                            let location = match map.get("location") {
+                                Some(aayu_vm::db::JsonValue::String(s)) => s.clone(),
+                                _ => "India (Registered in AayuDB)".to_string(),
+                            };
+                            let id_proof = match map.get("id_proof") {
+                                Some(aayu_vm::db::JsonValue::String(s)) => s.clone(),
+                                _ => "KYC Verified (AAYU ID)".to_string(),
+                            };
+                            let bio = match map.get("bio") {
+                                Some(aayu_vm::db::JsonValue::String(s)) => s.clone(),
+                                _ => "AAYU Enterprise Full-Stack User".to_string(),
+                            };
+                            let avatar_svg = match map.get("avatar_svg") {
+                                Some(aayu_vm::db::JsonValue::String(s)) => s.clone(),
+                                _ => "neural".to_string(),
+                            };
                             let password_hash = match map.get("password_hash") {
                                 Some(aayu_vm::db::JsonValue::String(s)) => s.clone(),
                                 _ => "".to_string(),
@@ -1233,12 +1273,24 @@ fn hash_str(input: &str) -> String {
                                 Some(aayu_vm::db::JsonValue::String(s)) => s.clone(),
                                 _ => "Restored from WAL".to_string(),
                             };
-                            if !users.iter().any(|u| u.username == username) {
+                            if let Some(existing) = users.iter_mut().find(|u| u.username == username) {
+                                existing.email = email;
+                                existing.role = role;
+                                existing.location = location;
+                                existing.id_proof = id_proof;
+                                existing.bio = bio;
+                                existing.avatar_svg = avatar_svg;
+                                existing.password_hash = password_hash;
+                            } else {
                                 users.push(LiveUser {
                                     id,
                                     username,
                                     email,
                                     role,
+                                    location,
+                                    id_proof,
+                                    bio,
+                                    avatar_svg,
                                     password_hash,
                                     created_at,
                                 });
@@ -1256,8 +1308,17 @@ fn hash_str(input: &str) -> String {
             for (idx, u) in users.iter().enumerate() {
                 if idx > 0 { json.push_str(",\n"); }
                 json.push_str(&format!(
-                    r#"  {{"id":{},"username":"{}","email":"{}","role":"{}","password_hash":"{}","created_at":"{}"}}"#,
-                    u.id, u.username, u.email, u.role, u.password_hash, u.created_at
+                    r#"  {{"id":{},"username":"{}","email":"{}","role":"{}","location":"{}","id_proof":"{}","bio":"{}","avatar_svg":"{}","password_hash":"{}","created_at":"{}"}}"#,
+                    u.id,
+                    u.username.replace('"', "\\\""),
+                    u.email.replace('"', "\\\""),
+                    u.role.replace('"', "\\\""),
+                    u.location.replace('"', "\\\""),
+                    u.id_proof.replace('"', "\\\""),
+                    u.bio.replace('"', "\\\""),
+                    u.avatar_svg.replace('"', "\\\""),
+                    u.password_hash,
+                    u.created_at
                 ));
             }
             json.push_str("\n]");
@@ -1296,9 +1357,13 @@ fn hash_str(input: &str) -> String {
                 let email = req_map.get("email").cloned().unwrap_or_default();
                 let password = req_map.get("password").cloned().unwrap_or_default();
                 let role = req_map.get("role").cloned().unwrap_or_default();
+                let location = req_map.get("location").cloned().unwrap_or_else(|| "India (AAYU Node)".to_string());
+                let id_proof = req_map.get("id_proof").cloned().unwrap_or_else(|| "KYC Govt ID Verified".to_string());
+                let bio = req_map.get("bio").cloned().unwrap_or_else(|| "AAYU Full-Stack Engineer".to_string());
+                let avatar_svg = req_map.get("avatar_svg").cloned().unwrap_or_else(|| "neural".to_string());
                 let final_user = if username.is_empty() { format!("user_{}", st.next_user_id) } else { username };
                 let final_email = if email.is_empty() { format!("{}@example.com", final_user) } else { email };
-                let final_role = if role.is_empty() { "Engineer".to_string() } else { role };
+                let final_role = if role.is_empty() { "Data Engineer".to_string() } else { role };
                 let hash = hash_str(&password);
                 let id = st.next_user_id;
                 st.next_user_id += 1;
@@ -1307,14 +1372,18 @@ fn hash_str(input: &str) -> String {
                     username: final_user.clone(),
                     email: final_email.clone(),
                     role: final_role.clone(),
+                    location: location.clone(),
+                    id_proof: id_proof.clone(),
+                    bio: bio.clone(),
+                    avatar_svg: avatar_svg.clone(),
                     password_hash: hash.clone(),
                     created_at: "Just now".to_string(),
                 };
                 st.users.push(new_user);
                 save_wal_users(&st.users);
                 let resp = format!(
-                    r#"{{"status":"success","message":"User registered into AayuDB with SHA-256 hash","storage":"In-Memory WAL Synced","user":{{"id":{},"username":"{}","email":"{}","role":"{}","password_hash":"{}","created_at":"Just now"}},"token":"aayu_jwt_sec_{:08x}"}}"#,
-                    id, final_user, final_email, final_role, hash, id * 12345
+                    r#"{{"status":"success","message":"User registered into AayuDB with SHA-256 hash","storage":"In-Memory WAL Synced","user":{{"id":{},"username":"{}","email":"{}","role":"{}","location":"{}","id_proof":"{}","bio":"{}","avatar_svg":"{}","password_hash":"{}","created_at":"Just now"}},"token":"aayu_jwt_sec_{:08x}"}}"#,
+                    id, final_user, final_email, final_role, location, id_proof, bio, avatar_svg, hash, id * 12345
                 );
                 return aayu_vm::net::HttpResponse::json(201, &resp);
             }
@@ -1325,8 +1394,8 @@ fn hash_str(input: &str) -> String {
                 for (idx, u) in st.users.iter().enumerate() {
                     if idx > 0 { users_json.push(','); }
                     users_json.push_str(&format!(
-                        r#"{{"id":{},"username":"{}","email":"{}","role":"{}","password_hash":"{}","created_at":"{}"}}"#,
-                        u.id, u.username, u.email, u.role, u.password_hash, u.created_at
+                        r#"{{"id":{},"username":"{}","email":"{}","role":"{}","location":"{}","id_proof":"{}","bio":"{}","avatar_svg":"{}","password_hash":"{}","created_at":"{}"}}"#,
+                        u.id, u.username, u.email, u.role, u.location, u.id_proof, u.bio, u.avatar_svg, u.password_hash, u.created_at
                     ));
                 }
                 users_json.push(']');
@@ -1345,12 +1414,59 @@ fn hash_str(input: &str) -> String {
                 let hash = hash_str(&password);
                 if let Some(u) = st.users.iter().find(|u| u.username == username && (u.password_hash == hash || password == "admin" || password == "demo" || !password.is_empty())) {
                     let resp = format!(
-                        r#"{{"status":"success","message":"Authentication successful","user":{{"id":{},"username":"{}","email":"{}","role":"{}"}},"token":"aayu_jwt_sec_{:08x}"}}"#,
-                        u.id, u.username, u.email, u.role, u.id * 54321
+                        r#"{{"status":"success","message":"Authentication successful","user":{{"id":{},"username":"{}","email":"{}","role":"{}","location":"{}","id_proof":"{}","bio":"{}","avatar_svg":"{}"}},"token":"aayu_jwt_sec_{:08x}"}}"#,
+                        u.id, u.username, u.email, u.role, u.location, u.id_proof, u.bio, u.avatar_svg, u.id * 54321
                     );
                     return aayu_vm::net::HttpResponse::json(200, &resp);
                 } else {
                     return aayu_vm::net::HttpResponse::json(401, r#"{"status":"error","message":"Invalid credentials. Use existing user or register new."}"#);
+                }
+            }
+
+            if req.path.starts_with("/api/user/profile") {
+                let mut st = state_clone.lock().unwrap();
+                if req.method == "POST" || req.method == "PUT" {
+                    let req_map = extract_json_map(&req.body);
+                    let username = req_map.get("username").cloned().unwrap_or_default();
+                    let updated_resp = if let Some(u) = st.users.iter_mut().find(|u| u.username == username) {
+                        if let Some(loc) = req_map.get("location") { if !loc.is_empty() { u.location = loc.clone(); } }
+                        if let Some(idp) = req_map.get("id_proof") { if !idp.is_empty() { u.id_proof = idp.clone(); } }
+                        if let Some(bio) = req_map.get("bio") { if !bio.is_empty() { u.bio = bio.clone(); } }
+                        if let Some(role) = req_map.get("role") { if !role.is_empty() { u.role = role.clone(); } }
+                        if let Some(av) = req_map.get("avatar_svg") { if !av.is_empty() { u.avatar_svg = av.clone(); } }
+                        Some(format!(
+                            r#"{{"status":"success","message":"Profile updated in AayuDB","user":{{"id":{},"username":"{}","email":"{}","role":"{}","location":"{}","id_proof":"{}","bio":"{}","avatar_svg":"{}","created_at":"{}"}}}}"#,
+                            u.id, u.username, u.email, u.role, u.location, u.id_proof, u.bio, u.avatar_svg, u.created_at
+                        ))
+                    } else {
+                        None
+                    };
+                    if let Some(resp) = updated_resp {
+                        save_wal_users(&st.users);
+                        return aayu_vm::net::HttpResponse::json(200, &resp);
+                    } else {
+                        return aayu_vm::net::HttpResponse::json(404, r#"{"status":"error","message":"User not found"}"#);
+                    }
+                } else {
+                    let username = if req.path.contains("username=") {
+                        req.path.split("username=").nth(1).unwrap_or("").split('&').next().unwrap_or("")
+                    } else {
+                        ""
+                    };
+                    let user_opt = if !username.is_empty() {
+                        st.users.iter().find(|u| u.username == username)
+                    } else {
+                        st.users.first()
+                    };
+                    if let Some(u) = user_opt {
+                        let resp = format!(
+                            r#"{{"status":"success","user":{{"id":{},"username":"{}","email":"{}","role":"{}","location":"{}","id_proof":"{}","bio":"{}","avatar_svg":"{}","password_hash":"{}","created_at":"{}"}}}}"#,
+                            u.id, u.username, u.email, u.role, u.location, u.id_proof, u.bio, u.avatar_svg, u.password_hash, u.created_at
+                        );
+                        return aayu_vm::net::HttpResponse::json(200, &resp);
+                    } else {
+                        return aayu_vm::net::HttpResponse::json(404, r#"{"status":"error","message":"No user profile available"}"#);
+                    }
                 }
             }
 

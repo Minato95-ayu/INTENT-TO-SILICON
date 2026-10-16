@@ -1,0 +1,45 @@
+# AAYU Type Specialization & Deoptimization Guard Verification
+import "std/test"
+
+test_begin_suite("Deoptimization Guard & Monomorphic Fast-Path Torture Suite")
+
+# Test 1: Normal fast-path loop (10,000 iterations)
+let count = 0
+while count < 10000
+    count = count + 1
+end
+assert_eq(count, 10000, "Fast-path integer loop completed exactly at 10000")
+
+# Test 2: In-place Decrement
+let countdown = 10000
+while countdown > 0
+    countdown = countdown - 1
+end
+assert_eq(countdown, 0, "Fast-path countdown completed exactly at 0")
+
+# Test 3: Large constant increments (x = x + 25)
+let step_var = 0
+while step_var < 1000
+    step_var = step_var + 25
+end
+assert_eq(step_var, 1000, "AddGlobalConst in-place step completed at 1000")
+
+# Test 4: DEOPT BAILOUT - Variable mutated into Float mid-loop
+let float_loop = 0
+let f_steps = 0
+while float_loop < 10
+    if float_loop == 5
+        float_loop = 5.5
+    else
+        float_loop = float_loop + 1
+    end
+    f_steps = f_steps + 1
+end
+assert_true(f_steps > 0, "Float deoptimization completed without crashing")
+
+# Test 5: DEOPT BAILOUT - Variable mutated into String mid-execution
+let str_test = "hello"
+str_test = str_test + 1
+assert_eq(str_test, "hello1", "String concatenation in-place safe fallback verified")
+
+test_end_suite()

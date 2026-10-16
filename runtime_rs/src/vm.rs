@@ -651,6 +651,12 @@ impl AayuVM {
                         self.locals[idx] = NanVal::int(v.as_int().wrapping_add(1));
                     } else if v.is_float() {
                         self.locals[idx] = NanVal::float(v.as_float() + 1.0);
+                    } else if v.is_string() {
+                        let mut s = self.string_heap.get(v.as_string_idx()).cloned().unwrap_or_default();
+                        s.push_str("1");
+                        let s_idx = self.string_heap.len();
+                        self.string_heap.push(s);
+                        self.locals[idx] = NanVal::string(s_idx);
                     }
                 }
                 24 => { // DecLocalBy1
@@ -671,6 +677,12 @@ impl AayuVM {
                         self.globals[idx] = NanVal::int(v.as_int().wrapping_add(1));
                     } else if v.is_float() {
                         self.globals[idx] = NanVal::float(v.as_float() + 1.0);
+                    } else if v.is_string() {
+                        let mut s = self.string_heap.get(v.as_string_idx()).cloned().unwrap_or_default();
+                        s.push_str("1");
+                        let s_idx = self.string_heap.len();
+                        self.string_heap.push(s);
+                        self.globals[idx] = NanVal::string(s_idx);
                     }
                 }
                 26 => { // DecGlobalBy1
@@ -695,6 +707,14 @@ impl AayuVM {
                         let fv = if v.is_float() { v.as_float() } else { v.as_int() as f64 };
                         let fc = if c.is_float() { c.as_float() } else { c.as_int() as f64 };
                         self.locals[slot] = NanVal::float(fv + fc);
+                    } else if v.is_string() || c.is_string() {
+                        let sv = if v.is_string() { self.string_heap.get(v.as_string_idx()).cloned().unwrap_or_default() } else { format!("{}", v) };
+                        let sc = if c.is_string() { self.string_heap.get(c.as_string_idx()).cloned().unwrap_or_default() } else if c.is_int() { format!("{}", c.as_int()) } else { format!("{}", c) };
+                        let mut res = sv;
+                        res.push_str(&sc);
+                        let s_idx = self.string_heap.len();
+                        self.string_heap.push(res);
+                        self.locals[slot] = NanVal::string(s_idx);
                     }
                 }
                 28 => { // AddGlobalConst
@@ -709,6 +729,14 @@ impl AayuVM {
                         let fv = if v.is_float() { v.as_float() } else { v.as_int() as f64 };
                         let fc = if c.is_float() { c.as_float() } else { c.as_int() as f64 };
                         self.globals[slot] = NanVal::float(fv + fc);
+                    } else if v.is_string() || c.is_string() {
+                        let sv = if v.is_string() { self.string_heap.get(v.as_string_idx()).cloned().unwrap_or_default() } else { format!("{}", v) };
+                        let sc = if c.is_string() { self.string_heap.get(c.as_string_idx()).cloned().unwrap_or_default() } else if c.is_int() { format!("{}", c.as_int()) } else { format!("{}", c) };
+                        let mut res = sv;
+                        res.push_str(&sc);
+                        let s_idx = self.string_heap.len();
+                        self.string_heap.push(res);
+                        self.globals[slot] = NanVal::string(s_idx);
                     }
                 }
                 29 => { // SubLocalConst

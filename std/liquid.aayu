@@ -244,8 +244,8 @@ action liquid_shard_payload(payload)
     let l3_data = "VECTOR_KEY_SPACE:OFFSET_0x00_TO_0x" + liquid_int_to_str(condensed_len)
     let h3 = hash_string(l3_data)
 
-    # Layer 4: Encrypted Liquid Molecular Payload Mass
-    let l4_data = "LIQUID_PAYLOAD_MASS:" + condensed
+    # Layer 4: Encrypted Liquid Molecular Payload Mass (Pure Values)
+    let l4_data = condensed
     let h4 = hash_string(l4_data)
 
     # Layer 5: Topological Merkle Dependency Graph

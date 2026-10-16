@@ -35,7 +35,7 @@ let wal_checkpoint = clean_shard
 # ------------------------------------------------------------------------------
 let tampered_l4_shard = liquid_shard_payload(original_payload)
 # Adversary flips Layer 4 payload hash
-tampered_l4_shard["layer4_hash"] = hash_string("LIQUID_PAYLOAD_MASS:{\"balance_inr\": 9900000}")
+tampered_l4_shard["layer4_hash"] = hash_string("{\"balance_inr\": 9900000}")
 
 let is_l4_tamper_detected = liquid_verify_checkpoints(tampered_l4_shard)
 assert_false(is_l4_tamper_detected, "Attack Vector 1: Layer 6 Police Inspector catches Layer 4 payload modification")
